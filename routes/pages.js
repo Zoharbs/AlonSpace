@@ -14,12 +14,15 @@ const SITE = {
 
 const TOUR_WHATSAPP_URL =
   `${SITE.whatsapp}?text=` +
-  encodeURIComponent('שלום, אני מעוניין לקבוע סיור ב-AlonSpace.');
+  encodeURIComponent(
+    'שלום, אני מעוניין לקבוע סיור ב-AlonSpace.'
+  );
 
 router.use((req, res, next) => {
   res.locals.site = SITE;
   res.locals.path = req.path;
   res.locals.tourWhatsappUrl = TOUR_WHATSAPP_URL;
+
   res.locals.currentUser = req.session?.userId
     ? {
         id: req.session.userId,
@@ -31,88 +34,132 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/', (req, res) => {
-  const testimonials = db
-    .prepare(`
-      SELECT *
-      FROM testimonials
-      WHERE status = 'מאושר'
-      ORDER BY created_at DESC
-      LIMIT 3
-    `)
-    .all();
+router.get('/', async (req, res, next) => {
+  try {
+    const [
+      testimonialsResult,
+      galleryResult,
+    ] = await Promise.all([
+      db.query(`
+        SELECT *
+        FROM testimonials
+        WHERE status = 'מאושר'
+        ORDER BY created_at DESC
+        LIMIT 3
+      `),
 
-  const gallery = db
-    .prepare('SELECT * FROM gallery ORDER BY sort_order LIMIT 6')
-    .all();
+      db.query(`
+        SELECT *
+        FROM gallery
+        ORDER BY sort_order ASC, id ASC
+        LIMIT 6
+      `),
+    ]);
 
-  return res.render('home', {
-    title: 'AlonSpace — משרדים פרטיים בלב תל אביב',
-    testimonials,
-    gallery,
-  });
+    return res.render('home', {
+      title:
+        'AlonSpace — משרדים פרטיים בלב תל אביב',
+      testimonials: testimonialsResult.rows,
+      gallery: galleryResult.rows,
+    });
+  } catch (error) {
+    return next(error);
+  }
 });
 
-router.get(['/אודות', '/about'], (req, res) => {
-  return res.render('about', {
-    title: 'אודות — AlonSpace',
-  });
-});
+router.get(
+  ['/אודות', '/about'],
+  (req, res) => {
+    return res.render('about', {
+      title: 'אודות — AlonSpace',
+    });
+  }
+);
 
-router.get(['/המתחם-והשירותים', '/amenities'], (req, res) => {
-  return res.render('amenities', {
-    title: 'המתחם והשירותים — AlonSpace',
-  });
-});
+router.get(
+  ['/המתחם-והשירותים', '/amenities'],
+  (req, res) => {
+    return res.render('amenities', {
+      title:
+        'המתחם והשירותים — AlonSpace',
+    });
+  }
+);
 
-router.get('/המלצות', (req, res) => {
-  const testimonials = db
-    .prepare(`
-      SELECT *
-      FROM testimonials
-      WHERE status = 'מאושר'
-      ORDER BY created_at DESC
-    `)
-    .all();
+router.get(
+  '/המלצות',
+  async (req, res, next) => {
+    try {
+      const result = await db.query(`
+        SELECT *
+        FROM testimonials
+        WHERE status = 'מאושר'
+        ORDER BY created_at DESC
+      `);
 
-  return res.render('testimonials', {
-    title: 'המלצות — AlonSpace',
-    testimonials,
-    sent: req.query.sent === '1',
-  });
-});
+      return res.render('testimonials', {
+        title: 'המלצות — AlonSpace',
+        testimonials: result.rows,
+        sent: req.query.sent === '1',
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
-router.get(['/שאלות-נפוצות', '/faq'], (req, res) => {
-  return res.render('faq', {
-    title: 'שאלות נפוצות — AlonSpace',
-  });
-});
+router.get(
+  ['/שאלות-נפוצות', '/faq'],
+  (req, res) => {
+    return res.render('faq', {
+      title: 'שאלות נפוצות — AlonSpace',
+    });
+  }
+);
 
-router.get('/gallery', (req, res) => {
-  const gallery = db
-    .prepare('SELECT * FROM gallery ORDER BY sort_order')
-    .all();
+router.get(
+  '/gallery',
+  async (req, res, next) => {
+    try {
+      const result = await db.query(`
+        SELECT *
+        FROM gallery
+        ORDER BY sort_order ASC, id ASC
+      `);
 
-  return res.render('gallery', {
-    title: 'גלריה — AlonSpace',
-    gallery,
-  });
-});
+      return res.render('gallery', {
+        title: 'גלריה — AlonSpace',
+        gallery: result.rows,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
-router.get(['/יצירת-קשר', '/contact'], (req, res) => {
-  return res.render('contact', {
-    title: 'יצירת קשר — AlonSpace',
-    sent: req.query.sent === '1',
-  });
-});
+router.get(
+  ['/יצירת-קשר', '/contact'],
+  (req, res) => {
+    return res.render('contact', {
+      title: 'יצירת קשר — AlonSpace',
+      sent: req.query.sent === '1',
+    });
+  }
+);
 
 router.get('/booking', (req, res) => {
-  return res.redirect(302, TOUR_WHATSAPP_URL);
+  return res.redirect(
+    302,
+    TOUR_WHATSAPP_URL
+  );
 });
 
-router.get(['/offices', '/checkout'], (req, res) => {
-  return res.redirect(302, '/');
-});
+router.get(
+  ['/offices', '/checkout'],
+  (req, res) => {
+    return res.redirect(302, '/');
+  }
+);
 
 router.get('/terms', (req, res) => {
   return res.render('terms', {

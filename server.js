@@ -2,16 +2,23 @@ require('dotenv').config();
 
 const express = require('express');
 const session = require('express-session');
-const SQLiteStore = require('connect-sqlite3')(session);
+const PgSession = require('connect-pg-simple')(session);
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 
-require('./db');
+const {
+  pool,
+  initializeDatabase,
+} = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error('SESSION_SECRET is not configured');
+}
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -25,21 +32,35 @@ app.use(
   })
 );
 
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(
+  express.static(
+    path.join(__dirname, 'public')
+  )
+);
 
 app.use(
   session({
-    store: new SQLiteStore({
-      db: 'sessions.db',
-      dir: path.join(__dirname, 'data'),
+    store: new PgSession({
+      pool,
+      createTableIfMissing: true,
+      tableName: 'user_sessions',
     }),
-    secret:
-      process.env.SESSION_SECRET ||
-      'alonspace-dev-secret-change-me',
+
+    name: 'alonspace.sid',
+
+    secret: process.env.SESSION_SECRET,
+
     resave: false,
     saveUninitialized: false,
+
     cookie: {
       maxAge: 1000 * 60 * 60 * 8,
       sameSite: 'lax',
@@ -54,6 +75,7 @@ const publicFormLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
+
   message: {
     error: 'יותר מדי בקשות, נסו שוב בעוד כמה דקות',
   },
@@ -64,12 +86,14 @@ const loginLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
+
   message: 'יותר מדי ניסיונות התחברות. נסו שוב בעוד כמה דקות.',
 });
 
 app.use('/api/contact', publicFormLimiter);
 app.use('/api/testimonials', publicFormLimiter);
 app.use('/login', loginLimiter);
+
 app.use((req, res, next) => {
   res.locals.path = req.path;
 
@@ -92,10 +116,13 @@ app.use((req, res, next) => {
 
   res.locals.tourWhatsappUrl =
     'https://wa.me/972544730266?text=' +
-    encodeURIComponent('שלום, אני מעוניין לקבוע סיור ב-AlonSpace.');
+    encodeURIComponent(
+      'שלום, אני מעוניין לקבוע סיור ב-AlonSpace.'
+    );
 
   next();
 });
+
 app.use('/api', require('./routes/api'));
 app.use('/', require('./routes/auth'));
 app.use('/admin', require('./routes/admin'));
@@ -108,7 +135,10 @@ app.use((req, res) => {
     <html lang="he" dir="rtl">
       <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        >
         <title>הדף לא נמצא — AlonSpace</title>
       </head>
 
@@ -125,7 +155,10 @@ app.use((req, res) => {
         <div>
           <h1 style="font-size:5rem;margin:0;">404</h1>
           <h2>הדף לא נמצא</h2>
-          <p>ייתכן שהכתובת השתנתה או שהעמוד אינו קיים.</p>
+
+          <p>
+            ייתכן שהכתובת השתנתה או שהעמוד אינו קיים.
+          </p>
 
           <a
             href="/"
@@ -150,11 +183,33 @@ app.use((req, res) => {
 
 app.use((error, req, res, next) => {
   console.error(error);
+
+  if (res.headersSent) {
+    return next(error);
+  }
+
   return res
     .status(500)
     .send('אירעה שגיאה בשרת. נסו שוב מאוחר יותר.');
 });
 
-app.listen(PORT, () => {
-  console.log(`AlonSpace server running at http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    await initializeDatabase();
+
+    app.listen(PORT, () => {
+      console.log(
+        `AlonSpace server running on port ${PORT}`
+      );
+    });
+  } catch (error) {
+    console.error(
+      'Failed to initialize PostgreSQL:',
+      error
+    );
+
+    process.exit(1);
+  }
+}
+
+startServer();

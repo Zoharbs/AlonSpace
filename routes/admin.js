@@ -19,135 +19,150 @@ function normalizeOptional(value) {
 
 function parsePositiveNumber(value, fallback = 6) {
   const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+
+  return Number.isFinite(parsed) && parsed > 0
+    ? parsed
+    : fallback;
+}
+
+function adminRedirect(type, message, hash = 'clients') {
+  return (
+    `/admin?${type}=` +
+    encodeURIComponent(message) +
+    `#${hash}`
+  );
 }
 
 router.use(requireAdmin);
 
-router.get('/', (req, res) => {
-  const clients = db.prepare(`
-    SELECT
-      id,
-      username,
-      email,
-      display_name,
-      phone,
-      business_name,
-      office_number,
-      floor,
-      rental_start_date,
-      rental_end_date,
-      monthly_meeting_hours,
-      is_active,
-      must_change_password,
-      created_at
-    FROM users
-    WHERE role = 'tenant'
-    ORDER BY is_active DESC, display_name COLLATE NOCASE ASC
-  `).all();
+router.get('/', async (req, res, next) => {
+  try {
+    const [
+      clientsResult,
+      messagesResult,
+      testimonialsResult,
+      meetingBookingsResult,
+      activeClientsResult,
+      upcomingMeetingsResult,
+      unreadMessagesResult,
+      pendingTestimonialsResult,
+    ] = await Promise.all([
+      db.query(`
+        SELECT
+          id,
+          username,
+          email,
+          display_name,
+          phone,
+          business_name,
+          office_number,
+          floor,
+          rental_start_date,
+          rental_end_date,
+          monthly_meeting_hours,
+          is_active,
+          must_change_password,
+          created_at
+        FROM users
+        WHERE role = 'tenant'
+        ORDER BY
+          is_active DESC,
+          LOWER(display_name) ASC
+      `),
 
-  const messages = db
-    .prepare('SELECT * FROM messages ORDER BY created_at DESC LIMIT 100')
-    .all();
+      db.query(`
+        SELECT *
+        FROM messages
+        ORDER BY created_at DESC
+        LIMIT 100
+      `),
 
-  const testimonials = db
-    .prepare('SELECT * FROM testimonials ORDER BY created_at DESC')
-    .all();
+      db.query(`
+        SELECT *
+        FROM testimonials
+        ORDER BY created_at DESC
+      `),
 
-  const meetingBookings = db.prepare(`
-    SELECT
-      mb.*,
-      u.display_name,
-      u.business_name,
-      u.office_number,
-      u.floor
-    FROM meeting_bookings mb
-    JOIN users u ON u.id = mb.user_id
-    ORDER BY mb.booking_date DESC, mb.start_time DESC
-    LIMIT 200
-  `).all();
+      db.query(`
+        SELECT
+          mb.*,
+          u.display_name,
+          u.business_name,
+          u.office_number,
+          u.floor
+        FROM meeting_bookings mb
+        JOIN users u
+          ON u.id = mb.user_id
+        ORDER BY
+          mb.booking_date DESC,
+          mb.start_time DESC
+        LIMIT 200
+      `),
 
-  const stats = {
-    activeClients: db
-      .prepare(`SELECT COUNT(*) AS c FROM users WHERE role = 'tenant' AND is_active = 1`)
-      .get().c,
-    upcomingMeetings: db
-      .prepare(`
-        SELECT COUNT(*) AS c
+      db.query(`
+        SELECT COUNT(*)::INTEGER AS count
+        FROM users
+        WHERE
+          role = 'tenant'
+          AND is_active = TRUE
+      `),
+
+      db.query(`
+        SELECT COUNT(*)::INTEGER AS count
         FROM meeting_bookings
-        WHERE datetime(booking_date || ' ' || start_time) >= datetime('now', 'localtime')
-      `)
-      .get().c,
-    unreadMessages: db
-      .prepare('SELECT COUNT(*) AS c FROM messages WHERE is_read = 0')
-      .get().c,
-    pendingTestimonials: db
-      .prepare(`SELECT COUNT(*) AS c FROM testimonials WHERE status = 'ממתין'`)
-      .get().c,
-  };
+        WHERE
+          booking_date > CURRENT_DATE
+          OR (
+            booking_date = CURRENT_DATE
+            AND start_time >= CURRENT_TIME
+          )
+      `),
 
-  return res.render('admin/dashboard', {
-    title: 'פאנל ניהול — AlonSpace',
-    layout: false,
-    adminName: req.session.userName,
-    clients,
-    messages,
-    testimonials,
-    meetingBookings,
-    stats,
-    error: req.query.error || null,
-    success: req.query.success || null,
-  });
+      db.query(`
+        SELECT COUNT(*)::INTEGER AS count
+        FROM messages
+        WHERE is_read = FALSE
+      `),
+
+      db.query(`
+        SELECT COUNT(*)::INTEGER AS count
+        FROM testimonials
+        WHERE status = 'ממתין'
+      `),
+    ]);
+
+    const stats = {
+      activeClients: activeClientsResult.rows[0].count,
+      upcomingMeetings: upcomingMeetingsResult.rows[0].count,
+      unreadMessages: unreadMessagesResult.rows[0].count,
+      pendingTestimonials:
+        pendingTestimonialsResult.rows[0].count,
+    };
+
+    return res.render('admin/dashboard', {
+      title: 'פאנל ניהול — AlonSpace',
+      layout: false,
+      adminName: req.session.userName,
+      clients: clientsResult.rows,
+      messages: messagesResult.rows,
+      testimonials: testimonialsResult.rows,
+      meetingBookings: meetingBookingsResult.rows,
+      stats,
+      error: req.query.error || null,
+      success: req.query.success || null,
+    });
+  } catch (error) {
+    return next(error);
+  }
 });
 
-router.post('/clients/create', (req, res) => {
-  const {
-    username,
-    password,
-    display_name,
-    email,
-    phone,
-    business_name,
-    office_number,
-    floor,
-    rental_start_date,
-    rental_end_date,
-    monthly_meeting_hours,
-  } = req.body;
-
-  const cleanUsername = String(username || '').trim();
-  const cleanPassword = String(password || '');
-  const cleanDisplayName = String(display_name || '').trim();
-
-  if (!cleanUsername || cleanPassword.length < 8 || !cleanDisplayName) {
-    return res.redirect(
-      '/admin?error=' +
-        encodeURIComponent('יש למלא שם משתמש, שם תצוגה וסיסמה של לפחות 8 תווים') +
-        '#clients'
-    );
-  }
-
-  const duplicate = db
-    .prepare('SELECT id FROM users WHERE username = ? OR (email IS NOT NULL AND email = ?)')
-    .get(cleanUsername, normalizeOptional(email));
-
-  if (duplicate) {
-    return res.redirect(
-      '/admin?error=' +
-        encodeURIComponent('שם המשתמש או האימייל כבר קיימים במערכת') +
-        '#clients'
-    );
-  }
-
-  const passwordHash = bcrypt.hashSync(cleanPassword, 12);
-
-  db.prepare(`
-    INSERT INTO users (
+router.post('/clients/create', async (req, res, next) => {
+  try {
+    const {
       username,
-      email,
-      password_hash,
+      password,
       display_name,
-      role,
+      email,
       phone,
       business_name,
       office_number,
@@ -155,163 +170,447 @@ router.post('/clients/create', (req, res) => {
       rental_start_date,
       rental_end_date,
       monthly_meeting_hours,
-      is_active,
-      must_change_password
-    )
-    VALUES (?, ?, ?, ?, 'tenant', ?, ?, ?, ?, ?, ?, ?, 1, 1)
-  `).run(
-    cleanUsername,
-    normalizeOptional(email),
-    passwordHash,
-    cleanDisplayName,
-    normalizeOptional(phone),
-    normalizeOptional(business_name),
-    normalizeOptional(office_number),
-    normalizeOptional(floor),
-    normalizeOptional(rental_start_date),
-    normalizeOptional(rental_end_date),
-    parsePositiveNumber(monthly_meeting_hours, 6)
-  );
+    } = req.body;
 
-  return res.redirect(
-    '/admin?success=' + encodeURIComponent('חשבון הלקוח נוצר בהצלחה') + '#clients'
-  );
-});
+    const cleanUsername = String(username || '').trim();
+    const cleanPassword = String(password || '');
+    const cleanDisplayName = String(
+      display_name || ''
+    ).trim();
 
-router.post('/clients/:id/update', (req, res) => {
-  const {
-    display_name,
-    email,
-    phone,
-    business_name,
-    office_number,
-    floor,
-    rental_start_date,
-    rental_end_date,
-    monthly_meeting_hours,
-    is_active,
-  } = req.body;
+    if (
+      !cleanUsername ||
+      cleanPassword.length < 8 ||
+      !cleanDisplayName
+    ) {
+      return res.redirect(
+        adminRedirect(
+          'error',
+          'יש למלא שם משתמש, שם תצוגה וסיסמה של לפחות 8 תווים'
+        )
+      );
+    }
 
-  const client = db
-    .prepare(`SELECT id FROM users WHERE id = ? AND role = 'tenant'`)
-    .get(req.params.id);
+    const cleanEmail = normalizeOptional(email);
 
-  if (!client) {
-    return res.redirect('/admin?error=' + encodeURIComponent('הלקוח לא נמצא') + '#clients');
-  }
-
-  db.prepare(`
-    UPDATE users
-    SET
-      display_name = ?,
-      email = ?,
-      phone = ?,
-      business_name = ?,
-      office_number = ?,
-      floor = ?,
-      rental_start_date = ?,
-      rental_end_date = ?,
-      monthly_meeting_hours = ?,
-      is_active = ?,
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = ? AND role = 'tenant'
-  `).run(
-    String(display_name || '').trim(),
-    normalizeOptional(email),
-    normalizeOptional(phone),
-    normalizeOptional(business_name),
-    normalizeOptional(office_number),
-    normalizeOptional(floor),
-    normalizeOptional(rental_start_date),
-    normalizeOptional(rental_end_date),
-    parsePositiveNumber(monthly_meeting_hours, 6),
-    is_active ? 1 : 0,
-    req.params.id
-  );
-
-  return res.redirect(
-    '/admin?success=' + encodeURIComponent('פרטי הלקוח עודכנו') + '#clients'
-  );
-});
-
-router.post('/clients/:id/reset-password', (req, res) => {
-  const newPassword = String(req.body.new_password || '');
-
-  if (newPassword.length < 8) {
-    return res.redirect(
-      '/admin?error=' +
-        encodeURIComponent('הסיסמה החדשה חייבת להכיל לפחות 8 תווים') +
-        '#clients'
+    const duplicateResult = await db.query(
+      `
+        SELECT id
+        FROM users
+        WHERE
+          username = $1
+          OR (
+            $2::TEXT IS NOT NULL
+            AND email = $2
+          )
+        LIMIT 1
+      `,
+      [cleanUsername, cleanEmail]
     );
+
+    if (duplicateResult.rows.length > 0) {
+      return res.redirect(
+        adminRedirect(
+          'error',
+          'שם המשתמש או האימייל כבר קיימים במערכת'
+        )
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(
+      cleanPassword,
+      12
+    );
+
+    await db.query(
+      `
+        INSERT INTO users (
+          username,
+          email,
+          password_hash,
+          display_name,
+          role,
+          phone,
+          business_name,
+          office_number,
+          floor,
+          rental_start_date,
+          rental_end_date,
+          monthly_meeting_hours,
+          is_active,
+          must_change_password
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          'tenant',
+          $5,
+          $6,
+          $7,
+          $8,
+          $9,
+          $10,
+          $11,
+          TRUE,
+          TRUE
+        )
+      `,
+      [
+        cleanUsername,
+        cleanEmail,
+        passwordHash,
+        cleanDisplayName,
+        normalizeOptional(phone),
+        normalizeOptional(business_name),
+        normalizeOptional(office_number),
+        normalizeOptional(floor),
+        normalizeOptional(rental_start_date),
+        normalizeOptional(rental_end_date),
+        parsePositiveNumber(
+          monthly_meeting_hours,
+          6
+        ),
+      ]
+    );
+
+    return res.redirect(
+      adminRedirect(
+        'success',
+        'חשבון הלקוח נוצר בהצלחה'
+      )
+    );
+  } catch (error) {
+    if (error.code === '23505') {
+      return res.redirect(
+        adminRedirect(
+          'error',
+          'שם המשתמש או האימייל כבר קיימים במערכת'
+        )
+      );
+    }
+
+    return next(error);
   }
+});
 
-  const passwordHash = bcrypt.hashSync(newPassword, 12);
+router.post(
+  '/clients/:id/update',
+  async (req, res, next) => {
+    try {
+      const {
+        display_name,
+        email,
+        phone,
+        business_name,
+        office_number,
+        floor,
+        rental_start_date,
+        rental_end_date,
+        monthly_meeting_hours,
+        is_active,
+      } = req.body;
 
-  const result = db.prepare(`
-    UPDATE users
-    SET
-      password_hash = ?,
-      must_change_password = 1,
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = ? AND role = 'tenant'
-  `).run(passwordHash, req.params.id);
+      const cleanDisplayName = String(
+        display_name || ''
+      ).trim();
 
-  if (!result.changes) {
-    return res.redirect('/admin?error=' + encodeURIComponent('הלקוח לא נמצא') + '#clients');
+      if (!cleanDisplayName) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'שם התצוגה לא יכול להיות ריק'
+          )
+        );
+      }
+
+      const result = await db.query(
+        `
+          UPDATE users
+          SET
+            display_name = $1,
+            email = $2,
+            phone = $3,
+            business_name = $4,
+            office_number = $5,
+            floor = $6,
+            rental_start_date = $7,
+            rental_end_date = $8,
+            monthly_meeting_hours = $9,
+            is_active = $10,
+            updated_at = NOW()
+          WHERE
+            id = $11
+            AND role = 'tenant'
+          RETURNING id
+        `,
+        [
+          cleanDisplayName,
+          normalizeOptional(email),
+          normalizeOptional(phone),
+          normalizeOptional(business_name),
+          normalizeOptional(office_number),
+          normalizeOptional(floor),
+          normalizeOptional(rental_start_date),
+          normalizeOptional(rental_end_date),
+          parsePositiveNumber(
+            monthly_meeting_hours,
+            6
+          ),
+          Boolean(is_active),
+          req.params.id,
+        ]
+      );
+
+      if (result.rows.length === 0) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הלקוח לא נמצא'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'פרטי הלקוח עודכנו'
+        )
+      );
+    } catch (error) {
+      if (error.code === '23505') {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'האימייל כבר שייך למשתמש אחר'
+          )
+        );
+      }
+
+      return next(error);
+    }
   }
+);
 
-  return res.redirect(
-    '/admin?success=' + encodeURIComponent('הסיסמה אופסה בהצלחה') + '#clients'
-  );
-});
+router.post(
+  '/clients/:id/reset-password',
+  async (req, res, next) => {
+    try {
+      const newPassword = String(
+        req.body.new_password || ''
+      );
 
-router.post('/clients/:id/delete', (req, res) => {
-  const result = db.prepare(`
-    UPDATE users
-    SET is_active = 0, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ? AND role = 'tenant'
-  `).run(req.params.id);
+      if (newPassword.length < 8) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הסיסמה החדשה חייבת להכיל לפחות 8 תווים'
+          )
+        );
+      }
 
-  if (!result.changes) {
-    return res.redirect('/admin?error=' + encodeURIComponent('הלקוח לא נמצא') + '#clients');
+      const passwordHash = await bcrypt.hash(
+        newPassword,
+        12
+      );
+
+      const result = await db.query(
+        `
+          UPDATE users
+          SET
+            password_hash = $1,
+            must_change_password = TRUE,
+            updated_at = NOW()
+          WHERE
+            id = $2
+            AND role = 'tenant'
+          RETURNING id
+        `,
+        [passwordHash, req.params.id]
+      );
+
+      if (result.rows.length === 0) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הלקוח לא נמצא'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'הסיסמה אופסה בהצלחה'
+        )
+      );
+    } catch (error) {
+      return next(error);
+    }
   }
+);
 
-  return res.redirect(
-    '/admin?success=' + encodeURIComponent('החשבון הושבת') + '#clients'
-  );
-});
+router.post(
+  '/clients/:id/delete',
+  async (req, res, next) => {
+    try {
+      const result = await db.query(
+        `
+          UPDATE users
+          SET
+            is_active = FALSE,
+            updated_at = NOW()
+          WHERE
+            id = $1
+            AND role = 'tenant'
+          RETURNING id
+        `,
+        [req.params.id]
+      );
 
-router.post('/meeting-bookings/:id/delete', (req, res) => {
-  db.prepare('DELETE FROM meeting_bookings WHERE id = ?').run(req.params.id);
+      if (result.rows.length === 0) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הלקוח לא נמצא'
+          )
+        );
+      }
 
-  return res.redirect(
-    '/admin?success=' + encodeURIComponent('השריון נמחק') + '#meeting-room'
-  );
-});
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'החשבון הושבת'
+        )
+      );
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
-router.post('/messages/:id/read', (req, res) => {
-  db.prepare('UPDATE messages SET is_read = 1 WHERE id = ?').run(req.params.id);
-  return res.redirect('/admin#messages');
-});
+router.post(
+  '/meeting-bookings/:id/delete',
+  async (req, res, next) => {
+    try {
+      await db.query(
+        `
+          DELETE FROM meeting_bookings
+          WHERE id = $1
+        `,
+        [req.params.id]
+      );
 
-router.post('/messages/:id/delete', (req, res) => {
-  db.prepare('DELETE FROM messages WHERE id = ?').run(req.params.id);
-  return res.redirect('/admin#messages');
-});
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'השריון נמחק',
+          'meeting-room'
+        )
+      );
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
-router.post('/testimonials/:id/approve', (req, res) => {
-  db.prepare(`UPDATE testimonials SET status = 'מאושר' WHERE id = ?`).run(req.params.id);
-  return res.redirect('/admin#testimonials');
-});
+router.post(
+  '/messages/:id/read',
+  async (req, res, next) => {
+    try {
+      await db.query(
+        `
+          UPDATE messages
+          SET is_read = TRUE
+          WHERE id = $1
+        `,
+        [req.params.id]
+      );
 
-router.post('/testimonials/:id/reject', (req, res) => {
-  db.prepare(`UPDATE testimonials SET status = 'נדחה' WHERE id = ?`).run(req.params.id);
-  return res.redirect('/admin#testimonials');
-});
+      return res.redirect('/admin#messages');
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
-router.post('/testimonials/:id/delete', (req, res) => {
-  db.prepare('DELETE FROM testimonials WHERE id = ?').run(req.params.id);
-  return res.redirect('/admin#testimonials');
-});
+router.post(
+  '/messages/:id/delete',
+  async (req, res, next) => {
+    try {
+      await db.query(
+        `
+          DELETE FROM messages
+          WHERE id = $1
+        `,
+        [req.params.id]
+      );
+
+      return res.redirect('/admin#messages');
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+router.post(
+  '/testimonials/:id/approve',
+  async (req, res, next) => {
+    try {
+      await db.query(
+        `
+          UPDATE testimonials
+          SET status = 'מאושר'
+          WHERE id = $1
+        `,
+        [req.params.id]
+      );
+
+      return res.redirect('/admin#testimonials');
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+router.post(
+  '/testimonials/:id/reject',
+  async (req, res, next) => {
+    try {
+      await db.query(
+        `
+          UPDATE testimonials
+          SET status = 'נדחה'
+          WHERE id = $1
+        `,
+        [req.params.id]
+      );
+
+      return res.redirect('/admin#testimonials');
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+router.post(
+  '/testimonials/:id/delete',
+  async (req, res, next) => {
+    try {
+      await db.query(
+        `
+          DELETE FROM testimonials
+          WHERE id = $1
+        `,
+        [req.params.id]
+      );
+
+      return res.redirect('/admin#testimonials');
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
 module.exports = router;
