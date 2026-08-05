@@ -188,7 +188,9 @@ router.post('/clients/create', async (req, res, next) => {
     } = req.body;
 
     const cleanUsername = String(username || '').trim();
-const cleanPassword = crypto.randomBytes(8).toString('base64url');    const cleanDisplayName = String(
+const cleanPassword =
+  "Alon-" + Math.floor(10000 + Math.random() * 900000);
+      const cleanDisplayName = String(
       display_name || ''
     ).trim();
 
@@ -232,7 +234,7 @@ const cleanPassword = crypto.randomBytes(8).toString('base64url');    const clea
 
     const passwordHash = await bcrypt.hash(
       cleanPassword,
-      6
+      12
     );
 
 const createResult = await db.query(
