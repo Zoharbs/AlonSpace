@@ -81,11 +81,7 @@ CREATE INDEX IF NOT EXISTS idx_meeting_bookings_user_month
 ON meeting_bookings (user_id, booking_date);
 
 -- טבלאות ישנות נשארות זמנית כדי לא למחוק מידע קיים.
-CREATE TABLE IF NOT EXISTS admin_users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL
-);
+
 
 CREATE TABLE IF NOT EXISTS bookings (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -160,38 +156,15 @@ CREATE TABLE IF NOT EXISTS office_rentals (
 
 function seedAdmin() {
   const existingAdmin = db
-    .prepare(`SELECT id FROM users WHERE role = 'admin' LIMIT 1`)
+    .prepare("SELECT id FROM users WHERE role = 'admin' LIMIT 1")
     .get();
 
-  if (existingAdmin) return;
-
-  const legacyAdmin = db
-    .prepare('SELECT username, password_hash FROM admin_users ORDER BY id LIMIT 1')
-    .get();
-
-  if (legacyAdmin) {
-    db.prepare(`
-      INSERT INTO users (
-        username,
-        password_hash,
-        display_name,
-        role,
-        is_active,
-        must_change_password
-      )
-      VALUES (?, ?, ?, 'admin', 1, 0)
-    `).run(
-      legacyAdmin.username,
-      legacyAdmin.password_hash,
-      legacyAdmin.username
-    );
-
-    console.log('[seed] משתמש האדמין הועבר לטבלת users.');
+  if (existingAdmin) {
     return;
   }
 
-  const username = process.env.ADMIN_USERNAME || 'admin';
-  const password = process.env.ADMIN_PASSWORD || 'alonspace2026';
+  const username = process.env.ADMIN_USERNAME || "admin";
+  const password = process.env.ADMIN_PASSWORD || "ChangeMe123!";
   const passwordHash = bcrypt.hashSync(password, 12);
 
   db.prepare(`
@@ -203,12 +176,17 @@ function seedAdmin() {
       is_active,
       must_change_password
     )
-    VALUES (?, ?, ?, 'admin', 1, 1)
-  `).run(username, passwordHash, username);
-
-  console.log(
-    `[seed] נוצר משתמש אדמין זמני: ${username}. יש להחליף את הסיסמה מיד.`
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    username,
+    passwordHash,
+    "Administrator",
+    "admin",
+    1,
+    1
   );
+
+  console.log(`[seed] Admin user created: ${username}`);
 }
 
 function seedGallery() {
