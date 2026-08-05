@@ -410,27 +410,8 @@ router.post(
           )
         );
       }
-const client = result.rows[0];
 
-req.session.newClientInvite = {
-  userId: client.id,
-  displayName: client.display_name,
-  username: client.username,
-  temporaryPassword: newPassword,
-  phone: client.phone || null,
-};
-return req.session.save((saveError) => {
-  if (saveError) {
-    return next(saveError);
-  }
 
-  return res.redirect(
-    adminRedirect(
-      'success',
-      'הסיסמה אופסה. הודעת ההתחברות מוכנה להעתקה.'
-    )
-  );
-});
     } catch (error) {
       if (error.code === '23505') {
         return res.redirect(
@@ -478,31 +459,52 @@ router.post(
           WHERE
             id = $2
             AND role = 'tenant'
-          RETURNING id
+          RETURNING
+  id,
+  username,
+  display_name,
+  phone
         `,
         [passwordHash, req.params.id]
       );
 
-      if (result.rows.length === 0) {
-        return res.redirect(
-          adminRedirect(
-            'error',
-            'הלקוח לא נמצא'
-          )
-        );
-      }
+   if (result.rows.length === 0) {
+  return res.redirect(
+    adminRedirect(
+      'error',
+      'הלקוח לא נמצא'
+    )
+  );
+}
 
-      return res.redirect(
-        adminRedirect(
-          'success',
-          'הסיסמה אופסה בהצלחה'
-        )
-      );
+const client = result.rows[0];
+
+req.session.newClientInvite = {
+  userId: client.id,
+  displayName: client.display_name,
+  username: client.username,
+  temporaryPassword: newPassword,
+  phone: client.phone || null,
+};
+
+return req.session.save((saveError) => {
+  if (saveError) {
+    return next(saveError);
+  }
+
+  return res.redirect(
+    adminRedirect(
+      'success',
+      'הסיסמה אופסה. הודעת ההתחברות מוכנה להעתקה.'
+    )
+  );
+});  
     } catch (error) {
       return next(error);
     }
   }
 );
+
 
 router.post(
   '/clients/:id/delete',
