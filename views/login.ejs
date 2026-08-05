@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background:var(--ink); min-height:100vh; display:flex; align-items:center; justify-content:center;">
+  <div class="card" style="width:100%; max-width:380px; margin:20px;">
+<div class="text-center" style="margin-bottom:20px;">
+  <img
+    src="/images/Asset 11.svg"
+    alt="AlonSpace"
+    style="width:60px; height:60px; margin:0 auto 12px; display:block;"
+  >
+
+  <h2 class="mt-0">התחברות</h2>
+  <p class="small">AlonSpace — אזור אישי</p>
+</div>
+
+
+    <% if (error) { %>
+      <div class="form-msg show err"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/login" class="form-grid">
+      <div class="field">
+        <label for="username">שם משתמש</label>
+        <input type="text" id="username" name="username" required autofocus>
+      </div>
+      <div class="field">
+        <label for="password">סיסמה</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">כניסה</button>
+    </form>
+  </div>
+</body>
+</html>

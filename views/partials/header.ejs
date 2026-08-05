@@ -1,0 +1,194 @@
+<%
+  const loggedInUser =
+    typeof currentUser !== 'undefined' && currentUser
+      ? currentUser
+      : null;
+
+  const currentPath =
+    typeof path !== 'undefined'
+      ? path
+      : '';
+
+  const isTenant = loggedInUser && loggedInUser.role === 'tenant';
+  const isAdmin = loggedInUser && loggedInUser.role === 'admin';
+%>
+
+<style>
+  .header-account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-account-name {
+    color: var(--cream);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .header-logout-form {
+    margin: 0;
+  }
+
+  .header-logout {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(247, 242, 230, .45);
+  }
+
+  .header-logout:hover {
+    background: var(--cream);
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .header-account-name {
+      display: none;
+    }
+
+    .header-account {
+      margin-inline-start: auto;
+    }
+
+    .header-logout {
+      padding: 9px 12px;
+      font-size: .82rem;
+    }
+  }
+</style>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a
+      href="<%= isAdmin ? '/admin' : (isTenant ? '/dashboard' : '/') %>"
+      class="brand"
+    >
+      <img
+        src="/images/asset 11.svg"
+        alt="AlonSpace"
+        class="brand-logo"
+      >
+      <span class="brand-text">
+        <%= isTenant ? 'פורטל הדיירים' : 'AlonSpace' %>
+      </span>
+    </a>
+
+    <nav class="nav" id="mainNav">
+      <% if (isTenant) { %>
+        <a
+          href="/dashboard"
+          class="<%= currentPath === '/dashboard' ? 'active' : '' %>"
+        >
+          ראשי
+        </a>
+
+        <a href="/dashboard#meeting-room">
+          חדר ישיבות
+        </a>
+
+        <a
+          href="https://wa.me/<%= site.phoneHref %>?text=<%= encodeURIComponent('שלום, אני דייר/ת ב-AlonSpace ורוצה ליצור קשר עם ההנהלה.') %>"
+          target="_blank"
+          rel="noopener"
+        >
+          יצירת קשר
+        </a>
+      <% } else if (isAdmin) { %>
+        <a
+          href="/admin"
+          class="<%= currentPath.startsWith('/admin') ? 'active' : '' %>"
+        >
+          פאנל ניהול
+        </a>
+
+        <a href="/" target="_blank" rel="noopener">
+          צפייה באתר
+        </a>
+      <% } else { %>
+        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">
+          בית
+        </a>
+
+        <a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>">
+          אודות
+        </a>
+
+        <a
+          href="/amenities"
+          class="<%= currentPath === '/amenities' ? 'active' : '' %>"
+        >
+          המתחם
+        </a>
+
+        <a
+          href="/gallery"
+          class="<%= currentPath === '/gallery' ? 'active' : '' %>"
+        >
+          גלריה
+        </a>
+
+        <a href="/faq" class="<%= currentPath === '/faq' ? 'active' : '' %>">
+          שאלות
+        </a>
+
+        <a
+          href="/contact"
+          class="<%= currentPath === '/contact' ? 'active' : '' %>"
+        >
+          צור קשר
+        </a>
+      <% } %>
+    </nav>
+
+    <% if (loggedInUser) { %>
+      <div class="header-account">
+        <span class="header-account-name">
+          שלום, <%= loggedInUser.name %>
+        </span>
+
+        <form
+          method="POST"
+          action="/logout"
+          class="header-logout-form"
+        >
+          <button
+            type="submit"
+            class="btn header-logout"
+          >
+            התנתקות
+          </button>
+        </form>
+      </div>
+    <% } else { %>
+      <div class="header-cta">
+        <a
+          href="<%= tourWhatsappUrl %>"
+          target="_blank"
+          rel="noopener"
+          class="btn btn-gold btn-desktop-only"
+        >
+          קביעת סיור
+        </a>
+
+        <a
+          href="/login"
+          class="btn btn-outline-light btn-desktop-only"
+        >
+          התחברות
+        </a>
+      </div>
+    <% } %>
+
+    <button
+      class="nav-toggle"
+      id="navToggle"
+      aria-label="פתיחת תפריט"
+      aria-expanded="false"
+      type="button"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>

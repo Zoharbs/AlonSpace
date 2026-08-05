@@ -1,0 +1,81 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="breadcrumb"><a href="/">דף הבית</a> / שאלות נפוצות</div>
+    <span class="eyebrow">שאלות נפוצות</span>
+    <h1>תשובות קצרות לפני שקובעים סיור.</h1>
+    <p>חפשו לפי נושא או עברו על השאלות המרכזיות לגבי המשרדים, המתחם והסיור.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container" style="max-width:860px;">
+    <input
+      id="faqSearch"
+      class="faq-search"
+      type="search"
+      placeholder="חפשו שאלה... לדוגמה: סיור, אינטרנט, חוזה"
+      autocomplete="off"
+    />
+
+    <div class="faq-list" id="faqList">
+      <div class="faq-item" data-faq="סיור ביקור לראות מתחם">
+        <button class="faq-q"><span>האם אפשר להגיע לראות את המתחם?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">כן. אפשר לתאם סיור ללא התחייבות דרך האתר, בטלפון או בוואטסאפ.</div></div>
+      </div>
+
+      <div class="faq-item" data-faq="משרדים מרוהטים ריהוט שולחן כיסא">
+        <button class="faq-q"><span>האם המשרדים מרוהטים?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">כן. המשרדים מגיעים מוכנים לעבודה עם ריהוט בסיסי.</div></div>
+      </div>
+
+      <div class="faq-item" data-faq="חדר ישיבות פגישות לקוחות">
+        <button class="faq-q"><span>האם יש חדר ישיבות?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">כן. במתחם יש חדר ישיבות שמתאים לפגישות, מצגות ושיחות עבודה.</div></div>
+      </div>
+
+      <div class="faq-item" data-faq="חוזה התחייבות השכרה חודשית גמישות">
+        <button class="faq-q"><span>האם יש התחייבות ארוכת טווח?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">יש מספר אפשרויות השכרה. את הפרטים המדויקים נתאים לפי הצורך והזמינות.</div></div>
+      </div>
+
+      <div class="faq-item" data-faq="אינטרנט wifi רשת">
+        <button class="faq-q"><span>האם יש אינטרנט?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">כן. המתחם כולל חיבור אינטרנט לעבודה יומיומית.</div></div>
+      </div>
+
+      <div class="faq-item" data-faq="כתובת מיקום תל אביב מגדלי אלון יגאל אלון">
+        <button class="faq-q"><span>איפה אתם נמצאים?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">AlonSpace נמצאת במגדלי אלון, יגאל אלון 94, תל אביב.</div></div>
+      </div>
+
+      <div class="faq-item" data-faq="קביעת סיור טלפון וואטסאפ אתר">
+        <button class="faq-q"><span>איך קובעים סיור?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">אפשר לקבוע סיור דרך עמוד <a href="/booking" style="text-decoration:underline;">קביעת סיור</a>, בטלפון או בוואטסאפ.</div></div>
+      </div>
+
+      <div class="faq-item" data-faq="לעבור משרד שינוי גודל זמינות">
+        <button class="faq-q"><span>האם אפשר לעבור משרד בהמשך?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">תלוי בזמינות המשרדים באותו זמן. נשמח לבדוק יחד פתרון מתאים.</div></div>
+      </div>
+    </div>
+
+    <p id="faqEmpty" class="faq-empty">לא נמצאו שאלות מתאימות.</p>
+  </div>
+</section>
+
+<section class="section-dark text-center">
+  <div class="container">
+    <h2>לא מצאתם תשובה?</h2>
+    <p class="hero-sub" style="margin-inline:auto;">שלחו לנו הודעה ונחזור אליכם.</p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="/יצירת-קשר" class="btn btn-gold">יצירת קשר</a>
+      <a href="<%= site.whatsapp %>" target="_blank" rel="noopener" class="btn btn-outline-light">וואטסאפ</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>

@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+  id="alonspace-floor6-clean"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 980 760"
+  role="img"
+  aria-label="AlonSpace floor 6 editable hologram map"
+>
+  <defs>
+    <style>
+      .stage {
+        fill: #050914;
+      }
+
+      .office {
+        cursor: pointer;
+        transition: filter .18s ease, transform .18s ease;
+        transform-box: fill-box;
+        transform-origin: center;
+      }
+
+      .office:hover,
+      .office.selected {
+        filter:
+          drop-shadow(0 0 16px rgba(74, 225, 255, .95))
+          drop-shadow(0 0 34px rgba(74, 225, 255, .35));
+
+        transform: translateY(-6px) scale(1.015);
+      }
+
+      .top {
+        fill: rgba(37, 226, 255, .07);
+        stroke: rgba(128, 241, 255, .92);
+        stroke-width: 2.2;
+        stroke-linejoin: round;
+      }
+
+      .depth {
+        fill: rgba(21, 142, 180, .12);
+        stroke: rgba(70, 218, 255, .48);
+        stroke-width: 1.8;
+        stroke-linejoin: round;
+      }
+
+      .office:hover .top,
+      .office.selected .top {
+        fill: rgba(74, 225, 255, .18);
+        stroke: #dffcff;
+        stroke-width: 3;
+      }
+
+      .office:hover .depth,
+      .office.selected .depth {
+        fill: rgba(74, 225, 255, .14);
+        stroke: rgba(214, 252, 255, .75);
+      }
+
+      .num {
+        pointer-events: none;
+        font: 800 26px Arial, sans-serif;
+        fill: #dffcff;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        opacity: .94;
+        filter: drop-shadow(0 0 7px rgba(74, 225, 255, .85));
+      }
+
+      .facility {
+        fill: rgba(150, 245, 255, .05);
+        stroke: rgba(128, 241, 255, .55);
+        stroke-width: 2;
+        stroke-linejoin: round;
+      }
+
+      .facility-text {
+        pointer-events: none;
+        font: 800 18px Arial, sans-serif;
+        fill: #c8fbff;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        opacity: .88;
+      }
+
+      /* סטטוסים שמגיעים מהאתר */
+
+      .office.available .top {
+        fill: rgba(37, 226, 255, .07);
+        stroke: rgba(128, 241, 255, .95);
+      }
+
+      .office.reserved .top {
+        fill: rgba(255, 190, 70, .22);
+        stroke: #ffd15c;
+      }
+
+      .office.taken .top {
+        fill: rgba(255, 80, 80, .22);
+        stroke: #ff6b6b;
+        opacity: .76;
+      }
+
+      .office.disabled .top {
+        fill: rgba(120, 120, 120, .14);
+        stroke: #777;
+        opacity: .45;
+      }
+    </style>
+  </defs>
+
+  <!--
+    אם אתה לא רוצה שום רקע פנימי בתוך ה-SVG,
+    מחק גם את השורה הבאה.
+  -->
+
+  <rect class="stage" width="980" height="760"/>
+
+  <!-- =====================================================
+       גוש שמאלי
+       ===================================================== -->
+
+  <g id="office-3" data-office="3" class="office">
+    <path
+      class="depth"
+      d="M110 85 H225 V180 H110 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M110 85 H225 V180 H110 Z"
+    />
+
+    <text class="num" x="167.5" y="132.5">3</text>
+  </g>
+
+  <g id="office-2" data-office="2" class="office">
+    <path
+      class="depth"
+      d="M225 85 H340 V170 H225 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M225 85 H340 V170 H225 Z"
+    />
+
+    <text class="num" x="282.5" y="127.5">2</text>
+  </g>
+
+  <g id="office-4" data-office="4" class="office">
+    <path
+      class="depth"
+      d="M110 180 H225 V295 H110 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M110 180 H225 V295 H110 Z"
+    />
+
+    <text class="num" x="167.5" y="237.5">4</text>
+  </g>
+
+  <g id="office-5" data-office="5" class="office">
+    <path
+      class="depth"
+      d="M225 205 H335 V295 H225 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M225 205 H335 V295 H225 Z"
+    />
+
+    <text class="num" x="280" y="250">5</text>
+  </g>
+
+  <g id="office-8" data-office="8" class="office">
+    <path
+      class="depth"
+      d="M110 295 H225 V410 H110 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M110 295 H225 V410 H110 Z"
+    />
+
+    <text class="num" x="167.5" y="352.5">8</text>
+  </g>
+
+  <g id="office-7" data-office="7" class="office">
+    <path
+      class="depth"
+      d="M225 295 H335 V405 H225 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M225 295 H335 V405 H225 Z"
+    />
+
+    <text class="num" x="280" y="350">7</text>
+  </g>
+
+  <g id="office-9" data-office="9" class="office">
+    <path
+      class="depth"
+      d="M110 430 H225 V500 H110 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M110 430 H225 V500 H110 Z"
+    />
+
+    <text class="num" x="167.5" y="470">9</text>
+  </g>
+
+  <g id="office-10" data-office="10" class="office">
+    <path
+      class="depth"
+      d="M225 430 H335 V535 H225 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M225 430 H335 V535 H225 Z"
+    />
+
+    <text class="num" x="280" y="482.5">10</text>
+  </g>
+
+  <g id="office-12" data-office="12" class="office">
+    <path
+      class="depth"
+      d="M110 535 H335 V625 H110 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M110 535 H335 V625 H110 Z"
+    />
+
+    <text class="num" x="222.5" y="580">12</text>
+  </g>
+
+  <!-- =====================================================
+       מרכז עליון
+       ===================================================== -->
+
+  <g id="office-1" data-office="1" class="office">
+    <path
+      class="depth"
+      d="M410 120 H500 V245 H410 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M410 120 H500 V245 H410 Z"
+    />
+
+    <text class="num" x="455" y="182.5">1</text>
+  </g>
+
+  <g id="office-6" data-office="6" class="office">
+    <path
+      class="depth"
+      d="M410 245 H500 V365 H410 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M410 245 H500 V365 H410 Z"
+    />
+
+    <text class="num" x="455" y="305">6</text>
+  </g>
+
+  <!-- =====================================================
+       חדר ישיבות
+       אין data-office ולכן אינו נחשב משרד לחיץ
+       ===================================================== -->
+
+  <g id="meeting-room" class="facility-group">
+    <path
+      class="facility"
+      d="M500 185 H590 V300 H500 Z"
+    />
+
+    <text class="facility-text" x="545" y="230">
+      חדר
+    </text>
+
+    <text class="facility-text" x="545" y="256">
+      ישיבות
+    </text>
+  </g>
+
+  <!-- =====================================================
+       משרד 11
+       ===================================================== -->
+
+  <g id="office-11" data-office="11" class="office">
+    <path
+      class="depth"
+      d="M485 430 H575 V525 H485 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M485 430 H575 V525 H485 Z"
+    />
+
+    <text class="num" x="530" y="477.5">11</text>
+  </g>
+
+  <!-- =====================================================
+       מטבחון ושירותים
+       ===================================================== -->
+
+  <g id="kitchenette" class="facility-group">
+    <path
+      class="facility"
+      d="M590 430 H705 V455 H590 Z"
+    />
+
+    <text class="facility-text" x="647.5" y="442.5">
+      מטבחון
+    </text>
+  </g>
+
+  <g id="wc" class="facility-group">
+    <path
+      class="facility"
+      d="M610 455 H705 V525 H610 Z"
+    />
+
+    <text class="facility-text" x="657.5" y="490">
+      WC
+    </text>
+  </g>
+
+  <!-- =====================================================
+       שמאל תחתון
+       ===================================================== -->
+
+  <g id="office-13" data-office="13" class="office">
+    <path
+      class="depth"
+      d="M235 590 H355 V645 H235 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M235 590 H355 V645 H235 Z"
+    />
+
+    <text class="num" x="295" y="617.5">13</text>
+  </g>
+
+  <g id="office-14" data-office="14" class="office">
+    <path
+      class="depth"
+      d="M235 645 H355 V700 H235 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M235 645 H355 V700 H235 Z"
+    />
+
+    <text class="num" x="295" y="672.5">14</text>
+  </g>
+
+  <g id="office-15" data-office="15" class="office">
+    <path
+      class="depth"
+      d="M235 700 H355 V750 H235 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M235 700 H355 V750 H235 Z"
+    />
+
+    <text class="num" x="295" y="725">15</text>
+  </g>
+
+  <!-- =====================================================
+       מרכז תחתון
+       ===================================================== -->
+
+  <g id="office-18" data-office="18" class="office">
+    <path
+      class="depth"
+      d="M410 580 H515 V635 H410 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M410 580 H515 V635 H410 Z"
+    />
+
+    <text class="num" x="462.5" y="607.5">18</text>
+  </g>
+
+  <g id="office-17" data-office="17" class="office">
+    <path
+      class="depth"
+      d="M410 635 H515 V690 H410 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M410 635 H515 V690 H410 Z"
+    />
+
+    <text class="num" x="462.5" y="662.5">17</text>
+  </g>
+
+  <g id="office-16" data-office="16" class="office">
+    <path
+      class="depth"
+      d="M410 690 H515 V745 H410 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M410 690 H515 V745 H410 Z"
+    />
+
+    <text class="num" x="462.5" y="717.5">16</text>
+  </g>
+
+  <g id="office-22" data-office="22" class="office">
+    <path
+      class="depth"
+      d="M515 580 H650 V745 H515 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M515 580 H650 V745 H515 Z"
+    />
+
+    <text class="num" x="582.5" y="662.5">22</text>
+  </g>
+
+  <!-- =====================================================
+       גוש ימני
+       ===================================================== -->
+
+  <g id="office-19" data-office="19" class="office">
+    <path
+      class="depth"
+      d="M705 455 H850 V555 H705 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M705 455 H850 V555 H705 Z"
+    />
+
+    <text class="num" x="777.5" y="505">19</text>
+  </g>
+
+  <g id="office-20" data-office="20" class="office">
+    <path
+      class="depth"
+      d="M705 555 H850 V625 H705 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M705 555 H850 V625 H705 Z"
+    />
+
+    <text class="num" x="777.5" y="590">20</text>
+  </g>
+
+  <g id="office-21" data-office="21" class="office">
+    <path
+      class="depth"
+      d="M705 625 H850 V745 H705 Z"
+      transform="translate(12 -12)"
+    />
+
+    <path
+      class="top"
+      d="M705 625 H850 V745 H705 Z"
+    />
+
+    <text class="num" x="777.5" y="685">21</text>
+  </g>
+</svg>

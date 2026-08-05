@@ -1,0 +1,93 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <%- include('partials/rings') %>
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="breadcrumb"><a href="/">דף הבית</a> / יצירת קשר</div>
+    <span class="eyebrow">צרו קשר</span>
+    <h1>לכל שאלה או בקשה, אנו כאן לשירותכם</h1>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="grid grid-2" style="align-items:flex-start; gap:60px;">
+      <div>
+        <div id="formMsg" class="form-msg"></div>
+        <form id="contactForm" class="form-grid">
+          <div class="form-row-2">
+            <div class="field">
+              <label for="name">שם</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div class="field">
+              <label for="phone">טלפון</label>
+              <input type="tel" id="phone" name="phone" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="email">אימייל (לא חובה)</label>
+            <input type="email" id="email" name="email">
+          </div>
+          <div class="field">
+            <label for="message">הודעה</label>
+            <textarea id="message" name="message" required placeholder="איך נוכל לעזור?"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="submitBtn">שליחה</button>
+        </form>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3>כתובת</h3>
+          <p class="small"><%= site.address %></p>
+        </div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3>טלפון</h3>
+          <p class="small"><a href="tel:<%= site.phone %>"><%= site.phone %></a></p>
+        </div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3>אימייל</h3>
+          <p class="small"><a href="mailto:<%= site.email %>"><%= site.email %></a></p>
+        </div>
+        <div class="card">
+          <h3>וואטסאפ</h3>
+          <p class="small">התשובה המהירה ביותר — <a href="<%= site.whatsapp %>" target="_blank" rel="noopener" style="text-decoration:underline;">שלחו לנו הודעה</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const msg = document.getElementById('formMsg');
+  const data = Object.fromEntries(new FormData(this).entries());
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || 'שגיאה בשליחה');
+    msg.textContent = 'ההודעה נשלחה בהצלחה! נחזור אליכם בהקדם.';
+    msg.className = 'form-msg show ok';
+    this.reset();
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.className = 'form-msg show err';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'שליחה';
+  }
+});
+</script>

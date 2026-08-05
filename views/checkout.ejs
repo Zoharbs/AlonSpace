@@ -1,0 +1,179 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/offices?floor=<%= floor %>">משרדים</a> / הצעת מחיר</div>
+    <span class="eyebrow">סגירה אונליין</span>
+    <h1>הצעת מחיר למשרד <%= office %></h1>
+    <p>בחרו תאריכים, מלאו פרטים, וקבלו הצעת מחיר אוטומטית.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container" style="max-width:820px;">
+    <form class="booking-card" id="checkoutForm">
+      <input type="hidden" id="officeNumber" value="<%= office %>">
+      <input type="hidden" id="floor" value="<%= floor %>">
+
+      <div class="form-row-2">
+        <div class="field">
+          <label>מתאריך</label>
+          <input type="date" id="startDate" name="start_date" required>
+        </div>
+
+        <div class="field">
+          <label>עד תאריך</label>
+          <input type="date" id="endDate" name="end_date" required>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3>הצעת מחיר</h3>
+        <p id="quoteText" class="small">בחרו תאריכים כדי לראות חישוב.</p>
+        <h2 id="quoteTotal">—</h2>
+      </div>
+
+      <div class="field">
+        <label>שם מלא</label>
+        <input id="customerName" name="customer_name" required>
+      </div>
+
+      <div class="field">
+        <label>טלפון</label>
+        <input id="phone" name="phone" required>
+      </div>
+
+      <div class="field">
+        <label>אימייל</label>
+        <input id="email" type="email" name="email">
+      </div>
+
+      <div class="field">
+        <label>הערות</label>
+        <textarea id="note" name="note" rows="3"></textarea>
+      </div>
+
+      <div class="admin-card">
+        <h3>תנאים עיקריים</h3>
+        <p class="small">ההזמנה כפופה לאישור סופי של AlonSpace, זמינות המשרד בפועל, חתימה על הסכם ותשלום בפועל.</p>
+
+<label class="terms-check">
+  <input type="checkbox" required>
+
+  <span>
+    קראתי ואני מאשר/ת את
+    <a href="/terms" target="_blank" rel="noopener">
+      תנאי ההשכרה
+    </a>
+  </span>
+</label>
+
+      </div>
+
+      <button class="btn btn-gold btn-block" type="submit">יצירת בקשת סגירה</button>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<script>
+const office = <%- JSON.stringify(officeData || {}) %>;
+
+const startDate = document.getElementById('startDate');
+const endDate = document.getElementById('endDate');
+const quoteText = document.getElementById('quoteText');
+const quoteTotal = document.getElementById('quoteTotal');
+
+function money(value) {
+  return '₪' + Number(value || 0).toLocaleString('he-IL');
+}
+
+function daysBetween(start, end) {
+  const s = new Date(start + 'T00:00:00');
+  const e = new Date(end + 'T00:00:00');
+  return Math.max(1, Math.ceil((e - s) / 86400000) + 1);
+}
+function calculateQuote() {
+  if (!startDate.value || !endDate.value) return null;
+
+  const days = daysBetween(startDate.value, endDate.value);
+
+  const day = Number(office.price_day || 0);
+  const week = Number(office.price_week || 0);
+  const month = Number(office.price_month || 0);
+  const year = Number(office.price_year || 0);
+
+  let label = '';
+  let total = 0;
+
+  if (days >= 365 && year) {
+    const years = days / 365;
+    total = years * year;
+    label = `${years.toFixed(2)} שנים`;
+  } else if (days >= 30 && month) {
+    const months = days / 30;
+    total = months * month;
+    label = `${months.toFixed(2)} חודשים`;
+  } else if (days >= 7 && week) {
+    const weeks = days / 7;
+    total = weeks * week;
+    label = `${weeks.toFixed(2)} שבועות`;
+  } else {
+    total = days * day;
+    label = `${days} ימים`;
+  }
+
+  return {
+    days,
+    label,
+    total: Math.round(total)
+  };
+}
+
+function updateQuote() {
+  const quote = calculateQuote();
+
+  if (!quote || !quote.total) {
+    quoteText.textContent = 'אין עדיין מחיר מוגדר למסלול הזה.';
+    quoteTotal.textContent = 'לפנייה';
+    return;
+  }
+
+  quoteText.textContent = `משך: ${quote.label} (${quote.days} ימים)`;
+  quoteTotal.textContent = money(quote.total);
+}
+
+[startDate, endDate].forEach(el => el.addEventListener('change', updateQuote));
+
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const res = await fetch('/api/office-rental', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      office_number: document.getElementById('officeNumber').value,
+      floor: document.getElementById('floor').value,
+      customer_name: document.getElementById('customerName').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      start_date: startDate.value,
+      end_date: endDate.value,
+      note: document.getElementById('note').value
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || 'אירעה שגיאה');
+    return;
+  }
+
+  alert('בקשת הסגירה נוצרה בהצלחה. בשלב הבא נחבר תשלום.');
+  window.location.href = '/offices?floor=<%= floor %>';
+});
+</script>

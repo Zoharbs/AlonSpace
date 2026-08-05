@@ -1,0 +1,57 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <%- include('partials/rings') %>
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="breadcrumb"><a href="/">דף הבית</a> / גלריה</div>
+    <span class="eyebrow">גלריית ההשראה שלנו</span>
+    <h1>המתחם, בדיוק כמו שהוא</h1>
+    <p>הצצנו למשרדים, תיעדנו את חדרי הישיבות, אזור הלאונג', המטבחון והנוף — מקצועי, מודרני, פרטי.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="gallery-grid">
+      <% gallery.forEach(g => { %>
+        <figure data-full="<%= g.url %>">
+          <img src="<%= g.url %>" alt="<%= g.alt %>" loading="lazy">
+        </figure>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="סגירה">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<section class="section-dark text-center">
+  <div class="container">
+    <h2>מה שרואים בתמונה, מרגישים במציאות</h2>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="/booking" class="btn btn-gold">קביעת סיור</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<script>
+document.querySelectorAll('.gallery-grid figure').forEach(fig => {
+  fig.addEventListener('click', () => {
+    document.getElementById('lightboxImg').src = fig.dataset.full;
+    document.getElementById('lightboxImg').alt = fig.querySelector('img').alt;
+    document.getElementById('lightbox').classList.add('open');
+  });
+});
+document.getElementById('lightboxClose').addEventListener('click', () => {
+  document.getElementById('lightbox').classList.remove('open');
+});
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') e.currentTarget.classList.remove('open');
+});
+</script>

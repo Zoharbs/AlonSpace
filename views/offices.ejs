@@ -1,0 +1,243 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> / משרדים</div>
+    <span class="eyebrow">בחירת משרד</span>
+    <h1>בחרו משרד ישירות מהמפה.</h1>
+    <p>לחצו על משרד במפה, ראו סטטוס ומחירים, והמשיכו בדרך שנוחה לכם.</p>
+  </div>
+</section>
+
+<section class="offices-section">
+  <div class="container offices-layout">
+    <div class="floor-map-card">
+      <div class="floor-tabs">
+        <a href="/offices?floor=4" class="floor-tab <%= floor === 4 ? 'active' : '' %>">קומה 4</a>
+        <a href="/offices?floor=6" class="floor-tab <%= floor === 6 ? 'active' : '' %>">קומה 6</a>
+      </div>
+
+      <div class="map-wrap" id="mapWrap">
+        <object
+          id="floorMap"
+          type="image/svg+xml"
+          data="/images/<%= floor === 6 ? 'alonspace-floor6-hologram.svg' : 'alonspace-floor4-hologram-no-legend.svg' %>"
+          class="floor-svg"
+        ></object>
+      </div>
+    </div>
+
+    <aside class="office-panel" id="officePanel">
+      <span class="eyebrow">משרד נבחר</span>
+      <h2 id="panelTitle">בחרו משרד מהמפה</h2>
+      <p id="panelStatus">לחצו על אחד המשרדים במפה כדי להתחיל.</p>
+
+      <div class="price-box">
+        <div><span>לשעה</span><strong id="priceHour">—</strong></div>
+        <div><span>ליום</span><strong id="priceDay">—</strong></div>
+        <div><span>לשבוע</span><strong id="priceWeek">—</strong></div>
+        <div><span>לחודש</span><strong id="priceMonth">—</strong></div>
+        <div><span>לשנה</span><strong id="priceYear">—</strong></div>
+      </div>
+
+      <div class="tenant-box" id="tenantBox" style="display:none;">
+  <span class="eyebrow">מי נמצא כאן?</span>
+  <h3 id="tenantName">—</h3>
+  <p id="tenantText">המשרד תפוס כרגע.</p>
+</div>
+
+      <div class="field">
+        <label>הערות</label>
+        <textarea id="officeNote" rows="3" placeholder="יש בקשות מיוחדות?"></textarea>
+      </div>
+
+      <div class="office-actions">
+        <a id="whatsappBtn" class="btn btn-gold btn-block disabled" target="_blank" rel="noopener">
+          סגירה ב־WhatsApp
+        </a>
+
+        <a id="leadBtn" class="btn btn-outline-light btn-block disabled">
+          שליחת פנייה
+        </a>
+
+        <a id="paymentBtn" class="btn btn-outline-light btn-block disabled">
+          סגירה אונליין
+        </a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<script>
+  const offices = <%- JSON.stringify(offices || []) %>;
+  const officeMap = {};
+
+  offices.forEach((office) => {
+    officeMap[String(office.office_number)] = office;
+  });
+
+  const currentFloor = <%= Number(floor || 4) %>;
+
+  const floorMap = document.getElementById('floorMap');
+  const title = document.getElementById('panelTitle');
+  const statusEl = document.getElementById('panelStatus');
+
+  const priceHour = document.getElementById('priceHour');
+  const priceDay = document.getElementById('priceDay');
+  const priceWeek = document.getElementById('priceWeek');
+  const priceMonth = document.getElementById('priceMonth');
+  const priceYear = document.getElementById('priceYear');
+const priceBox = document.querySelector('.price-box');
+const tenantBox = document.getElementById('tenantBox');
+const tenantName = document.getElementById('tenantName');
+const tenantText = document.getElementById('tenantText');
+  const officeNote = document.getElementById('officeNote');
+
+  const whatsappBtn = document.getElementById('whatsappBtn');
+  const leadBtn = document.getElementById('leadBtn');
+  const paymentBtn = document.getElementById('paymentBtn');
+
+  let selectedOfficeNumber = null;
+  let selectedOfficeAvailable = false;
+
+  function money(value) {
+    if (value === null || value === undefined || value === '') return '—';
+    return '₪' + Number(value).toLocaleString('he-IL');
+  }
+
+  function setPrices(office) {
+    priceHour.textContent = money(office && office.price_hour);
+    priceDay.textContent = money(office && office.price_day);
+    priceWeek.textContent = money(office && office.price_week);
+    priceMonth.textContent = money(office && office.price_month);
+    priceYear.textContent = money(office && office.price_year);
+  }
+
+  function clearActionLinks() {
+    [whatsappBtn, leadBtn, paymentBtn].forEach((btn) => {
+      btn.classList.add('disabled');
+      btn.removeAttribute('href');
+    });
+  }
+
+  function getRequestText() {
+    const parts = [
+      `שלום, אני מעוניין במשרד ${selectedOfficeNumber} בקומה ${currentFloor}. אשמח לקבל פרטים נוספים.`
+    ];
+
+    const note = officeNote.value.trim();
+    if (note) parts.push(`הערות: ${note}`);
+
+    return parts.join(' ');
+  }
+
+  function updateActionLinks() {
+    if (!selectedOfficeNumber || !selectedOfficeAvailable) {
+      clearActionLinks();
+      return;
+    }
+
+    [whatsappBtn, leadBtn, paymentBtn].forEach((btn) => {
+      btn.classList.remove('disabled');
+    });
+
+    const params = new URLSearchParams({
+      office: selectedOfficeNumber,
+      floor: String(currentFloor),
+      note: officeNote.value || ''
+    });
+
+    whatsappBtn.href = `https://wa.me/<%= site.phoneHref %>?text=${encodeURIComponent(getRequestText())}`;
+    leadBtn.href = `/contact?${params.toString()}`;
+    paymentBtn.href = `/checkout?${params.toString()}`;
+  }
+
+  officeNote.addEventListener('input', updateActionLinks);
+
+  floorMap.addEventListener('load', () => {
+    const svgDoc = floorMap.contentDocument;
+    if (!svgDoc) return;
+
+    const svgOffices = svgDoc.querySelectorAll('[data-office]');
+
+    svgOffices.forEach((el) => {
+      const office = officeMap[el.dataset.office];
+
+      el.classList.remove('available', 'reserved', 'taken', 'disabled');
+
+      if (!office) {
+        el.classList.add('disabled');
+        return;
+      }
+
+      if (office.status === 'פנוי') el.classList.add('available');
+      else if (office.status === 'שמור') el.classList.add('reserved');
+      else if (office.status === 'תפוס') el.classList.add('taken');
+      else el.classList.add('disabled');
+    });
+
+    svgOffices.forEach((el) => {
+      el.addEventListener('click', () => {
+  const number = el.dataset.office;
+  const office = officeMap[number];
+
+  selectedOfficeNumber = number;
+  selectedOfficeAvailable =
+    office &&
+    office.status === 'פנוי' &&
+    Number(office.can_book_online) !== 0;
+
+  svgOffices.forEach((o) => o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  title.textContent = 'משרד ' + number;
+
+if (!office) {
+  statusEl.textContent = 'המשרד לא מוגדר במערכת';
+  priceBox.style.display = 'none';
+  tenantBox.style.display = 'none';
+
+} else if (selectedOfficeAvailable) {
+  statusEl.textContent = 'סטטוס: פנוי';
+  priceBox.style.display = 'grid';
+  tenantBox.style.display = 'none';
+  setPrices(office);
+
+} else {
+  priceBox.style.display = 'none';
+  tenantBox.style.display = 'block';
+
+  if (office.status === 'שמור') {
+    statusEl.textContent = 'סטטוס: שמור — המשרד בתהליך סגירה';
+
+    tenantName.textContent = 'המשרד שמור כרגע';
+    tenantText.textContent = 'אפשר להשאיר פנייה ונעדכן אם המשרד יתפנה.';
+  } else if (office.status === 'תפוס') {
+    statusEl.textContent = 'סטטוס: תפוס';
+
+    tenantName.textContent = office.tenant_name
+      ? office.tenant_name
+      : 'המשרד תפוס כרגע';
+
+    tenantText.textContent = office.tenant_end_date
+      ? 'תפוס עד: ' + office.tenant_end_date
+      : 'המשרד אינו זמין כרגע.';
+  } else {
+    statusEl.textContent = 'סטטוס: ' + office.status;
+    tenantName.textContent = 'המשרד אינו זמין';
+    tenantText.textContent = 'אפשר להשאיר פנייה ונעדכן אם יהיה שינוי.';
+  }
+}
+
+updateActionLinks();
+});
+    });
+  });
+
+  setPrices(null);
+  clearActionLinks();
+</script>

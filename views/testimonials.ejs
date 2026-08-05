@@ -1,0 +1,100 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <%- include('partials/rings') %>
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="breadcrumb"><a href="/">דף הבית</a> / המלצות</div>
+    <span class="eyebrow">מה חושבים עלינו</span>
+    <h1>לקוחות שכבר מצאו את השקט שלהם</h1>
+    <p>לא רק דיבורים — כך זה מרגיש להיות חלק מ-AlonSpace, במילים של מי שכבר שם.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="grid grid-3">
+      <% testimonials.forEach(t => { %>
+        <div class="testi-card">
+          <div class="stars"><%= '★'.repeat(t.rating) %><span style="color:#ddd3ba;"><%= '★'.repeat(5 - t.rating) %></span></div>
+          <p class="quote">"<%= t.content %>"</p>
+          <div class="who"><%= t.name %></div>
+          <% if (t.role) { %><div class="role"><%= t.role %></div><% } %>
+        </div>
+      <% }) %>
+      <% if (testimonials.length === 0) { %>
+        <p class="small">עדיין אין המלצות מאושרות — היו הראשונים לשתף!</p>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="container" style="max-width:640px;">
+    <div class="section-head center">
+      <span class="eyebrow">גם אתם חלק מהמשפחה?</span>
+      <h2>שתפו את החוויה שלכם</h2>
+      <p class="small">ההמלצה שלכם תוצג באתר לאחר אישור קצר של הצוות.</p>
+    </div>
+
+    <div id="formMsg" class="form-msg"></div>
+
+    <form id="testimonialForm" class="form-grid">
+      <div class="form-row-2">
+        <div class="field">
+          <label for="name">שם מלא</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="role">תפקיד / תחום (לא חובה)</label>
+          <input type="text" id="role" name="role" placeholder="למשל: מעצבת גרפית">
+        </div>
+      </div>
+      <div class="field">
+        <label for="rating">דירוג</label>
+        <select id="rating" name="rating">
+          <option value="5">★★★★★ מעולה</option>
+          <option value="4">★★★★ טוב מאוד</option>
+          <option value="3">★★★ טוב</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="content">ההמלצה שלכם</label>
+        <textarea id="content" name="content" required placeholder="ספרו לנו איך הייתה החוויה שלכם ב-AlonSpace..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="submitBtn">שליחת המלצה</button>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<script>
+document.getElementById('testimonialForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const msg = document.getElementById('formMsg');
+  const data = Object.fromEntries(new FormData(this).entries());
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+  try {
+    const res = await fetch('/api/testimonials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || 'שגיאה בשליחה');
+    msg.textContent = 'תודה רבה! ההמלצה שלכם נשלחה ותוצג לאחר אישור.';
+    msg.className = 'form-msg show ok';
+    this.reset();
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.className = 'form-msg show err';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'שליחת המלצה';
+  }
+});
+</script>

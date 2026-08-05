@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="alonspace-floor4-isometric" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 760" role="img" aria-label="AlonSpace isometric office map" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10131c"/><stop offset="100%" stop-color="#05070d"/></linearGradient>
+    <linearGradient id="floorTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fffaf0"/><stop offset="100%" stop-color="#e9deca"/></linearGradient>
+    <linearGradient id="availableTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#eff8dc"/><stop offset="100%" stop-color="#bdd89b"/></linearGradient>
+    <linearGradient id="reservedTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe6a3"/><stop offset="100%" stop-color="#d9a037"/></linearGradient>
+    <linearGradient id="takenTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d6d5cf"/><stop offset="100%" stop-color="#8e8b83"/></linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#000" flood-opacity=".42"/></filter>
+    <filter id="goldGlow" x="-35%" y="-35%" width="170%" height="170%"><feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#f2c14e" flood-opacity=".85"/><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#000" flood-opacity=".35"/></filter>
+    
+    <pattern id="scanPattern" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="transparent"/>
+      <rect y="0" width="8" height="1" fill="#7df4ff"/>
+    </pattern>
+
+    <style>
+      .stage {
+        fill:#050914;
+      }
+
+      .floor-base {
+        fill:rgba(24, 214, 255, .035);
+        stroke:rgba(114, 236, 255, .55);
+        stroke-width:2.5;
+        stroke-linejoin:round;
+        filter:drop-shadow(0 0 18px rgba(32,213,255,.24));
+      }
+
+      .office {
+        cursor:pointer;
+        transition:filter .18s ease, transform .18s ease, opacity .18s ease;
+        transform-box:fill-box;
+        transform-origin:center;
+      }
+
+      .office:hover,
+      .office.selected {
+        filter:drop-shadow(0 0 18px rgba(74,225,255,.95)) drop-shadow(0 0 42px rgba(74,225,255,.38));
+        transform:translateY(-8px) scale(1.02);
+      }
+
+      .iso-top {
+        fill:rgba(37, 226, 255, .07);
+        stroke:rgba(128, 241, 255, .9);
+        stroke-width:2.2;
+        stroke-linejoin:round;
+      }
+
+      .iso-side,
+      .iso-depth {
+        fill:rgba(21, 142, 180, .11);
+        stroke:rgba(70, 218, 255, .46);
+        stroke-width:1.8;
+        stroke-linejoin:round;
+      }
+
+      .office:hover .iso-top,
+      .office.selected .iso-top {
+        fill:rgba(74, 225, 255, .18);
+        stroke:#dffcff;
+        stroke-width:3;
+      }
+
+      .office:hover .iso-side,
+      .office:hover .iso-depth,
+      .office.selected .iso-side,
+      .office.selected .iso-depth {
+        fill:rgba(74, 225, 255, .13);
+        stroke:rgba(214,252,255,.75);
+      }
+
+      .room-num {
+        pointer-events:none;
+        font:800 24px Arial, sans-serif;
+        fill:#dffcff;
+        text-anchor:middle;
+        dominant-baseline:middle;
+        opacity:.92;
+        filter:drop-shadow(0 0 7px rgba(74,225,255,.85));
+      }
+
+      .service {
+        fill:rgba(150, 245, 255, .05);
+        stroke:rgba(128, 241, 255, .55);
+        stroke-width:2;
+        stroke-linejoin:round;
+        filter:drop-shadow(0 0 12px rgba(32,213,255,.18));
+      }
+
+      .service-text {
+        pointer-events:none;
+        font:800 18px Arial, sans-serif;
+        fill:#c8fbff;
+        text-anchor:middle;
+        dominant-baseline:middle;
+        opacity:.84;
+      }
+
+      .legend-text {
+        font:700 16px Arial, sans-serif;
+        fill:#c8fbff;
+      }
+
+      .scanline {
+        opacity:.16;
+        pointer-events:none;
+      }
+
+      .grid-line {
+        stroke:rgba(74,225,255,.09);
+        stroke-width:1;
+      }
+      .office.available .top{
+    fill:rgba(74,225,255,.08);
+}
+
+.office.reserved .top{
+    fill:rgba(255,180,40,.18);
+    stroke:#ffd24a;
+}
+
+.office.taken .top{
+    fill:rgba(255,70,70,.16);
+    stroke:#ff6666;
+    opacity:.75;
+}
+
+.office.disabled .top{
+    fill:rgba(120,120,120,.12);
+    stroke:#777;
+    opacity:.45;
+}
+
+.office.available .top,
+.office.available .iso-top {
+  stroke: rgba(128, 241, 255, .95) !important;
+  fill: rgba(37, 226, 255, .07) !important;
+}
+
+.office.reserved .top,
+.office.reserved .iso-top {
+  stroke: #ffd15c !important;
+  fill: rgba(255, 190, 70, .22) !important;
+}
+
+.office.taken .top,
+.office.taken .iso-top {
+  stroke: #ff6b6b !important;
+  fill: rgba(255, 80, 80, .22) !important;
+}
+
+.office.disabled .top,
+.office.disabled .iso-top {
+  stroke: #777 !important;
+  fill: rgba(120, 120, 120, .14) !important;
+  opacity: .45;
+}
+    </style>
+  </defs>
+
+  <rect class="stage" width="1050" height="760" rx="24"/>
+
+  <g class="holo-grid">
+    <path class="grid-line" d="M0 120 H1050 M0 240 H1050 M0 360 H1050 M0 480 H1050 M0 600 H1050"/>
+    <path class="grid-line" d="M150 0 V760 M300 0 V760 M450 0 V760 M600 0 V760 M750 0 V760 M900 0 V760"/>
+  </g>
+  <rect class="scanline" x="0" y="0" width="1050" height="760" fill="url(#scanPattern)"/>
+
+  <path class="floor-base" d="M330 34 H548 V58 H606 V34 H680 V88 H746 V160 H872 V690 H770 V720 H280 V690 H208 V560 H155 V472 H100 V34 Z"/>
+
+  
+  <g id="office-25" data-office="25" class="office iso-room available">
+    <polygon class="iso-side right" points="232,34 245,21 245,137 232,150"/>
+    <polygon class="iso-side front" points="100,150 232,150 245,137 113,137"/>
+    <rect class="iso-top" x="100" y="34" width="132" height="116" rx="7"/>
+    <text class="room-num" x="166.0" y="92.0">25</text>
+  </g>
+
+  <g id="office-23" data-office="23" class="office iso-room available">
+    <polygon class="iso-side right" points="232,150 245,137 245,233 232,246"/>
+    <polygon class="iso-side front" points="100,246 232,246 245,233 113,233"/>
+    <rect class="iso-top" x="100" y="150" width="132" height="96" rx="7"/>
+    <text class="room-num" x="166.0" y="198.0">23</text>
+  </g>
+
+  <g id="office-21" data-office="21" class="office iso-room available">
+    <polygon class="iso-side right" points="232,246 245,233 245,329 232,342"/>
+    <polygon class="iso-side front" points="100,342 232,342 245,329 113,329"/>
+    <rect class="iso-top" x="100" y="246" width="132" height="96" rx="7"/>
+    <text class="room-num" x="166.0" y="294.0">21</text>
+  </g>
+
+  <g id="office-20" data-office="20" class="office iso-room available">
+    <polygon class="iso-side right" points="232,342 245,329 245,425 232,438"/>
+    <polygon class="iso-side front" points="100,438 232,438 245,425 113,425"/>
+    <rect class="iso-top" x="100" y="342" width="132" height="96" rx="7"/>
+    <text class="room-num" x="166.0" y="390.0">20</text>
+  </g>
+
+  <g id="office-19" data-office="19" class="office iso-room available">
+    <path class="iso-depth" d="M100 438 H232 V498 L252 530 L225 560 H100 Z" transform="translate(13 -13)"/>
+    <path class="iso-top" d="M100 438 H232 V498 L252 530 L225 560 H100 Z"/>
+    <text class="room-num" x="166" y="500">19</text>
+  </g>
+
+  <g id="office-12" data-office="12" class="office iso-room available">
+    <path class="iso-depth" d="M155 560 H225 L208 610 H155 Z" transform="translate(13 -13)"/>
+    <path class="iso-top" d="M155 560 H225 L208 610 H155 Z"/>
+    <text class="room-num" x="187" y="587">12</text>
+  </g>
+
+  <g id="office-11" data-office="11" class="office iso-room available">
+    <polygon class="iso-side right" points="259,610 272,597 272,707 259,720"/>
+    <polygon class="iso-side front" points="155,720 259,720 272,707 168,707"/>
+    <rect class="iso-top" x="155" y="610" width="104" height="110" rx="7"/>
+    <text class="room-num" x="207.0" y="665.0">11</text>
+  </g>
+
+  <g id="office-10" data-office="10" class="office iso-room taken">
+    <polygon class="iso-side right" points="363,610 376,597 376,707 363,720"/>
+    <polygon class="iso-side front" points="259,720 363,720 376,707 272,707"/>
+    <rect class="iso-top" x="259" y="610" width="104" height="110" rx="7"/>
+    <text class="room-num" x="311.0" y="665.0">10</text>
+  </g>
+
+  <g id="office-9" data-office="9" class="office iso-room available">
+    <polygon class="iso-side right" points="467,610 480,597 480,707 467,720"/>
+    <polygon class="iso-side front" points="363,720 467,720 480,707 376,707"/>
+    <rect class="iso-top" x="363" y="610" width="104" height="110" rx="7"/>
+    <text class="room-num" x="415.0" y="665.0">9</text>
+  </g>
+
+  <g id="office-8" data-office="8" class="office iso-room available">
+    <polygon class="iso-side right" points="571,610 584,597 584,707 571,720"/>
+    <polygon class="iso-side front" points="467,720 571,720 584,707 480,707"/>
+    <rect class="iso-top" x="467" y="610" width="104" height="110" rx="7"/>
+    <text class="room-num" x="519.0" y="665.0">8</text>
+  </g>
+
+  <g id="office-7" data-office="7" class="office iso-room available">
+    <polygon class="iso-side right" points="675,610 688,597 688,707 675,720"/>
+    <polygon class="iso-side front" points="571,720 675,720 688,707 584,707"/>
+    <rect class="iso-top" x="571" y="610" width="104" height="110" rx="7"/>
+    <text class="room-num" x="623.0" y="665.0">7</text>
+  </g>
+
+  <g id="office-6" data-office="6" class="office iso-room available">
+    <polygon class="iso-side right" points="759,610 772,597 772,707 759,720"/>
+    <polygon class="iso-side front" points="675,720 759,720 772,707 688,707"/>
+    <rect class="iso-top" x="675" y="610" width="84" height="110" rx="7"/>
+    <text class="room-num" x="717.0" y="665.0">6</text>
+  </g>
+
+  <g id="office-29" data-office="29" class="office iso-room available">
+    <polygon class="iso-side right" points="450,78 463,65 463,187 450,200"/>
+    <polygon class="iso-side front" points="332,200 450,200 463,187 345,187"/>
+    <rect class="iso-top" x="332" y="78" width="118" height="122" rx="7"/>
+    <text class="room-num" x="391.0" y="139.0">29</text>
+  </g>
+
+  <g id="office-28" data-office="28" class="office iso-room available">
+    <polygon class="iso-side right" points="568,78 581,65 581,187 568,200"/>
+    <polygon class="iso-side front" points="450,200 568,200 581,187 463,187"/>
+    <rect class="iso-top" x="450" y="78" width="118" height="122" rx="7"/>
+    <text class="room-num" x="509.0" y="139.0">28</text>
+  </g>
+
+  <g id="office-27" data-office="27" class="office iso-room available">
+    <polygon class="iso-side right" points="450,200 463,187 463,309 450,322"/>
+    <polygon class="iso-side front" points="332,322 450,322 463,309 345,309"/>
+    <rect class="iso-top" x="332" y="200" width="118" height="122" rx="7"/>
+    <text class="room-num" x="391.0" y="261.0">27</text>
+  </g>
+
+  <g id="office-26" data-office="26" class="office iso-room available">
+    <polygon class="iso-side right" points="568,200 581,187 581,309 568,322"/>
+    <polygon class="iso-side front" points="450,322 568,322 581,309 463,309"/>
+    <rect class="iso-top" x="450" y="200" width="118" height="122" rx="7"/>
+    <text class="room-num" x="509.0" y="261.0">26</text>
+  </g>
+
+  <g id="office-18" data-office="18" class="office iso-room reserved">
+    <path class="iso-depth" d="M332 360 H452 V520 H252 V438 H332 Z" transform="translate(13 -13)"/>
+    <path class="iso-top" d="M332 360 H452 V520 H252 V438 H332 Z"/>
+    <text class="room-num" x="392" y="444">18</text>
+  </g>
+
+  <g id="office-22" data-office="22" class="office iso-room taken">
+    <polygon class="iso-side right" points="528,360 541,347 541,507 528,520"/>
+    <polygon class="iso-side front" points="452,520 528,520 541,507 465,507"/>
+    <rect class="iso-top" x="452" y="360" width="76" height="160" rx="7"/>
+    <text class="room-num" x="490.0" y="440.0">22</text>
+  </g>
+
+  <g id="office-16" data-office="16" class="office iso-room available">
+    <path class="iso-depth" d="M560 462 H648 V560 H604 V602 H560 Z" transform="translate(13 -13)"/>
+    <path class="iso-top" d="M560 462 H648 V560 H604 V602 H560 Z"/>
+    <text class="room-num" x="604" y="522">16</text>
+  </g>
+
+  <g id="office-13" data-office="13" class="office iso-room available">
+    <polygon class="iso-side right" points="380,520 393,507 393,597 380,610"/>
+    <polygon class="iso-side front" points="252,610 380,610 393,597 265,597"/>
+    <rect class="iso-top" x="252" y="520" width="128" height="90" rx="7"/>
+    <text class="room-num" x="316.0" y="565.0">13</text>
+  </g>
+
+  <g id="office-14" data-office="14" class="office iso-room available">
+    <polygon class="iso-side right" points="476,520 489,507 489,597 476,610"/>
+    <polygon class="iso-side front" points="380,610 476,610 489,597 393,597"/>
+    <rect class="iso-top" x="380" y="520" width="96" height="90" rx="7"/>
+    <text class="room-num" x="428.0" y="565.0">14</text>
+  </g>
+
+  <g id="office-15" data-office="15" class="office iso-room available">
+    <polygon class="iso-side right" points="584,520 597,507 597,597 584,610"/>
+    <polygon class="iso-side front" points="476,610 584,610 597,597 489,597"/>
+    <rect class="iso-top" x="476" y="520" width="108" height="90" rx="7"/>
+    <text class="room-num" x="530.0" y="565.0">15</text>
+  </g>
+
+  <g id="office-2" data-office="2" class="office iso-room reserved">
+    <polygon class="iso-side right" points="802,360 815,347 815,459 802,472"/>
+    <polygon class="iso-side front" points="690,472 802,472 815,459 703,459"/>
+    <rect class="iso-top" x="690" y="360" width="112" height="112" rx="7"/>
+    <text class="room-num" x="746.0" y="416.0">2</text>
+  </g>
+
+  <g id="office-1" data-office="1" class="office iso-room available">
+    <path class="iso-depth" d="M802 302 H872 V520 H802 Z" transform="translate(13 -13)"/>
+    <path class="iso-top" d="M802 302 H872 V520 H802 Z"/>
+    <text class="room-num" x="837" y="414">1</text>
+  </g>
+
+  <g id="office-3" data-office="3" class="office iso-room reserved">
+    <polygon class="iso-side right" points="802,472 815,459 815,571 802,584"/>
+    <polygon class="iso-side front" points="690,584 802,584 815,571 703,571"/>
+    <rect class="iso-top" x="690" y="472" width="112" height="112" rx="7"/>
+    <text class="room-num" x="746.0" y="528.0">3</text>
+  </g>
+
+  <g id="office-4" data-office="4" class="office iso-room available">
+    <path class="iso-depth" d="M802 520 H872 V690 H770 V584 H802 Z" transform="translate(13 -13)"/>
+    <path class="iso-top" d="M802 520 H872 V690 H770 V584 H802 Z"/>
+    <text class="room-num" x="837" y="615">4</text>
+  </g>
+
+  <path class="service" d="M568 166 H710 V288 H620 V260 H568 Z"/>
+  <text class="service-text" x="642" y="218">חדר</text>
+  <text class="service-text" x="642" y="248">ישיבות</text>
+
+  <path class="service" d="M528 382 H648 V520 H560 V462 H528 Z"/>
+  <text class="room-num" x="590" y="435">WC</text>
+</svg>

@@ -1,0 +1,132 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-copy fade-up in">
+      <span class="eyebrow">מגדלי אלון · תל אביב</span>
+
+      <h1>משרד פרטי במיקום שעובד בשבילך.</h1>
+
+      <p class="hero-sub">
+        AlonSpace מציעה משרדים פרטיים ומרוהטים במגדלי אלון, תל אביב -
+        סביבת עבודה שקטה, נגישה ומוכנה לעבודה מהיום הראשון.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/booking" class="btn btn-gold">קביעת סיור</a>
+        <a href="<%= site.whatsapp %>" target="_blank" rel="noopener" class="btn btn-outline-light">
+          וואטסאפ
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="num">50</span>
+          <span class="label">משרדים פרטיים</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">2</span>
+          <span class="label">קומות במגדלי אלון</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <img src="/images/14.jpeg" alt="משרד פרטי ב-AlonSpace">
+      <div class="hero-visual-tag">משרד פרטי, שקט ומרוהט בלב תל אביב</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">מה מקבלים</span>
+      <h2>כל מה שצריך כדי להתחיל לעבוד</h2>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>משרדים פרטיים</h3>
+        <p>חלל אישי ושקט שמתאים לעצמאים, צוותים קטנים וכל מי שצריך מקום מקצועי לעבוד ממנו.</p>
+      </div>
+
+      <div class="card">
+        <h3>מיקום מרכזי</h3>
+        <p>מגדלי אלון, יגאל אלון 94 תל אביב — קרוב לצירי תחבורה מרכזיים ולרכבת השלום.</p>
+      </div>
+
+      <div class="card">
+        <h3>מוכן לעבודה</h3>
+        <p>משרדים מרוהטים עם שירותים משלימים כמו חדר ישיבות, מטבחון, אינטרנט וניקיון.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark">
+  <div class="container">
+    <div class="split-section">
+      <div>
+        <span class="eyebrow">המתחם</span>
+        <h2>לא עוד חלל עבודה. משרד פרטי אמיתי.</h2>
+        <p class="hero-sub">
+          ב-AlonSpace הדגש הוא על פרטיות, שקט ונראות מקצועית.
+          זה פתרון שמתאים למי שרוצה משרד מסודר במרכז תל אביב,
+          בלי להיכנס להתעסקות של משרד עצמאי מאפס.
+        </p>
+        <a href="/המתחם-והשירותים" class="btn btn-outline-light">המתחם והשירותים</a>
+      </div>
+
+      <div class="hero-visual small-visual">
+        <img src="/images/8.jpeg" alt="מתחם AlonSpace">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">הצצה למשרדים</span>
+      <h2>תמונות מהמקום</h2>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card-office">
+        <div class="img"><img src="/images/1.jpeg" alt="משרד פרטי"></div>
+      </div>
+      <div class="card-office">
+        <div class="img"><img src="/images/2.jpg" alt="חדר ישיבות"></div>
+      </div>
+      <div class="card-office">
+        <div class="img"><img src="/images/3.jpeg" alt="משרד ב-AlonSpace"></div>
+      </div>
+      <div class="card-office">
+        <div class="img"><img src="/images/4.jpeg" alt="משרדים להשכרה"></div>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top:32px;">
+      <a href="/gallery" class="btn btn-outline">לגלריה המלאה</a>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark text-center">
+  <div class="container">
+    <h2>רוצים לראות אם זה מתאים לכם?</h2>
+    <p class="hero-sub" style="margin-inline:auto;">
+      קבעו סיור קצר במתחם ונראה לכם את המשרדים הפנויים.
+    </p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="/booking" class="btn btn-gold">קביעת סיור</a>
+      <a href="/יצירת-קשר" class="btn btn-outline-light">יצירת קשר</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>

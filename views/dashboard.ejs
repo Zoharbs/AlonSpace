@@ -1,0 +1,359 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<style>
+  .tenant-hero {
+    padding: 58px 0 46px;
+  }
+
+  .tenant-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: -34px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .tenant-summary-card {
+    background: var(--cream);
+    border: 1px solid var(--stone-dark);
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .tenant-summary-card h3 {
+    margin-bottom: 8px;
+  }
+
+  .tenant-section {
+    padding-top: 54px;
+  }
+
+  .meeting-portal-grid {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+
+  .meeting-booking-card {
+    position: sticky;
+    top: 100px;
+  }
+
+  .quota-line {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--stone-dark);
+    margin-top: 14px;
+  }
+
+  .quota-line span {
+    display: block;
+    height: 100%;
+    width: var(--quota-used);
+    background: var(--oak);
+    border-radius: inherit;
+  }
+
+  .portal-table-wrap {
+    overflow-x: auto;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .portal-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    background: var(--cream);
+  }
+
+  .portal-table th,
+  .portal-table td {
+    padding: 14px 16px;
+    text-align: right;
+    border-bottom: 1px solid var(--stone-dark);
+  }
+
+  .portal-table th {
+    background: var(--stone-dark);
+  }
+
+  .portal-table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  @media (max-width: 900px) {
+    .tenant-summary,
+    .meeting-portal-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tenant-summary {
+      margin-top: 24px;
+    }
+
+    .meeting-booking-card {
+      position: static;
+    }
+  }
+</style>
+
+<section class="page-hero tenant-hero">
+  <div class="container">
+    <span class="eyebrow">פורטל הדיירים</span>
+    <h1>שלום, <%= user.display_name %></h1>
+    <p>
+      כאן נמצאים פרטי המשרד שלך, תקופת השכירות ולוח השריונים
+      המשותף של חדר הישיבות.
+    </p>
+  </div>
+</section>
+
+<main>
+  <section style="padding-top:0;">
+    <div class="container">
+      <% if (error) { %>
+        <div class="form-msg show err"><%= error %></div>
+      <% } %>
+
+      <% if (success) { %>
+        <div class="form-msg show ok"><%= success %></div>
+      <% } %>
+
+      <div class="tenant-summary">
+        <article class="tenant-summary-card">
+          <span class="eyebrow">המשרד שלי</span>
+
+          <h3>
+            <%= user.office_number
+              ? `משרד ${user.office_number}`
+              : 'משרד טרם הוגדר' %>
+          </h3>
+
+          <p class="small">
+            <%= user.floor
+              ? `קומה ${user.floor}`
+              : 'קומה טרם הוגדרה' %>
+          </p>
+
+          <% if (user.business_name) { %>
+            <p><strong><%= user.business_name %></strong></p>
+          <% } %>
+        </article>
+
+        <article class="tenant-summary-card">
+          <span class="eyebrow">תקופת השכירות</span>
+
+          <h3>
+            עד <%= user.rental_end_date || 'לא הוגדר' %>
+          </h3>
+
+          <p class="small">
+            התחלה:
+            <%= user.rental_start_date || 'לא הוגדר' %>
+          </p>
+        </article>
+
+        <article
+          class="tenant-summary-card"
+          style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%"
+        >
+          <span class="eyebrow">חדר ישיבות</span>
+
+          <h3>
+            <%= remainingHours.toFixed(1) %> שעות נותרו
+          </h3>
+
+          <p class="small">
+            נוצלו:
+            <%= usedHours.toFixed(1) %>
+            מתוך
+            <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+            שעות החודש
+          </p>
+
+          <div class="quota-line" aria-hidden="true">
+            <span></span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="tenant-section"
+    id="meeting-room"
+  >
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">חדר הישיבות</span>
+        <h2>שריונים משותפים</h2>
+        <p>
+          כולם יכולים לראות מי שריין את החדר. אפשר לבחור כל זמן פנוי,
+          כל עוד לא חורגים מהמכסה החודשית.
+        </p>
+      </div>
+
+      <div class="meeting-portal-grid">
+        <aside class="booking-card meeting-booking-card">
+          <h3>שריון חדש</h3>
+
+          <form
+            method="POST"
+            action="/dashboard/meeting-bookings/create"
+            class="form-grid"
+          >
+            <div class="field">
+              <label for="booking_date">תאריך</label>
+              <input
+                id="booking_date"
+                type="date"
+                name="booking_date"
+                required
+              >
+            </div>
+
+            <div class="form-row-2">
+              <div class="field">
+                <label for="start_time">משעה</label>
+                <input
+                  id="start_time"
+                  type="time"
+                  name="start_time"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="end_time">עד שעה</label>
+                <input
+                  id="end_time"
+                  type="time"
+                  name="end_time"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="note">הערה</label>
+              <input
+                id="note"
+                type="text"
+                name="note"
+                maxlength="200"
+                placeholder="אופציונלי"
+              >
+            </div>
+
+            <button
+              class="btn btn-primary btn-block"
+              type="submit"
+            >
+              שריון חדר הישיבות
+            </button>
+          </form>
+        </aside>
+
+        <div class="portal-table-wrap">
+          <table class="portal-table">
+            <thead>
+              <tr>
+                <th>תאריך</th>
+                <th>שעות</th>
+                <th>מי שריין</th>
+                <th>משרד</th>
+                <th>הערה</th>
+                <th>פעולות</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% if (!meetingBookings.length) { %>
+                <tr>
+                  <td colspan="6" style="text-align:center; padding:32px;">
+                    עדיין אין שריונים עתידיים.
+                  </td>
+                </tr>
+              <% } %>
+
+              <% meetingBookings.forEach(booking => { %>
+                <tr>
+                  <td><%= booking.booking_date %></td>
+
+                  <td>
+                    <%= booking.start_time %>–<%= booking.end_time %>
+                  </td>
+
+                  <td>
+                    <strong><%= booking.display_name %></strong>
+
+                    <% if (booking.business_name) { %>
+                      <br>
+                      <span class="small">
+                        <%= booking.business_name %>
+                      </span>
+                    <% } %>
+                  </td>
+
+                  <td>
+                    <%= booking.office_number
+                      ? `משרד ${booking.office_number}`
+                      : '-' %>
+
+                    <%= booking.floor
+                      ? `, קומה ${booking.floor}`
+                      : '' %>
+                  </td>
+
+                  <td><%= booking.note || '-' %></td>
+
+                  <td>
+                    <% if (booking.is_mine) { %>
+                      <form
+                        method="POST"
+                        action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
+                        onsubmit="return confirm('לבטל את השריון?')"
+                      >
+                        <button
+                          class="btn btn-outline"
+                          type="submit"
+                          style="padding:7px 12px;"
+                        >
+                          ביטול
+                        </button>
+                      </form>
+                    <% } else { %>
+                      —
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<script>
+  const dateInput = document.getElementById('booking_date');
+
+  if (dateInput) {
+    const now = new Date();
+    const localDate = new Date(
+      now.getTime() - now.getTimezoneOffset() * 60000
+    ).toISOString().slice(0, 10);
+
+    dateInput.min = localDate;
+  }
+</script>
