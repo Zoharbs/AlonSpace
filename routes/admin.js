@@ -147,7 +147,11 @@ router.get('/', async (req, res, next) => {
       pendingTestimonials:
         pendingTestimonialsResult.rows[0].count,
     };
+const newClientInvite =
+  req.session.newClientInvite || null;
 
+// ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
+delete req.session.newClientInvite;
     return res.render('admin/dashboard', {
       title: 'פאנל ניהול — AlonSpace',
       layout: false,
@@ -159,6 +163,7 @@ router.get('/', async (req, res, next) => {
       stats,
       error: req.query.error || null,
       success: req.query.success || null,
+      newClientInvite,
     });
   } catch (error) {
     return next(error);
@@ -231,65 +236,86 @@ router.post('/clients/create', async (req, res, next) => {
       12
     );
 
-    await db.query(
-      `
-        INSERT INTO users (
-          username,
-          email,
-          password_hash,
-          display_name,
-          role,
-          phone,
-          business_name,
-          office_number,
-          floor,
-          rental_start_date,
-          rental_end_date,
-          monthly_meeting_hours,
-          is_active,
-          must_change_password
-        )
-        VALUES (
-          $1,
-          $2,
-          $3,
-          $4,
-          'tenant',
-          $5,
-          $6,
-          $7,
-          $8,
-          $9,
-          $10,
-          $11,
-          TRUE,
-          TRUE
-        )
-      `,
-      [
-        cleanUsername,
-        cleanEmail,
-        passwordHash,
-        cleanDisplayName,
-        normalizeOptional(phone),
-        normalizeOptional(business_name),
-        normalizeOptional(office_number),
-        normalizeOptional(floor),
-        normalizeOptional(rental_start_date),
-        normalizeOptional(rental_end_date),
-        parsePositiveNumber(
-          monthly_meeting_hours,
-          6
-        ),
-      ]
-    );
+const createResult = await db.query(
+  `
+    INSERT INTO users (
+      username,
+      email,
+      password_hash,
+      display_name,
+      role,
+      phone,
+      business_name,
+      office_number,
+      floor,
+      rental_start_date,
+      rental_end_date,
+      monthly_meeting_hours,
+      is_active,
+      must_change_password
+    )
+    VALUES (
+      $1,
+      $2,
+      $3,
+      $4,
+      'tenant',
+      $5,
+      $6,
+      $7,
+      $8,
+      $9,
+      $10,
+      $11,
+      TRUE,
+      TRUE
+    )
+    RETURNING
+      id,
+      username,
+      display_name,
+      phone
+  `,
+  [
+    cleanUsername,
+    cleanEmail,
+    passwordHash,
+    cleanDisplayName,
+    normalizeOptional(phone),
+    normalizeOptional(business_name),
+    normalizeOptional(office_number),
+    normalizeOptional(floor),
+    normalizeOptional(rental_start_date),
+    normalizeOptional(rental_end_date),
+    parsePositiveNumber(
+      monthly_meeting_hours,
+      6
+    ),
+  ]
+);
 
-    return res.redirect(
-      adminRedirect(
-        'success',
-        'חשבון הלקוח נוצר בהצלחה'
-      )
-    );
+const createdClient = createResult.rows[0];
+
+req.session.newClientInvite = {
+  userId: createdClient.id,
+  displayName: createdClient.display_name,
+  username: createdClient.username,
+  temporaryPassword: cleanPassword,
+  phone: createdClient.phone || null,
+};
+
+return req.session.save((saveError) => {
+  if (saveError) {
+    return next(saveError);
+  }
+
+  return res.redirect(
+    adminRedirect(
+      'success',
+      'חשבון הלקוח נוצר. הודעת ההתחברות מוכנה להעתקה.'
+    )
+  );
+});
   } catch (error) {
     if (error.code === '23505') {
       return res.redirect(
@@ -352,7 +378,11 @@ router.post(
           WHERE
             id = $11
             AND role = 'tenant'
-          RETURNING id
+          RETURNING
+  id,
+  username,
+  display_name,
+  phone
         `,
         [
           cleanDisplayName,
@@ -380,13 +410,27 @@ router.post(
           )
         );
       }
+const client = result.rows[0];
 
-      return res.redirect(
-        adminRedirect(
-          'success',
-          'פרטי הלקוח עודכנו'
-        )
-      );
+req.session.newClientInvite = {
+  userId: client.id,
+  displayName: client.display_name,
+  username: client.username,
+  temporaryPassword: newPassword,
+  phone: client.phone || null,
+};
+return req.session.save((saveError) => {
+  if (saveError) {
+    return next(saveError);
+  }
+
+  return res.redirect(
+    adminRedirect(
+      'success',
+      'הסיסמה אופסה. הודעת ההתחברות מוכנה להעתקה.'
+    )
+  );
+});
     } catch (error) {
       if (error.code === '23505') {
         return res.redirect(
