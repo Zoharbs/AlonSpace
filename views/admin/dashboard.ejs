@@ -276,6 +276,42 @@
                     <input type="password" name="new_password" minlength="8" placeholder="סיסמה חדשה" required>
                     <button class="mini-btn">איפוס סיסמה</button>
                   </form>
+  <% if (newClientInvite) { %>
+<script>
+const inviteMessage = `שלום <%= newClientInvite.displayName %>!
+
+נוצר עבורך משתמש חדש במערכת AlonSpace.
+
+🔗 התחברות:
+https://alonspace.onrender.com/login
+
+👤 שם משתמש:
+<%= newClientInvite.username %>
+
+🔑 סיסמה זמנית:
+<%= newClientInvite.temporaryPassword %>
+
+בכניסה הראשונה תתבקש לבחור סיסמה חדשה.
+
+בהצלחה 🙂`;
+
+const copyBtn = document.createElement("button");
+
+copyBtn.textContent = "📋 העתק הודעת התחברות";
+
+copyBtn.style.position = "fixed";
+copyBtn.style.left = "20px";
+copyBtn.style.bottom = "20px";
+copyBtn.style.zIndex = "99999";
+
+copyBtn.onclick = async () => {
+  await navigator.clipboard.writeText(inviteMessage);
+  copyBtn.textContent = "✅ הועתק";
+};
+
+document.body.appendChild(copyBtn);
+</script>
+<% } %>
 
                   <% if (client.is_active) { %>
                     <form method="POST" action="/admin/clients/<%= client.id %>/delete" style="margin-top:8px;" onsubmit="return confirm('להשבית את החשבון?')">
@@ -478,42 +514,6 @@
     </section>
   </main>
 
-  <% if (newClientInvite) { %>
-<script>
-const inviteMessage = `שלום <%= newClientInvite.displayName %>!
-
-נוצר עבורך משתמש חדש במערכת AlonSpace.
-
-🔗 התחברות:
-https://alonspace.onrender.com/login
-
-👤 שם משתמש:
-<%= newClientInvite.username %>
-
-🔑 סיסמה זמנית:
-<%= newClientInvite.temporaryPassword %>
-
-בכניסה הראשונה תתבקש לבחור סיסמה חדשה.
-
-בהצלחה 🙂`;
-
-const copyBtn = document.createElement("button");
-
-copyBtn.textContent = "📋 העתק הודעת התחברות";
-
-copyBtn.style.position = "fixed";
-copyBtn.style.left = "20px";
-copyBtn.style.bottom = "20px";
-copyBtn.style.zIndex = "99999";
-
-copyBtn.onclick = async () => {
-  await navigator.clipboard.writeText(inviteMessage);
-  copyBtn.textContent = "✅ הועתק";
-};
-
-document.body.appendChild(copyBtn);
-</script>
-<% } %>
 
 
   <script>
