@@ -150,12 +150,12 @@
           <span class="eyebrow">תקופת השכירות</span>
 
           <h3>
-            עד <%= user.rental_end_date || 'לא הוגדר' %>
+            עד <%= user.rental_end_date %>
           </h3>
 
           <p class="small">
             התחלה:
-            <%= user.rental_start_date || 'לא הוגדר' %>
+            <%= formatDate(user.rental_start_date) %>
           </p>
         </article>
 

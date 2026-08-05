@@ -232,8 +232,8 @@
                 </td>
 
                 <td>
-                  <%= client.rental_start_date || '-' %>
-                  <br>עד <%= client.rental_end_date || '-' %>
+                  <%= formatDate(client.rental_start_date) %>
+                  <br>עד <%= formatDate(client.rental_end_date) || '-' %>
                 </td>
 
                 <td><%= client.monthly_meeting_hours %> שעות</td>

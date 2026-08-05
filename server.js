@@ -15,6 +15,16 @@ const {
 } = require('./db');
 
 const app = express();
+app.locals.formatDate = (date) => {
+  if (!date) return '-';
+
+  return new Date(date).toLocaleDateString('he-IL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'Asia/Jerusalem',
+  });
+};
 const PORT = process.env.PORT || 3000;
 
 if (!process.env.SESSION_SECRET) {
