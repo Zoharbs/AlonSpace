@@ -1,6 +1,8 @@
 node_modules/
+.env
+.DS_Store
+
 data/*.db
 data/*.db-*
-.env
-*.log
-.DS_Store
+data/*.sqlite
+data/*.sqlite3
