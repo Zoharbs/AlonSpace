@@ -272,30 +272,7 @@
                 <td>
                   <form method="POST" action="/admin/clients/<%= client.id %>/reset-password" class="inline-form">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <% if (client.must_change_password) { %>
-  <button
-    type="button"
-    class="mini-btn primary copy-message"
-    data-message="שלום <%= client.display_name %>!
-
-נוצר עבורך משתמש חדש במערכת AlonSpace.
-
-קישור להתחברות:
-https://alonspace.onrender.com/login
-
-שם משתמש:
-<%= client.username %>
-
-הסיסמה הזמנית שקיבלת ממני.
-
-בכניסה הראשונה תתבקש לבחור סיסמה חדשה.
-
-בהצלחה 🙂"
-    style="margin-top:8px;"
-  >
-    העתקת הודעה מוכנה
-  </button>
-<% } %>
+                        
                     <input type="password" name="new_password" minlength="8" placeholder="סיסמה חדשה" required>
                     <button class="mini-btn">איפוס סיסמה</button>
                   </form>
@@ -500,10 +477,9 @@ https://alonspace.onrender.com/login
       </div>
     </section>
   </main>
-<% if (newClientInvite) { %>
-<pre>
-<%= JSON.stringify(newClientInvite, null, 2) %>
-</pre>
+
+  <% if (newClientInvite) { %>
+<script>
 const inviteMessage = `שלום <%= newClientInvite.displayName %>!
 
 נוצר עבורך משתמש חדש במערכת AlonSpace.
@@ -519,61 +495,27 @@ https://alonspace.onrender.com/login
 
 בכניסה הראשונה תתבקש לבחור סיסמה חדשה.
 
-בהצלחה!`;
+בהצלחה 🙂`;
 
 const copyBtn = document.createElement("button");
 
-copyBtn.innerHTML = "📋 העתק הודעת התחברות";
+copyBtn.textContent = "📋 העתק הודעת התחברות";
 
 copyBtn.style.position = "fixed";
 copyBtn.style.left = "20px";
 copyBtn.style.bottom = "20px";
 copyBtn.style.zIndex = "99999";
-copyBtn.style.padding = "12px 18px";
-copyBtn.style.border = "0";
-copyBtn.style.borderRadius = "10px";
-copyBtn.style.cursor = "pointer";
-copyBtn.style.fontWeight = "700";
-copyBtn.style.background = "#c59a4b";
-copyBtn.style.color = "#fff";
-copyBtn.style.boxShadow = "0 8px 25px rgba(0,0,0,.25)";
 
 copyBtn.onclick = async () => {
-
-  try {
-    await navigator.clipboard.writeText(inviteMessage);
-
-    copyBtn.innerHTML = "✅ ההודעה הועתקה";
-
-    setTimeout(() => {
-      copyBtn.remove();
-    }, 2000);
-
-  } catch (e) {
-
-    const area = document.createElement("textarea");
-    area.value = inviteMessage;
-
-    document.body.appendChild(area);
-
-    area.select();
-
-    document.execCommand("copy");
-
-    area.remove();
-
-    copyBtn.innerHTML = "✅ ההודעה הועתקה";
-
-    setTimeout(() => {
-      copyBtn.remove();
-    }, 2000);
-  }
-
+  await navigator.clipboard.writeText(inviteMessage);
+  copyBtn.textContent = "✅ הועתק";
 };
 
 document.body.appendChild(copyBtn);
-
+</script>
 <% } %>
+
+
   <script>
     document.querySelectorAll('.tab-btn').forEach((button) => {
       button.addEventListener('click', () => {
