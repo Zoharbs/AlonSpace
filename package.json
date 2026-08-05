@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "אתר AlonSpace - משרדים פרטיים בתל אביב",
   "main": "server.js",
-  "engines": {
-    "node": ">=20.x"
-  },
+"engines": {
+  "node": ">=20.0.0 <21.0.0"
+},
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
