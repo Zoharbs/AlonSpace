@@ -232,7 +232,7 @@ const cleanPassword = crypto.randomBytes(8).toString('base64url');    const clea
 
     const passwordHash = await bcrypt.hash(
       cleanPassword,
-      12
+      6
     );
 
 const createResult = await db.query(
