@@ -284,10 +284,10 @@
 
               <% meetingBookings.forEach(booking => { %>
                 <tr>
-                  <td><%= formatDate(booking.booking_date) %></td>
+                  <td><%= booking.booking_date %></td>
 
                   <td>
-                    <%= formatDate(booking.start_time) %>–<%= formatDate(booking.end_time) %>
+                    <%= booking.start_time %>–<%= booking.end_time %>
                   </td>
 
                   <td>
