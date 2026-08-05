@@ -118,10 +118,7 @@
               <input name="username" required autocomplete="off">
             </div>
 
-            <div class="field">
-              <label>סיסמה זמנית</label>
-              <input type="password" name="password" minlength="8" required autocomplete="new-password">
-            </div>
+      
           </div>
 
           <div class="form-row-2">
@@ -307,7 +304,24 @@ https://alonspace.onrender.com/login
                     <form method="POST" action="/admin/clients/<%= client.id %>/delete" style="margin-top:8px;" onsubmit="return confirm('להשבית את החשבון?')">
                           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button class="mini-btn danger">השבת חשבון</button>
+
                     </form>
+
+                    <form
+  method="POST"
+  action="/admin/clients/<%= client.id %>/permanent-delete"
+  onsubmit="return confirm('למחוק את המשתמש לצמיתות? פעולה זו אינה ניתנת לביטול.')"
+  style="margin-top:8px;"
+>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <button
+    class="mini-btn danger"
+    style="background:#c62828;color:white;"
+  >
+    מחק לצמיתות
+  </button>
+</form>
                   <% } %>
                 </td>
               </tr>

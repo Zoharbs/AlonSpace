@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const db = require('../db');
 
 const router = express.Router();
@@ -187,14 +188,12 @@ router.post('/clients/create', async (req, res, next) => {
     } = req.body;
 
     const cleanUsername = String(username || '').trim();
-    const cleanPassword = String(password || '');
-    const cleanDisplayName = String(
+const cleanPassword = crypto.randomBytes(8).toString('base64url');    const cleanDisplayName = String(
       display_name || ''
     ).trim();
 
     if (
       !cleanUsername ||
-      cleanPassword.length < 8 ||
       !cleanDisplayName
     ) {
       return res.redirect(
@@ -662,6 +661,48 @@ router.post(
       );
 
       return res.redirect('/admin#testimonials');
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+router.post(
+  '/clients/:id/permanent-delete',
+  async (req, res, next) => {
+    try {
+      await db.query(
+        `
+        DELETE FROM meeting_bookings
+        WHERE user_id = $1
+        `,
+        [req.params.id]
+      );
+
+      const result = await db.query(
+        `
+        DELETE FROM users
+        WHERE id = $1
+          AND role = 'tenant'
+        RETURNING id
+        `,
+        [req.params.id]
+      );
+
+      if (result.rows.length === 0) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הלקוח לא נמצא'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'הלקוח נמחק לצמיתות'
+        )
+      );
     } catch (error) {
       return next(error);
     }
