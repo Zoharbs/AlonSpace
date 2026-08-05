@@ -7,7 +7,8 @@ const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-
+const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
 const {
   pool,
   initializeDatabase,
@@ -39,7 +40,7 @@ app.use(
 );
 
 app.use(express.json());
-
+app.use(cookieParser());
 app.use(
   express.static(
     path.join(__dirname, 'public')
@@ -70,6 +71,12 @@ app.use(
   })
 );
 
+app.use(
+  csrf({
+    cookie: false
+  })
+);
+
 const publicFormLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -89,7 +96,10 @@ const loginLimiter = rateLimit({
 
   message: 'יותר מדי ניסיונות התחברות. נסו שוב בעוד כמה דקות.',
 });
-
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 app.use('/api/contact', publicFormLimiter);
 app.use('/api/testimonials', publicFormLimiter);
 app.use('/login', loginLimiter);
@@ -191,6 +201,13 @@ app.use((error, req, res, next) => {
   return res
     .status(500)
     .send('אירעה שגיאה בשרת. נסו שוב מאוחר יותר.');
+});
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).send('Invalid CSRF Token');
+  }
+
+  next(err);
 });
 
 async function startServer() {

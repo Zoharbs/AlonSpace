@@ -54,6 +54,7 @@
         </a>
 
         <form method="POST" action="/logout">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button class="btn btn-outline-light" style="padding:8px 16px;">
             יציאה
           </button>
@@ -105,6 +106,7 @@
         <h3>יצירת חשבון לקוח</h3>
 
         <form method="POST" action="/admin/clients/create" class="form-grid">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <div class="form-row-2">
             <div class="field">
               <label>שם משתמש</label>
@@ -239,6 +241,7 @@
 
                 <td>
                   <form method="POST" action="/admin/clients/<%= client.id %>/update" class="inline-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input name="display_name" value="<%= client.display_name %>" required>
                     <input name="business_name" value="<%= client.business_name || '' %>" placeholder="שם העסק">
                     <input type="email" name="email" value="<%= client.email || '' %>" placeholder="אימייל">
@@ -266,12 +269,14 @@
 
                 <td>
                   <form method="POST" action="/admin/clients/<%= client.id %>/reset-password" class="inline-form">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input type="password" name="new_password" minlength="8" placeholder="סיסמה חדשה" required>
                     <button class="mini-btn">איפוס סיסמה</button>
                   </form>
 
                   <% if (client.is_active) { %>
                     <form method="POST" action="/admin/clients/<%= client.id %>/delete" style="margin-top:8px;" onsubmit="return confirm('להשבית את החשבון?')">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button class="mini-btn danger">השבת חשבון</button>
                     </form>
                   <% } %>
@@ -374,11 +379,13 @@
                 <td class="row-actions">
                   <% if (!message.is_read) { %>
                     <form method="POST" action="/admin/messages/<%= message.id %>/read">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button class="mini-btn primary">סמן כנקרא</button>
                     </form>
                   <% } %>
 
                   <form method="POST" action="/admin/messages/<%= message.id %>/delete" onsubmit="return confirm('למחוק את ההודעה?')">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="mini-btn danger">מחיקה</button>
                   </form>
                 </td>
@@ -426,17 +433,20 @@
                 <td class="row-actions">
                   <% if (testimonial.status !== 'מאושר') { %>
                     <form method="POST" action="/admin/testimonials/<%= testimonial.id %>/approve">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button class="mini-btn primary">אישור</button>
                     </form>
                   <% } %>
 
                   <% if (testimonial.status !== 'נדחה') { %>
                     <form method="POST" action="/admin/testimonials/<%= testimonial.id %>/reject">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button class="mini-btn">דחייה</button>
                     </form>
                   <% } %>
 
                   <form method="POST" action="/admin/testimonials/<%= testimonial.id %>/delete" onsubmit="return confirm('למחוק את ההמלצה?')">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="mini-btn danger">מחיקה</button>
                   </form>
                 </td>

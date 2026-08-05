@@ -25,6 +25,7 @@
     <% } %>
 
     <form method="POST" action="/login" class="form-grid">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="field">
         <label for="username">שם משתמש</label>
         <input type="text" id="username" name="username" required autofocus>
