@@ -501,7 +501,9 @@ https://alonspace.onrender.com/login
     </section>
   </main>
 <% if (newClientInvite) { %>
-
+<pre>
+<%= JSON.stringify(newClientInvite, null, 2) %>
+</pre>
 const inviteMessage = `שלום <%= newClientInvite.displayName %>!
 
 נוצר עבורך משתמש חדש במערכת AlonSpace.
