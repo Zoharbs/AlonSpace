@@ -105,16 +105,135 @@ router.post('/login', async (req, res, next) => {
           return next(saveError);
         }
 
-        return res.redirect(
-          redirectForRole(user.role)
-        );
+        if (user.must_change_password) {
+  return res.redirect(
+    '/change-password'
+  );
+}
+
+return res.redirect(
+  redirectForRole(user.role)
+);
       });
     });
   } catch (error) {
     return next(error);
   }
 });
+router.get('/change-password', (req, res) => {
+  if (!req.session?.userId || !req.session?.userRole) {
+    return res.redirect('/login');
+  }
 
+  if (!req.session.mustChangePassword) {
+    return res.redirect(
+      redirectForRole(req.session.userRole)
+    );
+  }
+
+  return res.render('change-password', {
+    title: 'בחירת סיסמה חדשה — AlonSpace',
+    error: null,
+    layout: false,
+  });
+});
+router.post('/change-password', async (req, res, next) => {
+    try {
+      if (
+        !req.session?.userId ||
+        !req.session?.userRole
+      ) {
+        return res.redirect('/login');
+      }
+
+      const newPassword = String(
+        req.body.new_password || ''
+      );
+
+      const confirmPassword = String(
+        req.body.confirm_password || ''
+      );
+
+      if (newPassword.length < 8) {
+        return res.status(400).render(
+          'change-password',
+          {
+            title:
+              'בחירת סיסמה חדשה — AlonSpace',
+            error:
+              'הסיסמה חייבת להכיל לפחות 8 תווים',
+            layout: false,
+          }
+        );
+      }
+
+      if (newPassword !== confirmPassword) {
+        return res.status(400).render(
+          'change-password',
+          {
+            title:
+              'בחירת סיסמה חדשה — AlonSpace',
+            error:
+              'הסיסמאות שהוזנו אינן תואמות',
+            layout: false,
+          }
+        );
+      }
+
+      const passwordHash = await bcrypt.hash(
+        newPassword,
+        12
+      );
+
+      const result = await db.query(
+        `
+          UPDATE users
+          SET
+            password_hash = $1,
+            must_change_password = FALSE,
+            updated_at = NOW()
+          WHERE
+            id = $2
+            AND is_active = TRUE
+          RETURNING id
+        `,
+        [
+          passwordHash,
+          req.session.userId,
+        ]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).render(
+          'change-password',
+          {
+            title:
+              'בחירת סיסמה חדשה — AlonSpace',
+            error:
+              'המשתמש לא נמצא או שהחשבון אינו פעיל',
+            layout: false,
+          }
+        );
+      }
+
+      req.session.mustChangePassword = false;
+
+      return req.session.save((saveError) => {
+        if (saveError) {
+          return next(saveError);
+        }
+
+        return res.redirect(
+          redirectForRole(
+            req.session.userRole
+          )
+        );
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 router.post('/logout', (req, res, next) => {
   req.session.destroy((error) => {
     if (error) {

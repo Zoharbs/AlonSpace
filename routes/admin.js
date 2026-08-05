@@ -5,11 +5,20 @@ const db = require('../db');
 const router = express.Router();
 
 function requireAdmin(req, res, next) {
-  if (req.session?.userId && req.session?.userRole === 'admin') {
-    return next();
+  if (
+    !req.session?.userId ||
+    req.session?.userRole !== 'admin'
+  ) {
+    return res.redirect('/login');
   }
 
-  return res.redirect('/login');
+  if (req.session.mustChangePassword) {
+    return res.redirect(
+      '/change-password'
+    );
+  }
+
+  return next();
 }
 
 function normalizeOptional(value) {

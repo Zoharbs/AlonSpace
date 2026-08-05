@@ -5,13 +5,19 @@ const router = express.Router();
 
 function requireTenant(req, res, next) {
   if (
-    req.session?.userId &&
-    req.session?.userRole === 'tenant'
+    !req.session?.userId ||
+    req.session?.userRole !== 'tenant'
   ) {
-    return next();
+    return res.redirect('/login');
   }
 
-  return res.redirect('/login');
+  if (req.session.mustChangePassword) {
+    return res.redirect(
+      '/change-password'
+    );
+  }
+
+  return next();
 }
 
 function minutesFromTime(value) {
