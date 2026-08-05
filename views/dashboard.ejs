@@ -150,7 +150,7 @@
           <span class="eyebrow">תקופת השכירות</span>
 
           <h3>
-            עד <%= user.rental_end_date %>
+            עד <%= formatDate(user.rental_end_date) || '-' %>
           </h3>
 
           <p class="small">
