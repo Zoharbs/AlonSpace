@@ -1,3 +1,68 @@
   <script src="/js/main.js"></script>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  const csrfToken = meta ? meta.content : '';
+
+  if (!csrfToken) {
+    console.error('CSRF token is missing from the page');
+    return;
+  }
+
+  // מוסיף token אוטומטית לכל טופס POST שלא קיבל אחד.
+  document.querySelectorAll('form').forEach((form) => {
+    const method = String(
+      form.getAttribute('method') || 'GET'
+    ).toUpperCase();
+
+    if (method !== 'POST') {
+      return;
+    }
+
+    let csrfInput = form.querySelector(
+      'input[name="_csrf"]'
+    );
+
+    if (!csrfInput) {
+      csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = '_csrf';
+      form.appendChild(csrfInput);
+    }
+
+    csrfInput.value = csrfToken;
+  });
+
+  // מוסיף token אוטומטית לבקשות fetch מסוג POST/PUT/PATCH/DELETE.
+  const originalFetch = window.fetch;
+
+  window.fetch = function(resource, options = {}) {
+    const finalOptions = {
+      ...options,
+      headers: new Headers(options.headers || {}),
+    };
+
+    const method = String(
+      finalOptions.method || 'GET'
+    ).toUpperCase();
+
+    const unsafeMethods = [
+      'POST',
+      'PUT',
+      'PATCH',
+      'DELETE',
+    ];
+
+    if (unsafeMethods.includes(method)) {
+      finalOptions.headers.set(
+        'CSRF-Token',
+        csrfToken
+      );
+    }
+
+    return originalFetch(resource, finalOptions);
+  };
+});
+</script>

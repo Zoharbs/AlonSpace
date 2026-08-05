@@ -53,12 +53,17 @@
           צפייה באתר
         </a>
 
-        <form method="POST" action="/logout">
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button class="btn btn-outline-light" style="padding:8px 16px;">
-            יציאה
-          </button>
-        </form>
+<form method="POST" action="/logout">
+  <input
+    type="hidden"
+    name="_csrf"
+    value="<%= csrfToken %>"
+  >
+
+  <button type="submit">
+    התנתקות
+  </button>
+</form>
       </div>
     </div>
   </header>

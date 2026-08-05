@@ -190,6 +190,26 @@ app.use((req, res) => {
     </html>
   `);
 });
+app.use((error, req, res, next) => {
+  if (error.code === 'EBADCSRFTOKEN') {
+    console.error('CSRF validation failed:', {
+      method: req.method,
+      path: req.path,
+      hasBodyToken: Boolean(req.body?._csrf),
+      hasHeaderToken: Boolean(
+        req.get('CSRF-Token') ||
+        req.get('X-CSRF-Token') ||
+        req.get('X-XSRF-Token')
+      ),
+    });
+
+    return res.status(403).send(
+      'הטופס פג תוקף. רעננו את העמוד ונסו שוב.'
+    );
+  }
+
+  return next(error);
+});
 
 app.use((error, req, res, next) => {
   console.error(error);
@@ -201,13 +221,6 @@ app.use((error, req, res, next) => {
   return res
     .status(500)
     .send('אירעה שגיאה בשרת. נסו שוב מאוחר יותר.');
-});
-app.use((err, req, res, next) => {
-  if (err.code === 'EBADCSRFTOKEN') {
-    return res.status(403).send('Invalid CSRF Token');
-  }
-
-  next(err);
 });
 
 async function startServer() {
