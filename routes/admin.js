@@ -432,9 +432,9 @@ router.post(
   '/clients/:id/reset-password',
   async (req, res, next) => {
     try {
-      const newPassword = String(
-        req.body.new_password || ''
-      );
+      const newPassword =
+        "alon-" +
+        Math.floor(1000 + Math.random() * 9000);
 
       if (newPassword.length < 8) {
         return res.redirect(

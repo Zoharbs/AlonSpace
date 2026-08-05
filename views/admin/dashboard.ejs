@@ -272,9 +272,7 @@
                 <td>
                   <form method="POST" action="/admin/clients/<%= client.id %>/reset-password" class="inline-form">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        
-                    <input type="password" name="new_password" minlength="8" placeholder="סיסמה חדשה" required>
-                    <button class="mini-btn">איפוס סיסמה</button>
+                      <button class="mini-btn">איפוס סיסמה</button>
                   </form>
   <% if (newClientInvite) { %>
 <script>
@@ -386,6 +384,11 @@ document.body.appendChild(copyBtn);
                     action="/admin/meeting-bookings/<%= booking.id %>/delete"
                     onsubmit="return confirm('למחוק את השריון?')"
                   >
+                    <input
+                      type="hidden"
+                      name="_csrf"
+                      value="<%= csrfToken %>"
+                    >
                     <button class="mini-btn danger">מחיקה</button>
                   </form>
                 </td>
