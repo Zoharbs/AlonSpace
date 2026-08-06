@@ -1,363 +1,739 @@
 <%- include('partials/head', { title }) %>
-<%- include('partials/header') %>
+  <%- include('partials/header') %>
 
-<style>
-  .tenant-hero {
-    padding: 58px 0 46px;
-  }
+    <style>
+      .tenant-hero {
+        padding: 58px 0 46px;
+      }
 
-  .tenant-summary {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    margin-top: -34px;
-    position: relative;
-    z-index: 3;
-  }
+      .tenant-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+        margin-top: -34px;
+        position: relative;
+        z-index: 3;
+      }
 
-  .tenant-summary-card {
-    background: var(--cream);
-    border: 1px solid var(--stone-dark);
-    border-radius: 22px;
-    padding: 24px;
-    box-shadow: var(--shadow);
-  }
+      .tenant-summary-card {
+        background: var(--cream);
+        border: 1px solid var(--stone-dark);
+        border-radius: 22px;
+        padding: 24px;
+        box-shadow: var(--shadow);
+      }
 
-  .tenant-summary-card h3 {
-    margin-bottom: 8px;
-  }
+      .tenant-summary-card h3 {
+        margin-bottom: 8px;
+      }
 
-  .tenant-section {
-    padding-top: 54px;
-  }
+      .tenant-section {
+        padding-top: 54px;
+      }
 
-  .meeting-portal-grid {
-    display: grid;
-    grid-template-columns: 360px minmax(0, 1fr);
-    gap: 28px;
-    align-items: start;
-  }
+      .meeting-portal-grid {
+        display: grid;
+        grid-template-columns: 360px minmax(0, 1fr);
+        gap: 28px;
+        align-items: start;
+      }
 
-  .meeting-booking-card {
-    position: sticky;
-    top: 100px;
-  }
+      .meeting-booking-card {
+        position: sticky;
+        top: 100px;
+      }
 
-  .quota-line {
-    height: 10px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: var(--stone-dark);
-    margin-top: 14px;
-  }
+      .quota-line {
+        height: 10px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--stone-dark);
+        margin-top: 14px;
+      }
 
-  .quota-line span {
-    display: block;
-    height: 100%;
-    width: var(--quota-used);
-    background: var(--oak);
-    border-radius: inherit;
-  }
+      .quota-line span {
+        display: block;
+        height: 100%;
+        width: var(--quota-used);
+        background: var(--oak);
+        border-radius: inherit;
+      }
 
-  .portal-table-wrap {
-    overflow-x: auto;
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-  }
+      .portal-table-wrap {
+        overflow-x: auto;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+      }
 
-  .portal-table {
-    width: 100%;
-    min-width: 760px;
-    border-collapse: collapse;
-    background: var(--cream);
-  }
+      .portal-table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+        background: var(--cream);
+      }
 
-  .portal-table th,
-  .portal-table td {
-    padding: 14px 16px;
-    text-align: right;
-    border-bottom: 1px solid var(--stone-dark);
-  }
+      .portal-table th,
+      .portal-table td {
+        padding: 14px 16px;
+        text-align: right;
+        border-bottom: 1px solid var(--stone-dark);
+      }
 
-  .portal-table th {
-    background: var(--stone-dark);
-  }
+      .portal-table th {
+        background: var(--stone-dark);
+      }
 
-  .portal-table tr:last-child td {
-    border-bottom: 0;
-  }
+      .portal-table tr:last-child td {
+        border-bottom: 0;
+      }
 
-  @media (max-width: 900px) {
-    .tenant-summary,
-    .meeting-portal-grid {
-      grid-template-columns: 1fr;
-    }
+      .meeting-calendar-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
 
-    .tenant-summary {
-      margin-top: 24px;
-    }
+      .calendar-navigation {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
 
-    .meeting-booking-card {
-      position: static;
-    }
-  }
-</style>
+      .weekly-calendar-wrap {
+        overflow-x: auto;
+        background: var(--cream);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+      }
 
-<section class="page-hero tenant-hero">
-  <div class="container">
-    <span class="eyebrow">פורטל הדיירים</span>
-    <h1>שלום, <%= user.display_name %></h1>
-    <p>
-      כאן נמצאים פרטי המשרד שלך, תקופת השכירות ולוח השריונים
-      המשותף של חדר הישיבות.
-    </p>
-  </div>
-</section>
+      .weekly-calendar {
+        display: grid;
+        grid-template-columns: 70px repeat(7, minmax(125px, 1fr));
+        min-width: 980px;
+        position: relative;
+      }
 
-<main>
-  <section style="padding-top:0;">
-    <div class="container">
-      <% if (error) { %>
-        <div class="form-msg show err"><%= error %></div>
-      <% } %>
+      .calendar-corner,
+      .calendar-day-header,
+      .calendar-time-label,
+      .calendar-slot {
+        border-left: 1px solid var(--stone-dark);
+        border-bottom: 1px solid var(--stone-dark);
+      }
 
-      <% if (success) { %>
-        <div class="form-msg show ok"><%= success %></div>
-      <% } %>
+      .calendar-corner {
+        min-height: 70px;
+        background: var(--stone-dark);
+      }
 
-      <div class="tenant-summary">
-        <article class="tenant-summary-card">
-          <span class="eyebrow">המשרד שלי</span>
+      .calendar-day-header {
+        min-height: 70px;
+        padding: 10px;
+        text-align: center;
+        background: var(--stone-dark);
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
 
-          <h3>
-            <%= user.office_number
-              ? `משרד ${user.office_number}`
-              : 'משרד טרם הוגדר' %>
-          </h3>
+      .calendar-day-header.today {
+        background: #e8dfc6;
+      }
 
-          <p class="small">
-            <%= user.floor
-              ? `קומה ${user.floor}`
-              : 'קומה טרם הוגדרה' %>
-          </p>
+      .calendar-day-name {
+        display: block;
+        font-weight: 700;
+      }
 
-          <% if (user.business_name) { %>
-            <p><strong><%= user.business_name %></strong></p>
-          <% } %>
-        </article>
+      .calendar-day-date {
+        display: block;
+        margin-top: 4px;
+        font-size: .8rem;
+        color: var(--ink-soft);
+      }
 
-        <article class="tenant-summary-card">
-          <span class="eyebrow">תקופת השכירות</span>
+      .calendar-time-label {
+        height: 48px;
+        padding: 5px 8px;
+        font-size: .75rem;
+        color: var(--ink-soft);
+        background: var(--stone);
+        text-align: center;
+      }
 
-          <h3>
-            עד <%= formatDate(user.rental_end_date) || '-' %>
-          </h3>
+      .calendar-slot {
+        height: 48px;
+        position: relative;
+        background: var(--cream);
+        cursor: pointer;
+        transition: background .15s ease;
+      }
 
-          <p class="small">
-            התחלה:
-            <%= formatDate(user.rental_start_date) %>
-          </p>
-        </article>
+      .calendar-slot:hover {
+        background: #f5edd8;
+      }
 
-        <article
-          class="tenant-summary-card"
-          style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%"
-        >
-          <span class="eyebrow">חדר ישיבות</span>
+      .calendar-slot.past {
+        background: #eceae4;
+        cursor: not-allowed;
+      }
 
-          <h3>
-            <%= remainingHours.toFixed(1) %> שעות נותרו
-          </h3>
+      .calendar-booking {
+        position: absolute;
+        inset: 3px;
+        z-index: 3;
+        padding: 5px 7px;
+        border-radius: 7px;
+        background: var(--ink);
+        color: var(--cream);
+        font-size: .72rem;
+        line-height: 1.25;
+        overflow: hidden;
+        cursor: default;
+      }
 
-          <p class="small">
-            נוצלו:
-            <%= usedHours.toFixed(1) %>
-            מתוך
-            <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
-            שעות החודש
-          </p>
+      .calendar-booking.mine {
+        background: var(--oak-dark);
+      }
 
-          <div class="quota-line" aria-hidden="true">
-            <span></span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
+      .calendar-booking strong {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-  <section
-    class="tenant-section"
-    id="meeting-room"
-  >
-    <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">חדר הישיבות</span>
-        <h2>שריונים משותפים</h2>
+      .my-bookings-card {
+        margin-top: 24px;
+      }
+
+      .my-bookings-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .my-booking-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--stone-dark);
+      }
+
+      .my-booking-item:last-child {
+        border-bottom: 0;
+      }
+
+      @media (max-width:900px) {
+        .meeting-portal-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 900px) {
+
+        .tenant-summary,
+        .meeting-portal-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .tenant-summary {
+          margin-top: 24px;
+        }
+
+        .meeting-booking-card {
+          position: static;
+        }
+      }
+    </style>
+
+    <section class="page-hero tenant-hero">
+      <div class="container">
+        <span class="eyebrow">פורטל הדיירים</span>
+        <h1>שלום, <%= user.display_name %>
+        </h1>
         <p>
-          כולם יכולים לראות מי שריין את החדר. אפשר לבחור כל זמן פנוי,
-          כל עוד לא חורגים מהמכסה החודשית.
+          כאן נמצאים פרטי המשרד שלך, תקופת השכירות ולוח השריונים
+          המשותף של חדר הישיבות.
         </p>
       </div>
+    </section>
 
-      <div class="meeting-portal-grid">
-        <aside class="booking-card meeting-booking-card">
-          <h3>שריון חדש</h3>
-
-          <form
-            method="POST"
-            action="/dashboard/meeting-bookings/create"
-            class="form-grid"
-          >
-            <div class="field">
-              <label for="booking_date">תאריך</label>
-              <input
-                id="booking_date"
-                type="date"
-                name="booking_date"
-                required
-              >
+    <main>
+      <section style="padding-top:0;">
+        <div class="container">
+          <% if (error) { %>
+            <div class="form-msg show err">
+              <%= error %>
             </div>
+            <% } %>
 
-            <div class="form-row-2">
-              <div class="field">
-                <label for="start_time">משעה</label>
-                <input
-                  id="start_time"
-                  type="time"
-                  name="start_time"
-                  required
-                >
-              </div>
+              <% if (success) { %>
+                <div class="form-msg show ok">
+                  <%= success %>
+                </div>
+                <% } %>
 
-              <div class="field">
-                <label for="end_time">עד שעה</label>
-                <input
-                  id="end_time"
-                  type="time"
-                  name="end_time"
-                  required
-                >
-              </div>
-            </div>
+                  <div class="tenant-summary">
+                    <article class="tenant-summary-card">
+                      <span class="eyebrow">המשרד שלי</span>
 
-            <div class="field">
-              <label for="note">הערה</label>
-              <input
-                id="note"
-                type="text"
-                name="note"
-                maxlength="200"
-                placeholder="אופציונלי"
-              >
-            </div>
+                      <h3>
+                        <%= user.office_number ? `משרד ${user.office_number}` : 'משרד טרם הוגדר' %>
+                      </h3>
 
-            <button
-              class="btn btn-primary btn-block"
-              type="submit"
-            >
-              שריון חדר הישיבות
-            </button>
-          </form>
-        </aside>
+                      <p class="small">
+                        <%= user.floor ? `קומה ${user.floor}` : 'קומה טרם הוגדרה' %>
+                      </p>
 
-        <div class="portal-table-wrap">
-          <table class="portal-table">
-            <thead>
-              <tr>
-                <th>תאריך</th>
-                <th>שעות</th>
-                <th>מי שריין</th>
-                <th>משרד</th>
-                <th>חדר ישיבות</th>
-                <th>הערה</th>
-                <th>פעולות</th>
-              </tr>
-            </thead>
+                      <% if (user.business_name) { %>
+                        <p><strong>
+                            <%= user.business_name %>
+                          </strong></p>
+                        <% } %>
+                    </article>
 
-            <tbody>
-              <% if (!meetingBookings.length) { %>
-                <tr>
-                  <td colspan="7" style="text-align:center; padding:32px;">
-                    עדיין אין שריונים עתידיים.
-                  </td>
-                </tr>
-              <% } %>
+                    <article class="tenant-summary-card">
+                      <span class="eyebrow">תקופת השכירות</span>
 
-              <% meetingBookings.forEach(booking => { %>
-                <tr
-  class="meeting-booking-row"
-  data-room-floor="<%= booking.meeting_room_floor %>"
->
-                  <td><%= booking.booking_date %></td>
+                      <h3>
+                        עד <%= formatDate(user.rental_end_date) || '-' %>
+                      </h3>
 
-                  <td>
-                    <%= booking.start_time %>–<%= booking.end_time %>
-                  </td>
+                      <p class="small">
+                        התחלה:
+                        <%= formatDate(user.rental_start_date) %>
+                      </p>
+                    </article>
 
-                  <td>
-                    <strong><%= booking.display_name %></strong>
+                    <article class="tenant-summary-card"
+                      style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%">
+                      <span class="eyebrow">חדר ישיבות</span>
 
-                    <% if (booking.business_name) { %>
-                      <br>
-                      <span class="small">
-                        <%= booking.business_name %>
-                      </span>
-                    <% } %>
-                  </td>
+                      <h3>
+                        <%= remainingHours.toFixed(1) %> שעות נותרו
+                      </h3>
 
-                  <td>
-                    <%= booking.office_number
-                      ? `משרד ${booking.office_number}`
-                      : '-' %>
+                      <p class="small">
+                        נוצלו:
+                        <%= usedHours.toFixed(1) %>
+                          מתוך
+                          <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+                            שעות החודש
+                      </p>
 
-                    <%= booking.floor
-                      ? `, קומה ${booking.floor}`
-                      : '' %>
-                  </td>
-
-                  <td><%= booking.note || '-' %></td>
-
-                  <td>
-                    <% if (booking.is_mine) { %>
-                      <form
-                        method="POST"
-                        action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
-                        onsubmit="return confirm('לבטל את השריון?')"
-                      >
-                        <button
-                          class="btn btn-outline"
-                          type="submit"
-                          style="padding:7px 12px;"
-                        >
-                          ביטול
-                        </button>
-                      </form>
-                    <% } else { %>
-                      —
-                    <% } %>
-                  </td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+                      <div class="quota-line" aria-hidden="true">
+                        <span></span>
+                      </div>
+                    </article>
+                  </div>
         </div>
-      </div>
-    </div>
-  </section>
-</main>
+      </section>
 
-<%- include('partials/footer') %>
-<%- include('partials/scripts') %>
+      <section class="tenant-section" id="meeting-room">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">חדר הישיבות שלך</span>
 
-<script>
-  const dateInput = document.getElementById('booking_date');
+            <h2>
+              חדר ישיבות — קומה <%= user.floor %>
+            </h2>
 
-  if (dateInput) {
-    const now = new Date();
-    const localDate = new Date(
-      now.getTime() - now.getTimezoneOffset() * 60000
-    ).toISOString().slice(0, 10);
+            <p>
+              לחצו על שעה פנויה בלוח כדי להתחיל שריון.
+              מוצגים רק השריונים של חדר הישיבות בקומה שלך.
+            </p>
+          </div>
 
-    dateInput.min = localDate;
+          <div class="meeting-calendar-toolbar">
+            <div class="calendar-navigation">
+              <button type="button" class="btn btn-outline" id="previousWeek">
+                השבוע הקודם
+              </button>
+
+              <button type="button" class="btn btn-outline" id="currentWeek">
+                השבוע הנוכחי
+              </button>
+
+              <button type="button" class="btn btn-outline" id="nextWeek">
+                השבוע הבא
+              </button>
+            </div>
+
+            <strong id="calendarWeekTitle"></strong>
+          </div>
+
+          <div class="meeting-portal-grid">
+            <aside class="booking-card meeting-booking-card">
+              <h3>שריון חדש</h3>
+
+              <form method="POST" action="/dashboard/meeting-bookings/create" class="form-grid" id="meetingBookingForm">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                <div class="field">
+                  <label for="booking_date">תאריך</label>
+
+                  <input id="booking_date" type="date" name="booking_date" required>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="field">
+                    <label for="start_time">משעה</label>
+
+                    <input id="start_time" type="time" name="start_time" step="1800" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="end_time">עד שעה</label>
+
+                    <input id="end_time" type="time" name="end_time" step="1800" required>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="note">הערה</label>
+
+                  <input id="note" type="text" name="note" maxlength="200" placeholder="אופציונלי">
+                </div>
+
+                <button class="btn btn-primary btn-block" type="submit">
+                  שריון חדר הישיבות
+                </button>
+              </form>
+            </aside>
+
+            <div class="weekly-calendar-wrap">
+              <div class="weekly-calendar" id="weeklyCalendar"></div>
+            </div>
+          </div>
+
+          <div class="admin-card my-bookings-card">
+            <h3>השריונים שלי</h3>
+
+            <div class="my-bookings-list">
+              <% const myBookings=meetingBookings.filter(booking=> booking.is_mine); %>
+
+                <% if (!myBookings.length) { %>
+                  <p class="small">
+                    אין לך כרגע שריונים עתידיים.
+                  </p>
+                  <% } %>
+
+                    <% myBookings.forEach(booking=> { %>
+                      <article class="my-booking-item">
+                        <div>
+                          <strong>
+                            <%= formatDate(booking.booking_date) %>
+                          </strong>
+
+                          <br>
+
+                          <span class="small">
+                            <%= String(booking.start_time).slice(0, 5) %>
+                              –
+                              <%= String(booking.end_time).slice(0, 5) %>
+                          </span>
+
+                          <% if (booking.note) { %>
+                            <br>
+                            <span class="small">
+                              <%= booking.note %>
+                            </span>
+                            <% } %>
+                        </div>
+
+                        <form method="POST" action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
+                          onsubmit="return confirm('לבטל את השריון?')">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                          <button class="btn btn-outline" type="submit" style="padding:7px 12px;">
+                            ביטול
+                          </button>
+                        </form>
+                      </article>
+                      <% }) %>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/footer') %>
+      <%- include('partials/scripts') %>
+
+        <script>
+          const dateInput = document.getElementById('booking_date');
+
+          if (dateInput) {
+            const now = new Date();
+            const localDate = new Date(
+              now.getTime() - now.getTimezoneOffset() * 60000
+            ).toISOString().slice(0, 10);
+
+            dateInput.min = localDate;
+          }
+        </script>
+        <script>
+  const meetingBookings = <%- JSON
+    .stringify(meetingBookings)
+    .replace(/</g, '\\u003c') %>;
+
+  const calendar = document.getElementById('weeklyCalendar');
+  const weekTitle = document.getElementById('calendarWeekTitle');
+
+  const bookingDateInput = document.getElementById('booking_date');
+  const startTimeInput = document.getElementById('start_time');
+  const endTimeInput = document.getElementById('end_time');
+  const bookingForm = document.getElementById('meetingBookingForm');
+
+  const dayNames = [
+    'ראשון',
+    'שני',
+    'שלישי',
+    'רביעי',
+    'חמישי',
+    'שישי',
+    'שבת',
+  ];
+
+  const calendarStartHour = 8;
+  const calendarEndHour = 21;
+  const slotMinutes = 30;
+
+  let displayedWeekStart = getStartOfWeek(new Date());
+
+  function getStartOfWeek(date) {
+    const result = new Date(date);
+    result.setHours(0, 0, 0, 0);
+    result.setDate(result.getDate() - result.getDay());
+    return result;
   }
+
+  function addDays(date, amount) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + amount);
+    return result;
+  }
+
+  function dateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  function normalizeBookingDate(value) {
+    return String(value || '').slice(0, 10);
+  }
+
+  function normalizeTime(value) {
+    return String(value || '').slice(0, 5);
+  }
+
+  function timeToMinutes(value) {
+    const [hours, minutes] = normalizeTime(value)
+      .split(':')
+      .map(Number);
+
+    return hours * 60 + minutes;
+  }
+
+  function minutesToTime(minutes) {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    return (
+      String(hours).padStart(2, '0') +
+      ':' +
+      String(remainingMinutes).padStart(2, '0')
+    );
+  }
+
+  function isPastSlot(day, minutes) {
+    const slotDate = new Date(day);
+    slotDate.setHours(
+      Math.floor(minutes / 60),
+      minutes % 60,
+      0,
+      0
+    );
+
+    return slotDate <= new Date();
+  }
+
+  function renderCalendar() {
+    calendar.innerHTML = '';
+
+    const weekEnd = addDays(displayedWeekStart, 6);
+
+    weekTitle.textContent =
+      displayedWeekStart.toLocaleDateString('he-IL', {
+        day: 'numeric',
+        month: 'long',
+      }) +
+      ' – ' +
+      weekEnd.toLocaleDateString('he-IL', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+
+    const corner = document.createElement('div');
+    corner.className = 'calendar-corner';
+    calendar.appendChild(corner);
+
+    const todayKey = dateKey(new Date());
+
+    for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
+      const day = addDays(displayedWeekStart, dayIndex);
+      const header = document.createElement('div');
+
+      header.className = 'calendar-day-header';
+
+      if (dateKey(day) === todayKey) {
+        header.classList.add('today');
+      }
+
+      header.innerHTML = `
+        <span class="calendar-day-name">
+          ${dayNames[dayIndex]}
+        </span>
+
+        <span class="calendar-day-date">
+          ${day.toLocaleDateString('he-IL', {
+            day: '2-digit',
+            month: '2-digit',
+          })}
+        </span>
+      `;
+
+      calendar.appendChild(header);
+    }
+
+    for (
+      let minutes = calendarStartHour * 60;
+      minutes < calendarEndHour * 60;
+      minutes += slotMinutes
+    ) {
+      const timeLabel = document.createElement('div');
+      timeLabel.className = 'calendar-time-label';
+      timeLabel.textContent = minutesToTime(minutes);
+
+      calendar.appendChild(timeLabel);
+
+      for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
+        const day = addDays(displayedWeekStart, dayIndex);
+        const currentDateKey = dateKey(day);
+
+        const slot = document.createElement('div');
+        slot.className = 'calendar-slot';
+        slot.dataset.date = currentDateKey;
+        slot.dataset.startMinutes = String(minutes);
+
+        const past = isPastSlot(day, minutes);
+
+        if (past) {
+          slot.classList.add('past');
+        } else {
+          slot.addEventListener('click', () => {
+            bookingDateInput.value = currentDateKey;
+            startTimeInput.value = minutesToTime(minutes);
+            endTimeInput.value = minutesToTime(
+              minutes + slotMinutes
+            );
+
+            bookingForm.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+
+            startTimeInput.focus();
+          });
+        }
+
+        const booking = meetingBookings.find((item) => {
+          return (
+            normalizeBookingDate(item.booking_date) === currentDateKey &&
+            timeToMinutes(item.start_time) <= minutes &&
+            timeToMinutes(item.end_time) > minutes
+          );
+        });
+
+        if (
+          booking &&
+          timeToMinutes(booking.start_time) === minutes
+        ) {
+          const bookingElement = document.createElement('div');
+
+          bookingElement.className = 'calendar-booking';
+
+          if (booking.is_mine) {
+            bookingElement.classList.add('mine');
+          }
+
+          const durationMinutes =
+            timeToMinutes(booking.end_time) -
+            timeToMinutes(booking.start_time);
+
+          const slotCount = Math.max(
+            1,
+            durationMinutes / slotMinutes
+          );
+
+          bookingElement.style.height =
+            `calc(${slotCount * 48}px - 6px)`;
+
+          bookingElement.innerHTML = `
+            <strong>
+              ${booking.display_name || 'שריון'}
+            </strong>
+
+            ${normalizeTime(booking.start_time)}
+            –
+            ${normalizeTime(booking.end_time)}
+          `;
+
+          bookingElement.title =
+            `${booking.display_name || 'שריון'}\n` +
+            `${normalizeTime(booking.start_time)}–${normalizeTime(booking.end_time)}\n` +
+            `${booking.note || ''}`;
+
+          slot.appendChild(bookingElement);
+        }
+
+        calendar.appendChild(slot);
+      }
+    }
+  }
+
+  document
+    .getElementById('previousWeek')
+    .addEventListener('click', () => {
+      displayedWeekStart = addDays(displayedWeekStart, -7);
+      renderCalendar();
+    });
+
+  document
+    .getElementById('nextWeek')
+    .addEventListener('click', () => {
+      displayedWeekStart = addDays(displayedWeekStart, 7);
+      renderCalendar();
+    });
+
+  document
+    .getElementById('currentWeek')
+    .addEventListener('click', () => {
+      displayedWeekStart = getStartOfWeek(new Date());
+      renderCalendar();
+    });
+
+  const today = dateKey(new Date());
+  bookingDateInput.min = today;
+
+  renderCalendar();
 </script>
