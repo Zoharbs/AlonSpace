@@ -56,6 +56,7 @@ router.get('/', async (req, res, next) => {
       upcomingMeetingsResult,
       unreadMessagesResult,
       pendingTestimonialsResult,
+      meetingRoomsResult,
     ] = await Promise.all([
       db.query(`
         SELECT
@@ -94,20 +95,24 @@ router.get('/', async (req, res, next) => {
       `),
 
       db.query(`
-        SELECT
-          mb.*,
-          u.display_name,
-          u.business_name,
-          u.office_number,
-          u.floor
-        FROM meeting_bookings mb
-        JOIN users u
-          ON u.id = mb.user_id
-        ORDER BY
-          mb.booking_date DESC,
-          mb.start_time DESC
-        LIMIT 200
-      `),
+  SELECT
+    mb.*,
+    u.display_name,
+    u.business_name,
+    u.office_number,
+    u.floor AS tenant_floor,
+    mr.name AS meeting_room_name,
+    mr.floor AS meeting_room_floor
+  FROM meeting_bookings mb
+  JOIN users u
+    ON u.id = mb.user_id
+  JOIN meeting_rooms mr
+    ON mr.id = mb.meeting_room_id
+  ORDER BY
+    mb.booking_date DESC,
+    mb.start_time DESC
+  LIMIT 200
+`),
 
       db.query(`
         SELECT COUNT(*)::INTEGER AS count
@@ -139,6 +144,16 @@ router.get('/', async (req, res, next) => {
         FROM testimonials
         WHERE status = 'ממתין'
       `),
+
+      db.query(`
+  SELECT
+    id,
+    name,
+    floor
+  FROM meeting_rooms
+  WHERE is_active = TRUE
+  ORDER BY floor ASC
+`),
     ]);
 
     const stats = {
@@ -148,11 +163,11 @@ router.get('/', async (req, res, next) => {
       pendingTestimonials:
         pendingTestimonialsResult.rows[0].count,
     };
-const newClientInvite =
-  req.session.newClientInvite || null;
+    const newClientInvite =
+      req.session.newClientInvite || null;
 
-// ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
-delete req.session.newClientInvite;
+    // ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
+    delete req.session.newClientInvite;
     return res.render('admin/dashboard', {
       title: 'פאנל ניהול — AlonSpace',
       layout: false,
@@ -161,6 +176,7 @@ delete req.session.newClientInvite;
       messages: messagesResult.rows,
       testimonials: testimonialsResult.rows,
       meetingBookings: meetingBookingsResult.rows,
+      meetingRooms: meetingRoomsResult.rows,
       stats,
       error: req.query.error || null,
       success: req.query.success || null,
@@ -188,9 +204,9 @@ router.post('/clients/create', async (req, res, next) => {
     } = req.body;
 
     const cleanUsername = String(username || '').trim();
-const cleanPassword =
-  "Alon-" + Math.floor(10000 + Math.random() * 900000);
-      const cleanDisplayName = String(
+    const cleanPassword =
+      "Alon-" + Math.floor(10000 + Math.random() * 900000);
+    const cleanDisplayName = String(
       display_name || ''
     ).trim();
 
@@ -237,8 +253,8 @@ const cleanPassword =
       12
     );
 
-const createResult = await db.query(
-  `
+    const createResult = await db.query(
+      `
     INSERT INTO users (
       username,
       email,
@@ -277,46 +293,46 @@ const createResult = await db.query(
       display_name,
       phone
   `,
-  [
-    cleanUsername,
-    cleanEmail,
-    passwordHash,
-    cleanDisplayName,
-    normalizeOptional(phone),
-    normalizeOptional(business_name),
-    normalizeOptional(office_number),
-    normalizeOptional(floor),
-    normalizeOptional(rental_start_date),
-    normalizeOptional(rental_end_date),
-    parsePositiveNumber(
-      monthly_meeting_hours,
-      6
-    ),
-  ]
-);
+      [
+        cleanUsername,
+        cleanEmail,
+        passwordHash,
+        cleanDisplayName,
+        normalizeOptional(phone),
+        normalizeOptional(business_name),
+        normalizeOptional(office_number),
+        normalizeOptional(floor),
+        normalizeOptional(rental_start_date),
+        normalizeOptional(rental_end_date),
+        parsePositiveNumber(
+          monthly_meeting_hours,
+          6
+        ),
+      ]
+    );
 
-const createdClient = createResult.rows[0];
+    const createdClient = createResult.rows[0];
 
-req.session.newClientInvite = {
-  userId: createdClient.id,
-  displayName: createdClient.display_name,
-  username: createdClient.username,
-  temporaryPassword: cleanPassword,
-  phone: createdClient.phone || null,
-};
+    req.session.newClientInvite = {
+      userId: createdClient.id,
+      displayName: createdClient.display_name,
+      username: createdClient.username,
+      temporaryPassword: cleanPassword,
+      phone: createdClient.phone || null,
+    };
 
-return req.session.save((saveError) => {
-  if (saveError) {
-    return next(saveError);
-  }
+    return req.session.save((saveError) => {
+      if (saveError) {
+        return next(saveError);
+      }
 
-  return res.redirect(
-    adminRedirect(
-      'success',
-      'חשבון הלקוח נוצר. הודעת ההתחברות מוכנה להעתקה.'
-    )
-  );
-});
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'חשבון הלקוח נוצר. הודעת ההתחברות מוכנה להעתקה.'
+        )
+      );
+    });
   } catch (error) {
     if (error.code === '23505') {
       return res.redirect(
@@ -469,37 +485,37 @@ router.post(
         [passwordHash, req.params.id]
       );
 
-   if (result.rows.length === 0) {
-  return res.redirect(
-    adminRedirect(
-      'error',
-      'הלקוח לא נמצא'
-    )
-  );
-}
+      if (result.rows.length === 0) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הלקוח לא נמצא'
+          )
+        );
+      }
 
-const client = result.rows[0];
+      const client = result.rows[0];
 
-req.session.newClientInvite = {
-  userId: client.id,
-  displayName: client.display_name,
-  username: client.username,
-  temporaryPassword: newPassword,
-  phone: client.phone || null,
-};
+      req.session.newClientInvite = {
+        userId: client.id,
+        displayName: client.display_name,
+        username: client.username,
+        temporaryPassword: newPassword,
+        phone: client.phone || null,
+      };
 
-return req.session.save((saveError) => {
-  if (saveError) {
-    return next(saveError);
-  }
+      return req.session.save((saveError) => {
+        if (saveError) {
+          return next(saveError);
+        }
 
-  return res.redirect(
-    adminRedirect(
-      'success',
-      'הסיסמה אופסה. הודעת ההתחברות מוכנה להעתקה.'
-    )
-  );
-});  
+        return res.redirect(
+          adminRedirect(
+            'success',
+            'הסיסמה אופסה. הודעת ההתחברות מוכנה להעתקה.'
+          )
+        );
+      });
     } catch (error) {
       return next(error);
     }
@@ -571,8 +587,7 @@ router.post(
   }
 );
 
-router.post(
-  '/messages/:id/read',
+router.post('/messages/:id/read',
   async (req, res, next) => {
     try {
       await db.query(
@@ -649,7 +664,302 @@ router.post(
     }
   }
 );
+router.post(
+  '/meeting-bookings/create',
+  async (req, res, next) => {
+    const client = await db.pool.connect();
 
+    try {
+      const {
+        user_id,
+        meeting_room_id,
+        booking_date,
+        start_time,
+        end_time,
+        note,
+      } = req.body;
+
+      if (
+        !user_id ||
+        !meeting_room_id ||
+        !booking_date ||
+        !start_time ||
+        !end_time
+      ) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'יש לבחור לקוח, חדר, תאריך ושעות',
+            'meeting-room'
+          )
+        );
+      }
+
+      await client.query('BEGIN');
+
+      const userResult = await client.query(
+        `
+          SELECT
+            id,
+            display_name,
+            floor,
+            monthly_meeting_hours,
+            is_active
+          FROM users
+          WHERE
+            id = $1
+            AND role = 'tenant'
+          LIMIT 1
+        `,
+        [user_id]
+      );
+
+      const tenant = userResult.rows[0];
+
+      if (!tenant || !tenant.is_active) {
+        await client.query('ROLLBACK');
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הלקוח לא נמצא או שהחשבון אינו פעיל',
+            'meeting-room'
+          )
+        );
+      }
+
+      const roomResult = await client.query(
+        `
+          SELECT
+            id,
+            floor,
+            name
+          FROM meeting_rooms
+          WHERE
+            id = $1
+            AND is_active = TRUE
+          LIMIT 1
+        `,
+        [meeting_room_id]
+      );
+
+      const room = roomResult.rows[0];
+
+      if (!room) {
+        await client.query('ROLLBACK');
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'חדר הישיבות לא נמצא',
+            'meeting-room'
+          )
+        );
+      }
+
+      if (Number(tenant.floor) !== Number(room.floor)) {
+        await client.query('ROLLBACK');
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            `לקוח מקומה ${tenant.floor} יכול לשריין רק את חדר קומה ${tenant.floor}`,
+            'meeting-room'
+          )
+        );
+      }
+
+      const startMinutes =
+        Number(start_time.slice(0, 2)) * 60 +
+        Number(start_time.slice(3, 5));
+
+      const endMinutes =
+        Number(end_time.slice(0, 2)) * 60 +
+        Number(end_time.slice(3, 5));
+
+      if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(booking_date) ||
+        !/^\d{2}:\d{2}$/.test(start_time) ||
+        !/^\d{2}:\d{2}$/.test(end_time) ||
+        endMinutes <= startMinutes
+      ) {
+        await client.query('ROLLBACK');
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'התאריך או טווח השעות אינם תקינים',
+            'meeting-room'
+          )
+        );
+      }
+
+      const futureResult = await client.query(
+        `
+          SELECT
+            ($1::DATE + $2::TIME) > NOW()
+              AS is_future
+        `,
+        [booking_date, start_time]
+      );
+
+      if (!futureResult.rows[0].is_future) {
+        await client.query('ROLLBACK');
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'אפשר ליצור רק שריון עתידי',
+            'meeting-room'
+          )
+        );
+      }
+
+      await client.query(
+        `
+          SELECT pg_advisory_xact_lock(
+            hashtext($1)
+          )
+        `,
+        [`meeting-room:${room.id}:${booking_date}`]
+      );
+
+      const conflictResult = await client.query(
+        `
+          SELECT id
+          FROM meeting_bookings
+          WHERE
+            meeting_room_id = $1
+            AND booking_date = $2
+            AND start_time < $3
+            AND end_time > $4
+          LIMIT 1
+        `,
+        [
+          room.id,
+          booking_date,
+          end_time,
+          start_time,
+        ]
+      );
+
+      if (conflictResult.rows.length > 0) {
+        await client.query('ROLLBACK');
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'החדר כבר משוריין בטווח השעות שנבחר',
+            'meeting-room'
+          )
+        );
+      }
+
+      const usedHoursResult = await client.query(
+        `
+          SELECT
+            COALESCE(
+              SUM(
+                EXTRACT(
+                  EPOCH FROM (end_time - start_time)
+                ) / 3600
+              ),
+              0
+            )::NUMERIC AS used_hours
+          FROM meeting_bookings
+          WHERE
+            user_id = $1
+            AND TO_CHAR(
+              booking_date,
+              'YYYY-MM'
+            ) = TO_CHAR(
+              $2::DATE,
+              'YYYY-MM'
+            )
+        `,
+        [tenant.id, booking_date]
+      );
+
+      const usedHours = Number(
+        usedHoursResult.rows[0].used_hours || 0
+      );
+
+      const requestedHours =
+        (endMinutes - startMinutes) / 60;
+
+      const monthlyLimit = Number(
+        tenant.monthly_meeting_hours || 6
+      );
+
+      if (
+        usedHours + requestedHours >
+        monthlyLimit
+      ) {
+        await client.query('ROLLBACK');
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            `השריון חורג ממכסת ${monthlyLimit} השעות החודשית של הלקוח`,
+            'meeting-room'
+          )
+        );
+      }
+
+      await client.query(
+        `
+          INSERT INTO meeting_bookings (
+            user_id,
+            meeting_room_id,
+            booking_date,
+            start_time,
+            end_time,
+            note
+          )
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6
+          )
+        `,
+        [
+          tenant.id,
+          room.id,
+          booking_date,
+          start_time,
+          end_time,
+          String(note || '').trim() || null,
+        ]
+      );
+
+      await client.query('COMMIT');
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          `נוצר שריון עבור ${tenant.display_name}`,
+          'meeting-room'
+        )
+      );
+    } catch (error) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.error(
+          'Admin booking rollback failed:',
+          rollbackError
+        );
+      }
+
+      return next(error);
+    } finally {
+      client.release();
+    }
+  }
+);
 router.post(
   '/testimonials/:id/delete',
   async (req, res, next) => {

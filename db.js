@@ -110,6 +110,71 @@ async function initializeDatabase() {
         booking_date
       );
   `);
+await query(`
+  CREATE TABLE IF NOT EXISTS meeting_rooms (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    floor INTEGER NOT NULL UNIQUE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+`);
+
+await query(`
+  INSERT INTO meeting_rooms (name, floor)
+  VALUES
+    ('חדר ישיבות קומה 4', 4),
+    ('חדר ישיבות קומה 6', 6)
+  ON CONFLICT (floor) DO NOTHING;
+`);
+
+await query(`
+  ALTER TABLE meeting_bookings
+  ADD COLUMN IF NOT EXISTS meeting_room_id BIGINT;
+`);
+
+await query(`
+  UPDATE meeting_bookings mb
+  SET meeting_room_id = mr.id
+  FROM users u
+  JOIN meeting_rooms mr
+    ON mr.floor = u.floor
+  WHERE
+    mb.user_id = u.id
+    AND mb.meeting_room_id IS NULL;
+`);
+
+await query(`
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1
+      FROM pg_constraint
+      WHERE conname = 'meeting_bookings_room_fk'
+    ) THEN
+      ALTER TABLE meeting_bookings
+      ADD CONSTRAINT meeting_bookings_room_fk
+      FOREIGN KEY (meeting_room_id)
+      REFERENCES meeting_rooms(id);
+    END IF;
+  END
+  $$;
+`);
+
+await query(`
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1
+      FROM meeting_bookings
+      WHERE meeting_room_id IS NULL
+    ) THEN
+      ALTER TABLE meeting_bookings
+      ALTER COLUMN meeting_room_id SET NOT NULL;
+    END IF;
+  END
+  $$;
+`);
 
   await seedAdmin();
   await seedGallery();

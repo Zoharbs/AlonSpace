@@ -156,21 +156,28 @@ router.get('/', async (req, res, next) => {
             THEN TRUE
             ELSE FALSE
           END AS is_mine
-        FROM meeting_bookings mb
-        JOIN users u
-          ON u.id = mb.user_id
+        
+          FROM meeting_bookings mb
+        JOIN users u ON u.id = mb.user_id
         WHERE
-          mb.booking_date > CURRENT_DATE
-          OR (
-            mb.booking_date = CURRENT_DATE
-            AND mb.end_time > CURRENT_TIME
+          mb.meeting_room_id = (
+            SELECT id
+            FROM meeting_rooms
+            WHERE floor = $2
+          )
+          AND (
+            mb.booking_date > CURRENT_DATE
+            OR (
+              mb.booking_date = CURRENT_DATE
+              AND mb.end_time > CURRENT_TIME
+            )
           )
         ORDER BY
           mb.booking_date ASC,
           mb.start_time ASC
         LIMIT 200
       `,
-      [user.id]
+      [user.id, user.floor]
     );
 
     return res.render('dashboard', {
@@ -187,16 +194,16 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post(
-  '/meeting-bookings/create',
+router.post('/meeting-bookings/create',
   async (req, res, next) => {
     const client = await db.pool.connect();
 
     try {
       const userResult = await client.query(
-        `
+          `
           SELECT
             id,
+            floor,
             monthly_meeting_hours
           FROM users
           WHERE
@@ -209,7 +216,17 @@ router.post(
       );
 
       const user = userResult.rows[0];
+const roomResult = await client.query(
+  `
+    SELECT id
+    FROM meeting_rooms
+    WHERE floor = $1
+    LIMIT 1
+  `,
+  [user.floor]
+);
 
+const roomId = roomResult.rows[0].id;
       if (!user) {
         return res.redirect('/login');
       }
@@ -292,13 +309,15 @@ router.post(
           `
             SELECT id
             FROM meeting_bookings
-            WHERE
-              booking_date = $1
-              AND start_time < $2
-              AND end_time > $3
+           WHERE
+            meeting_room_id = $1
+            AND booking_date = $2
+            AND start_time < $3
+            AND end_time > $4
             LIMIT 1
           `,
           [
+            roomId,
             bookingDate,
             endTime,
             startTime,
@@ -353,6 +372,7 @@ router.post(
         `
           INSERT INTO meeting_bookings (
             user_id,
+            meeting_room_id,
             booking_date,
             start_time,
             end_time,
@@ -363,11 +383,13 @@ router.post(
             $2,
             $3,
             $4,
-            $5
+            $5,
+            $6
           )
         `,
         [
           user.id,
+          roomId,
           bookingDate,
           startTime,
           endTime,
