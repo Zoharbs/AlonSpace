@@ -347,8 +347,7 @@ router.post('/clients/create', async (req, res, next) => {
   }
 });
 
-router.post(
-  '/clients/:id/update',
+router.post('/clients/:id/update',
   async (req, res, next) => {
     try {
       const {
@@ -426,6 +425,13 @@ router.post(
             'הלקוח לא נמצא'
           )
         );
+
+        return res.redirect(
+  adminRedirect(
+    'success',
+    'פרטי הלקוח עודכנו'
+  )
+);
       }
 
 
