@@ -94,7 +94,38 @@
       box-shadow: var(--shadow);
       margin-bottom: 24px;
     }
+.admin-collapse {
+  margin-bottom: 20px;
+}
 
+.admin-collapse > summary {
+  cursor: pointer;
+  background: var(--cream);
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  font-weight: 700;
+  list-style: none;
+}
+
+.admin-collapse > summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-collapse > summary::before {
+  content: "▾";
+  display: inline-block;
+  margin-left: 8px;
+  transition: transform .2s ease;
+}
+
+.admin-collapse[open] > summary::before {
+  transform: rotate(180deg);
+}
+
+.admin-collapse[open] > summary {
+  margin-bottom: 12px;
+}
     .table-wrap {
       width: 100%;
       overflow-x: auto;
@@ -391,11 +422,11 @@
             <div class="tabs">
               <button class="tab-btn active" data-tab="clients">לקוחות</button>
               <button class="tab-btn" data-tab="meeting-room">חדר ישיבות</button>
-              <button class="tab-btn" data-tab="messages">הודעות</button>
-              <button class="tab-btn" data-tab="testimonials">המלצות</button>
+           
             </div>
 
             <section class="tab-panel active" id="tab-clients">
+            <details class="admin-collapse">
               <div class="admin-card">
                 <h3>יצירת חשבון לקוח</h3>
 
@@ -472,7 +503,8 @@
                   </button>
                 </form>
               </div>
-
+</details>
+<details class="admin-collapse">
               <div class="table-wrap">
                 <table>
                   <thead>
@@ -539,7 +571,7 @@
                                 <%= client.is_active ? 'פעיל' : 'מושבת' %>
                               </span>
                             </td>
-
+</details>
                             <td>
                               <form method="POST" action="/admin/clients/<%= client.id %>/update" class="inline-form">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -800,139 +832,6 @@
               </div>
             </section>
 
-            <section class="tab-panel" id="tab-messages">
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>שם</th>
-                      <th>פרטי קשר</th>
-                      <th>הודעה</th>
-                      <th>תאריך</th>
-                      <th>פעולות</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <% if (!messages.length) { %>
-                      <tr>
-                        <td colspan="5" style="text-align:center; padding:30px;">
-                          אין הודעות.
-                        </td>
-                      </tr>
-                      <% } %>
-
-                        <% messages.forEach(message=> { %>
-                          <tr>
-                            <td>
-                              <%= message.name %>
-                                <% if (!message.is_read) { %>
-                                  <span class="pill warn">חדש</span>
-                                  <% } %>
-                            </td>
-                            <td>
-                              <%= message.phone || '' %>
-                                <br><span class="small">
-                                  <%= message.email || '' %>
-                                </span>
-                            </td>
-                            <td style="max-width:340px;">
-                              <%= message.message %>
-                            </td>
-                            <td>
-                              <%= message.created_at %>
-                            </td>
-                            <td class="row-actions">
-                              <% if (!message.is_read) { %>
-                                <form method="POST" action="/admin/messages/<%= message.id %>/read">
-                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                  <button class="mini-btn primary">סמן כנקרא</button>
-                                </form>
-                                <% } %>
-
-                                  <form method="POST" action="/admin/messages/<%= message.id %>/delete"
-                                    onsubmit="return confirm('למחוק את ההודעה?')">
-                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                    <button class="mini-btn danger">מחיקה</button>
-                                  </form>
-                            </td>
-                          </tr>
-                          <% }) %>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            <section class="tab-panel" id="tab-testimonials">
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>שם</th>
-                      <th>תפקיד</th>
-                      <th>תוכן</th>
-                      <th>דירוג</th>
-                      <th>סטטוס</th>
-                      <th>פעולות</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <% if (!testimonials.length) { %>
-                      <tr>
-                        <td colspan="6" style="text-align:center; padding:30px;">
-                          אין המלצות.
-                        </td>
-                      </tr>
-                      <% } %>
-
-                        <% testimonials.forEach(testimonial=> { %>
-                          <tr>
-                            <td>
-                              <%= testimonial.name %>
-                            </td>
-                            <td>
-                              <%= testimonial.role || '' %>
-                            </td>
-                            <td style="max-width:340px;">
-                              <%= testimonial.content %>
-                            </td>
-                            <td>
-                              <%= '★' .repeat(testimonial.rating) %>
-                            </td>
-                            <td>
-                              <span
-                                class="pill <%= testimonial.status === 'מאושר' ? 'ok' : (testimonial.status === 'נדחה' ? 'bad' : 'warn') %>">
-                                <%= testimonial.status %>
-                              </span>
-                            </td>
-                            <td class="row-actions">
-                              <% if (testimonial.status !=='מאושר' ) { %>
-                                <form method="POST" action="/admin/testimonials/<%= testimonial.id %>/approve">
-                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                  <button class="mini-btn primary">אישור</button>
-                                </form>
-                                <% } %>
-
-                                  <% if (testimonial.status !=='נדחה' ) { %>
-                                    <form method="POST" action="/admin/testimonials/<%= testimonial.id %>/reject">
-                                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                      <button class="mini-btn">דחייה</button>
-                                    </form>
-                                    <% } %>
-
-                                      <form method="POST" action="/admin/testimonials/<%= testimonial.id %>/delete"
-                                        onsubmit="return confirm('למחוק את ההמלצה?')">
-                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                        <button class="mini-btn danger">מחיקה</button>
-                                      </form>
-                            </td>
-                          </tr>
-                          <% }) %>
-                  </tbody>
-                </table>
-              </div>
-            </section>
   </main>
 
 
