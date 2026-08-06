@@ -983,9 +983,8 @@
        נתוני השריונים
     ========================= */
 
-    const adminMeetingBookings = <% - JSON
-      .stringify(meetingBookings)
-      .replace(/</g, '\\u003c') %>;
+const adminMeetingBookings =
+  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
