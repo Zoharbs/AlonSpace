@@ -185,6 +185,131 @@
       border-radius: 6px;
     }
 
+    .meeting-calendar-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    .calendar-navigation {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .weekly-calendar-wrap {
+      overflow-x: auto;
+      background: var(--cream);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .weekly-calendar {
+      display: grid;
+      grid-template-columns: 70px repeat(7, minmax(125px, 1fr));
+      min-width: 980px;
+      position: relative;
+    }
+
+    .calendar-corner,
+    .calendar-day-header,
+    .calendar-time-label,
+    .calendar-slot {
+      border-left: 1px solid var(--stone-dark);
+      border-bottom: 1px solid var(--stone-dark);
+    }
+
+    .calendar-corner {
+      min-height: 70px;
+      background: var(--stone-dark);
+    }
+
+    .calendar-day-header {
+      min-height: 70px;
+      padding: 10px;
+      text-align: center;
+      background: var(--stone-dark);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .calendar-day-header.today {
+      background: #e8dfc6;
+    }
+
+    .calendar-day-name {
+      display: block;
+      font-weight: 700;
+    }
+
+    .calendar-day-date {
+      display: block;
+      margin-top: 4px;
+      font-size: .8rem;
+      color: var(--ink-soft);
+    }
+
+    .calendar-time-label {
+      height: 48px;
+      padding: 5px 8px;
+      font-size: .75rem;
+      color: var(--ink-soft);
+      background: var(--stone);
+      text-align: center;
+    }
+
+    .calendar-slot {
+      height: 48px;
+      position: relative;
+      background: var(--cream);
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .calendar-slot:hover {
+      background: #f5edd8;
+    }
+
+    .calendar-slot.past {
+      background: #eceae4;
+      cursor: not-allowed;
+    }
+
+    .calendar-slot.selected-start {
+      background: #e8d49a;
+      box-shadow: inset 0 0 0 2px var(--oak-dark);
+    }
+
+    .calendar-slot.selected-range {
+      background: #f3e7bd;
+    }
+
+    .calendar-booking {
+      position: absolute;
+      inset: 3px;
+      z-index: 3;
+      padding: 5px 7px;
+      border-radius: 7px;
+      background: var(--ink);
+      color: var(--cream);
+      font-size: .72rem;
+      line-height: 1.25;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .calendar-booking strong {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     @media (max-width:900px) {
       .stat-cards {
         grid-template-columns: repeat(2, 1fr);
@@ -454,61 +579,25 @@
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button class="mini-btn">איפוס סיסמה</button>
                               </form>
-                              <% if (newClientInvite) { %>
-                                <script>
-                                  const inviteMessage = `שלום <%= newClientInvite.displayName %>!
 
-נוצר עבורך משתמש חדש במערכת AlonSpace.
+                              <% if (client.is_active) { %>
+                                <form method="POST" action="/admin/clients/<%= client.id %>/delete"
+                                  style="margin-top:8px;" onsubmit="return confirm('להשבית את החשבון?')">
+                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                  <button class="mini-btn danger">השבת חשבון</button>
 
-🔗 התחברות:
-https://alonspace.onrender.com/login
+                                </form>
 
-👤 שם משתמש:
-<%= newClientInvite.username %>
+                                <form method="POST" action="/admin/clients/<%= client.id %>/permanent-delete"
+                                  onsubmit="return confirm('למחוק את המשתמש לצמיתות? פעולה זו אינה ניתנת לביטול.')"
+                                  style="margin-top:8px;">
+                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-🔑 סיסמה זמנית:
-<%= newClientInvite.temporaryPassword %>
-
-בכניסה הראשונה תתבקש לבחור סיסמה חדשה.
-
-בהצלחה 🙂`;
-
-                                  const copyBtn = document.createElement("button");
-
-                                  copyBtn.textContent = "📋 העתק הודעת התחברות";
-
-                                  copyBtn.style.position = "fixed";
-                                  copyBtn.style.left = "20px";
-                                  copyBtn.style.bottom = "20px";
-                                  copyBtn.style.zIndex = "99999";
-
-                                  copyBtn.onclick = async () => {
-                                    await navigator.clipboard.writeText(inviteMessage);
-                                    copyBtn.textContent = "✅ הועתק";
-                                  };
-
-                                  document.body.appendChild(copyBtn);
-                                </script>
+                                  <button class="mini-btn danger" style="background:#c62828;color:white;">
+                                    מחק לצמיתות
+                                  </button>
+                                </form>
                                 <% } %>
-
-                                  <% if (client.is_active) { %>
-                                    <form method="POST" action="/admin/clients/<%= client.id %>/delete"
-                                      style="margin-top:8px;" onsubmit="return confirm('להשבית את החשבון?')">
-                                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                      <button class="mini-btn danger">השבת חשבון</button>
-
-                                    </form>
-
-                                    <form method="POST" action="/admin/clients/<%= client.id %>/permanent-delete"
-                                      onsubmit="return confirm('למחוק את המשתמש לצמיתות? פעולה זו אינה ניתנת לביטול.')"
-                                      style="margin-top:8px;">
-                                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                      <button class="mini-btn danger" style="background:#c62828;color:white;">
-                                        מחק לצמיתות
-                                      </button>
-                                    </form>
-                                    <% } %>
                             </td>
                           </tr>
                           <% }) %>
@@ -549,17 +638,36 @@ https://alonspace.onrender.com/login
                     חדר קומה 6
                   </button>
 
-                  <button type="button" class="mini-btn room-filter-btn" data-room-floor="all">
-                    הצג הכול
-                  </button>
+
                 </div>
               </div>
 
+              <div class="meeting-calendar-toolbar">
+                <div class="calendar-navigation">
+                  <button type="button" class="mini-btn" id="adminPreviousWeek">
+                    השבוע הקודם
+                  </button>
 
+                  <button type="button" class="mini-btn primary" id="adminCurrentWeek">
+                    השבוע הנוכחי
+                  </button>
+
+                  <button type="button" class="mini-btn" id="adminNextWeek">
+                    השבוע הבא
+                  </button>
+                </div>
+
+                <strong id="adminCalendarWeekTitle"></strong>
+              </div>
+
+              <div class="weekly-calendar-wrap">
+                <div class="weekly-calendar" id="adminWeeklyCalendar"></div>
+              </div>
               <div class="admin-card">
                 <h3>יצירת שריון בשם לקוח</h3>
 
-                <form method="POST" action="/admin/meeting-bookings/create" class="form-grid">
+                <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
+                  id="adminMeetingBookingForm">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
                   <div class="form-row-2">
@@ -606,7 +714,7 @@ https://alonspace.onrender.com/login
                     <div class="field">
                       <label>תאריך</label>
 
-                      <input type="date" name="booking_date" required>
+                      <input id="admin_booking_date" type="date" name="booking_date" required>
                     </div>
 
                     <div class="field">
@@ -620,13 +728,13 @@ https://alonspace.onrender.com/login
                     <div class="field">
                       <label>שעת התחלה</label>
 
-                      <input type="time" name="start_time" step="900" required>
+                      <input id="admin_start_time" type="time" name="start_time" step="1800" required>
                     </div>
 
                     <div class="field">
                       <label>שעת סיום</label>
 
-                      <input type="time" name="end_time" step="900" required>
+                      <input id="admin_end_time" type="time" name="end_time" step="1800" required>
                     </div>
                   </div>
 
@@ -658,7 +766,7 @@ https://alonspace.onrender.com/login
                       <% } %>
 
                         <% meetingBookings.forEach(booking=> { %>
-                          <tr>
+                          <tr class="meeting-booking-row" data-room-floor="<%= booking.meeting_room_floor %>">
                             <td>
                               <%= booking.booking_date %>
                             </td>
@@ -830,6 +938,10 @@ https://alonspace.onrender.com/login
 
 
   <script>
+    /* =========================
+       טאבים
+    ========================= */
+
     document.querySelectorAll('.tab-btn').forEach((button) => {
       button.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach((item) => {
@@ -841,54 +953,63 @@ https://alonspace.onrender.com/login
         });
 
         button.classList.add('active');
-        document
-          .getElementById('tab-' + button.dataset.tab)
-          .classList.add('active');
+
+        const panel = document.getElementById(
+          'tab-' + button.dataset.tab
+        );
+
+        if (panel) {
+          panel.classList.add('active');
+        }
 
         window.location.hash = button.dataset.tab;
       });
     });
 
-    const hash = window.location.hash.replace('#', '');
-    const matchingPanel = document.getElementById('tab-' + hash);
+    const pageHash = window.location.hash.replace('#', '');
 
-    if (hash && matchingPanel) {
+    if (pageHash) {
       const matchingButton = document.querySelector(
-        `.tab-btn[data-tab="${hash}"]`
+        `.tab-btn[data-tab="${pageHash}"]`
       );
 
       if (matchingButton) {
         matchingButton.click();
       }
     }
-    document.querySelectorAll(".copy-message").forEach(btn => {
-      btn.addEventListener("click", async () => {
 
-        const text = btn.dataset.message;
 
-        try {
-          await navigator.clipboard.writeText(text);
+    /* =========================
+       נתוני השריונים
+    ========================= */
 
-          const old = btn.textContent;
-          btn.textContent = "✓ הועתק";
+    const adminMeetingBookings = <% - JSON
+      .stringify(meetingBookings)
+      .replace(/</g, '\\u003c') %>;
 
-          setTimeout(() => {
-            btn.textContent = old;
-          }, 2000);
+    const adminCalendar =
+      document.getElementById('adminWeeklyCalendar');
 
-        } catch {
+    const adminWeekTitle =
+      document.getElementById('adminCalendarWeekTitle');
 
-          const area = document.createElement("textarea");
-          area.value = text;
-          document.body.appendChild(area);
-          area.select();
-          document.execCommand("copy");
-          area.remove();
+    const adminBookingForm =
+      document.getElementById('adminMeetingBookingForm');
 
-          alert("ההודעה הועתקה.");
-        }
-      });
-    });
+    const adminRoomSelect =
+      document.getElementById('booking-room');
+
+    const adminUserSelect =
+      document.getElementById('booking-user');
+
+    const adminBookingDateInput =
+      document.getElementById('admin_booking_date');
+
+    const adminStartTimeInput =
+      document.getElementById('admin_start_time');
+
+    const adminEndTimeInput =
+      document.getElementById('admin_end_time');
 
     const roomFilterButtons =
       document.querySelectorAll('.room-filter-btn');
@@ -896,55 +1017,688 @@ https://alonspace.onrender.com/login
     const meetingBookingRows =
       document.querySelectorAll('.meeting-booking-row');
 
-    function filterMeetingBookings(roomFloor) {
+
+    /* =========================
+       הגדרות לוח
+    ========================= */
+
+    const adminDayNames = [
+      'ראשון',
+      'שני',
+      'שלישי',
+      'רביעי',
+      'חמישי',
+      'שישי',
+      'שבת',
+    ];
+
+    const adminCalendarStartHour = 8;
+    const adminCalendarEndHour = 21;
+    const adminSlotMinutes = 30;
+
+    let adminDisplayedWeekStart =
+      getAdminStartOfWeek(new Date());
+
+    let adminSelectedStartSlot = null;
+
+    let selectedAdminRoomFloor =
+      localStorage.getItem('adminMeetingRoomFloor') || '4';
+
+
+    /* =========================
+       פונקציות עזר
+    ========================= */
+
+    function getAdminStartOfWeek(date) {
+      const result = new Date(date);
+
+      result.setHours(0, 0, 0, 0);
+      result.setDate(result.getDate() - result.getDay());
+
+      return result;
+    }
+
+    function addAdminDays(date, amount) {
+      const result = new Date(date);
+
+      result.setDate(result.getDate() + amount);
+
+      return result;
+    }
+
+    function adminDateKey(date) {
+      const year = date.getFullYear();
+
+      const month = String(
+        date.getMonth() + 1
+      ).padStart(2, '0');
+
+      const day = String(
+        date.getDate()
+      ).padStart(2, '0');
+
+      return `${year}-${month}-${day}`;
+    }
+
+    function normalizeAdminBookingDate(value) {
+      if (!value) return '';
+
+      const text = String(value);
+
+      if (/^\d{4}-\d{2}-\d{2}/.test(text)) {
+        return text.slice(0, 10);
+      }
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return '';
+      }
+
+      return adminDateKey(date);
+    }
+
+    function normalizeAdminTime(value) {
+      return String(value || '').slice(0, 5);
+    }
+
+    function adminTimeToMinutes(value) {
+      const normalized = normalizeAdminTime(value);
+
+      const match = /^(\d{2}):(\d{2})$/.exec(
+        normalized
+      );
+
+      if (!match) {
+        return null;
+      }
+
+      return (
+        Number(match[1]) * 60 +
+        Number(match[2])
+      );
+    }
+
+    function adminMinutesToTime(minutes) {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+
+      return (
+        String(hours).padStart(2, '0') +
+        ':' +
+        String(remainingMinutes).padStart(2, '0')
+      );
+    }
+
+    function isAdminPastSlot(day, minutes) {
+      const slotDate = new Date(day);
+
+      slotDate.setHours(
+        Math.floor(minutes / 60),
+        minutes % 60,
+        0,
+        0
+      );
+
+      return slotDate <= new Date();
+    }
+
+    function getBookingRoomFloor(booking) {
+      return Number(
+        booking.meeting_room_floor ||
+        booking.room_floor ||
+        booking.floor
+      );
+    }
+
+    function syncAdminRoomSelect(roomFloor) {
+      if (!adminRoomSelect) return;
+
+      const matchingOption = Array
+        .from(adminRoomSelect.options)
+        .find((option) => {
+          return String(option.dataset.floor) ===
+            String(roomFloor);
+        });
+
+      if (matchingOption) {
+        adminRoomSelect.value =
+          matchingOption.value;
+      }
+    }
+
+    function clearAdminCalendarSelection() {
+      adminSelectedStartSlot = null;
+
+      document
+        .querySelectorAll(
+          '#adminWeeklyCalendar .selected-start,' +
+          '#adminWeeklyCalendar .selected-range'
+        )
+        .forEach((item) => {
+          item.classList.remove(
+            'selected-start',
+            'selected-range'
+          );
+        });
+    }
+
+    function highlightAdminRange(
+      date,
+      startMinutes,
+      endMinutes
+    ) {
+      document
+        .querySelectorAll(
+          `#adminWeeklyCalendar ` +
+          `.calendar-slot[data-date="${date}"]`
+        )
+        .forEach((item) => {
+          const itemMinutes = Number(
+            item.dataset.startMinutes
+          );
+
+          if (
+            itemMinutes >= startMinutes &&
+            itemMinutes < endMinutes
+          ) {
+            item.classList.add('selected-range');
+          }
+        });
+    }
+
+
+    /* =========================
+       סינון טבלת השריונים
+    ========================= */
+
+    function filterAdminBookingTable(roomFloor) {
       meetingBookingRows.forEach((row) => {
-        const rowFloor = row.dataset.roomFloor;
-
-        const shouldShow =
-          roomFloor === 'all' ||
-          rowFloor === roomFloor;
-
-        row.style.display = shouldShow
-          ? ''
-          : 'none';
+        row.style.display =
+          String(row.dataset.roomFloor) ===
+            String(roomFloor)
+            ? ''
+            : 'none';
       });
+    }
+
+
+    /* =========================
+       ציור הלוח
+    ========================= */
+
+    function renderAdminCalendar() {
+      if (!adminCalendar || !adminWeekTitle) {
+        return;
+      }
+
+      clearAdminCalendarSelection();
+      adminCalendar.innerHTML = '';
+
+      const weekEnd = addAdminDays(
+        adminDisplayedWeekStart,
+        6
+      );
+
+      adminWeekTitle.textContent =
+        adminDisplayedWeekStart.toLocaleDateString(
+          'he-IL',
+          {
+            day: 'numeric',
+            month: 'long',
+          }
+        ) +
+        ' – ' +
+        weekEnd.toLocaleDateString(
+          'he-IL',
+          {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          }
+        );
+
+      const corner = document.createElement('div');
+      corner.className = 'calendar-corner';
+
+      adminCalendar.appendChild(corner);
+
+      const todayKey = adminDateKey(new Date());
+
+      for (
+        let dayIndex = 0;
+        dayIndex < 7;
+        dayIndex += 1
+      ) {
+        const day = addAdminDays(
+          adminDisplayedWeekStart,
+          dayIndex
+        );
+
+        const header =
+          document.createElement('div');
+
+        header.className = 'calendar-day-header';
+
+        if (adminDateKey(day) === todayKey) {
+          header.classList.add('today');
+        }
+
+        header.innerHTML = `
+        <span class="calendar-day-name">
+          ${adminDayNames[dayIndex]}
+        </span>
+
+        <span class="calendar-day-date">
+          ${day.toLocaleDateString('he-IL', {
+          day: '2-digit',
+          month: '2-digit',
+        })}
+        </span>
+      `;
+
+        adminCalendar.appendChild(header);
+      }
+
+      for (
+        let minutes = adminCalendarStartHour * 60;
+        minutes < adminCalendarEndHour * 60;
+        minutes += adminSlotMinutes
+      ) {
+        const timeLabel =
+          document.createElement('div');
+
+        timeLabel.className =
+          'calendar-time-label';
+
+        timeLabel.textContent =
+          adminMinutesToTime(minutes);
+
+        adminCalendar.appendChild(timeLabel);
+
+        for (
+          let dayIndex = 0;
+          dayIndex < 7;
+          dayIndex += 1
+        ) {
+          const day = addAdminDays(
+            adminDisplayedWeekStart,
+            dayIndex
+          );
+
+          const currentDateKey =
+            adminDateKey(day);
+
+          const slot =
+            document.createElement('div');
+
+          slot.className = 'calendar-slot';
+          slot.dataset.date = currentDateKey;
+          slot.dataset.startMinutes =
+            String(minutes);
+
+          const past =
+            isAdminPastSlot(day, minutes);
+
+          if (past) {
+            slot.classList.add('past');
+          } else {
+            slot.addEventListener('click', () => {
+              handleAdminSlotClick(
+                slot,
+                currentDateKey,
+                minutes
+              );
+            });
+          }
+
+          const booking =
+            adminMeetingBookings.find((item) => {
+              const bookingStart =
+                adminTimeToMinutes(
+                  item.start_time
+                );
+
+              const bookingEnd =
+                adminTimeToMinutes(
+                  item.end_time
+                );
+
+              return (
+                getBookingRoomFloor(item) ===
+                Number(selectedAdminRoomFloor) &&
+                normalizeAdminBookingDate(
+                  item.booking_date
+                ) === currentDateKey &&
+                bookingStart !== null &&
+                bookingEnd !== null &&
+                bookingStart <= minutes &&
+                bookingEnd > minutes
+              );
+            });
+
+          if (
+            booking &&
+            adminTimeToMinutes(
+              booking.start_time
+            ) === minutes
+          ) {
+            const bookingElement =
+              document.createElement('div');
+
+            bookingElement.className =
+              'calendar-booking';
+
+            const durationMinutes =
+              adminTimeToMinutes(
+                booking.end_time
+              ) -
+              adminTimeToMinutes(
+                booking.start_time
+              );
+
+            const slotCount = Math.max(
+              1,
+              durationMinutes / adminSlotMinutes
+            );
+
+            bookingElement.style.height =
+              `calc(${slotCount * 48}px - 6px)`;
+
+            bookingElement.innerHTML = `
+            <strong>
+              ${booking.display_name || 'שריון'}
+            </strong>
+
+            ${normalizeAdminTime(
+              booking.start_time
+            )}
+            –
+            ${normalizeAdminTime(
+              booking.end_time
+            )}
+
+            <br>
+
+            משרד ${booking.office_number || '-'}
+          `;
+
+            bookingElement.title =
+              `${booking.display_name || 'שריון'}\n` +
+              `${normalizeAdminTime(
+                booking.start_time
+              )}–${normalizeAdminTime(
+                booking.end_time
+              )}\n` +
+              `${booking.note || ''}`;
+
+            slot.appendChild(bookingElement);
+          }
+
+          adminCalendar.appendChild(slot);
+        }
+      }
+    }
+
+
+    /* =========================
+       בחירת טווח בלוח
+    ========================= */
+
+    function handleAdminSlotClick(
+      slot,
+      currentDateKey,
+      minutes
+    ) {
+      if (
+        !adminSelectedStartSlot ||
+        adminSelectedStartSlot.date !==
+        currentDateKey
+      ) {
+        clearAdminCalendarSelection();
+
+        adminSelectedStartSlot = {
+          date: currentDateKey,
+          minutes,
+          element: slot,
+        };
+
+        slot.classList.add('selected-start');
+
+        adminBookingDateInput.value =
+          currentDateKey;
+
+        adminStartTimeInput.value =
+          adminMinutesToTime(minutes);
+
+        adminEndTimeInput.value = '';
+
+        return;
+      }
+
+      if (
+        minutes <=
+        adminSelectedStartSlot.minutes
+      ) {
+        clearAdminCalendarSelection();
+
+        adminSelectedStartSlot = {
+          date: currentDateKey,
+          minutes,
+          element: slot,
+        };
+
+        slot.classList.add('selected-start');
+
+        adminBookingDateInput.value =
+          currentDateKey;
+
+        adminStartTimeInput.value =
+          adminMinutesToTime(minutes);
+
+        adminEndTimeInput.value = '';
+
+        return;
+      }
+
+      const selectedStartMinutes =
+        adminSelectedStartSlot.minutes;
+
+      const selectedEndMinutes =
+        minutes + adminSlotMinutes;
+
+      adminBookingDateInput.value =
+        currentDateKey;
+
+      adminStartTimeInput.value =
+        adminMinutesToTime(
+          selectedStartMinutes
+        );
+
+      adminEndTimeInput.value =
+        adminMinutesToTime(
+          selectedEndMinutes
+        );
+
+      highlightAdminRange(
+        currentDateKey,
+        selectedStartMinutes,
+        selectedEndMinutes
+      );
+
+      adminSelectedStartSlot.element
+        .classList.remove('selected-start');
+
+      adminSelectedStartSlot = null;
+
+      adminBookingForm?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+
+
+    /* =========================
+       החלפת חדר
+    ========================= */
+
+    function selectAdminRoom(roomFloor) {
+      selectedAdminRoomFloor =
+        String(roomFloor);
+
+      localStorage.setItem(
+        'adminMeetingRoomFloor',
+        selectedAdminRoomFloor
+      );
 
       roomFilterButtons.forEach((button) => {
-        const isActive =
-          button.dataset.roomFloor === roomFloor;
+        const active =
+          String(button.dataset.roomFloor) ===
+          selectedAdminRoomFloor;
 
         button.classList.toggle(
           'primary',
-          isActive
+          active
         );
 
         button.classList.toggle(
           'active',
-          isActive
+          active
         );
       });
 
-      localStorage.setItem(
-        'adminMeetingRoomFloor',
-        roomFloor
+      syncAdminRoomSelect(
+        selectedAdminRoomFloor
       );
+
+      filterAdminBookingTable(
+        selectedAdminRoomFloor
+      );
+
+      renderAdminCalendar();
     }
 
     roomFilterButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        filterMeetingBookings(
+        selectAdminRoom(
           button.dataset.roomFloor
         );
       });
     });
 
-    const savedRoomFloor =
-      localStorage.getItem(
-        'adminMeetingRoomFloor'
-      ) || '4';
 
-    filterMeetingBookings(savedRoomFloor);
+    /* =========================
+       מעבר בין שבועות
+    ========================= */
+
+    document
+      .getElementById('adminPreviousWeek')
+      ?.addEventListener('click', () => {
+        adminDisplayedWeekStart =
+          addAdminDays(
+            adminDisplayedWeekStart,
+            -7
+          );
+
+        renderAdminCalendar();
+      });
+
+    document
+      .getElementById('adminNextWeek')
+      ?.addEventListener('click', () => {
+        adminDisplayedWeekStart =
+          addAdminDays(
+            adminDisplayedWeekStart,
+            7
+          );
+
+        renderAdminCalendar();
+      });
+
+    document
+      .getElementById('adminCurrentWeek')
+      ?.addEventListener('click', () => {
+        adminDisplayedWeekStart =
+          getAdminStartOfWeek(new Date());
+
+        renderAdminCalendar();
+      });
+
+
+    /* =========================
+       התאמת לקוח לחדר
+    ========================= */
+
+    adminUserSelect?.addEventListener('change', () => {
+      const selectedOption =
+        adminUserSelect.options[
+        adminUserSelect.selectedIndex
+        ];
+
+      const tenantFloor =
+        selectedOption?.dataset.floor;
+
+      if (
+        tenantFloor === '4' ||
+        tenantFloor === '6'
+      ) {
+        selectAdminRoom(tenantFloor);
+      }
+    });
+
+
+    /* =========================
+       אתחול
+    ========================= */
+
+    if (
+      selectedAdminRoomFloor !== '4' &&
+      selectedAdminRoomFloor !== '6'
+    ) {
+      selectedAdminRoomFloor = '4';
+    }
+
+    selectAdminRoom(
+      selectedAdminRoomFloor
+    );
   </script>
+  <% if (newClientInvite) { %>
+    <script>
+      const inviteMessage = `שלום <%= newClientInvite.displayName %>!
+
+נוצר עבורך משתמש חדש במערכת AlonSpace.
+
+🔗 התחברות:
+https://alonspace.onrender.com/login
+
+👤 שם משתמש:
+<%= newClientInvite.username %>
+
+🔑 סיסמה זמנית:
+<%= newClientInvite.temporaryPassword %>
+
+בכניסה הראשונה תתבקש לבחור סיסמה חדשה.
+
+בהצלחה 🙂`;
+
+      const copyBtn = document.createElement("button");
+
+      copyBtn.textContent = "📋 העתק הודעת התחברות";
+
+      copyBtn.style.position = "fixed";
+      copyBtn.style.left = "20px";
+      copyBtn.style.bottom = "20px";
+      copyBtn.style.zIndex = "99999";
+
+      copyBtn.onclick = async () => {
+        await navigator.clipboard.writeText(inviteMessage);
+        copyBtn.textContent = "✅ הועתק";
+      };
+
+      document.body.appendChild(copyBtn);
+    </script>
+    <% } %>
+
 </body>
 
 </html>
