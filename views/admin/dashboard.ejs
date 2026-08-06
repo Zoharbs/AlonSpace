@@ -340,7 +340,23 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+.clients-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
 
+.client-card summary{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.client-card .admin-card{
+    margin-top:14px;
+}
 @media (max-width:900px) {
   .stat-cards {
     grid-template-columns: 1fr;
@@ -502,134 +518,237 @@
   <summary>ניהול לקוחות</summary>
 
   <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>לקוח</th>
-                      <th>פרטי קשר</th>
-                      <th>משרד</th>
-                      <th>תקופת שכירות</th>
-                      <th>מכסה</th>
-                      <th>סטטוס</th>
-                      <th>עדכון</th>
-                      <th>סיסמה</th>
-                    </tr>
-                  </thead>
+<div class="clients-list">
 
-                  <tbody>
-                    <% if (!clients.length) { %>
-                      <tr>
-                        <td colspan="8" style="text-align:center; padding:30px;">
-                          עדיין אין לקוחות.
-                        </td>
-                      </tr>
-                      <% } %>
+  <% if (!clients.length) { %>
 
-                        <% clients.forEach(client=> { %>
-                          <tr>
-                            <td>
-                              <strong>
-                                <%= client.display_name %>
-                              </strong>
-                              <br><span class="small">@<%= client.username %></span>
-                              <% if (client.business_name) { %>
-                                <br><span class="small">
-                                  <%= client.business_name %>
-                                </span>
-                                <% } %>
-                            </td>
+    <div class="admin-card" style="text-align:center;">
+      עדיין אין לקוחות.
+    </div>
 
-                            <td>
-                              <%= client.phone || '-' %>
-                                <br><span class="small">
-                                  <%= client.email || '-' %>
-                                </span>
-                            </td>
+  <% } %>
 
-                            <td>
-                              <%= client.office_number ? `משרד ${client.office_number}` : '-' %>
-                                <br><span class="small">
-                                  <%= client.floor ? `קומה ${client.floor}` : '-' %>
-                                </span>
-                            </td>
+  <% clients.forEach(client => { %>
 
-                            <td>
-                              <%= formatDate(client.rental_start_date) %>
-                                <br>עד <%= formatDate(client.rental_end_date) || '-' %>
-                            </td>
+    <details class="admin-collapse client-card">
 
-                            <td>
-                              <%= client.monthly_meeting_hours %> שעות
-                            </td>
+      <summary>
 
-                            <td>
-                              <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
-                                <%= client.is_active ? 'פעיל' : 'מושבת' %>
-                              </span>
-                            </td>
-                            <td>
-                              <form method="POST" action="/admin/clients/<%= client.id %>/update" class="inline-form">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <input name="display_name" value="<%= client.display_name %>" required>
-                                <input name="business_name" value="<%= client.business_name || '' %>"
-                                  placeholder="שם העסק">
-                                <input type="email" name="email" value="<%= client.email || '' %>" placeholder="אימייל">
-                                <input name="phone" value="<%= client.phone || '' %>" placeholder="טלפון">
-                                <input name="office_number" value="<%= client.office_number || '' %>"
-                                  placeholder="משרד">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
 
-                                <select name="floor">
-                                  <option value="">קומה</option>
-                                  <option value="4" <%=Number(client.floor)===4 ? 'selected' : '' %>>4</option>
-                                  <option value="6" <%=Number(client.floor)===6 ? 'selected' : '' %>>6</option>
-                                </select>
+          <strong><%= client.display_name %></strong>
 
-                                <input type="date" name="rental_start_date"
-                                  value="<%= client.rental_start_date || '' %>">
-                                <input type="date" name="rental_end_date" value="<%= client.rental_end_date || '' %>">
-                                <input type="number" min="0.5" step="0.5" name="monthly_meeting_hours"
-                                  value="<%= client.monthly_meeting_hours %>">
+          <span class="small">
+            @<%= client.username %>
+          </span>
 
-                                <label style="display:flex; gap:7px; align-items:center;">
-                                  <input type="checkbox" name="is_active" value="1" <%=client.is_active ? 'checked' : ''
-                                    %> style="width:auto;">
-                                  חשבון פעיל
-                                </label>
+          <% if(client.business_name){ %>
+            <span class="small">
+              • <%= client.business_name %>
+            </span>
+          <% } %>
 
-                                <button class="mini-btn primary">שמור</button>
-                              </form>
-                            </td>
+        </div>
 
-                            <td>
-                              <form method="POST" action="/admin/clients/<%= client.id %>/reset-password"
-                                class="inline-form">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button class="mini-btn">איפוס סיסמה</button>
-                              </form>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
 
-                              <% if (client.is_active) { %>
-                                <form method="POST" action="/admin/clients/<%= client.id %>/delete"
-                                  style="margin-top:8px;" onsubmit="return confirm('להשבית את החשבון?')">
-                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                  <button class="mini-btn danger">השבת חשבון</button>
+          <span>
+            משרד <%= client.office_number || "-" %>
+          </span>
 
-                                </form>
+          <span>
+            קומה <%= client.floor || "-" %>
+          </span>
 
-                                <form method="POST" action="/admin/clients/<%= client.id %>/permanent-delete"
-                                  onsubmit="return confirm('למחוק את המשתמש לצמיתות? פעולה זו אינה ניתנת לביטול.')"
-                                  style="margin-top:8px;">
-                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
+            <%= client.is_active ? 'פעיל' : 'מושבת' %>
+          </span>
 
-                                  <button class="mini-btn danger" style="background:#c62828;color:white;">
-                                    מחק לצמיתות
-                                  </button>
-                                </form>
-                                <% } %>
-                            </td>
-                          </tr>
-                          <% }) %>
-                  </tbody>
-                </table>
+        </div>
+
+      </summary>
+
+      <div class="admin-card">
+
+        <div class="form-row-2">
+
+          <div>
+
+            <h4>פרטי הלקוח</h4>
+
+            <p><strong>טלפון:</strong> <%= client.phone || "-" %></p>
+
+            <p><strong>אימייל:</strong> <%= client.email || "-" %></p>
+
+            <p><strong>תקופת שכירות:</strong></p>
+
+            <p>
+              <%= formatDate(client.rental_start_date) %>
+              -
+              <%= formatDate(client.rental_end_date) || "-" %>
+            </p>
+
+          </div>
+
+          <div>
+
+            <h4>עריכת לקוח</h4>
+
+            <form method="POST"
+                  action="/admin/clients/<%= client.id %>/update"
+                  class="inline-form">
+
+              <input type="hidden"
+                     name="_csrf"
+                     value="<%= csrfToken %>">
+
+              <input
+                name="display_name"
+                value="<%= client.display_name %>"
+                required>
+
+              <input
+                name="business_name"
+                value="<%= client.business_name || '' %>"
+                placeholder="שם העסק">
+
+              <input
+                type="email"
+                name="email"
+                value="<%= client.email || '' %>"
+                placeholder="אימייל">
+
+              <input
+                name="phone"
+                value="<%= client.phone || '' %>"
+                placeholder="טלפון">
+
+              <input
+                name="office_number"
+                value="<%= client.office_number || '' %>"
+                placeholder="משרד">
+
+              <select name="floor">
+
+                <option value="">קומה</option>
+
+                <option value="4"
+                  <%= Number(client.floor)===4 ? 'selected' : '' %>>
+                  4
+                </option>
+
+                <option value="6"
+                  <%= Number(client.floor)===6 ? 'selected' : '' %>>
+                  6
+                </option>
+
+              </select>
+
+              <input
+                type="date"
+                name="rental_start_date"
+                value="<%= client.rental_start_date || '' %>">
+
+              <input
+                type="date"
+                name="rental_end_date"
+                value="<%= client.rental_end_date || '' %>">
+
+              <input
+                type="number"
+                min="0.5"
+                step="0.5"
+                name="monthly_meeting_hours"
+                value="<%= client.monthly_meeting_hours %>">
+
+              <label style="display:flex;gap:8px;align-items:center;">
+
+                <input
+                  type="checkbox"
+                  name="is_active"
+                  value="1"
+                  <%= client.is_active ? 'checked' : '' %>
+                  style="width:auto;">
+
+                חשבון פעיל
+
+              </label>
+
+              <button class="mini-btn primary">
+                שמור שינויים
+              </button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+        <hr style="margin:25px 0;">
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+          <form method="POST"
+                action="/admin/clients/<%= client.id %>/reset-password">
+
+            <input
+              type="hidden"
+              name="_csrf"
+              value="<%= csrfToken %>">
+
+            <button class="mini-btn">
+              איפוס סיסמה
+            </button>
+
+          </form>
+
+          <% if(client.is_active){ %>
+
+            <form method="POST"
+                  action="/admin/clients/<%= client.id %>/delete"
+                  onsubmit="return confirm('להשבית את החשבון?')">
+
+              <input
+                type="hidden"
+                name="_csrf"
+                value="<%= csrfToken %>">
+
+              <button class="mini-btn danger">
+                השבת חשבון
+              </button>
+
+            </form>
+
+            <form method="POST"
+                  action="/admin/clients/<%= client.id %>/permanent-delete"
+                  onsubmit="return confirm('למחוק לצמיתות?')">
+
+              <input
+                type="hidden"
+                name="_csrf"
+                value="<%= csrfToken %>">
+
+              <button
+                class="mini-btn danger"
+                style="background:#c62828;color:#fff;">
+
+                מחק לצמיתות
+
+              </button>
+
+            </form>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+    </details>
+
+  <% }) %>
+
+</div>
               </div>
             </details>
             </section>
