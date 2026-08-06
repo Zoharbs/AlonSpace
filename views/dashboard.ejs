@@ -227,7 +227,14 @@
       .my-booking-item:last-child {
         border-bottom: 0;
       }
+.calendar-slot.selected-start {
+  background:#e8d49a;
+  box-shadow:inset 0 0 0 2px var(--oak-dark);
+}
 
+.calendar-slot.selected-range {
+  background:#f3e7bd;
+}
       @media (max-width:900px) {
         .meeting-portal-grid {
           grid-template-columns: 1fr;
@@ -300,14 +307,23 @@
                     <article class="tenant-summary-card">
                       <span class="eyebrow">תקופת השכירות</span>
 
-                      <h3>
-                        עד <%= formatDate(user.rental_end_date) || '-' %>
-                      </h3>
+                      <% if (user.rental_start_date || user.rental_end_date) { %>
+                        <h3>
+                          <%= formatDate(user.rental_start_date) %>
+                          –
+                          <%= formatDate(user.rental_end_date) %>
+                        </h3>
 
-                      <p class="small">
-                        התחלה:
-                        <%= formatDate(user.rental_start_date) %>
-                      </p>
+                        <p class="small">
+                          תקופת השכירות המעודכנת בחשבון
+                        </p>
+                      <% } else { %>
+                        <h3>טרם הוגדרה</h3>
+
+                        <p class="small">
+                          יש לפנות להנהלת AlonSpace לעדכון התקופה
+                        </p>
+                      <% } %>
                     </article>
 
                     <article class="tenant-summary-card"
@@ -505,7 +521,7 @@
   const slotMinutes = 30;
 
   let displayedWeekStart = getStartOfWeek(new Date());
-
+let selectedStartSlot = null;
   function getStartOfWeek(date) {
     const result = new Date(date);
     result.setHours(0, 0, 0, 0);
@@ -641,19 +657,93 @@
           slot.classList.add('past');
         } else {
           slot.addEventListener('click', () => {
-            bookingDateInput.value = currentDateKey;
-            startTimeInput.value = minutesToTime(minutes);
-            endTimeInput.value = minutesToTime(
-              minutes + slotMinutes
-            );
+  if (
+    !selectedStartSlot ||
+    selectedStartSlot.date !== currentDateKey
+  ) {
+    selectedStartSlot = {
+      date: currentDateKey,
+      minutes,
+      element: slot,
+    };
 
-            bookingForm.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-            });
+    document
+      .querySelectorAll('.calendar-slot.selected-start')
+      .forEach((item) => {
+        item.classList.remove('selected-start');
+      });
 
-            startTimeInput.focus();
-          });
+    slot.classList.add('selected-start');
+
+    bookingDateInput.value = currentDateKey;
+    startTimeInput.value = minutesToTime(minutes);
+    endTimeInput.value = '';
+
+    return;
+  }
+
+  if (minutes <= selectedStartSlot.minutes) {
+    selectedStartSlot.element.classList.remove(
+      'selected-start'
+    );
+
+    selectedStartSlot = {
+      date: currentDateKey,
+      minutes,
+      element: slot,
+    };
+
+    slot.classList.add('selected-start');
+
+    bookingDateInput.value = currentDateKey;
+    startTimeInput.value = minutesToTime(minutes);
+    endTimeInput.value = '';
+
+    return;
+  }
+
+  bookingDateInput.value = currentDateKey;
+  startTimeInput.value = minutesToTime(
+    selectedStartSlot.minutes
+  );
+  endTimeInput.value = minutesToTime(
+    minutes+slotMinutes
+  );
+
+  document
+    .querySelectorAll('.calendar-slot.selected-range')
+    .forEach((item) => {
+      item.classList.remove('selected-range');
+    });
+
+  document
+    .querySelectorAll(
+      `.calendar-slot[data-date="${currentDateKey}"]`
+    )
+    .forEach((item) => {
+      const itemMinutes = Number(
+        item.dataset.startMinutes
+      );
+
+      if (
+        itemMinutes >= selectedStartSlot.minutes &&
+        itemMinutes <= minutes
+      ) {
+        item.classList.add('selected-range');
+      }
+    });
+
+  selectedStartSlot.element.classList.remove(
+    'selected-start'
+  );
+
+  selectedStartSlot = null;
+
+  bookingForm.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+  });
+});
         }
 
         const booking = meetingBookings.find((item) => {
