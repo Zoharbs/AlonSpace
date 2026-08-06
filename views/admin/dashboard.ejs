@@ -31,12 +31,12 @@
       padding: 40px 0;
     }
 
-.stat-cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-  margin-bottom: 36px;
-}
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-bottom: 36px;
+    }
 
     .stat-card {
       background: var(--cream);
@@ -94,38 +94,40 @@
       box-shadow: var(--shadow);
       margin-bottom: 24px;
     }
-.admin-collapse {
-  margin-bottom: 20px;
-}
 
-.admin-collapse > summary {
-  cursor: pointer;
-  background: var(--cream);
-  padding: 16px 20px;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-  font-weight: 700;
-  list-style: none;
-}
+    .admin-collapse {
+      margin-bottom: 20px;
+    }
 
-.admin-collapse > summary::-webkit-details-marker {
-  display: none;
-}
+    .admin-collapse>summary {
+      cursor: pointer;
+      background: var(--cream);
+      padding: 16px 20px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      font-weight: 700;
+      list-style: none;
+    }
 
-.admin-collapse > summary::before {
-  content: "▾";
-  display: inline-block;
-  margin-left: 8px;
-  transition: transform .2s ease;
-}
+    .admin-collapse>summary::-webkit-details-marker {
+      display: none;
+    }
 
-.admin-collapse[open] > summary::before {
-  transform: rotate(180deg);
-}
+    .admin-collapse>summary::before {
+      content: "▾";
+      display: inline-block;
+      margin-left: 8px;
+      transition: transform .2s ease;
+    }
 
-.admin-collapse[open] > summary {
-  margin-bottom: 12px;
-}
+    .admin-collapse[open]>summary::before {
+      transform: rotate(180deg);
+    }
+
+    .admin-collapse[open]>summary {
+      margin-bottom: 12px;
+    }
+
     .table-wrap {
       width: 100%;
       overflow-x: auto;
@@ -340,33 +342,35 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-.clients-list{
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-}
 
-.client-card summary{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
-    flex-wrap:wrap;
-}
+    .clients-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-.client-card .admin-card{
-    margin-top:14px;
-}
-@media (max-width:900px) {
-  .stat-cards {
-    grid-template-columns: 1fr;
-  }
+    .client-card summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
 
-  .admin-header .container {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
+    .client-card .admin-card {
+      margin-top: 14px;
+    }
+
+    @media (max-width:900px) {
+      .stat-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-header .container {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 
@@ -419,338 +423,307 @@
                 </div>
                 <div class="l">שריונים עתידיים</div>
               </div>
-</div>
+            </div>
 
 
             <div class="tabs">
               <button class="tab-btn active" data-tab="clients">לקוחות</button>
               <button class="tab-btn" data-tab="meeting-room">חדר ישיבות</button>
-           
+
             </div>
 
             <section class="tab-panel active" id="tab-clients">
-  <details class="admin-collapse">
-  <summary>יצירת חשבון לקוח</summary>
+              <details class="admin-collapse">
+                <summary>יצירת חשבון לקוח</summary>
 
-  <div class="admin-card">
-    <div
-  id="adminSelectedBookingRange"
-  class="form-msg"
-  style="margin-bottom:14px;"
-></div>
-                <h3>יצירת חשבון לקוח</h3>
+                <div class="admin-card">
+                  <h3>יצירת חשבון לקוח</h3>
 
-                <form method="POST" action="/admin/clients/create" class="form-grid">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label>שם משתמש</label>
-                      <input name="username" required autocomplete="off">
+                  <form method="POST" action="/admin/clients/create" class="form-grid">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label>שם משתמש</label>
+                        <input name="username" required autocomplete="off">
+                      </div>
+
+
                     </div>
 
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label>שם לתצוגה</label>
+                        <input name="display_name" required>
+                      </div>
+
+                      <div class="field">
+                        <label>שם העסק</label>
+                        <input name="business_name">
+                      </div>
+                    </div>
+
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label>אימייל</label>
+                        <input type="email" name="email">
+                      </div>
+
+                      <div class="field">
+                        <label>טלפון</label>
+                        <input name="phone">
+                      </div>
+                    </div>
+
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label>מספר משרד</label>
+                        <input name="office_number">
+                      </div>
+
+                      <div class="field">
+                        <label>קומה</label>
+                        <select name="floor">
+                          <option value="">לא הוגדר</option>
+                          <option value="4">קומה 4</option>
+                          <option value="6">קומה 6</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label>תחילת שכירות</label>
+                        <input type="date" name="rental_start_date">
+                      </div>
+
+                      <div class="field">
+                        <label>סיום שכירות</label>
+                        <input type="date" name="rental_end_date">
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label>מכסת חדר ישיבות חודשית</label>
+                      <input type="number" name="monthly_meeting_hours" min="0.5" step="0.5" value="6">
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">
+                      צור חשבון לקוח
+                    </button>
+                  </form>
+                </div>
+              </details>
+              <details class="admin-collapse">
+                <summary>ניהול לקוחות</summary>
+
+                <div class="table-wrap">
+                  <div class="clients-list">
+
+                    <% if (!clients.length) { %>
+
+                      <div class="admin-card" style="text-align:center;">
+                        עדיין אין לקוחות.
+                      </div>
+
+                      <% } %>
+
+                        <% clients.forEach(client=> { %>
+
+                          <details class="admin-collapse client-card">
+
+                            <summary>
+
+                              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+
+                                <strong>
+                                  <%= client.display_name %>
+                                </strong>
+
+                                <span class="small">
+                                  @<%= client.username %>
+                                </span>
+
+                                <% if(client.business_name){ %>
+                                  <span class="small">
+                                    • <%= client.business_name %>
+                                  </span>
+                                  <% } %>
+
+                              </div>
+
+                              <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+
+                                <span>
+                                  משרד <%= client.office_number || "-" %>
+                                </span>
+
+                                <span>
+                                  קומה <%= client.floor || "-" %>
+                                </span>
+
+                                <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
+                                  <%= client.is_active ? 'פעיל' : 'מושבת' %>
+                                </span>
+
+                              </div>
+
+                            </summary>
+
+                            <div class="admin-card">
+
+                              <div class="form-row-2">
+
+                                <div>
+
+                                  <h4>פרטי הלקוח</h4>
+
+                                  <p><strong>טלפון:</strong>
+                                    <%= client.phone || "-" %>
+                                  </p>
+
+                                  <p><strong>אימייל:</strong>
+                                    <%= client.email || "-" %>
+                                  </p>
+
+                                  <p><strong>תקופת שכירות:</strong></p>
+
+                                  <p>
+                                    <%= formatDate(client.rental_start_date) %>
+                                      -
+                                      <%= formatDate(client.rental_end_date) || "-" %>
+                                  </p>
+
+                                </div>
+
+                                <div>
+
+                                  <h4>עריכת לקוח</h4>
+
+                                  <form method="POST" action="/admin/clients/<%= client.id %>/update"
+                                    class="inline-form">
+
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                    <input name="display_name" value="<%= client.display_name %>" required>
+
+                                    <input name="business_name" value="<%= client.business_name || '' %>"
+                                      placeholder="שם העסק">
+
+                                    <input type="email" name="email" value="<%= client.email || '' %>"
+                                      placeholder="אימייל">
+
+                                    <input name="phone" value="<%= client.phone || '' %>" placeholder="טלפון">
+
+                                    <input name="office_number" value="<%= client.office_number || '' %>"
+                                      placeholder="משרד">
+
+                                    <select name="floor">
+
+                                      <option value="">קומה</option>
+
+                                      <option value="4" <%=Number(client.floor)===4 ? 'selected' : '' %>>
+                                        4
+                                      </option>
+
+                                      <option value="6" <%=Number(client.floor)===6 ? 'selected' : '' %>>
+                                        6
+                                      </option>
+
+                                    </select>
+
+<input
+  type="date"
+  name="rental_start_date"
+  value="<%= client.rental_start_date
+    ? new Date(client.rental_start_date).toISOString().slice(0, 10)
+    : '' %>"
+>
+
+<input
+  type="date"
+  name="rental_end_date"
+  value="<%= client.rental_end_date
+    ? new Date(client.rental_end_date).toISOString().slice(0, 10)
+    : '' %>"
+>
+                                    <input type="number" min="0.5" step="0.5" name="monthly_meeting_hours"
+                                      value="<%= client.monthly_meeting_hours %>">
+
+                                    <label style="display:flex;gap:8px;align-items:center;">
+  <input
+    type="checkbox"
+    name="is_active"
+    value="1"
+    <%= client.is_active ? 'checked' : '' %>
+    style="width:auto;"
+  >
+
+  חשבון פעיל
+</label>
+
+                                    <button type="submit" class="mini-btn primary">
+                                      שמור שינויים
+                                    </button>
+
+                                  </form>
+
+                                </div>
+
+                              </div>
+
+                              <hr style="margin:25px 0;">
+
+                              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                                <form method="POST" action="/admin/clients/<%= client.id %>/reset-password">
+
+                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                  <button class="mini-btn">
+                                    איפוס סיסמה
+                                  </button>
+
+                                </form>
+
+                                <% if(client.is_active){ %>
+
+                                  <form method="POST" action="/admin/clients/<%= client.id %>/delete"
+                                    onsubmit="return confirm('להשבית את החשבון?')">
+
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                    <button class="mini-btn danger">
+                                      השבת חשבון
+                                    </button>
+
+                                  </form>
+
+                                  <form method="POST" action="/admin/clients/<%= client.id %>/permanent-delete"
+                                    onsubmit="return confirm('למחוק לצמיתות?')">
+
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                    <button class="mini-btn danger" style="background:#c62828;color:#fff;">
+
+                                      מחק לצמיתות
+
+                                    </button>
+
+                                  </form>
+
+                                  <% } %>
+
+                              </div>
+
+                            </div>
+
+                          </details>
+
+                          <% }) %>
 
                   </div>
-
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label>שם לתצוגה</label>
-                      <input name="display_name" required>
-                    </div>
-
-                    <div class="field">
-                      <label>שם העסק</label>
-                      <input name="business_name">
-                    </div>
-                  </div>
-
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label>אימייל</label>
-                      <input type="email" name="email">
-                    </div>
-
-                    <div class="field">
-                      <label>טלפון</label>
-                      <input name="phone">
-                    </div>
-                  </div>
-
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label>מספר משרד</label>
-                      <input name="office_number">
-                    </div>
-
-                    <div class="field">
-                      <label>קומה</label>
-                      <select name="floor">
-                        <option value="">לא הוגדר</option>
-                        <option value="4">קומה 4</option>
-                        <option value="6">קומה 6</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label>תחילת שכירות</label>
-                      <input type="date" name="rental_start_date">
-                    </div>
-
-                    <div class="field">
-                      <label>סיום שכירות</label>
-                      <input type="date" name="rental_end_date">
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <label>מכסת חדר ישיבות חודשית</label>
-                    <input type="number" name="monthly_meeting_hours" min="0.5" step="0.5" value="6">
-                  </div>
-
-                  <button class="btn btn-primary" type="submit">
-                    צור חשבון לקוח
-                  </button>
-                </form>
-              </div>
-</details>
-<details class="admin-collapse">
-  <summary>ניהול לקוחות</summary>
-
-  <div class="table-wrap">
-<div class="clients-list">
-
-  <% if (!clients.length) { %>
-
-    <div class="admin-card" style="text-align:center;">
-      עדיין אין לקוחות.
-    </div>
-
-  <% } %>
-
-  <% clients.forEach(client => { %>
-
-    <details class="admin-collapse client-card">
-
-      <summary>
-
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-
-          <strong><%= client.display_name %></strong>
-
-          <span class="small">
-            @<%= client.username %>
-          </span>
-
-          <% if(client.business_name){ %>
-            <span class="small">
-              • <%= client.business_name %>
-            </span>
-          <% } %>
-
-        </div>
-
-        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
-
-          <span>
-            משרד <%= client.office_number || "-" %>
-          </span>
-
-          <span>
-            קומה <%= client.floor || "-" %>
-          </span>
-
-          <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
-            <%= client.is_active ? 'פעיל' : 'מושבת' %>
-          </span>
-
-        </div>
-
-      </summary>
-
-      <div class="admin-card">
-
-        <div class="form-row-2">
-
-          <div>
-
-            <h4>פרטי הלקוח</h4>
-
-            <p><strong>טלפון:</strong> <%= client.phone || "-" %></p>
-
-            <p><strong>אימייל:</strong> <%= client.email || "-" %></p>
-
-            <p><strong>תקופת שכירות:</strong></p>
-
-            <p>
-              <%= formatDate(client.rental_start_date) %>
-              -
-              <%= formatDate(client.rental_end_date) || "-" %>
-            </p>
-
-          </div>
-
-          <div>
-
-            <h4>עריכת לקוח</h4>
-
-            <form method="POST"
-                  action="/admin/clients/<%= client.id %>/update"
-                  class="inline-form">
-
-              <input type="hidden"
-                     name="_csrf"
-                     value="<%= csrfToken %>">
-
-              <input
-                name="display_name"
-                value="<%= client.display_name %>"
-                required>
-
-              <input
-                name="business_name"
-                value="<%= client.business_name || '' %>"
-                placeholder="שם העסק">
-
-              <input
-                type="email"
-                name="email"
-                value="<%= client.email || '' %>"
-                placeholder="אימייל">
-
-              <input
-                name="phone"
-                value="<%= client.phone || '' %>"
-                placeholder="טלפון">
-
-              <input
-                name="office_number"
-                value="<%= client.office_number || '' %>"
-                placeholder="משרד">
-
-              <select name="floor">
-
-                <option value="">קומה</option>
-
-                <option value="4"
-                  <%= Number(client.floor)===4 ? 'selected' : '' %>>
-                  4
-                </option>
-
-                <option value="6"
-                  <%= Number(client.floor)===6 ? 'selected' : '' %>>
-                  6
-                </option>
-
-              </select>
-
-              <input
-                type="date"
-                name="rental_start_date"
-                value="<%= client.rental_start_date || '' %>">
-
-              <input
-                type="date"
-                name="rental_end_date"
-                value="<%= client.rental_end_date || '' %>">
-
-              <input
-                type="number"
-                min="0.5"
-                step="0.5"
-                name="monthly_meeting_hours"
-                value="<%= client.monthly_meeting_hours %>">
-
-              <label style="display:flex;gap:8px;align-items:center;">
-
-                <input
-                  type="checkbox"
-                  name="is_active"
-                  value="1"
-                  <%= client.is_active ? 'checked' : '' %>
-                  style="width:auto;">
-
-                חשבון פעיל
-
-              </label>
-
-              <button class="mini-btn primary">
-                שמור שינויים
-              </button>
-
-            </form>
-
-          </div>
-
-        </div>
-
-        <hr style="margin:25px 0;">
-
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-
-          <form method="POST"
-                action="/admin/clients/<%= client.id %>/reset-password">
-
-            <input
-              type="hidden"
-              name="_csrf"
-              value="<%= csrfToken %>">
-
-            <button class="mini-btn">
-              איפוס סיסמה
-            </button>
-
-          </form>
-
-          <% if(client.is_active){ %>
-
-            <form method="POST"
-                  action="/admin/clients/<%= client.id %>/delete"
-                  onsubmit="return confirm('להשבית את החשבון?')">
-
-              <input
-                type="hidden"
-                name="_csrf"
-                value="<%= csrfToken %>">
-
-              <button class="mini-btn danger">
-                השבת חשבון
-              </button>
-
-            </form>
-
-            <form method="POST"
-                  action="/admin/clients/<%= client.id %>/permanent-delete"
-                  onsubmit="return confirm('למחוק לצמיתות?')">
-
-              <input
-                type="hidden"
-                name="_csrf"
-                value="<%= csrfToken %>">
-
-              <button
-                class="mini-btn danger"
-                style="background:#c62828;color:#fff;">
-
-                מחק לצמיתות
-
-              </button>
-
-            </form>
-
-          <% } %>
-
-        </div>
-
-      </div>
-
-    </details>
-
-  <% }) %>
-
-</div>
-              </div>
-            </details>
+                </div>
+              </details>
             </section>
 
             <section class="tab-panel" id="tab-meeting-room">
@@ -810,88 +783,89 @@
               <div class="weekly-calendar-wrap">
                 <div class="weekly-calendar" id="adminWeeklyCalendar"></div>
               </div>
-<details class="admin-collapse">
-  <summary>יצירת שריון בשם לקוח</summary>
+              <details class="admin-collapse">
+                <summary>יצירת שריון בשם לקוח</summary>
 
-  <div class="admin-card">
+                <div class="admin-card">
+                  <div id="adminSelectedBookingRange" class="form-msg" style="margin-bottom:14px;"></div>
 
-                <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
-                  id="adminMeetingBookingForm">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
+                    id="adminMeetingBookingForm">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label for="booking-user">
-                        לקוח
-                      </label>
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label for="booking-user">
+                          לקוח
+                        </label>
 
-                      <select id="booking-user" name="user_id" required>
-                        <option value="">
-                          בחירת לקוח
-                        </option>
-
-                        <% clients .filter(client=> client.is_active)
-                          .forEach(client => { %>
-                          <option value="<%= client.id %>" data-floor="<%= client.floor || '' %>">
-                            <%= client.display_name %>
-                              — קומה <%= client.floor || 'לא הוגדרה' %>
+                        <select id="booking-user" name="user_id" required>
+                          <option value="">
+                            בחירת לקוח
                           </option>
-                          <% }) %>
-                      </select>
-                    </div>
 
-                    <div class="field">
-                      <label for="booking-room">
-                        חדר ישיבות
-                      </label>
+                          <% clients .filter(client=> client.is_active)
+                            .forEach(client => { %>
+                            <option value="<%= client.id %>" data-floor="<%= client.floor || '' %>">
+                              <%= client.display_name %>
+                                — קומה <%= client.floor || 'לא הוגדרה' %>
+                            </option>
+                            <% }) %>
+                        </select>
+                      </div>
 
-                      <select id="booking-room" name="meeting_room_id" required>
-                        <option value="">
-                          בחירת חדר
-                        </option>
+                      <div class="field">
+                        <label for="booking-room">
+                          חדר ישיבות
+                        </label>
 
-                        <% meetingRooms.forEach(room=> { %>
-                          <option value="<%= room.id %>" data-floor="<%= room.floor %>">
-                            <%= room.name %>
+                        <select id="booking-room" name="meeting_room_id" required>
+                          <option value="">
+                            בחירת חדר
                           </option>
-                          <% }) %>
-                      </select>
-                    </div>
-                  </div>
 
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label>תאריך</label>
-
-                      <input id="admin_booking_date" type="date" name="booking_date" required>
+                          <% meetingRooms.forEach(room=> { %>
+                            <option value="<%= room.id %>" data-floor="<%= room.floor %>">
+                              <%= room.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                      </div>
                     </div>
 
-                    <div class="field">
-                      <label>הערה</label>
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label>תאריך</label>
 
-                      <input type="text" name="note" placeholder="אופציונלי">
+                        <input id="admin_booking_date" type="date" name="booking_date" required>
+                      </div>
+
+                      <div class="field">
+                        <label>הערה</label>
+
+                        <input type="text" name="note" placeholder="אופציונלי">
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="form-row-2">
-                    <div class="field">
-                      <label>שעת התחלה</label>
+                    <div class="form-row-2">
+                      <div class="field">
+                        <label>שעת התחלה</label>
 
-                      <input id="admin_start_time" type="time" name="start_time" step="1800" required>
+                        <input id="admin_start_time" type="time" name="start_time" step="1800" required>
+                      </div>
+
+                      <div class="field">
+                        <label>שעת סיום</label>
+
+                        <input id="admin_end_time" type="time" name="end_time" step="1800" required>
+                      </div>
                     </div>
 
-                    <div class="field">
-                      <label>שעת סיום</label>
-
-                      <input id="admin_end_time" type="time" name="end_time" step="1800" required>
-                    </div>
-                  </div>
-
-                  <button type="submit" class="btn btn-primary">
-                    יצירת שריון
-                  </button>
-                </form>
-              </div>
+                    <button type="submit" class="btn btn-primary">
+                      יצירת שריון
+                    </button>
+                  </form>
+                </div>
               </details>
               <div class="table-wrap">
                 <table>
@@ -1000,7 +974,7 @@
        נתוני השריונים
     ========================= */
 
-const adminMeetingBookings =
+    const adminMeetingBookings =
   <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminCalendar =
@@ -1026,10 +1000,10 @@ const adminMeetingBookings =
 
     const adminEndTimeInput =
       document.getElementById('admin_end_time');
-const adminSelectedBookingRange =
-  document.getElementById(
-    'adminSelectedBookingRange'
-  );
+    const adminSelectedBookingRange =
+      document.getElementById(
+        'adminSelectedBookingRange'
+      );
     const roomFilterButtons =
       document.querySelectorAll('.room-filter-btn');
 
@@ -1491,14 +1465,14 @@ const adminSelectedBookingRange =
           adminMinutesToTime(minutes);
 
         adminEndTimeInput.value = '';
-if (adminSelectedBookingRange) {
-  adminSelectedBookingRange.classList.remove(
-    'show',
-    'ok'
-  );
+        if (adminSelectedBookingRange) {
+          adminSelectedBookingRange.classList.remove(
+            'show',
+            'ok'
+          );
 
-  adminSelectedBookingRange.textContent = '';
-}
+          adminSelectedBookingRange.textContent = '';
+        }
         return;
       }
 
@@ -1523,14 +1497,14 @@ if (adminSelectedBookingRange) {
           adminMinutesToTime(minutes);
 
         adminEndTimeInput.value = '';
-if (adminSelectedBookingRange) {
-  adminSelectedBookingRange.classList.remove(
-    'show',
-    'ok'
-  );
+        if (adminSelectedBookingRange) {
+          adminSelectedBookingRange.classList.remove(
+            'show',
+            'ok'
+          );
 
-  adminSelectedBookingRange.textContent = '';
-}
+          adminSelectedBookingRange.textContent = '';
+        }
         return;
       }
 
@@ -1552,17 +1526,17 @@ if (adminSelectedBookingRange) {
         adminMinutesToTime(
           selectedEndMinutes
         );
-if (adminSelectedBookingRange) {
-  adminSelectedBookingRange.classList.add(
-    'show',
-    'ok'
-  );
+      if (adminSelectedBookingRange) {
+        adminSelectedBookingRange.classList.add(
+          'show',
+          'ok'
+        );
 
-  adminSelectedBookingRange.textContent =
-    `נבחר: ${currentDateKey}, ` +
-    `${adminMinutesToTime(selectedStartMinutes)}–` +
-    `${adminMinutesToTime(selectedEndMinutes)}`;
-}
+        adminSelectedBookingRange.textContent =
+          `נבחר: ${currentDateKey}, ` +
+          `${adminMinutesToTime(selectedStartMinutes)}–` +
+          `${adminMinutesToTime(selectedEndMinutes)}`;
+      }
       highlightAdminRange(
         currentDateKey,
         selectedStartMinutes,
