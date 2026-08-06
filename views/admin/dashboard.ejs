@@ -31,12 +31,12 @@
       padding: 40px 0;
     }
 
-    .stat-cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin-bottom: 36px;
-    }
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 36px;
+}
 
     .stat-card {
       background: var(--cream);
@@ -341,16 +341,16 @@
       text-overflow: ellipsis;
     }
 
-    @media (max-width:900px) {
-      .stat-cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
+@media (max-width:900px) {
+  .stat-cards {
+    grid-template-columns: 1fr;
+  }
 
-      .admin-header .container {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-    }
+  .admin-header .container {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
   </style>
 </head>
 
@@ -403,21 +403,8 @@
                 </div>
                 <div class="l">שריונים עתידיים</div>
               </div>
+</div>
 
-              <div class="stat-card">
-                <div class="n">
-                  <%= stats.unreadMessages %>
-                </div>
-                <div class="l">הודעות שלא נקראו</div>
-              </div>
-
-              <div class="stat-card">
-                <div class="n">
-                  <%= stats.pendingTestimonials %>
-                </div>
-                <div class="l">המלצות ממתינות</div>
-              </div>
-            </div>
 
             <div class="tabs">
               <button class="tab-btn active" data-tab="clients">לקוחות</button>
@@ -426,8 +413,15 @@
             </div>
 
             <section class="tab-panel active" id="tab-clients">
-            <details class="admin-collapse">
-              <div class="admin-card">
+  <details class="admin-collapse">
+  <summary>יצירת חשבון לקוח</summary>
+
+  <div class="admin-card">
+    <div
+  id="adminSelectedBookingRange"
+  class="form-msg"
+  style="margin-bottom:14px;"
+></div>
                 <h3>יצירת חשבון לקוח</h3>
 
                 <form method="POST" action="/admin/clients/create" class="form-grid">
@@ -505,7 +499,9 @@
               </div>
 </details>
 <details class="admin-collapse">
-              <div class="table-wrap">
+  <summary>ניהול לקוחות</summary>
+
+  <div class="table-wrap">
                 <table>
                   <thead>
                     <tr>
@@ -571,7 +567,6 @@
                                 <%= client.is_active ? 'פעיל' : 'מושבת' %>
                               </span>
                             </td>
-</details>
                             <td>
                               <form method="POST" action="/admin/clients/<%= client.id %>/update" class="inline-form">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -636,6 +631,7 @@
                   </tbody>
                 </table>
               </div>
+            </details>
             </section>
 
             <section class="tab-panel" id="tab-meeting-room">
@@ -695,8 +691,10 @@
               <div class="weekly-calendar-wrap">
                 <div class="weekly-calendar" id="adminWeeklyCalendar"></div>
               </div>
-              <div class="admin-card">
-                <h3>יצירת שריון בשם לקוח</h3>
+<details class="admin-collapse">
+  <summary>יצירת שריון בשם לקוח</summary>
+
+  <div class="admin-card">
 
                 <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
                   id="adminMeetingBookingForm">
@@ -775,6 +773,7 @@
                   </button>
                 </form>
               </div>
+              </details>
               <div class="table-wrap">
                 <table>
                   <thead>
@@ -908,7 +907,10 @@ const adminMeetingBookings =
 
     const adminEndTimeInput =
       document.getElementById('admin_end_time');
-
+const adminSelectedBookingRange =
+  document.getElementById(
+    'adminSelectedBookingRange'
+  );
     const roomFilterButtons =
       document.querySelectorAll('.room-filter-btn');
 
@@ -1370,7 +1372,14 @@ const adminMeetingBookings =
           adminMinutesToTime(minutes);
 
         adminEndTimeInput.value = '';
+if (adminSelectedBookingRange) {
+  adminSelectedBookingRange.classList.remove(
+    'show',
+    'ok'
+  );
 
+  adminSelectedBookingRange.textContent = '';
+}
         return;
       }
 
@@ -1395,7 +1404,14 @@ const adminMeetingBookings =
           adminMinutesToTime(minutes);
 
         adminEndTimeInput.value = '';
+if (adminSelectedBookingRange) {
+  adminSelectedBookingRange.classList.remove(
+    'show',
+    'ok'
+  );
 
+  adminSelectedBookingRange.textContent = '';
+}
         return;
       }
 
@@ -1417,7 +1433,17 @@ const adminMeetingBookings =
         adminMinutesToTime(
           selectedEndMinutes
         );
+if (adminSelectedBookingRange) {
+  adminSelectedBookingRange.classList.add(
+    'show',
+    'ok'
+  );
 
+  adminSelectedBookingRange.textContent =
+    `נבחר: ${currentDateKey}, ` +
+    `${adminMinutesToTime(selectedStartMinutes)}–` +
+    `${adminMinutesToTime(selectedEndMinutes)}`;
+}
       highlightAdminRange(
         currentDateKey,
         selectedStartMinutes,
