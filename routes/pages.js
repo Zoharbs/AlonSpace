@@ -167,4 +167,12 @@ router.get('/terms', (req, res) => {
   });
 });
 
+router.get('/privacy', (req, res) => {
+  res.render('privacy');
+});
+
+router.get('/accessibility', (req, res) => {
+  res.render('accessibility');
+});
+
 module.exports = router;

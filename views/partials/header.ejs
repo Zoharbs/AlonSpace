@@ -55,6 +55,73 @@
       font-size: .82rem;
     }
   }
+  .nav-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-dropdown-trigger {
+  display: flex !important;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-dropdown-arrow {
+  font-size: .8em;
+  transition: transform .2s ease;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+
+  min-width: 190px;
+  padding: 8px;
+
+  background: var(--cream);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+
+  transition:
+    opacity .2s ease,
+    visibility .2s ease,
+    transform .2s ease;
+
+  z-index: 1000;
+}
+
+.nav-dropdown-menu a {
+  display: block;
+  padding: 10px 12px;
+
+  color: var(--ink) !important;
+  text-decoration: none;
+  white-space: nowrap;
+
+  border-radius: 7px;
+}
+
+.nav-dropdown-menu a:hover {
+  background: var(--stone);
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown:hover .nav-dropdown-arrow,
+.nav-dropdown:focus-within .nav-dropdown-arrow {
+  transform: rotate(180deg);
+}
 </style>
 
 <header class="site-header">
@@ -108,10 +175,37 @@
         <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">
           בית
         </a>
+<div class="nav-dropdown">
 
-        <a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>">
-          אודות
-        </a>
+  <a
+    href="/about"
+    class="nav-dropdown-trigger <%= (
+      currentPath === '/about' ||
+      currentPath === '/privacy' ||
+      currentPath === '/accessibility'
+    ) ? 'active' : '' %>"
+  >
+    אודות
+    <span class="nav-dropdown-arrow">⌄</span>
+  </a>
+
+  <div class="nav-dropdown-menu">
+
+    <a href="/about">
+      אודות AlonSpace
+    </a>
+
+    <a href="/privacy">
+      מדיניות פרטיות
+    </a>
+
+    <a href="/accessibility">
+      הצהרת נגישות
+    </a>
+
+  </div>
+
+</div>
 
         <a
           href="/amenities"
