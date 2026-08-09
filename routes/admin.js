@@ -425,14 +425,15 @@ router.post('/clients/:id/update',
             'הלקוח לא נמצא'
           )
         );
-
-        return res.redirect(
-  adminRedirect(
-    'success',
-    'פרטי הלקוח עודכנו'
-  )
-);
       }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'פרטי הלקוח עודכנו'
+        )
+      );
+
 
 
     } catch (error) {
