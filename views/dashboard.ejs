@@ -349,7 +349,28 @@
                   </div>
         </div>
       </section>
+<% if (user.must_change_password) { %>
 
+  <div class="password-recommendation">
+
+    <div>
+      <strong>עדיין משתמשים בסיסמה הראשונית?</strong>
+
+      <p>
+        מומלץ לשנות אותה לסיסמה אישית שתהיה רק שלכם.
+      </p>
+    </div>
+
+    <a
+      href="/change-password"
+      class="btn btn-outline"
+    >
+      שינוי סיסמה
+    </a>
+
+  </div>
+
+<% } %>
       <section class="tenant-section" id="meeting-room">
         <div class="container">
           <div class="section-head">

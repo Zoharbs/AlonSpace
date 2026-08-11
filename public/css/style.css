@@ -1578,3 +1578,31 @@ body.accessibility-high-contrast .accessibility-menu a {
     display: block;
   }
 }
+.password-recommendation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-bottom: 24px;
+  padding: 16px 20px;
+
+  background: var(--cream);
+  border: 1px solid var(--stone-dark);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow);
+}
+
+.password-recommendation p {
+  margin: 5px 0 0;
+  color: var(--ink-soft);
+  font-size: .9rem;
+}
+
+@media (max-width: 700px) {
+  .password-recommendation {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

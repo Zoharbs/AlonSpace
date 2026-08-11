@@ -13,11 +13,6 @@ function requireAdmin(req, res, next) {
     return res.redirect('/login');
   }
 
-  if (req.session.mustChangePassword) {
-    return res.redirect(
-      '/change-password'
-    );
-  }
 
   return next();
 }

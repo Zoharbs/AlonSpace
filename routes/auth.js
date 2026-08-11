@@ -105,11 +105,7 @@ router.post('/login', async (req, res, next) => {
           return next(saveError);
         }
 
-        if (user.must_change_password) {
-  return res.redirect(
-    '/change-password'
-  );
-}
+
 
 return res.redirect(
   redirectForRole(user.role)
