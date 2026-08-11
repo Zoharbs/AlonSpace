@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const db = require('../db');
 
 const router = express.Router();
@@ -116,6 +117,112 @@ return res.redirect(
     return next(error);
   }
 });
+
+router.get('/magic-login', async (req, res, next) => {
+  try {
+    const token = String(
+      req.query.token || ''
+    ).trim();
+
+    if (!token) {
+      return res.redirect(
+        '/login?error=' +
+        encodeURIComponent(
+          'קישור ההתחברות אינו תקין'
+        )
+      );
+    }
+
+    const tokenHash =
+      crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+    const result = await db.query(
+      `
+        SELECT
+          id,
+          username,
+          display_name,
+          role,
+          is_active,
+          must_change_password,
+          magic_login_expires_at,
+          magic_login_used_at
+        FROM users
+        WHERE
+          magic_login_token_hash = $1
+          AND role = 'tenant'
+          AND is_active = TRUE
+        LIMIT 1
+      `,
+      [tokenHash]
+    );
+
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.redirect(
+        '/login?error=' +
+        encodeURIComponent(
+          'קישור ההתחברות אינו תקין או שכבר נוצל'
+        )
+      );
+    }
+
+    if (user.magic_login_used_at) {
+      return res.redirect(
+        '/login?error=' +
+        encodeURIComponent(
+          'קישור ההתחברות כבר נוצל'
+        )
+      );
+    }
+
+    if (
+      !user.magic_login_expires_at ||
+      new Date(user.magic_login_expires_at) <
+        new Date()
+    ) {
+      return res.redirect(
+        '/login?error=' +
+        encodeURIComponent(
+          'קישור ההתחברות פג תוקף'
+        )
+      );
+    }
+
+    await db.query(
+      `
+        UPDATE users
+        SET
+          magic_login_used_at = NOW(),
+          updated_at = NOW()
+        WHERE id = $1
+      `,
+      [user.id]
+    );
+
+    req.session.userId = user.id;
+    req.session.userRole = user.role;
+    req.session.userName = user.display_name;
+    req.session.mustChangePassword =
+      user.must_change_password;
+
+    return req.session.save((saveError) => {
+      if (saveError) {
+        return next(saveError);
+      }
+
+      return res.redirect('/dashboard');
+    });
+
+  } catch (error) {
+    return next(error);
+  }
+});
+
 router.get('/change-password', (req, res) => {
   if (!req.session?.userId || !req.session?.userRole) {
     return res.redirect('/login');

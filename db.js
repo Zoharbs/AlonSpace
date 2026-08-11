@@ -143,7 +143,16 @@ await query(`
     mb.user_id = u.id
     AND mb.meeting_room_id IS NULL;
 `);
+await query(`
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS magic_login_token_hash TEXT;
 
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS magic_login_expires_at TIMESTAMP;
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS magic_login_used_at TIMESTAMP;
+`);
 await query(`
   DO $$
   BEGIN

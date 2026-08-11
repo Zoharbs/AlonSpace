@@ -248,6 +248,18 @@ router.post('/clients/create', async (req, res, next) => {
       12
     );
 
+    const magicLoginToken =
+  crypto.randomBytes(32).toString('hex');
+
+const magicLoginTokenHash =
+  crypto
+    .createHash('sha256')
+    .update(magicLoginToken)
+    .digest('hex');
+
+const magicLoginExpiresAt =
+  new Date(Date.now() + 48 * 60 * 60 * 1000);
+
     const createResult = await db.query(
       `
     INSERT INTO users (
@@ -264,7 +276,11 @@ router.post('/clients/create', async (req, res, next) => {
       rental_end_date,
       monthly_meeting_hours,
       is_active,
-      must_change_password
+      must_change_password,
+
+magic_login_token_hash,
+magic_login_expires_at,
+magic_login_used_at
     )
     VALUES (
       $1,
@@ -279,8 +295,12 @@ router.post('/clients/create', async (req, res, next) => {
       $9,
       $10,
       $11,
+
       TRUE,
-      TRUE
+      TRUE,
+      $12,
+      $13,
+      NULL
     )
     RETURNING
       id,
@@ -303,18 +323,22 @@ router.post('/clients/create', async (req, res, next) => {
           monthly_meeting_hours,
           6
         ),
+        magicLoginTokenHash,
+magicLoginExpiresAt,
       ]
     );
 
     const createdClient = createResult.rows[0];
 
-    req.session.newClientInvite = {
-      userId: createdClient.id,
-      displayName: createdClient.display_name,
-      username: createdClient.username,
-      temporaryPassword: cleanPassword,
-      phone: createdClient.phone || null,
-    };
+req.session.newClientInvite = {
+  userId: createdClient.id,
+  displayName: createdClient.display_name,
+  username: createdClient.username,
+  temporaryPassword: cleanPassword,
+  phone: createdClient.phone || null,
+  magicLoginUrl:
+    `https://alonspace.com/magic-login?token=${magicLoginToken}`,
+};
 
     return req.session.save((saveError) => {
       if (saveError) {

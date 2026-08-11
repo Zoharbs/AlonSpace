@@ -1683,20 +1683,22 @@
     <script>
       const inviteMessage = `שלום <%= newClientInvite.displayName %>!
 
-נוצר עבורך משתמש חדש במערכת AlonSpace.
-
-🔗 התחברות:
-https://alonspace.com/login
+נוצר עבורך חשבון במערכת AlonSpace.
 
 👤 שם משתמש:
 <%= newClientInvite.username %>
 
-🔑 סיסמה זמנית:
+🔑 סיסמה:
 <%= newClientInvite.temporaryPassword %>
 
-בכניסה הראשונה תתבקש לבחור סיסמה חדשה.
+🔗 קישור לכניסה מהירה:
+<%= newClientInvite.magicLoginUrl %>
 
-בהצלחה 🙂`;
+הקישור תקף ל־48 שעות ולשימוש חד־פעמי.
+
+לאחר מכן ניתן להתחבר כרגיל באמצעות שם המשתמש והסיסמה.
+
+AlonSpace`;
 
       const copyBtn = document.createElement("button");
 
