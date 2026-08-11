@@ -670,7 +670,68 @@ router.post(
     }
   }
 );
+router.get('/debug/database', async (req, res, next) => {
+  try {
+    const columnsResult = await db.query(`
+      SELECT
+        table_name,
+        column_name,
+        data_type,
+        column_default
+      FROM information_schema.columns
+      WHERE table_name IN (
+        'users',
+        'meeting_bookings',
+        'meeting_rooms'
+      )
+      ORDER BY table_name, ordinal_position
+    `);
 
+    const roomsResult = await db.query(`
+      SELECT *
+      FROM meeting_rooms
+      ORDER BY id
+    `);
+
+    const usersResult = await db.query(`
+      SELECT
+        id,
+        username,
+        display_name,
+        role,
+        floor,
+        monthly_meeting_hours,
+        meeting_quota_warning_month,
+        is_active
+      FROM users
+      WHERE role = 'tenant'
+      ORDER BY id
+    `);
+
+    const bookingsResult = await db.query(`
+      SELECT *
+      FROM meeting_bookings
+      ORDER BY id DESC
+      LIMIT 10
+    `);
+
+    res.json({
+      columns: columnsResult.rows,
+      meetingRooms: roomsResult.rows,
+      tenants: usersResult.rows,
+      recentBookings: bookingsResult.rows,
+    });
+
+  } catch (error) {
+    console.error('DATABASE DEBUG ERROR:', error);
+
+    res.status(500).json({
+      error: error.message,
+      code: error.code,
+      detail: error.detail,
+    });
+  }
+});
 router.post(
   '/testimonials/:id/reject',
   async (req, res, next) => {
