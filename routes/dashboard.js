@@ -415,36 +415,37 @@ if (newTotalHours > limit) {
   }
 }
 
-      await client.query(
-        `
-         INSERT INTO meeting_bookings (
-  user_id,
-  booking_date,
-  start_time,
-  end_time,
-  note,
-  billing_status
-)
-VALUES (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7
-)
-        `,
-        [
-          user.id,
-          roomId,
-          bookingDate,
-          startTime,
-          endTime,
-          note || null,
-          billingStatus
-        ]
-      );
+await client.query(
+  `
+    INSERT INTO meeting_bookings (
+      user_id,
+      meeting_room_id,
+      booking_date,
+      start_time,
+      end_time,
+      note,
+      billing_status
+    )
+    VALUES (
+      $1,
+      $2,
+      $3,
+      $4,
+      $5,
+      $6,
+      $7
+    )
+  `,
+  [
+    user.id,
+    roomId,
+    bookingDate,
+    startTime,
+    endTime,
+    note || null,
+    billingStatus
+  ]
+);
 
       await client.query('COMMIT');
 
