@@ -184,7 +184,13 @@ await query(`
   END
   $$;
 `);
+await query(`
+  ALTER TABLE users
+ADD COLUMN IF NOT EXISTS meeting_quota_warning_month VARCHAR(7);
 
+ALTER TABLE meeting_bookings
+ADD COLUMN IF NOT EXISTS billing_status VARCHAR(20) DEFAULT 'included';
+`);
   await seedAdmin();
   await seedGallery();
   await seedTestimonials();

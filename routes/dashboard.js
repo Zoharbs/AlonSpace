@@ -348,39 +348,77 @@ const roomId = roomResult.rows[0].id;
         user.monthly_meeting_hours || 6
       );
 
-      if (
-        usedHours + requestedHours >
-        limit
-      ) {
-        await client.query('ROLLBACK');
+let billingStatus = 'included';
+let quotaMessage = null;
 
-        return res.redirect(
-          dashboardRedirect(
-            'error',
-            `השריון חורג ממכסת ${limit} השעות החודשית`,
-            'meeting-room'
-          )
-        );
-      }
+const newTotalHours =
+  usedHours + requestedHours;
+
+if (newTotalHours > limit) {
+
+  const warningResult = await client.query(
+    `
+      SELECT meeting_quota_warning_month
+      FROM users
+      WHERE id = $1
+      FOR UPDATE
+    `,
+    [user.id]
+  );
+
+  const warningMonth =
+    warningResult.rows[0]
+      ?.meeting_quota_warning_month;
+
+  if (warningMonth !== monthKey) {
+
+    billingStatus = 'warning';
+
+    await client.query(
+      `
+        UPDATE users
+        SET
+          meeting_quota_warning_month = $1,
+          updated_at = NOW()
+        WHERE id = $2
+      `,
+      [
+        monthKey,
+        user.id,
+      ]
+    );
+
+    quotaMessage =
+      `עברת את מכסת ${limit} השעות החודשית. ` +
+      `מהשריון הבא מעבר למכסה יחול חיוב לפי התעריף שנקבע.`;
+
+  } else {
+
+    billingStatus = 'chargeable';
+
+    quotaMessage =
+      'השריון נוצר מעבר למכסה החודשית ולכן הוא עשוי להיות מחויב בתשלום.';
+  }
+}
 
       await client.query(
         `
-          INSERT INTO meeting_bookings (
-            user_id,
-            meeting_room_id,
-            booking_date,
-            start_time,
-            end_time,
-            note
-          )
-          VALUES (
-            $1,
-            $2,
-            $3,
-            $4,
-            $5,
-            $6
-          )
+         INSERT INTO meeting_bookings (
+  user_id,
+  booking_date,
+  start_time,
+  end_time,
+  note,
+  billing_status
+)
+VALUES (
+  $1,
+  $2,
+  $3,
+  $4,
+  $5,
+  $6
+)
         `,
         [
           user.id,
@@ -389,18 +427,23 @@ const roomId = roomResult.rows[0].id;
           startTime,
           endTime,
           note || null,
+          billingStatus
         ]
       );
 
       await client.query('COMMIT');
 
-      return res.redirect(
-        dashboardRedirect(
-          'success',
-          'חדר הישיבות שוריין בהצלחה',
-          'meeting-room'
-        )
-      );
+const successMessage =
+  quotaMessage ||
+  'חדר הישיבות שוריין בהצלחה';
+
+return res.redirect(
+  dashboardRedirect(
+    'success',
+    successMessage,
+    'meeting-room'
+  )
+);
     } catch (error) {
       try {
         await client.query('ROLLBACK');
