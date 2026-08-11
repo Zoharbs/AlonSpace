@@ -1,355 +1,272 @@
-<%
-  const loggedInUser =
-    typeof currentUser !== 'undefined' && currentUser
-      ? currentUser
-      : null;
+<% const loggedInUser=typeof currentUser !=='undefined' && currentUser ? currentUser : null; const currentPath=typeof
+  path !=='undefined' ? path : '' ; const isTenant=loggedInUser && loggedInUser.role==='tenant' ; const
+  isAdmin=loggedInUser && loggedInUser.role==='admin' ; %>
 
-  const currentPath =
-    typeof path !== 'undefined'
-      ? path
-      : '';
-
-  const isTenant = loggedInUser && loggedInUser.role === 'tenant';
-  const isAdmin = loggedInUser && loggedInUser.role === 'admin';
-%>
-
-<style>
-  .header-account {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .header-account-name {
-    color: var(--cream);
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  .header-logout-form {
-    margin: 0;
-  }
-
-  .header-logout {
-    background: transparent;
-    color: var(--cream);
-    border: 1px solid rgba(247, 242, 230, .45);
-  }
-
-  .header-logout:hover {
-    background: var(--cream);
-    color: var(--ink);
-  }
-
-  @media (max-width: 900px) {
-    .header-cta {
-  display: none;
-}
-
-.mobile-nav-action {
-  display: block;
-}
-
-.mobile-nav-login {
-  font-weight: 700;
-}
-
-.mobile-nav-tour {
-  font-weight: 700;
-}
-    .header-account-name {
-      display: none;
-    }
-    .header-cta {
-  display: none;
-}
-
+  <style>
     .header-account {
-      margin-inline-start: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-account-name {
+      color: var(--cream);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .header-logout-form {
+      margin: 0;
     }
 
     .header-logout {
-      padding: 9px 12px;
-      font-size: .82rem;
+      background: transparent;
+      color: var(--cream);
+      border: 1px solid rgba(247, 242, 230, .45);
     }
-  }
-  .nav-dropdown {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
 
-.nav-dropdown-trigger {
-  display: flex !important;
-  align-items: center;
-  gap: 5px;
-}
+    .header-logout:hover {
+      background: var(--cream);
+      color: var(--ink);
+    }
 
-.nav-dropdown-arrow {
-  font-size: .8em;
-  transition: transform .2s ease;
-}
+    @media (max-width: 900px) {
+      .header-cta {
+        display: none;
+      }
 
-.nav-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
+      .mobile-nav-action {
+        display: block;
+      }
 
-  min-width: 190px;
-  padding: 8px;
+      .mobile-nav-login {
+        font-weight: 700;
+      }
 
-  background: var(--cream);
-  border-radius: 10px;
-  box-shadow: var(--shadow);
+      .mobile-nav-tour {
+        font-weight: 700;
+      }
 
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-6px);
+      .header-account-name {
+        display: none;
+      }
 
-  transition:
-    opacity .2s ease,
-    visibility .2s ease,
-    transform .2s ease;
+      .header-cta {
+        display: none;
+      }
 
-  z-index: 1000;
-}
+      .header-account {
+        margin-inline-start: auto;
+      }
 
-.nav-dropdown-menu a {
-  display: block;
-  padding: 10px 12px;
+      .header-logout {
+        padding: 9px 12px;
+        font-size: .82rem;
+      }
+    }
 
-  color: var(--ink) !important;
-  text-decoration: none;
-  white-space: nowrap;
+    .nav-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
 
-  border-radius: 7px;
-}
+    .nav-dropdown-trigger {
+      display: flex !important;
+      align-items: center;
+      gap: 5px;
+    }
 
-.nav-dropdown-menu a:hover {
-  background: var(--stone);
-}
+    .nav-dropdown-arrow {
+      font-size: .8em;
+      transition: transform .2s ease;
+    }
 
-.nav-dropdown:hover .nav-dropdown-menu,
-.nav-dropdown:focus-within .nav-dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
+    .nav-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
 
-.nav-dropdown:hover .nav-dropdown-arrow,
-.nav-dropdown:focus-within .nav-dropdown-arrow {
-  transform: rotate(180deg);
-}
-.mobile-nav-action {
-  display: none;
-}
-</style>
+      min-width: 190px;
+      padding: 8px;
 
-<header class="site-header">
-  <div class="container header-inner">
-    <a
-      href="<%= isAdmin ? '/admin' : (isTenant ? '/dashboard' : '/') %>"
-      class="brand"
-    >
-      <img
-        src="/images/Asset 11.svg"
-        alt="AlonSpace"
-        class="brand-logo"
-      >
-      <span class="brand-text">
-        <%= isTenant ? 'פורטל הדיירים' : 'AlonSpace' %>
-      </span>
-    </a>
+      background: var(--cream);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
 
-<nav class="nav" id="mainNav">
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
 
-  <% if (isTenant) { %>
+      transition:
+        opacity .2s ease,
+        visibility .2s ease,
+        transform .2s ease;
 
-    <a
-      href="/dashboard"
-      class="<%= currentPath === '/dashboard' ? 'active' : '' %>"
-    >
-      ראשי
-    </a>
+      z-index: 1000;
+    }
 
-    <a href="/dashboard#meeting-room">
-      חדר ישיבות
-    </a>
+    .nav-dropdown-menu a {
+      display: block;
+      padding: 10px 12px;
 
-    <a
-      href="https://wa.me/<%= site.phoneHref %>?text=<%= encodeURIComponent('שלום, אני דייר/ת ב-AlonSpace ורוצה ליצור קשר עם ההנהלה.') %>"
-      target="_blank"
-      rel="noopener"
-    >
-      יצירת קשר
-    </a>
+      color: var(--ink) !important;
+      text-decoration: none;
+      white-space: nowrap;
 
-  <% } else if (isAdmin) { %>
+      border-radius: 7px;
+    }
 
-    <a
-      href="/admin"
-      class="<%= currentPath.startsWith('/admin') ? 'active' : '' %>"
-    >
-      פאנל ניהול
-    </a>
+    .nav-dropdown-menu a:hover {
+      background: var(--stone);
+    }
 
-    <a href="/" target="_blank" rel="noopener">
-      צפייה באתר
-    </a>
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
 
-  <% } else { %>
+    .nav-dropdown:hover .nav-dropdown-arrow,
+    .nav-dropdown:focus-within .nav-dropdown-arrow {
+      transform: rotate(180deg);
+    }
 
-    <a
-      href="/"
-      class="<%= currentPath === '/' ? 'active' : '' %>"
-    >
-      בית
-    </a>
+    .mobile-nav-action {
+      display: none;
+    }
+  </style>
 
-    <a
-      href="/about"
-      class="<%= currentPath === '/about' ? 'active' : '' %>"
-    >
-      אודות
-    </a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="<%= isAdmin ? '/admin' : (isTenant ? '/dashboard' : '/') %>" class="brand">
+        <img src="/images/Asset 11.svg" alt="AlonSpace" class="brand-logo">
+        <span class="brand-text">
+          <%= isTenant ? 'פורטל הדיירים' : 'AlonSpace' %>
+        </span>
+      </a>
 
-    <a
-      href="/amenities"
-      class="<%= currentPath === '/amenities' ? 'active' : '' %>"
-    >
-      המתחם
-    </a>
+      <nav class="nav" id="mainNav">
 
-    <a
-      href="/gallery"
-      class="<%= currentPath === '/gallery' ? 'active' : '' %>"
-    >
-      גלריה
-    </a>
+        <% if (isTenant) { %>
 
-    <a
-      href="/faq"
-      class="<%= currentPath === '/faq' ? 'active' : '' %>"
-    >
-      שאלות
-    </a>
+          <a href="/dashboard" class="<%= currentPath === '/dashboard' ? 'active' : '' %>">
+            ראשי
+          </a>
 
-    <a
-      href="/contact"
-      class="<%= currentPath === '/contact' ? 'active' : '' %>"
-    >
-      צור קשר
-    </a>
-<a
-  href="https://www.instagram.com/alonspacetlv?igsh=ZHg2M3FzajFjZW56&utm_source=qr"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="nav-social-link"
-  aria-label="Instagram"
-  title="Instagram"
->
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm5.5-3.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"/>
-  </svg>
-</a>
+          <a href="/dashboard#meeting-room">
+            חדר ישיבות
+          </a>
 
-<a
-  href="https://www.tiktok.com/@alonspace2026?_r=1&_t=ZS-98mvYpkQaut"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="nav-social-link"
-  aria-label="TikTok"
-  title="TikTok"
->
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M15.5 3c.3 1.8 1.4 3.2 3.5 3.7v3.1c-1.4 0-2.7-.4-3.8-1.2v6.2a6.2 6.2 0 11-5.3-6.1v3.2a3.1 3.1 0 103 3.1V3h2.6z"/>
-  </svg>
-</a>
-<!-- Facebook -->
-<a
-  href="https://www.facebook.com/share/1EysShtV74/?mibextid=wwXIfr"
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="Facebook"
-  title="Facebook"
->
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M13.5 22v-9h3l.5-3.5h-3.5V7.3c0-1 .3-1.8 1.8-1.8H17V2.4c-.3 0-1.4-.1-2.7-.1-2.7 0-4.6 1.7-4.6 4.7v2.5H7v3.5h2.7v9h3.8z"/>
-  </svg>
-</a>
+          <a href="https://wa.me/<%= site.phoneHref %>?text=<%= encodeURIComponent('שלום, אני דייר/ת ב-AlonSpace ורוצה ליצור קשר עם ההנהלה.') %>"
+            target="_blank" rel="noopener">
+            יצירת קשר
+          </a>
 
-    <a
-      href="/login"
-      class="mobile-nav-action mobile-nav-login"
-    >
-      התחברות
-    </a>
-    <a
-  href="/login"
-  class="mobile-login-link"
->
-  התחברות
-</a>
+          <% } else if (isAdmin) { %>
 
-  <% } %>
+            <a href="/admin" class="<%= currentPath.startsWith('/admin') ? 'active' : '' %>">
+              פאנל ניהול
+            </a>
 
-</nav>
+            <a href="/" target="_blank" rel="noopener">
+              צפייה באתר
+            </a>
 
-    <% if (loggedInUser) { %>
+            <% } else { %>
 
-  <div class="header-account">
-    <span class="header-account-name">
-      שלום, <%= loggedInUser.name %>
-    </span>
+              <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">
+                בית
+              </a>
 
-    <form
-      method="POST"
-      action="/logout"
-      class="header-logout-form"
-    >
-      <button
-        type="submit"
-        class="btn header-logout"
-      >
-        התנתקות
-      </button>
-    </form>
-  </div>
+              <a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>">
+                אודות
+              </a>
 
-<% } else { %>
+              <a href="/amenities" class="<%= currentPath === '/amenities' ? 'active' : '' %>">
+                המתחם
+              </a>
 
-  <div class="header-cta">
+              <a href="/gallery" class="<%= currentPath === '/gallery' ? 'active' : '' %>">
+                גלריה
+              </a>
 
-    <a
-      href="<%= tourWhatsappUrl %>"
-      target="_blank"
-      rel="noopener"
-      class="btn btn-gold"
-    >
-      קביעת סיור
-    </a>
+              <a href="/faq" class="<%= currentPath === '/faq' ? 'active' : '' %>">
+                שאלות
+              </a>
 
-    <a
-      href="/login"
-      class="btn btn-outline-light"
-    >
-      התחברות
-    </a>
+              <a href="/contact" class="<%= currentPath === '/contact' ? 'active' : '' %>">
+                צור קשר
+              </a>
+              <a href="https://www.instagram.com/alonspacetlv?igsh=ZHg2M3FzajFjZW56&utm_source=qr" target="_blank"
+                rel="noopener noreferrer" class="nav-social-link" aria-label="Instagram" title="Instagram">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm5.5-3.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" />
+                </svg>
+              </a>
 
-  </div>
+              <a href="https://www.tiktok.com/@alonspace2026?_r=1&_t=ZS-98mvYpkQaut" target="_blank"
+                rel="noopener noreferrer" class="nav-social-link" aria-label="TikTok" title="TikTok">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M15.5 3c.3 1.8 1.4 3.2 3.5 3.7v3.1c-1.4 0-2.7-.4-3.8-1.2v6.2a6.2 6.2 0 11-5.3-6.1v3.2a3.1 3.1 0 103 3.1V3h2.6z" />
+                </svg>
+              </a>
+              <!-- Facebook -->
+              <a href="https://www.facebook.com/share/1EysShtV74/?mibextid=wwXIfr" target="_blank"
+                rel="noopener noreferrer" class="nav-social-link" aria-label="Facebook" title="Facebook">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M13.5 22v-9h3l.5-3.5h-3.5V7.3c0-1 .3-1.8 1.8-1.8H17V2.4c-.3 0-1.4-.1-2.7-.1-2.7 0-4.6 1.7-4.6 4.7v2.5H7v3.5h2.7v9h3.8z" />
+                </svg>
+              </a>
+              <a href="/login" class="mobile-nav-action mobile-nav-login">
+                התחברות
+              </a>
+              <a href="/login" class="mobile-login-link">
+                התחברות
+              </a>
 
-<% } %>
+              <% } %>
 
-    <button
-      class="nav-toggle"
-      id="navToggle"
-      aria-label="פתיחת תפריט"
-      aria-expanded="false"
-      type="button"
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </div>
-</header>
+      </nav>
+
+      <% if (loggedInUser) { %>
+
+        <div class="header-account">
+          <span class="header-account-name">
+            שלום, <%= loggedInUser.name %>
+          </span>
+
+          <form method="POST" action="/logout" class="header-logout-form">
+            <button type="submit" class="btn header-logout">
+              התנתקות
+            </button>
+          </form>
+        </div>
+
+        <% } else { %>
+
+          <div class="header-cta">
+
+            <a href="<%= tourWhatsappUrl %>" target="_blank" rel="noopener" class="btn btn-gold">
+              קביעת סיור
+            </a>
+
+            <a href="/login" class="btn btn-outline-light">
+              התחברות
+            </a>
+
+          </div>
+
+          <% } %>
+
+            <button class="nav-toggle" id="navToggle" aria-label="פתיחת תפריט" aria-expanded="false" type="button">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+    </div>
+  </header>
