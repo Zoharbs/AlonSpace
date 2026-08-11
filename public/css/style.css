@@ -1364,3 +1364,99 @@ section { padding: 88px 0; position: relative; }
     height: 21px;
   }
 }
+/* =========================
+   Accessibility
+========================= */
+
+.accessibility-wrapper {
+  position: relative;
+}
+
+.accessibility-btn svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.accessibility-menu {
+  position: absolute;
+
+  left: 60px;
+  top: 0;
+
+  width: 230px;
+  padding: 14px;
+
+  background: var(--cream);
+  color: var(--ink);
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 12px;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .2);
+
+  direction: rtl;
+}
+
+.accessibility-menu-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--stone-dark);
+}
+
+.accessibility-menu button,
+.accessibility-menu a {
+  display: block;
+
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: transparent;
+  color: var(--ink);
+
+  font: inherit;
+  text-align: right;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.accessibility-menu button:hover,
+.accessibility-menu a:hover {
+  background: var(--stone);
+}
+
+
+/* ניגודיות גבוהה */
+
+body.accessibility-high-contrast {
+  filter: contrast(1.4);
+}
+
+
+/* הדגשת קישורים */
+
+body.accessibility-highlight-links a {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 3px;
+}
+
+
+/* מובייל */
+
+@media (max-width: 700px) {
+  .accessibility-menu {
+    left: 55px;
+    width: 210px;
+  }
+}

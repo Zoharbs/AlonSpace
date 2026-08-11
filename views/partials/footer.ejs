@@ -118,15 +118,61 @@
 <div class="floating-side-buttons">
 
   <!-- כפתור נגישות -->
+<div class="accessibility-wrapper">
+
   <button
     type="button"
     class="floating-side-btn accessibility-btn"
     id="accessibilityButton"
-    aria-label="אפשרויות נגישות"
+    aria-label="פתיחת תפריט נגישות"
+    aria-expanded="false"
+    aria-controls="accessibilityMenu"
     title="נגישות"
   >
-    ♿
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="4" r="2"></circle>
+      <path d="M5 7.5h14"></path>
+      <path d="M12 6v6"></path>
+      <path d="M12 12l-4 8"></path>
+      <path d="M12 12l4 8"></path>
+    </svg>
   </button>
+
+  <div
+    class="accessibility-menu"
+    id="accessibilityMenu"
+    hidden
+  >
+    <div class="accessibility-menu-title">
+      אפשרויות נגישות
+    </div>
+
+    <button type="button" id="accessibilityIncrease">
+      א+ הגדלת טקסט
+    </button>
+
+    <button type="button" id="accessibilityDecrease">
+      א− הקטנת טקסט
+    </button>
+
+    <button type="button" id="accessibilityContrast">
+      ◐ ניגודיות גבוהה
+    </button>
+
+    <button type="button" id="accessibilityLinks">
+      🔗 הדגשת קישורים
+    </button>
+
+    <button type="button" id="accessibilityReset">
+      ↻ איפוס נגישות
+    </button>
+
+    <a href="/accessibility">
+      הצהרת נגישות
+    </a>
+  </div>
+
+</div>
 
   <!-- Instagram -->
   <a
@@ -157,3 +203,203 @@
   </a>
 
 </div>
+<script>
+  const accessibilityButton =
+    document.getElementById('accessibilityButton');
+
+  const accessibilityMenu =
+    document.getElementById('accessibilityMenu');
+
+  const increaseButton =
+    document.getElementById('accessibilityIncrease');
+
+  const decreaseButton =
+    document.getElementById('accessibilityDecrease');
+
+  const contrastButton =
+    document.getElementById('accessibilityContrast');
+
+  const linksButton =
+    document.getElementById('accessibilityLinks');
+
+  const resetButton =
+    document.getElementById('accessibilityReset');
+
+
+  let accessibilityFontSize =
+    Number(
+      localStorage.getItem('accessibilityFontSize')
+    ) || 100;
+
+
+  function applyAccessibilitySettings() {
+
+    document.documentElement.style.fontSize =
+      accessibilityFontSize + '%';
+
+    const highContrast =
+      localStorage.getItem(
+        'accessibilityHighContrast'
+      ) === 'true';
+
+    const highlightLinks =
+      localStorage.getItem(
+        'accessibilityHighlightLinks'
+      ) === 'true';
+
+    document.body.classList.toggle(
+      'accessibility-high-contrast',
+      highContrast
+    );
+
+    document.body.classList.toggle(
+      'accessibility-highlight-links',
+      highlightLinks
+    );
+  }
+
+
+  accessibilityButton?.addEventListener(
+    'click',
+    (event) => {
+
+      event.stopPropagation();
+
+      const isOpen =
+        !accessibilityMenu.hidden;
+
+      accessibilityMenu.hidden = isOpen;
+
+      accessibilityButton.setAttribute(
+        'aria-expanded',
+        String(!isOpen)
+      );
+    }
+  );
+
+
+  increaseButton?.addEventListener(
+    'click',
+    () => {
+
+      accessibilityFontSize =
+        Math.min(
+          accessibilityFontSize + 10,
+          140
+        );
+
+      localStorage.setItem(
+        'accessibilityFontSize',
+        accessibilityFontSize
+      );
+
+      applyAccessibilitySettings();
+    }
+  );
+
+
+  decreaseButton?.addEventListener(
+    'click',
+    () => {
+
+      accessibilityFontSize =
+        Math.max(
+          accessibilityFontSize - 10,
+          80
+        );
+
+      localStorage.setItem(
+        'accessibilityFontSize',
+        accessibilityFontSize
+      );
+
+      applyAccessibilitySettings();
+    }
+  );
+
+
+  contrastButton?.addEventListener(
+    'click',
+    () => {
+
+      const active =
+        document.body.classList.toggle(
+          'accessibility-high-contrast'
+        );
+
+      localStorage.setItem(
+        'accessibilityHighContrast',
+        String(active)
+      );
+    }
+  );
+
+
+  linksButton?.addEventListener(
+    'click',
+    () => {
+
+      const active =
+        document.body.classList.toggle(
+          'accessibility-highlight-links'
+        );
+
+      localStorage.setItem(
+        'accessibilityHighlightLinks',
+        String(active)
+      );
+    }
+  );
+
+
+  resetButton?.addEventListener(
+    'click',
+    () => {
+
+      accessibilityFontSize = 100;
+
+      localStorage.removeItem(
+        'accessibilityFontSize'
+      );
+
+      localStorage.removeItem(
+        'accessibilityHighContrast'
+      );
+
+      localStorage.removeItem(
+        'accessibilityHighlightLinks'
+      );
+
+      document.documentElement.style.fontSize = '';
+
+      document.body.classList.remove(
+        'accessibility-high-contrast',
+        'accessibility-highlight-links'
+      );
+    }
+  );
+
+
+  document.addEventListener(
+    'click',
+    (event) => {
+
+      if (
+        accessibilityMenu &&
+        accessibilityButton &&
+        !accessibilityMenu.contains(event.target) &&
+        !accessibilityButton.contains(event.target)
+      ) {
+        accessibilityMenu.hidden = true;
+
+        accessibilityButton.setAttribute(
+          'aria-expanded',
+          'false'
+        );
+      }
+    }
+  );
+
+
+  applyAccessibilitySettings();
+</script>
