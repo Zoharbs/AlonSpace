@@ -42,9 +42,27 @@
   }
 
   @media (max-width: 900px) {
+    .header-cta {
+  display: none;
+}
+
+.mobile-nav-action {
+  display: block;
+}
+
+.mobile-nav-login {
+  font-weight: 700;
+}
+
+.mobile-nav-tour {
+  font-weight: 700;
+}
     .header-account-name {
       display: none;
     }
+    .header-cta {
+  display: none;
+}
 
     .header-account {
       margin-inline-start: auto;
@@ -122,6 +140,9 @@
 .nav-dropdown:focus-within .nav-dropdown-arrow {
   transform: rotate(180deg);
 }
+.mobile-nav-action {
+  display: none;
+}
 </style>
 
 <header class="site-header">
@@ -140,138 +161,151 @@
       </span>
     </a>
 
-    <nav class="nav" id="mainNav">
-      <% if (isTenant) { %>
-        <a
-          href="/dashboard"
-          class="<%= currentPath === '/dashboard' ? 'active' : '' %>"
-        >
-          ראשי
-        </a>
+<nav class="nav" id="mainNav">
 
-        <a href="/dashboard#meeting-room">
-          חדר ישיבות
-        </a>
+  <% if (isTenant) { %>
 
-        <a
-          href="https://wa.me/<%= site.phoneHref %>?text=<%= encodeURIComponent('שלום, אני דייר/ת ב-AlonSpace ורוצה ליצור קשר עם ההנהלה.') %>"
-          target="_blank"
-          rel="noopener"
-        >
-          יצירת קשר
-        </a>
-      <% } else if (isAdmin) { %>
-        <a
-          href="/admin"
-          class="<%= currentPath.startsWith('/admin') ? 'active' : '' %>"
-        >
-          פאנל ניהול
-        </a>
-
-        <a href="/" target="_blank" rel="noopener">
-          צפייה באתר
-        </a>
-      <% } else { %>
-        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">
-          בית
-        </a>
-<div class="nav-dropdown">
-
-  <a
-    href="/about"
-    class="nav-dropdown-trigger <%= (
-      currentPath === '/about' ||
-      currentPath === '/privacy' ||
-      currentPath === '/accessibility'
-    ) ? 'active' : '' %>"
-  >
-    אודות
-    <span class="nav-dropdown-arrow">⌄</span>
-  </a>
-
-  <div class="nav-dropdown-menu">
-
-    <a href="/about">
-      אודות AlonSpace
+    <a
+      href="/dashboard"
+      class="<%= currentPath === '/dashboard' ? 'active' : '' %>"
+    >
+      ראשי
     </a>
 
-    <a href="/privacy">
-      מדיניות פרטיות
+    <a href="/dashboard#meeting-room">
+      חדר ישיבות
     </a>
 
-    <a href="/accessibility">
-      הצהרת נגישות
+    <a
+      href="https://wa.me/<%= site.phoneHref %>?text=<%= encodeURIComponent('שלום, אני דייר/ת ב-AlonSpace ורוצה ליצור קשר עם ההנהלה.') %>"
+      target="_blank"
+      rel="noopener"
+    >
+      יצירת קשר
+    </a>
+
+  <% } else if (isAdmin) { %>
+
+    <a
+      href="/admin"
+      class="<%= currentPath.startsWith('/admin') ? 'active' : '' %>"
+    >
+      פאנל ניהול
+    </a>
+
+    <a href="/" target="_blank" rel="noopener">
+      צפייה באתר
+    </a>
+
+  <% } else { %>
+
+    <a
+      href="/"
+      class="<%= currentPath === '/' ? 'active' : '' %>"
+    >
+      בית
+    </a>
+
+    <a
+      href="/about"
+      class="<%= currentPath === '/about' ? 'active' : '' %>"
+    >
+      אודות
+    </a>
+
+    <a
+      href="/amenities"
+      class="<%= currentPath === '/amenities' ? 'active' : '' %>"
+    >
+      המתחם
+    </a>
+
+    <a
+      href="/gallery"
+      class="<%= currentPath === '/gallery' ? 'active' : '' %>"
+    >
+      גלריה
+    </a>
+
+    <a
+      href="/faq"
+      class="<%= currentPath === '/faq' ? 'active' : '' %>"
+    >
+      שאלות
+    </a>
+
+    <a
+      href="/contact"
+      class="<%= currentPath === '/contact' ? 'active' : '' %>"
+    >
+      צור קשר
+    </a>
+
+    <!-- מופיעים רק במובייל -->
+    <a
+      href="<%= tourWhatsappUrl %>"
+      target="_blank"
+      rel="noopener"
+      class="mobile-nav-action mobile-nav-tour"
+    >
+      קביעת סיור
+    </a>
+
+    <a
+      href="/login"
+      class="mobile-nav-action mobile-nav-login"
+    >
+      התחברות
+    </a>
+
+  <% } %>
+
+</nav>
+
+    <% if (loggedInUser) { %>
+
+  <div class="header-account">
+    <span class="header-account-name">
+      שלום, <%= loggedInUser.name %>
+    </span>
+
+    <form
+      method="POST"
+      action="/logout"
+      class="header-logout-form"
+    >
+      <button
+        type="submit"
+        class="btn header-logout"
+      >
+        התנתקות
+      </button>
+    </form>
+  </div>
+
+<% } else { %>
+
+  <div class="header-cta">
+
+    <a
+      href="<%= tourWhatsappUrl %>"
+      target="_blank"
+      rel="noopener"
+      class="btn btn-gold"
+    >
+      קביעת סיור
+    </a>
+
+    <a
+      href="/login"
+      class="btn btn-outline-light"
+    >
+      התחברות
     </a>
 
   </div>
 
-</div>
-
-        <a
-          href="/amenities"
-          class="<%= currentPath === '/amenities' ? 'active' : '' %>"
-        >
-          המתחם
-        </a>
-
-        <a
-          href="/gallery"
-          class="<%= currentPath === '/gallery' ? 'active' : '' %>"
-        >
-          גלריה
-        </a>
-
-        <a href="/faq" class="<%= currentPath === '/faq' ? 'active' : '' %>">
-          שאלות
-        </a>
-
-        <a
-          href="/contact"
-          class="<%= currentPath === '/contact' ? 'active' : '' %>"
-        >
-          צור קשר
-        </a>
-      <% } %>
-    </nav>
-
-    <% if (loggedInUser) { %>
-      <div class="header-account">
-        <span class="header-account-name">
-          שלום, <%= loggedInUser.name %>
-        </span>
-
-        <form
-          method="POST"
-          action="/logout"
-          class="header-logout-form"
-        >
-          <button
-            type="submit"
-            class="btn header-logout"
-          >
-            התנתקות
-          </button>
-        </form>
-      </div>
-    <% } else { %>
-      <div class="header-cta">
-        <a
-          href="<%= tourWhatsappUrl %>"
-          target="_blank"
-          rel="noopener"
-          class="btn btn-gold btn-desktop-only"
-        >
-          קביעת סיור
-        </a>
-
-        <a
-          href="/login"
-          class="btn btn-outline-light btn-desktop-only"
-        >
-          התחברות
-        </a>
-      </div>
-    <% } %>
+<% } %>
 
     <button
       class="nav-toggle"
