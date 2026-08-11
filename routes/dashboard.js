@@ -468,7 +468,13 @@ return res.redirect(
           rollbackError
         );
       }
-
+console.error('BOOKING ERROR:', {
+  message: error.message,
+  code: error.code,
+  detail: error.detail,
+  constraint: error.constraint,
+  stack: error.stack
+});
       return next(error);
     } finally {
       client.release();
