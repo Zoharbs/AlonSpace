@@ -1569,3 +1569,12 @@ body.accessibility-high-contrast .accessibility-menu a {
 .nav-social-link:hover {
   background: rgba(255, 255, 255, 0.12);
 }
+.mobile-login-link {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-login-link {
+    display: block;
+  }
+}
