@@ -210,7 +210,12 @@ router.post('/meeting-bookings/create',
         [req.session.userId]
       );
 
-      const user = userResult.rows[0];
+     const user = userResult.rows[0];
+
+if (!user) {
+  return res.redirect('/login');
+}
+
 const roomResult = await client.query(
   `
     SELECT id
@@ -221,12 +226,21 @@ const roomResult = await client.query(
   [user.floor]
 );
 
-const roomId = roomResult.rows[0].id;
-      if (!user) {
-        return res.redirect('/login');
-      }
+const room = roomResult.rows[0];
 
-      const bookingDate = String(
+if (!room) {
+  return res.redirect(
+    dashboardRedirect(
+      'error',
+      'לא נמצא חדר ישיבות עבור הקומה שלך',
+      'meeting-room'
+    )
+  );
+}
+
+const roomId = room.id;
+
+const bookingDate = String(
         req.body.booking_date || ''
       );
 
