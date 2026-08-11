@@ -133,11 +133,10 @@ router.get('/magic-login', async (req, res, next) => {
       );
     }
 
-    const tokenHash =
-      crypto
-        .createHash('sha256')
-        .update(token)
-        .digest('hex');
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex');
 
     const result = await db.query(
       `
@@ -148,8 +147,7 @@ router.get('/magic-login', async (req, res, next) => {
           role,
           is_active,
           must_change_password,
-          magic_login_expires_at,
-          magic_login_used_at
+          magic_login_expires_at
         FROM users
         WHERE
           magic_login_token_hash = $1
@@ -166,24 +164,14 @@ router.get('/magic-login', async (req, res, next) => {
       return res.redirect(
         '/login?error=' +
         encodeURIComponent(
-          'קישור ההתחברות אינו תקין או שכבר נוצל'
-        )
-      );
-    }
-
-    if (user.magic_login_used_at) {
-      return res.redirect(
-        '/login?error=' +
-        encodeURIComponent(
-          'קישור ההתחברות כבר נוצל'
+          'קישור ההתחברות אינו תקין'
         )
       );
     }
 
     if (
       !user.magic_login_expires_at ||
-      new Date(user.magic_login_expires_at) <
-        new Date()
+      new Date(user.magic_login_expires_at) <= new Date()
     ) {
       return res.redirect(
         '/login?error=' +
@@ -192,17 +180,6 @@ router.get('/magic-login', async (req, res, next) => {
         )
       );
     }
-
-    await db.query(
-      `
-        UPDATE users
-        SET
-          magic_login_used_at = NOW(),
-          updated_at = NOW()
-        WHERE id = $1
-      `,
-      [user.id]
-    );
 
     req.session.userId = user.id;
     req.session.userRole = user.role;
