@@ -1,52 +1,159 @@
 <footer class="site-footer">
-    <div class="container">
+  <div class="container">
 
-        <div class="footer-grid">
+    <div class="footer-grid">
 
-            <div class="footer-col">
+      <!-- AlonSpace -->
+      <div class="footer-col">
 
-                <a href="/" class="brand">
-                    <span class="brand-text">AlonSpace</span>
-                </a>
+        <a href="/" class="brand">
+          <span class="brand-text">AlonSpace</span>
+        </a>
 
-                <p>
-                    משרדים פרטיים להשכרה במגדלי אלון, תל אביב.
-                    סביבת עבודה שקטה, מקצועית ומוכנה לעבודה.
-                </p>
+        <p>
+          משרדים פרטיים להשכרה במגדלי אלון, תל אביב.
+          סביבת עבודה שקטה, מקצועית ומוכנה לעבודה.
+        </p>
 
-            </div>
+       <div class="footer-socials">
 
-            <div class="footer-col">
-                <h4>ניווט</h4>
+  <a
+    href="https://www.instagram.com/alonspacetlv?igsh=ZHg2M3FzajFjZW56&utm_source=qr"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Instagram"
+    class="social-link"
+  >
+    Instagram
+  </a>
 
-                <a href="/">בית</a>
-                <a href="/המתחם-והשירותים">המתחם</a>
-                <a href="/gallery">גלריה</a>
-                <a href="/שאלות-נפוצות">שאלות נפוצות</a>
-            </div>
+  <a
+    href="https://www.tiktok.com/@alonspace2026?_r=1&_t=ZS-98mvYpkQaut"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="TikTok"
+    class="social-link"
+  >
+    TikTok
+  </a>
 
-            <div class="footer-col">
-                <h4>יצירת קשר</h4>
+</div>
+      </div>
 
-                <a href="tel:<%= site.phone %>"><%= site.phone %></a>
-                <a href="mailto:<%= site.email %>"><%= site.email %></a>
 
-                <p><%= site.address %></p>
-            </div>
+      <!-- ניווט -->
+      <div class="footer-col">
 
-        
+        <h4>ניווט</h4>
 
-        <div class="footer-bottom">
+        <a href="/">בית</a>
 
-            © <%= new Date().getFullYear() %> AlonSpace
+        <a href="/about">
+          אודות
+        </a>
 
-        </div>
+        <a href="/amenities">
+          המתחם
+        </a>
+
+        <a href="/gallery">
+          גלריה
+        </a>
+
+        <a href="/faq">
+          שאלות נפוצות
+        </a>
+
+      </div>
+
+
+      <!-- יצירת קשר -->
+      <div class="footer-col">
+
+        <h4>יצירת קשר</h4>
+
+        <a href="tel:<%= site.phone %>">
+          <%= site.phone %>
+        </a>
+
+        <a href="mailto:<%= site.email %>">
+          <%= site.email %>
+        </a>
+
+        <p>
+          <%= site.address %>
+        </p>
+
+      </div>
+
+
+      <!-- מידע -->
+      <div class="footer-col">
+
+        <h4>מידע</h4>
+
+        <a href="/privacy">
+          מדיניות פרטיות
+        </a>
+
+        <a href="/accessibility">
+          הצהרת נגישות
+        </a>
+
+      </div>
 
     </div>
 
-    <a href="/terms">תנאי השכרה</a>
 
-<a href="/privacy">מדיניות פרטיות</a>
+    <div class="footer-bottom">
 
-<a href="/accessibility">הצהרת נגישות</a>
+      <span>
+        © <%= new Date().getFullYear() %> AlonSpace
+      </span>
+
+    </div>
+
+  </div>
 </footer>
+<div class="floating-side-buttons">
+
+  <!-- כפתור נגישות -->
+  <button
+    type="button"
+    class="floating-side-btn accessibility-btn"
+    id="accessibilityButton"
+    aria-label="אפשרויות נגישות"
+    title="נגישות"
+  >
+    ♿
+  </button>
+
+  <!-- Instagram -->
+  <a
+    href="https://www.instagram.com/alonspacetlv?igsh=ZHg2M3FzajFjZW56&utm_source=qr"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="floating-side-btn"
+    aria-label="Instagram"
+    title="Instagram"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm5.5-3.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"/>
+    </svg>
+  </a>
+
+  <!-- TikTok -->
+  <a
+    href="https://www.tiktok.com/@alonspace2026?_r=1&_t=ZS-98mvYpkQaut"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="floating-side-btn"
+    aria-label="TikTok"
+    title="TikTok"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M15.5 3c.3 1.8 1.4 3.2 3.5 3.7v3.1c-1.4 0-2.7-.4-3.8-1.2v6.2a6.2 6.2 0 11-5.3-6.1v3.2a3.1 3.1 0 103 3.1V3h2.6z"/>
+    </svg>
+  </a>
+
+</div>

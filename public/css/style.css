@@ -1189,3 +1189,178 @@ section { padding: 88px 0; position: relative; }
     grid-template-columns: 1fr;
   }
 }
+.home-benefits-section {
+  padding: 90px 0;
+  background: var(--cream);
+}
+
+.home-benefits-intro {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+  margin: 40px auto;
+  max-width: 900px;
+}
+
+.home-benefit-highlight {
+  padding: 30px;
+  border: 1px solid var(--stone-dark);
+  border-radius: var(--radius-lg);
+  background: var(--cream);
+}
+
+.home-benefit-highlight.primary {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+
+.home-benefit-highlight h3 {
+  margin: 8px 0 12px;
+}
+
+.home-benefit-highlight p {
+  margin: 0;
+  line-height: 1.8;
+}
+
+.home-benefits-list {
+  max-width: 900px;
+  margin: 0 auto;
+  border-top: 1px solid var(--stone-dark);
+}
+
+.home-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px 6px;
+
+  border-bottom: 1px solid var(--stone-dark);
+
+  font-weight: 600;
+}
+
+.home-benefit-arrow {
+  color: var(--oak);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .home-benefits-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .home-benefits-section {
+    padding: 60px 0;
+  }
+}
+.footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 14px;
+
+  border: 1px solid rgba(247, 242, 230, .3);
+  border-radius: 999px;
+
+  color: var(--cream);
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+
+  transition:
+    background .2s ease,
+    color .2s ease,
+    border-color .2s ease,
+    transform .2s ease;
+}
+
+.social-link:hover {
+  background: var(--cream);
+  color: var(--ink);
+  border-color: var(--cream);
+  transform: translateY(-2px);
+}
+/* ========================================
+   Floating accessibility + social buttons
+======================================== */
+
+.floating-side-buttons {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  z-index: 9999;
+}
+
+.floating-side-btn {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .2);
+
+  background: var(--ink);
+  color: var(--cream);
+
+  cursor: pointer;
+  text-decoration: none;
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, .18);
+
+  transition:
+    transform .2s ease,
+    background .2s ease;
+}
+
+.floating-side-btn svg {
+  width: 23px;
+  height: 23px;
+  fill: currentColor;
+}
+
+.floating-side-btn:hover {
+  transform: scale(1.08);
+  background: var(--oak-dark);
+}
+
+.accessibility-btn {
+  font-size: 24px;
+  font-family: inherit;
+}
+
+@media (max-width: 700px) {
+  .floating-side-buttons {
+    left: 12px;
+  }
+
+  .floating-side-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .floating-side-btn svg {
+    width: 21px;
+    height: 21px;
+  }
+}
