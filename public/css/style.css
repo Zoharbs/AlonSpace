@@ -1505,3 +1505,45 @@ body.accessibility-high-contrast .accessibility-menu a {
   background: transparent !important;
   color: var(--ink) !important;
 }
+/* =========================
+   Footer social icons
+========================= */
+
+.footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.footer-social-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(247, 242, 230, 0.45);
+  border-radius: 50%;
+
+  color: var(--cream);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.footer-social-icon svg {
+  width: 21px;
+  height: 21px;
+
+  fill: currentColor;
+}
+
+.footer-social-icon:hover {
+  background: var(--cream);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
