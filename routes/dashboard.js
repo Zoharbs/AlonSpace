@@ -131,7 +131,29 @@ router.get('/', async (req, res, next) => {
       0,
       monthlyLimit - usedHours
     );
+const quotaExceeded =
+  usedHours > monthlyLimit;
 
+const chargeableResult = await db.query(
+  `
+    SELECT COUNT(*)::INTEGER AS count
+    FROM meeting_bookings
+    WHERE
+      user_id = $1
+      AND billing_status = 'chargeable'
+      AND TO_CHAR(
+        booking_date,
+        'YYYY-MM'
+      ) = $2
+  `,
+  [
+    user.id,
+    currentMonth,
+  ]
+);
+
+const hasChargeableBookings =
+  chargeableResult.rows[0].count > 0;
     const bookingsResult = await db.query(
       `
         SELECT
@@ -184,6 +206,8 @@ return res.render('dashboard', {
   error: req.query.error || null,
   success: req.query.success || null,
   warning: req.query.warning || null,
+  quotaExceeded,
+  hasChargeableBookings,
 });
   } catch (error) {
     return next(error);

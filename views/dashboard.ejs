@@ -284,7 +284,45 @@
                   <%= success %>
                 </div>
                 <% } %>
+<% if (quotaExceeded) { %>
 
+  <div class="quota-warning">
+
+    <% if (hasChargeableBookings) { %>
+
+      <strong>
+        שימוש מעבר למכסת חדר הישיבות
+      </strong>
+
+      <p>
+        עברת את מכסת
+        <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+        השעות החודשית.
+
+        בוצעו החודש שריונים נוספים מעבר למכסה,
+        ולכן חלק מהשימוש עשוי להיות כרוך בתשלום.
+      </p>
+
+    <% } else { %>
+
+      <strong>
+        עברת את מכסת חדר הישיבות החודשית
+      </strong>
+
+      <p>
+        ניצלת יותר מ־
+        <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+        שעות החודש.
+
+        השריון הנוכחי אושר.
+        שימוש נוסף מעבר למכסה עשוי להיות כרוך בתשלום.
+      </p>
+
+    <% } %>
+
+  </div>
+
+<% } %>
                   <div class="tenant-summary">
                     <article class="tenant-summary-card">
                       <span class="eyebrow">המשרד שלי</span>
