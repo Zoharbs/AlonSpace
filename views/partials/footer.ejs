@@ -257,7 +257,12 @@
       highlightLinks
     );
   }
-
+accessibilityMenu?.addEventListener(
+  'click',
+  (event) => {
+    event.stopPropagation();
+  }
+);
 
   accessibilityButton?.addEventListener(
     'click',

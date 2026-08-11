@@ -1439,7 +1439,29 @@ section { padding: 88px 0; position: relative; }
 /* ניגודיות גבוהה */
 
 body.accessibility-high-contrast {
-  filter: contrast(1.4);
+  background: #000 !important;
+  color: #fff !important;
+}
+
+body.accessibility-high-contrast main,
+body.accessibility-high-contrast section {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+body.accessibility-high-contrast .admin-card,
+body.accessibility-high-contrast .stat-card {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+
+body.accessibility-high-contrast a {
+  color: #ffff00 !important;
+}
+
+body.accessibility-high-contrast button:not(.floating-side-btn) {
+  border-color: #fff !important;
 }
 
 
@@ -1459,4 +1481,24 @@ body.accessibility-highlight-links a {
     left: 55px;
     width: 210px;
   }
+}
+body.accessibility-high-contrast .floating-side-buttons {
+  filter: none !important;
+}
+
+body.accessibility-high-contrast .floating-side-btn {
+  background: var(--ink) !important;
+  color: var(--cream) !important;
+}
+
+body.accessibility-high-contrast .accessibility-menu {
+  background: var(--cream) !important;
+  color: var(--ink) !important;
+  border-color: var(--stone-dark) !important;
+}
+
+body.accessibility-high-contrast .accessibility-menu button,
+body.accessibility-high-contrast .accessibility-menu a {
+  background: transparent !important;
+  color: var(--ink) !important;
 }
