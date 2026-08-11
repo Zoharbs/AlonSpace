@@ -1217,6 +1217,7 @@ section { padding: 88px 0; position: relative; }
 
 .home-benefit-highlight h3 {
   margin: 8px 0 12px;
+  color: var(--cream);
 }
 
 .home-benefit-highlight p {
