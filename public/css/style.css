@@ -1606,3 +1606,26 @@ body.accessibility-high-contrast .accessibility-menu a {
     flex-direction: column;
   }
 }
+.quota-warning {
+  margin: 20px 0;
+  padding: 18px 20px;
+
+  background: #fff7df;
+  border: 1px solid #d8b85c;
+  border-right: 5px solid #b78a22;
+
+  border-radius: 10px;
+
+  color: #4b3b16;
+}
+
+.quota-warning strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+.quota-warning p {
+  margin: 0;
+  line-height: 1.6;
+}

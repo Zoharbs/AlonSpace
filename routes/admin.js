@@ -42,6 +42,61 @@ router.use(requireAdmin);
 
 router.get('/', async (req, res, next) => {
   try {
+    const quotaAlertsResult = await db.query(
+  `
+    SELECT
+      u.id,
+      u.display_name,
+      u.phone,
+      u.office_number,
+      u.floor,
+      u.monthly_meeting_hours,
+
+      COALESCE(
+        SUM(
+          EXTRACT(
+            EPOCH FROM (mb.end_time - mb.start_time)
+          ) / 3600
+        ),
+        0
+      )::NUMERIC AS used_hours,
+
+      COUNT(*) FILTER (
+        WHERE mb.billing_status = 'chargeable'
+      ) AS chargeable_bookings
+
+    FROM users u
+
+    JOIN meeting_bookings mb
+      ON mb.user_id = u.id
+
+    WHERE
+      u.role = 'tenant'
+      AND u.is_active = TRUE
+      AND TO_CHAR(mb.booking_date, 'YYYY-MM')
+          = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
+
+    GROUP BY
+      u.id,
+      u.display_name,
+      u.phone,
+      u.office_number,
+      u.floor,
+      u.monthly_meeting_hours
+
+    HAVING
+      COALESCE(
+        SUM(
+          EXTRACT(
+            EPOCH FROM (mb.end_time - mb.start_time)
+          ) / 3600
+        ),
+        0
+      ) > u.monthly_meeting_hours
+
+    ORDER BY used_hours DESC
+  `
+);
     const [
       clientsResult,
       messagesResult,
@@ -175,6 +230,7 @@ router.get('/', async (req, res, next) => {
       stats,
       error: req.query.error || null,
       success: req.query.success || null,
+      quotaAlerts: quotaAlertsResult.rows,
       newClientInvite,
     });
   } catch (error) {
@@ -978,20 +1034,7 @@ router.post(
         tenant.monthly_meeting_hours || 6
       );
 
-      if (
-        usedHours + requestedHours >
-        monthlyLimit
-      ) {
-        await client.query('ROLLBACK');
-
-        return res.redirect(
-          adminRedirect(
-            'error',
-            `השריון חורג ממכסת ${monthlyLimit} השעות החודשית של הלקוח`,
-            'meeting-room'
-          )
-        );
-      }
+      
 
       await client.query(
         `

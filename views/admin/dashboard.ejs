@@ -371,6 +371,172 @@
         flex-direction: column;
       }
     }
+    .quota-alerts-section {
+  margin-bottom: 32px;
+}
+
+.quota-alerts-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 14px;
+}
+
+.quota-alerts-heading h2 {
+  margin: 5px 0 0;
+}
+
+.quota-alert-label {
+  font-size: .78rem;
+  font-weight: 800;
+  color: #9c3b3b;
+}
+
+.quota-alert-count {
+  min-width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #9c3b3b;
+  color: #fff;
+
+  font-weight: 800;
+}
+
+.quota-alerts-list {
+  display: grid;
+  gap: 14px;
+}
+
+.quota-admin-alert {
+  background: #fff8e8;
+
+  border: 1px solid #dfc684;
+  border-right: 5px solid #c59631;
+
+  border-radius: var(--radius-lg);
+
+  padding: 20px;
+
+  box-shadow: var(--shadow);
+}
+
+.quota-admin-alert.chargeable {
+  background: #fff0f0;
+  border-color: #df9c9c;
+  border-right-color: #b74343;
+}
+
+.quota-admin-alert-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-bottom: 18px;
+}
+
+.quota-admin-alert-icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #c59631;
+  color: #fff;
+
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.quota-admin-alert.chargeable
+.quota-admin-alert-icon {
+  background: #b74343;
+}
+
+.quota-admin-alert-title {
+  color: #9c6c17;
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.quota-admin-alert.chargeable
+.quota-admin-alert-title {
+  color: #a32f2f;
+}
+
+.quota-admin-alert h3 {
+  margin: 3px 0;
+}
+
+.quota-admin-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+
+  margin-bottom: 18px;
+}
+
+.quota-admin-numbers > div {
+  background: rgba(255, 255, 255, .65);
+  border-radius: 9px;
+  padding: 12px;
+}
+
+.quota-admin-numbers span {
+  display: block;
+  margin-bottom: 3px;
+
+  font-size: .75rem;
+  color: var(--ink-soft);
+}
+
+.quota-admin-numbers strong {
+  font-size: 1rem;
+}
+
+.quota-admin-status {
+  display: grid;
+  gap: 4px;
+
+  padding-top: 14px;
+  border-top: 1px solid rgba(0, 0, 0, .1);
+}
+
+.quota-admin-status span {
+  font-size: .85rem;
+  color: var(--ink-soft);
+}
+
+.quota-admin-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  margin-top: 16px;
+}
+
+.quota-admin-actions a {
+  text-decoration: none;
+}
+
+@media (max-width: 700px) {
+  .quota-admin-numbers {
+    grid-template-columns: 1fr;
+  }
+}
   </style>
 </head>
 
@@ -408,7 +574,157 @@
             <%= success %>
           </div>
           <% } %>
+<% if (quotaAlerts && quotaAlerts.length) { %>
 
+  <section class="quota-alerts-section">
+
+    <div class="quota-alerts-heading">
+      <div>
+        <span class="quota-alert-label">דורש טיפול</span>
+        <h2>חריגות ממכסת חדר הישיבות</h2>
+      </div>
+
+      <span class="quota-alert-count">
+        <%= quotaAlerts.length %>
+      </span>
+    </div>
+
+    <div class="quota-alerts-list">
+
+      <% quotaAlerts.forEach(alert => { %>
+
+        <%
+          const used = Number(alert.used_hours || 0);
+          const limit = Number(alert.monthly_meeting_hours || 6);
+          const exceeded = Math.max(0, used - limit);
+          const hasChargeable =
+            Number(alert.chargeable_bookings || 0) > 0;
+
+          let whatsappPhone = String(alert.phone || '')
+            .replace(/\D/g, '');
+
+          if (whatsappPhone.startsWith('0')) {
+            whatsappPhone =
+              '972' + whatsappPhone.slice(1);
+          }
+
+          const whatsappText =
+            encodeURIComponent(
+              `שלום ${alert.display_name}, רצינו ליצור איתך קשר בנוגע למכסת שעות חדר הישיבות שלך ב-AlonSpace.`
+            );
+        %>
+
+        <article
+          class="quota-admin-alert <%= hasChargeable ? 'chargeable' : '' %>"
+        >
+
+          <div class="quota-admin-alert-main">
+
+            <div class="quota-admin-alert-icon">
+              !
+            </div>
+
+            <div>
+              <div class="quota-admin-alert-title">
+
+                <% if (hasChargeable) { %>
+                  חריגה נוספת — נדרש טיפול
+                <% } else { %>
+                  הלקוח עבר את המכסה החודשית
+                <% } %>
+
+              </div>
+
+              <h3>
+                <%= alert.display_name %>
+              </h3>
+
+              <p class="small">
+                משרד <%= alert.office_number || '-' %>
+                · קומה <%= alert.floor || '-' %>
+              </p>
+            </div>
+
+          </div>
+
+          <div class="quota-admin-numbers">
+
+            <div>
+              <span>מכסה</span>
+              <strong><%= limit.toFixed(1) %> שעות</strong>
+            </div>
+
+            <div>
+              <span>נוצלו</span>
+              <strong><%= used.toFixed(1) %> שעות</strong>
+            </div>
+
+            <div>
+              <span>חריגה</span>
+              <strong><%= exceeded.toFixed(1) %> שעות</strong>
+            </div>
+
+          </div>
+
+          <div class="quota-admin-status">
+
+            <% if (hasChargeable) { %>
+
+              <strong>
+                הלקוח כבר ביצע שריון נוסף לאחר חציית המכסה.
+              </strong>
+
+              <span>
+                יש לבדוק חיוב וליצור קשר עם הלקוח.
+              </span>
+
+            <% } else { %>
+
+              <strong>
+                זו החריגה הראשונה שנרשמה החודש.
+              </strong>
+
+              <span>
+                הלקוח קיבל התראה שהמשך שימוש מעבר למכסה עשוי להיות כרוך בתשלום.
+              </span>
+
+            <% } %>
+
+          </div>
+
+          <div class="quota-admin-actions">
+
+            <% if (whatsappPhone) { %>
+              <a
+                href="https://wa.me/<%= whatsappPhone %>?text=<%= whatsappText %>"
+                target="_blank"
+                rel="noopener"
+                class="mini-btn primary"
+              >
+                יצירת קשר ב־WhatsApp
+              </a>
+            <% } %>
+
+            <% if (alert.phone) { %>
+              <a
+                href="tel:<%= alert.phone %>"
+                class="mini-btn"
+              >
+                התקשר
+              </a>
+            <% } %>
+
+          </div>
+
+        </article>
+
+      <% }) %>
+
+    </div>
+
+  </section>
+
+<% } %>
             <div class="stat-cards">
               <div class="stat-card">
                 <div class="n">

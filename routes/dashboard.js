@@ -175,15 +175,16 @@ router.get('/', async (req, res, next) => {
       [user.id, user.floor]
     );
 
-    return res.render('dashboard', {
-      title: 'האזור האישי — AlonSpace',
-      user,
-      usedHours,
-      remainingHours,
-      meetingBookings: bookingsResult.rows,
-      error: req.query.error || null,
-      success: req.query.success || null,
-    });
+return res.render('dashboard', {
+  title: 'האזור האישי — AlonSpace',
+  user,
+  usedHours,
+  remainingHours,
+  meetingBookings: bookingsResult.rows,
+  error: req.query.error || null,
+  success: req.query.success || null,
+  warning: req.query.warning || null,
+});
   } catch (error) {
     return next(error);
   }
@@ -402,16 +403,17 @@ if (newTotalHours > limit) {
       ]
     );
 
-    quotaMessage =
-      `עברת את מכסת ${limit} השעות החודשית. ` +
-      `מהשריון הבא מעבר למכסה יחול חיוב לפי התעריף שנקבע.`;
+quotaMessage =
+  `לתשומת לבך: ניצלת את מכסת ${limit} שעות חדר הישיבות החודשית. ` +
+  `השריון הנוכחי אושר. הזמנות נוספות מעבר למכסה עשויות להיות כרוכות בתשלום.`;
 
   } else {
 
     billingStatus = 'chargeable';
 
-    quotaMessage =
-      'השריון נוצר מעבר למכסה החודשית ולכן הוא עשוי להיות מחויב בתשלום.';
+quotaMessage =
+  `השריון אושר ונרשם מעבר למכסת ${limit} השעות החודשית. ` +
+  `שריון זה עשוי להיות כרוך בתשלום בהתאם לתנאי השכירות.`;
   }
 }
 
@@ -449,14 +451,20 @@ await client.query(
 
       await client.query('COMMIT');
 
-const successMessage =
-  quotaMessage ||
-  'חדר הישיבות שוריין בהצלחה';
+if (quotaMessage) {
+  return res.redirect(
+    dashboardRedirect(
+      'warning',
+      quotaMessage,
+      'meeting-room'
+    )
+  );
+}
 
 return res.redirect(
   dashboardRedirect(
     'success',
-    successMessage,
+    'חדר הישיבות שוריין בהצלחה',
     'meeting-room'
   )
 );
