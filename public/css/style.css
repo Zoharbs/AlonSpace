@@ -1547,3 +1547,25 @@ body.accessibility-high-contrast .accessibility-menu a {
   color: var(--ink);
   transform: translateY(-2px);
 }
+.nav-social-link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+  padding: 6px !important;
+
+  border-radius: 50%;
+}
+
+.nav-social-link svg {
+  width: 20px;
+  height: 20px;
+
+  fill: currentColor;
+}
+
+.nav-social-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
