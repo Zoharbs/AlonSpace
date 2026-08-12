@@ -78,7 +78,6 @@
 
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
-
 <script>
 const dateInput = document.getElementById('booking_date');
 const slotGrid = document.getElementById('slotGrid');
@@ -87,74 +86,156 @@ const submitBtn = document.getElementById('submitBtn');
 const form = document.getElementById('bookingForm');
 const formMsg = document.getElementById('formMsg');
 
-const today = new Date();
-const maxDate = new Date();
-maxDate.setDate(today.getDate() + 7);
+// ========================================
+// הגבלת בחירת התאריך לשבועיים הקרובים
+// ========================================
 
-dateInput.min = today.toISOString().split('T')[0];
-dateInput.max = maxDate.toISOString().split('T')[0];
+function formatDateForInput(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+const today = new Date();
+
+const maxDate = new Date();
+maxDate.setDate(today.getDate() + 14);
+
+dateInput.min = formatDateForInput(today);
+dateInput.max = formatDateForInput(maxDate);
+
+
+// ========================================
+// מצב כפתור קביעת הסיור
+// ========================================
 
 function updateSubmitState() {
-  const ready = dateInput.value && timeSlotInput.value;
+  const ready =
+    dateInput.value &&
+    timeSlotInput.value;
+
   submitBtn.disabled = !ready;
-  submitBtn.textContent = ready ? 'קביעת סיור' : 'בחרו תאריך ושעה';
+
+  submitBtn.textContent =
+    ready
+      ? 'המשך לוואטסאפ'
+      : 'בחרו תאריך ושעה';
 }
+
+
+// ========================================
+// טעינת שעות פנויות
+// ========================================
 
 async function loadSlots() {
   timeSlotInput.value = '';
   updateSubmitState();
 
-  if (!dateInput.value) return;
+  if (!dateInput.value) {
+    return;
+  }
 
-  slotGrid.innerHTML = '<div class="slot-empty">טוען שעות...</div>';
+  slotGrid.innerHTML =
+    '<div class="slot-empty">טוען שעות...</div>';
 
   try {
-    const res = await fetch('/api/slots?date=' + dateInput.value);
+    const res = await fetch(
+      '/api/slots?date=' +
+      encodeURIComponent(dateInput.value)
+    );
+
+    if (!res.ok) {
+      throw new Error('Failed to load slots');
+    }
+
     const data = await res.json();
 
-    if (!data.slots || data.slots.length === 0) {
-      slotGrid.innerHTML = '<div class="slot-empty">אין שעות פנויות בתאריך הזה. נסו יום אחר בשבוע הקרוב.</div>';
+    if (
+      !Array.isArray(data.slots) ||
+      data.slots.length === 0
+    ) {
+      slotGrid.innerHTML =
+        '<div class="slot-empty">אין שעות פנויות בתאריך הזה. נסו יום אחר.</div>';
+
       return;
     }
 
     slotGrid.innerHTML = '';
 
-    data.slots.forEach(slot => {
+    data.slots.forEach((slot) => {
       const btn = document.createElement('button');
+
       btn.type = 'button';
       btn.className = 'slot-btn';
       btn.textContent = slot;
 
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+
+        document
+          .querySelectorAll('.slot-btn')
+          .forEach((button) => {
+            button.classList.remove('selected');
+          });
+
         btn.classList.add('selected');
+
         timeSlotInput.value = slot;
+
         updateSubmitState();
       });
 
       slotGrid.appendChild(btn);
     });
-  } catch (err) {
-    slotGrid.innerHTML = '<div class="slot-empty">שגיאה בטעינת השעות. נסו שוב.</div>';
+
+  } catch (error) {
+    console.error('SLOTS ERROR:', error);
+
+    slotGrid.innerHTML =
+      '<div class="slot-empty">שגיאה בטעינת השעות. נסו שוב.</div>';
   }
 }
 
+
+// ========================================
+// שינוי תאריך
+// ========================================
+
 dateInput.addEventListener('change', loadSlots);
+
+
+// ========================================
+// שליחת הבקשה לוואטסאפ
+// ========================================
 
 form.addEventListener('submit', function (e) {
   e.preventDefault();
 
-  const data = Object.fromEntries(new FormData(this).entries());
+  const data =
+    Object.fromEntries(
+      new FormData(form).entries()
+    );
 
-  if (!data.booking_date || !data.time_slot || !data.name || !data.phone) {
-    formMsg.textContent = 'נא למלא תאריך, שעה, שם וטלפון.';
-    formMsg.className = 'form-msg show err';
+  if (
+    !data.booking_date ||
+    !data.time_slot ||
+    !data.name ||
+    !data.phone
+  ) {
+    formMsg.textContent =
+      'נא למלא תאריך, שעה, שם וטלפון.';
+
+    formMsg.className =
+      'form-msg show err';
+
     return;
   }
 
-  const formattedDate = new Date(
-    data.booking_date + 'T12:00:00'
-  ).toLocaleDateString('he-IL');
+  const formattedDate =
+    new Date(
+      data.booking_date + 'T12:00:00'
+    ).toLocaleDateString('he-IL');
 
   let message =
 `שלום, אני רוצה לתאם סיור ב-AlonSpace.
@@ -165,50 +246,28 @@ form.addEventListener('submit', function (e) {
 שעה: ${data.time_slot}`;
 
   if (data.email) {
-    message += `\nאימייל: ${data.email}`;
+    message +=
+      `\nאימייל: ${data.email}`;
   }
 
   if (data.message) {
-    message += `\nהערה: ${data.message}`;
+    message +=
+      `\nהערה: ${data.message}`;
   }
 
-  message += `\n\nאשמח לאישור הסיור.`;
+  message +=
+    `\n\nאשמח לאישור הסיור.`;
 
-  const whatsappNumber = '972544730266'; // Replace with your WhatsApp number
+  const whatsappNumber =
+    '972544730266';
 
   const whatsappUrl =
     `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
-  window.open(whatsappUrl, '_blank');
-});  e.preventDefault();
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'שולח...';
-
-  const data = Object.fromEntries(new FormData(this).entries());
-  data.office_type = 'משרד';
-
-  try {
-    const res = await fetch('/api/booking', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.error || 'שגיאה בקביעת הסיור');
-
-    formMsg.textContent = `הבקשה התקבלה. נחזור אליכם לאישור הסיור בתאריך ${data.booking_date} בשעה ${data.time_slot}.`;
-    formMsg.className = 'form-msg show ok';
-
-    form.reset();
-    timeSlotInput.value = '';
-    slotGrid.innerHTML = '<div class="slot-empty">בחרו תאריך כדי לראות שעות פנויות</div>';
-    updateSubmitState();
-  } catch (err) {
-    formMsg.textContent = err.message;
-    formMsg.className = 'form-msg show err';
-    updateSubmitState();
-  }
+  window.open(
+    whatsappUrl,
+    '_blank',
+    'noopener,noreferrer'
+  );
 });
 </script>
