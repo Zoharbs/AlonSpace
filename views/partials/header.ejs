@@ -63,37 +63,36 @@
         padding: 9px 12px;
         font-size: .82rem;
       }
-
       .nav-dropdown {
-        width: 100%;
-        display: block;
-      }
+  width: 100%;
+  display: block;
+}
 
-      .nav-dropdown-trigger {
-        width: 100%;
-      }
+.nav-dropdown-trigger {
+  width: 100%;
+}
 
-      .nav-dropdown-menu {
-        position: static;
-        min-width: 0;
-        width: 100%;
-        margin-top: 4px;
-        padding: 4px 12px;
+.nav-dropdown-menu {
+  position: static;
+  min-width: 0;
+  width: 100%;
+  margin-top: 4px;
+  padding: 4px 12px;
 
-        background: transparent;
-        box-shadow: none;
+  background: transparent;
+  box-shadow: none;
 
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-      }
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
 
-      .nav-dropdown-menu a {
-        color: var(--cream) !important;
-        padding: 8px 16px;
-        font-size: .9rem;
-        opacity: .8;
-      }
+.nav-dropdown-menu a {
+  color: var(--cream) !important;
+  padding: 8px 16px;
+  font-size: .9rem;
+  opacity: .8;
+}
     }
 
     .nav-dropdown {
@@ -211,57 +210,44 @@
                 בית
               </a>
 
-              <div class="nav-dropdown">
+<div class="nav-dropdown">
 
-                <a href="/about" class="nav-dropdown-trigger <%= (
+  <a
+    href="/about"
+    class="nav-dropdown-trigger <%= (
       currentPath === '/about' ||
       currentPath === '/privacy' ||
       currentPath === '/accessibility'
-    ) ? 'active' : '' %>">
-                  אודות
+    ) ? 'active' : '' %>"
+  >
+    אודות
 
-                  <span class="nav-dropdown-arrow">
-                    ▾
-                  </span>
-                </a>
+    <span class="nav-dropdown-arrow">
+      ▾
+    </span>
+  </a>
 
-                <div class="nav-dropdown-menu">
+  <div class="nav-dropdown-menu">
 
-                  <a href="/about">
-                    אודות AlonSpace
-                  </a>
+    <a href="/about">
+      אודות AlonSpace
+    </a>
 
-                  <a href="/privacy">
-                    מדיניות פרטיות
-                  </a>
+    <a href="/privacy">
+      מדיניות פרטיות
+    </a>
 
-                  <a href="/accessibility">
-                    הצהרת נגישות
-                  </a>
+    <a href="/accessibility">
+      הצהרת נגישות
+    </a>
 
-                </div>
+  </div>
 
-              </div>
+</div>
 
-              <div class="nav-dropdown">
-
-                <a href="/amenities" class="nav-dropdown-trigger <%= currentPath === '/amenities' ? 'active' : '' %>">
-                  המתחם
-
-                  <span class="nav-dropdown-arrow">
-                    ▾
-                  </span>
-                </a>
-
-                <div class="nav-dropdown-menu">
-
-                  <a href="/amenities">
-                    שירותים
-                  </a>
-
-                </div>
-
-              </div>
+              <a href="/amenities" class="<%= currentPath === '/amenities' ? 'active' : '' %>">
+                המתחם
+              </a>
 
               <a href="/gallery" class="<%= currentPath === '/gallery' ? 'active' : '' %>">
                 גלריה
