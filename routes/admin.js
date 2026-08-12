@@ -1365,8 +1365,12 @@ router.post(
   }
 );
 
-router.get('/setup-analytics-db', async (req, res, next) => {
+router.get('/setup-analytics-db', async (req, res) => {
   try {
+    // =========================
+    // Analytics fields on users
+    // =========================
+
     await db.query(`
       ALTER TABLE users
       ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMPTZ
@@ -1377,14 +1381,93 @@ router.get('/setup-analytics-db', async (req, res, next) => {
       ADD COLUMN IF NOT EXISTS login_count INTEGER NOT NULL DEFAULT 0
     `);
 
-    res.json({
-      success: true,
-      message: 'Analytics columns created successfully'
-    });
-  } catch (error) {
-    console.error('ANALYTICS DB SETUP ERROR:', error);
 
-    res.status(500).json({
+    // =========================
+    // User activity table
+    // =========================
+
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS user_activity (
+        id BIGSERIAL PRIMARY KEY,
+
+        user_id BIGINT NOT NULL
+          REFERENCES users(id)
+          ON DELETE CASCADE,
+
+        event_type VARCHAR(100) NOT NULL,
+
+        event_data JSONB,
+
+        created_at TIMESTAMPTZ NOT NULL
+          DEFAULT NOW()
+      )
+    `);
+
+
+    // =========================
+    // Indexes
+    // =========================
+
+    await db.query(`
+      CREATE INDEX IF NOT EXISTS
+        idx_user_activity_user_id
+      ON user_activity(user_id)
+    `);
+
+    await db.query(`
+      CREATE INDEX IF NOT EXISTS
+        idx_user_activity_event_type
+      ON user_activity(event_type)
+    `);
+
+    await db.query(`
+      CREATE INDEX IF NOT EXISTS
+        idx_user_activity_created_at
+      ON user_activity(created_at)
+    `);
+
+
+    // =========================
+    // Verify
+    // =========================
+
+    const columnsResult = await db.query(`
+      SELECT
+        table_name,
+        column_name,
+        data_type
+      FROM information_schema.columns
+      WHERE
+        table_name IN (
+          'users',
+          'user_activity'
+        )
+        AND (
+          table_name = 'user_activity'
+          OR column_name IN (
+            'last_login_at',
+            'login_count'
+          )
+        )
+      ORDER BY
+        table_name,
+        ordinal_position
+    `);
+
+    return res.json({
+      success: true,
+      message:
+        'Analytics database setup completed',
+      database: columnsResult.rows
+    });
+
+  } catch (error) {
+    console.error(
+      'ANALYTICS DB SETUP ERROR:',
+      error
+    );
+
+    return res.status(500).json({
       success: false,
       error: error.message,
       code: error.code,
