@@ -152,7 +152,52 @@ router.get('/booking', (req, res) => {
     title: 'קביעת סיור - AlonSpace'
   });
 });
+router.get('/api/slots', (req, res) => {
+  const date = String(req.query.date || '');
 
+  if (!date) {
+    return res.status(400).json({
+      error: 'חסר תאריך'
+    });
+  }
+
+  const selectedDate = new Date(date + 'T12:00:00');
+
+  if (Number.isNaN(selectedDate.getTime())) {
+    return res.status(400).json({
+      error: 'תאריך לא תקין'
+    });
+  }
+
+  // 0 = ראשון, 6 = שבת
+  const day = selectedDate.getDay();
+
+  // כרגע לא מאפשרים שישי ושבת
+  if (day === 5 || day === 6) {
+    return res.json({
+      slots: []
+    });
+  }
+
+  // שעות אפשריות לסיור
+  const slots = [
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+  ];
+
+  return res.json({
+    slots
+  });
+});
 router.get(
   ['/offices', '/checkout'],
   (req, res) => {
