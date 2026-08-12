@@ -590,4 +590,101 @@ router.post(
   }
 );
 
+router.get('/survey', async (req, res, next) => {
+  try {
+    const existingSurvey = await db.query(
+      `
+        SELECT id
+        FROM onboarding_surveys
+        WHERE user_id = $1
+        LIMIT 1
+      `,
+      [req.session.userId]
+    );
+
+    // המשתמש כבר מילא את הסקר
+    if (existingSurvey.rows.length > 0) {
+      return res.redirect(
+        dashboardRedirect(
+          'success',
+          'הסקר כבר מולא. תודה!',
+        )
+      );
+    }
+
+    return res.render('survey', {
+      title: 'סקר קצר - AlonSpace',
+      error: null,
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+
+router.post('/survey', async (req, res, next) => {
+  try {
+    const {
+      uses_meeting_room,
+      meeting_room_times_per_month,
+      primary_office_use,
+      most_important_feature,
+      improvement_suggestion,
+    } = req.body;
+
+    await db.query(
+      `
+        INSERT INTO onboarding_surveys (
+          user_id,
+          uses_meeting_room,
+          meeting_room_times_per_month,
+          primary_office_use,
+          most_important_feature,
+          improvement_suggestion
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          $6
+        )
+        ON CONFLICT (user_id)
+        DO NOTHING
+      `,
+      [
+        req.session.userId,
+        uses_meeting_room === 'yes',
+        meeting_room_times_per_month
+          ? Number(meeting_room_times_per_month)
+          : null,
+        String(primary_office_use || '').trim() || null,
+        String(most_important_feature || '').trim() || null,
+        String(improvement_suggestion || '').trim() || null,
+      ]
+    );
+
+    await db.query(
+      `
+        INSERT INTO user_activity (
+          user_id,
+          event_type
+        )
+        VALUES ($1, 'onboarding_survey_completed')
+      `,
+      [req.session.userId]
+    );
+
+    return res.redirect(
+      dashboardRedirect(
+        'success',
+        'תודה! התשובות שלך נשמרו בהצלחה.'
+      )
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
+
 module.exports = router;

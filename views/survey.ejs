@@ -1,0 +1,133 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="breadcrumb">
+      <a href="/dashboard">האזור האישי</a> / סקר קצר
+    </div>
+
+    <span class="eyebrow">עוזרים לנו להשתפר</span>
+
+    <h1>נשמח להכיר אתכם קצת יותר.</h1>
+
+    <p>
+      כמה שאלות קצרות שיעזרו לנו להבין איך אתם משתמשים
+      ב-AlonSpace ואיך נוכל לשפר את החוויה שלכם.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="container" style="max-width:760px;">
+
+    <form
+      action="/dashboard/survey"
+      method="POST"
+      class="booking-card"
+    >
+
+      <div class="field">
+        <label>האם אתם משתמשים בחדר הישיבות?</label>
+
+        <select
+          name="uses_meeting_room"
+          id="usesMeetingRoom"
+          required
+        >
+          <option value="">בחרו תשובה</option>
+          <option value="yes">כן</option>
+          <option value="no">לא</option>
+        </select>
+      </div>
+
+
+      <div
+        class="field"
+        id="meetingTimesField"
+        style="margin-top:20px; display:none;"
+      >
+        <label>
+          בערך כמה פעמים בחודש אתם משתמשים בחדר הישיבות?
+        </label>
+
+        <input
+          type="number"
+          name="meeting_room_times_per_month"
+          min="0"
+          max="100"
+          placeholder="לדוגמה: 4"
+        >
+      </div>
+
+
+      <div class="field" style="margin-top:20px;">
+        <label>מה השימוש העיקרי שלכם במשרד?</label>
+
+        <textarea
+          name="primary_office_use"
+          placeholder="לדוגמה: עבודה שוטפת, פגישות עם לקוחות..."
+        ></textarea>
+      </div>
+
+
+      <div class="field" style="margin-top:20px;">
+        <label>
+          מה הדבר החשוב לכם ביותר במתחם?
+        </label>
+
+        <textarea
+          name="most_important_feature"
+          placeholder="למשל: שקט, מיקום, פרטיות, חדר הישיבות..."
+        ></textarea>
+      </div>
+
+
+      <div class="field" style="margin-top:20px;">
+        <label>
+          יש משהו שהייתם רוצים שנשפר?
+        </label>
+
+        <textarea
+          name="improvement_suggestion"
+          placeholder="כל הצעה או רעיון יתקבלו בשמחה"
+        ></textarea>
+      </div>
+
+
+      <button
+        type="submit"
+        class="btn btn-gold btn-block"
+        style="margin-top:28px;"
+      >
+        שליחת הסקר
+      </button>
+
+    </form>
+
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<script>
+const usesMeetingRoom =
+  document.getElementById('usesMeetingRoom');
+
+const meetingTimesField =
+  document.getElementById('meetingTimesField');
+
+usesMeetingRoom.addEventListener('change', function () {
+  if (this.value === 'yes') {
+    meetingTimesField.style.display = 'block';
+  } else {
+    meetingTimesField.style.display = 'none';
+
+    const input =
+      meetingTimesField.querySelector('input');
+
+    input.value = '';
+  }
+});
+</script>
