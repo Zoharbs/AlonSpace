@@ -290,7 +290,7 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--ink);
   color: var(--cream);
   overflow: hidden;
-  padding: 80px 0 110px;
+  padding: 65px 0 75px;
 }
 
 .hero .container {
@@ -1599,7 +1599,7 @@ body.accessibility-high-contrast .accessibility-menu a {
   height: 360px;
 
   justify-self: center;
-
+align-self: center;
   border-radius: var(--radius-lg);
   overflow: hidden;
 
