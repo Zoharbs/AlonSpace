@@ -1264,8 +1264,7 @@ section { padding: 88px 0; position: relative; }
 .floating-side-buttons {
   position: fixed;
   left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 20px;
 
   display: flex;
   flex-direction: column;
@@ -1314,10 +1313,23 @@ section { padding: 88px 0; position: relative; }
   font-family: inherit;
 }
 
+
 @media (max-width: 700px) {
   .floating-side-buttons {
     left: 12px;
+    bottom: 12px;
   }
+
+  .floating-side-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .floating-side-btn svg {
+    width: 21px;
+    height: 21px;
+  }
+
 
   .floating-side-btn {
     width: 44px;
