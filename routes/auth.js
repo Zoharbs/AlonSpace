@@ -11,7 +11,7 @@ function redirectForRole(role) {
 
 function renderLogin(res, status, error) {
   return res.status(status).render('login', {
-    title: 'התחברות — AlonSpace',
+    title: 'התחברות - AlonSpace',
     error,
     layout: false,
   });
@@ -23,7 +23,7 @@ router.get('/login', (req, res) => {
   }
 
   return res.render('login', {
-    title: 'התחברות — AlonSpace',
+    title: 'התחברות - AlonSpace',
     error: null,
     layout: false,
   });
@@ -271,7 +271,7 @@ router.get('/change-password', (req, res) => {
   }
 
   return res.render('change-password', {
-    title: 'בחירת סיסמה חדשה — AlonSpace',
+    title: 'בחירת סיסמה חדשה - AlonSpace',
     error: null,
     layout: false,
   });
@@ -298,7 +298,7 @@ router.post('/change-password', async (req, res, next) => {
         'change-password',
         {
           title:
-            'בחירת סיסמה חדשה — AlonSpace',
+            'בחירת סיסמה חדשה - AlonSpace',
           error:
             'הסיסמה חייבת להכיל לפחות 8 תווים',
           layout: false,
@@ -311,7 +311,7 @@ router.post('/change-password', async (req, res, next) => {
         'change-password',
         {
           title:
-            'בחירת סיסמה חדשה — AlonSpace',
+            'בחירת סיסמה חדשה - AlonSpace',
           error:
             'הסיסמאות שהוזנו אינן תואמות',
           layout: false,
@@ -347,7 +347,7 @@ router.post('/change-password', async (req, res, next) => {
         'change-password',
         {
           title:
-            'בחירת סיסמה חדשה — AlonSpace',
+            'בחירת סיסמה חדשה - AlonSpace',
           error:
             'המשתמש לא נמצא או שהחשבון אינו פעיל',
           layout: false,

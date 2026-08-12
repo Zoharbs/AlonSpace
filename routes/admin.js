@@ -219,7 +219,7 @@ router.get('/', async (req, res, next) => {
     // ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
     delete req.session.newClientInvite;
     return res.render('admin/dashboard', {
-      title: 'פאנל ניהול — AlonSpace',
+      title: 'פאנל ניהול - AlonSpace',
       layout: false,
       adminName: req.session.userName,
       clients: clientsResult.rows,
@@ -424,7 +424,7 @@ router.get('/analytics', async (req, res, next) => {
     const summary = summaryResult.rows[0];
 
     return res.render('admin/analytics', {
-      title: 'Analytics — AlonSpace',
+      title: 'Analytics - AlonSpace',
       layout: false,
 
       adminName: req.session.userName,

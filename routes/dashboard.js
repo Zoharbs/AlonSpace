@@ -209,7 +209,7 @@ const shouldShowSurvey =
     );
 
     return res.render('dashboard', {
-      title: 'האזור האישי — AlonSpace',
+      title: 'האזור האישי - AlonSpace',
       user,
       usedHours,
       remainingHours,

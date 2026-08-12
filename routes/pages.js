@@ -58,7 +58,7 @@ router.get('/', async (req, res, next) => {
 
     return res.render('home', {
       title:
-        'AlonSpace — משרדים פרטיים בלב תל אביב',
+        'AlonSpace - משרדים פרטיים בלב תל אביב',
       testimonials: testimonialsResult.rows,
       gallery: galleryResult.rows,
     });
@@ -71,7 +71,7 @@ router.get(
   ['/אודות', '/about'],
   (req, res) => {
     return res.render('about', {
-      title: 'אודות — AlonSpace',
+      title: 'אודות - AlonSpace',
     });
   }
 );
@@ -81,7 +81,7 @@ router.get(
   (req, res) => {
     return res.render('amenities', {
       title:
-        'המתחם והשירותים — AlonSpace',
+        'המתחם והשירותים - AlonSpace',
     });
   }
 );
@@ -98,7 +98,7 @@ router.get(
       `);
 
       return res.render('testimonials', {
-        title: 'המלצות — AlonSpace',
+        title: 'המלצות - AlonSpace',
         testimonials: result.rows,
         sent: req.query.sent === '1',
       });
@@ -112,7 +112,7 @@ router.get(
   ['/שאלות-נפוצות', '/faq'],
   (req, res) => {
     return res.render('faq', {
-      title: 'שאלות נפוצות — AlonSpace',
+      title: 'שאלות נפוצות - AlonSpace',
     });
   }
 );
@@ -128,7 +128,7 @@ router.get(
       `);
 
       return res.render('gallery', {
-        title: 'גלריה — AlonSpace',
+        title: 'גלריה - AlonSpace',
         gallery: result.rows,
       });
     } catch (error) {
@@ -141,7 +141,7 @@ router.get(
   ['/יצירת-קשר', '/contact'],
   (req, res) => {
     return res.render('contact', {
-      title: 'יצירת קשר — AlonSpace',
+      title: 'יצירת קשר - AlonSpace',
       sent: req.query.sent === '1',
     });
   }
@@ -243,7 +243,7 @@ router.get(
 
 router.get('/terms', (req, res) => {
   return res.render('terms', {
-    title: 'תנאי שימוש — AlonSpace',
+    title: 'תנאי שימוש - AlonSpace',
   });
 });
 

@@ -159,7 +159,7 @@ app.use((req, res) => {
           name="viewport"
           content="width=device-width, initial-scale=1.0"
         >
-        <title>הדף לא נמצא — AlonSpace</title>
+        <title>הדף לא נמצא - AlonSpace</title>
       </head>
 
       <body style="

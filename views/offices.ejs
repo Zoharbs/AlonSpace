@@ -34,16 +34,16 @@
       <p id="panelStatus">לחצו על אחד המשרדים במפה כדי להתחיל.</p>
 
       <div class="price-box">
-        <div><span>לשעה</span><strong id="priceHour">—</strong></div>
-        <div><span>ליום</span><strong id="priceDay">—</strong></div>
-        <div><span>לשבוע</span><strong id="priceWeek">—</strong></div>
-        <div><span>לחודש</span><strong id="priceMonth">—</strong></div>
-        <div><span>לשנה</span><strong id="priceYear">—</strong></div>
+        <div><span>לשעה</span><strong id="priceHour">-</strong></div>
+        <div><span>ליום</span><strong id="priceDay">-</strong></div>
+        <div><span>לשבוע</span><strong id="priceWeek">-</strong></div>
+        <div><span>לחודש</span><strong id="priceMonth">-</strong></div>
+        <div><span>לשנה</span><strong id="priceYear">-</strong></div>
       </div>
 
       <div class="tenant-box" id="tenantBox" style="display:none;">
   <span class="eyebrow">מי נמצא כאן?</span>
-  <h3 id="tenantName">—</h3>
+  <h3 id="tenantName">-</h3>
   <p id="tenantText">המשרד תפוס כרגע.</p>
 </div>
 
@@ -105,7 +105,7 @@ const tenantText = document.getElementById('tenantText');
   let selectedOfficeAvailable = false;
 
   function money(value) {
-    if (value === null || value === undefined || value === '') return '—';
+    if (value === null || value === undefined || value === '') return '-';
     return '₪' + Number(value).toLocaleString('he-IL');
   }
 
@@ -212,7 +212,7 @@ if (!office) {
   tenantBox.style.display = 'block';
 
   if (office.status === 'שמור') {
-    statusEl.textContent = 'סטטוס: שמור — המשרד בתהליך סגירה';
+    statusEl.textContent = 'סטטוס: שמור - המשרד בתהליך סגירה';
 
     tenantName.textContent = 'המשרד שמור כרגע';
     tenantText.textContent = 'אפשר להשאיר פנייה ונעדכן אם המשרד יתפנה.';
