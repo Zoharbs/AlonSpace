@@ -1365,4 +1365,31 @@ router.post(
   }
 );
 
+router.get('/setup-analytics-db', async (req, res, next) => {
+  try {
+    await db.query(`
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMPTZ
+    `);
+
+    await db.query(`
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS login_count INTEGER NOT NULL DEFAULT 0
+    `);
+
+    res.json({
+      success: true,
+      message: 'Analytics columns created successfully'
+    });
+  } catch (error) {
+    console.error('ANALYTICS DB SETUP ERROR:', error);
+
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      code: error.code,
+      detail: error.detail
+    });
+  }
+});
 module.exports = router;
