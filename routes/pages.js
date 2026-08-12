@@ -148,10 +148,9 @@ router.get(
 );
 
 router.get('/booking', (req, res) => {
-  return res.redirect(
-    302,
-    TOUR_WHATSAPP_URL
-  );
+  res.render('booking', {
+    title: 'קביעת סיור - AlonSpace'
+  });
 });
 
 router.get(

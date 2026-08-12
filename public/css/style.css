@@ -1363,7 +1363,8 @@ section { padding: 88px 0; position: relative; }
   position: absolute;
 
   left: 60px;
-  top: 0;
+  bottom: 0;
+  top: auto;
 
   width: 230px;
   padding: 14px;
