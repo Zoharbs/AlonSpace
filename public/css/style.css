@@ -1414,34 +1414,91 @@ section { padding: 88px 0; position: relative; }
 }
 
 
-/* ניגודיות גבוהה */
+/* =========================
+   ניגודיות גבוהה
+========================= */
 
 body.accessibility-high-contrast {
   background: #000 !important;
   color: #fff !important;
 }
 
+/* רקעים */
 body.accessibility-high-contrast main,
-body.accessibility-high-contrast section {
-  background-color: #000 !important;
-  color: #fff !important;
-}
-
+body.accessibility-high-contrast section,
+body.accessibility-high-contrast .card,
+body.accessibility-high-contrast .booking-card,
+body.accessibility-high-contrast .home-benefit-highlight,
+body.accessibility-high-contrast .testi-card,
 body.accessibility-high-contrast .admin-card,
 body.accessibility-high-contrast .stat-card {
   background: #000 !important;
   color: #fff !important;
-  border: 1px solid #fff !important;
+  border-color: #fff !important;
 }
 
+/* טקסטים */
+body.accessibility-high-contrast h1,
+body.accessibility-high-contrast h2,
+body.accessibility-high-contrast h3,
+body.accessibility-high-contrast h4,
+body.accessibility-high-contrast p,
+body.accessibility-high-contrast span,
+body.accessibility-high-contrast label,
+body.accessibility-high-contrast li,
+body.accessibility-high-contrast .small,
+body.accessibility-high-contrast .hero-sub,
+body.accessibility-high-contrast .label,
+body.accessibility-high-contrast .booking-side p,
+body.accessibility-high-contrast .booking-points {
+  color: #fff !important;
+}
+
+/* קישורים */
 body.accessibility-high-contrast a {
   color: #ffff00 !important;
 }
 
-body.accessibility-high-contrast button:not(.floating-side-btn) {
-  border-color: #fff !important;
+/* שדות טופס */
+body.accessibility-high-contrast input,
+body.accessibility-high-contrast textarea,
+body.accessibility-high-contrast select {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
 }
 
+body.accessibility-high-contrast input::placeholder,
+body.accessibility-high-contrast textarea::placeholder {
+  color: #ddd !important;
+}
+
+/* כפתורים */
+body.accessibility-high-contrast button:not(.floating-side-btn),
+body.accessibility-high-contrast .btn {
+  background: #000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+/* כפתורים צפים נשארים בעיצוב שלהם */
+body.accessibility-high-contrast .floating-side-btn {
+  background: var(--ink) !important;
+  color: var(--cream) !important;
+}
+
+/* תפריט הנגישות עצמו נשאר בהיר */
+body.accessibility-high-contrast .accessibility-menu {
+  background: var(--cream) !important;
+  color: var(--ink) !important;
+  border-color: var(--stone-dark) !important;
+}
+
+body.accessibility-high-contrast .accessibility-menu *,
+body.accessibility-high-contrast .accessibility-menu button,
+body.accessibility-high-contrast .accessibility-menu a {
+  color: var(--ink) !important;
+}
 
 /* הדגשת קישורים */
 
