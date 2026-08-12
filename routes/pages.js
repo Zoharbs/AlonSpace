@@ -9,7 +9,7 @@ const SITE = {
   phoneHref: '972544730266',
   whatsapp: 'https://wa.me/972544730266',
   email: 'alonspace@icloud.com',
-  address: 'יגאל אלון 94 (מגדלי אלון), תל אביב',
+  address: 'יגאל אלון 94 (מגדל אלון 2), תל אביב',
 };
 
 const TOUR_WHATSAPP_URL =
