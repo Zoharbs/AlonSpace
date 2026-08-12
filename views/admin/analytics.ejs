@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title><%= title %></title>
+
+  <link
+    rel="stylesheet"
+    href="/css/style.css"
+  >
+
+  <style>
+
+    body {
+      background: var(--stone);
+    }
+
+    .analytics-header {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 18px 0;
+    }
+
+    .analytics-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .analytics-header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .analytics-wrap {
+      padding: 40px 0 70px;
+    }
+
+    .analytics-title {
+      margin-bottom: 28px;
+    }
+
+    .analytics-title h1 {
+      margin-bottom: 5px;
+    }
+
+    .analytics-title p {
+      color: var(--ink-soft);
+      margin: 0;
+    }
+
+
+    /* =========================
+       כרטיסי נתונים
+    ========================= */
+
+    .analytics-stats {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+      gap: 16px;
+
+      margin-bottom: 32px;
+    }
+
+    .analytics-stat {
+      background: var(--cream);
+
+      padding: 22px;
+
+      border-radius: var(--radius-lg);
+
+      box-shadow: var(--shadow);
+    }
+
+    .analytics-stat-number {
+      display: block;
+
+      font-family: var(--font-display);
+
+      font-size: 2rem;
+
+      font-weight: 700;
+
+      color: var(--oak-dark);
+
+      margin-bottom: 5px;
+    }
+
+    .analytics-stat-label {
+      color: var(--ink-soft);
+      font-size: .88rem;
+    }
+
+
+    /* =========================
+       כרטיסים
+    ========================= */
+
+    .analytics-card {
+      background: var(--cream);
+
+      border-radius: var(--radius-lg);
+
+      padding: 24px;
+
+      box-shadow: var(--shadow);
+
+      margin-bottom: 24px;
+    }
+
+    .analytics-card h2 {
+      margin-top: 0;
+      margin-bottom: 6px;
+    }
+
+    .analytics-card-description {
+      color: var(--ink-soft);
+
+      margin-top: 0;
+
+      margin-bottom: 20px;
+
+      font-size: .9rem;
+    }
+
+
+    /* =========================
+       טבלה
+    ========================= */
+
+    .analytics-table-wrap {
+      overflow-x: auto;
+    }
+
+    .analytics-table {
+      width: 100%;
+
+      border-collapse: collapse;
+    }
+
+    .analytics-table th,
+    .analytics-table td {
+      padding: 12px 14px;
+
+      text-align: right;
+
+      border-bottom:
+        1px solid var(--stone-dark);
+
+      font-size: .88rem;
+
+      white-space: nowrap;
+    }
+
+    .analytics-table th {
+      background: var(--stone);
+    }
+
+    .never-logged-in {
+      color: #9c3b3b;
+      font-weight: 700;
+    }
+
+
+    /* =========================
+       פעילות
+    ========================= */
+
+    .activity-list {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 0;
+    }
+
+    .activity-item {
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      padding: 14px 0;
+
+      border-bottom:
+        1px solid var(--stone-dark);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-user {
+      font-weight: 700;
+    }
+
+    .activity-time {
+      color: var(--ink-soft);
+
+      font-size: .82rem;
+
+      white-space: nowrap;
+    }
+
+    .activity-type {
+      margin-top: 3px;
+
+      color: var(--ink-soft);
+
+      font-size: .88rem;
+    }
+
+
+    /* =========================
+       סקר
+    ========================= */
+
+    .survey-placeholder {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      flex-wrap: wrap;
+    }
+
+    .survey-number {
+      font-size: 1.8rem;
+
+      font-weight: 700;
+
+      color: var(--oak-dark);
+    }
+
+
+    @media (max-width: 1000px) {
+
+      .analytics-stats {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+    }
+
+
+    @media (max-width: 600px) {
+
+      .analytics-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .analytics-wrap {
+        padding-top: 25px;
+      }
+
+      .activity-item {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+<header class="analytics-header">
+
+  <div class="container">
+
+    <strong>
+      Analytics — AlonSpace
+    </strong>
+
+    <div class="analytics-header-actions">
+
+      <span>
+        שלום, <%= adminName %>
+      </span>
+
+      <a
+        href="/admin"
+        class="btn btn-outline-light"
+      >
+        חזרה לפאנל
+      </a>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<main class="container analytics-wrap">
+
+
+  <div class="analytics-title">
+
+    <h1>
+      Analytics
+    </h1>
+
+    <p>
+      תמונת מצב של השימוש בפורטל AlonSpace.
+    </p>
+
+  </div>
+
+
+  <!-- =====================
+       נתונים כלליים
+  ====================== -->
+
+  <div class="analytics-stats">
+
+
+    <div class="analytics-stat">
+
+      <span class="analytics-stat-number">
+
+        <%= summary.active_clients_month %>
+        /
+        <%= summary.total_clients %>
+
+      </span>
+
+      <span class="analytics-stat-label">
+        לקוחות שהתחברו החודש
+      </span>
+
+    </div>
+
+
+    <div class="analytics-stat">
+
+      <span class="analytics-stat-number">
+        <%= summary.logins_month %>
+      </span>
+
+      <span class="analytics-stat-label">
+        כניסות החודש
+      </span>
+
+    </div>
+
+
+    <div class="analytics-stat">
+
+      <span class="analytics-stat-number">
+        <%= summary.bookings_month %>
+      </span>
+
+      <span class="analytics-stat-label">
+        שריוני חדר ישיבות החודש
+      </span>
+
+    </div>
+
+
+    <div class="analytics-stat">
+
+      <span class="analytics-stat-number">
+
+        <%= Number(
+          summary.meeting_hours_month || 0
+        ).toFixed(1) %>
+
+      </span>
+
+      <span class="analytics-stat-label">
+        שעות חדר ישיבות החודש
+      </span>
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- =====================
+       פעילות לקוחות
+  ====================== -->
+
+  <section class="analytics-card">
+
+    <h2>
+      פעילות לקוחות
+    </h2>
+
+    <p class="analytics-card-description">
+      שימוש בפורטל ובחדרי הישיבות לפי לקוח.
+    </p>
+
+
+    <div class="analytics-table-wrap">
+
+      <table class="analytics-table">
+
+        <thead>
+
+          <tr>
+
+            <th>לקוח</th>
+
+            <th>משרד</th>
+
+            <th>כניסה אחרונה</th>
+
+            <th>סה״כ כניסות</th>
+
+            <th>שריונים החודש</th>
+
+            <th>שעות החודש</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <% clientsActivity.forEach(client => { %>
+
+            <tr>
+
+              <td>
+
+                <strong>
+                  <%= client.display_name %>
+                </strong>
+
+                <% if (client.business_name) { %>
+
+                  <br>
+
+                  <span class="small">
+                    <%= client.business_name %>
+                  </span>
+
+                <% } %>
+
+              </td>
+
+
+              <td>
+
+                <%= client.office_number
+                  ? `משרד ${client.office_number}`
+                  : '-'
+                %>
+
+                <% if (client.floor) { %>
+
+                  <br>
+
+                  <span class="small">
+                    קומה <%= client.floor %>
+                  </span>
+
+                <% } %>
+
+              </td>
+
+
+              <td>
+
+                <% if (client.last_login_at) { %>
+
+                  <%= new Date(
+                    client.last_login_at
+                  ).toLocaleString(
+                    'he-IL',
+                    {
+                      dateStyle: 'short',
+                      timeStyle: 'short'
+                    }
+                  ) %>
+
+                <% } else { %>
+
+                  <span class="never-logged-in">
+                    מעולם לא התחבר
+                  </span>
+
+                <% } %>
+
+              </td>
+
+
+              <td>
+                <%= client.login_count || 0 %>
+              </td>
+
+
+              <td>
+                <%= client.bookings_month || 0 %>
+              </td>
+
+
+              <td>
+
+                <%= Number(
+                  client.meeting_hours_month || 0
+                ).toFixed(1) %>
+
+              </td>
+
+            </tr>
+
+          <% }) %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================
+       סקר
+  ====================== -->
+
+  <section class="analytics-card">
+
+    <h2>
+      שאלון היכרות
+    </h2>
+
+    <div class="survey-placeholder">
+
+      <div>
+
+        <div class="survey-number">
+          <%= completedSurveys %>
+          /
+          <%= summary.total_clients %>
+        </div>
+
+        <span class="small">
+          לקוחות השלימו את השאלון
+        </span>
+
+      </div>
+
+      <span class="small">
+        תוצאות מפורטות יופיעו כאן לאחר שנחבר את השאלון.
+      </span>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================
+       פעילות אחרונה
+  ====================== -->
+
+  <section class="analytics-card">
+
+    <h2>
+      פעילות אחרונה
+    </h2>
+
+    <p class="analytics-card-description">
+      פעולות משמעותיות שבוצעו בפורטל.
+    </p>
+
+
+    <div class="activity-list">
+
+      <% if (!recentActivity.length) { %>
+
+        <p class="small">
+          עדיין לא נרשמה פעילות.
+        </p>
+
+      <% } %>
+
+
+      <% recentActivity.forEach(activity => {
+
+        let activityLabel =
+          activity.event_type;
+
+        if (
+          activity.event_type === 'login'
+        ) {
+          activityLabel =
+            'התחבר למערכת';
+        }
+
+        if (
+          activity.event_type ===
+          'meeting_booking_created'
+        ) {
+          activityLabel =
+            'יצר שריון לחדר ישיבות';
+        }
+
+        if (
+          activity.event_type ===
+          'meeting_booking_cancelled'
+        ) {
+          activityLabel =
+            'ביטל שריון לחדר ישיבות';
+        }
+
+        if (
+          activity.event_type ===
+          'survey_completed'
+        ) {
+          activityLabel =
+            'השלים את שאלון ההיכרות';
+        }
+
+      %>
+
+        <div class="activity-item">
+
+          <div>
+
+            <div class="activity-user">
+              <%= activity.display_name %>
+            </div>
+
+            <div class="activity-type">
+              <%= activityLabel %>
+            </div>
+
+          </div>
+
+
+          <div class="activity-time">
+
+            <%= new Date(
+              activity.created_at
+            ).toLocaleString(
+              'he-IL',
+              {
+                dateStyle: 'short',
+                timeStyle: 'short'
+              }
+            ) %>
+
+          </div>
+
+        </div>
+
+      <% }) %>
+
+    </div>
+
+  </section>
+
+
+</main>
+
+</body>
+</html>

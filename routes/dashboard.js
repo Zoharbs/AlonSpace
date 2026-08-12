@@ -131,11 +131,11 @@ router.get('/', async (req, res, next) => {
       0,
       monthlyLimit - usedHours
     );
-const quotaExceeded =
-  usedHours > monthlyLimit;
+    const quotaExceeded =
+      usedHours > monthlyLimit;
 
-const chargeableResult = await db.query(
-  `
+    const chargeableResult = await db.query(
+      `
     SELECT COUNT(*)::INTEGER AS count
     FROM meeting_bookings
     WHERE
@@ -146,14 +146,14 @@ const chargeableResult = await db.query(
         'YYYY-MM'
       ) = $2
   `,
-  [
-    user.id,
-    currentMonth,
-  ]
-);
+      [
+        user.id,
+        currentMonth,
+      ]
+    );
 
-const hasChargeableBookings =
-  chargeableResult.rows[0].count > 0;
+    const hasChargeableBookings =
+      chargeableResult.rows[0].count > 0;
     const bookingsResult = await db.query(
       `
         SELECT
@@ -197,18 +197,18 @@ const hasChargeableBookings =
       [user.id, user.floor]
     );
 
-return res.render('dashboard', {
-  title: 'האזור האישי — AlonSpace',
-  user,
-  usedHours,
-  remainingHours,
-  meetingBookings: bookingsResult.rows,
-  error: req.query.error || null,
-  success: req.query.success || null,
-  warning: req.query.warning || null,
-  quotaExceeded,
-  hasChargeableBookings,
-});
+    return res.render('dashboard', {
+      title: 'האזור האישי — AlonSpace',
+      user,
+      usedHours,
+      remainingHours,
+      meetingBookings: bookingsResult.rows,
+      error: req.query.error || null,
+      success: req.query.success || null,
+      warning: req.query.warning || null,
+      quotaExceeded,
+      hasChargeableBookings,
+    });
   } catch (error) {
     return next(error);
   }
@@ -220,7 +220,7 @@ router.post('/meeting-bookings/create',
 
     try {
       const userResult = await client.query(
-          `
+        `
           SELECT
             id,
             floor,
@@ -235,37 +235,37 @@ router.post('/meeting-bookings/create',
         [req.session.userId]
       );
 
-     const user = userResult.rows[0];
+      const user = userResult.rows[0];
 
-if (!user) {
-  return res.redirect('/login');
-}
+      if (!user) {
+        return res.redirect('/login');
+      }
 
-const roomResult = await client.query(
-  `
+      const roomResult = await client.query(
+        `
     SELECT id
     FROM meeting_rooms
     WHERE floor = $1
     LIMIT 1
   `,
-  [user.floor]
-);
+        [user.floor]
+      );
 
-const room = roomResult.rows[0];
+      const room = roomResult.rows[0];
 
-if (!room) {
-  return res.redirect(
-    dashboardRedirect(
-      'error',
-      'לא נמצא חדר ישיבות עבור הקומה שלך',
-      'meeting-room'
-    )
-  );
-}
+      if (!room) {
+        return res.redirect(
+          dashboardRedirect(
+            'error',
+            'לא נמצא חדר ישיבות עבור הקומה שלך',
+            'meeting-room'
+          )
+        );
+      }
 
-const roomId = room.id;
+      const roomId = room.id;
 
-const bookingDate = String(
+      const bookingDate = String(
         req.body.booking_date || ''
       );
 
@@ -387,62 +387,62 @@ const bookingDate = String(
         user.monthly_meeting_hours || 6
       );
 
-let billingStatus = 'included';
-let quotaMessage = null;
+      let billingStatus = 'included';
+      let quotaMessage = null;
 
-const newTotalHours =
-  usedHours + requestedHours;
+      const newTotalHours =
+        usedHours + requestedHours;
 
-if (newTotalHours > limit) {
+      if (newTotalHours > limit) {
 
-  const warningResult = await client.query(
-    `
+        const warningResult = await client.query(
+          `
       SELECT meeting_quota_warning_month
       FROM users
       WHERE id = $1
       FOR UPDATE
     `,
-    [user.id]
-  );
+          [user.id]
+        );
 
-  const warningMonth =
-    warningResult.rows[0]
-      ?.meeting_quota_warning_month;
+        const warningMonth =
+          warningResult.rows[0]
+            ?.meeting_quota_warning_month;
 
-  if (warningMonth !== monthKey) {
+        if (warningMonth !== monthKey) {
 
-    billingStatus = 'warning';
+          billingStatus = 'warning';
 
-    await client.query(
-      `
+          await client.query(
+            `
         UPDATE users
         SET
           meeting_quota_warning_month = $1,
           updated_at = NOW()
         WHERE id = $2
       `,
-      [
-        monthKey,
-        user.id,
-      ]
-    );
+            [
+              monthKey,
+              user.id,
+            ]
+          );
 
-quotaMessage =
-  `לתשומת לבך: ניצלת את מכסת ${limit} שעות חדר הישיבות החודשית. ` +
-  `השריון הנוכחי אושר. הזמנות נוספות מעבר למכסה עשויות להיות כרוכות בתשלום.`;
+          quotaMessage =
+            `לתשומת לבך: ניצלת את מכסת ${limit} שעות חדר הישיבות החודשית. ` +
+            `השריון הנוכחי אושר. הזמנות נוספות מעבר למכסה עשויות להיות כרוכות בתשלום.`;
 
-  } else {
+        } else {
 
-    billingStatus = 'chargeable';
+          billingStatus = 'chargeable';
 
-quotaMessage =
-  `השריון אושר ונרשם מעבר למכסת ${limit} השעות החודשית. ` +
-  `שריון זה עשוי להיות כרוך בתשלום בהתאם לתנאי השכירות.`;
-  }
-}
+          quotaMessage =
+            `השריון אושר ונרשם מעבר למכסת ${limit} השעות החודשית. ` +
+            `שריון זה עשוי להיות כרוך בתשלום בהתאם לתנאי השכירות.`;
+        }
+      }
 
-await client.query(
-  `
+      await client.query(
+        `
     INSERT INTO meeting_bookings (
       user_id,
       meeting_room_id,
@@ -462,36 +462,45 @@ await client.query(
       $7
     )
   `,
-  [
-    user.id,
-    roomId,
-    bookingDate,
-    startTime,
-    endTime,
-    note || null,
-    billingStatus
-  ]
-);
-
+        [
+          user.id,
+          roomId,
+          bookingDate,
+          startTime,
+          endTime,
+          note || null,
+          billingStatus
+        ]
+      );
+      await client.query(
+        `
+    INSERT INTO user_activity (
+      user_id,
+      event_type
+    )
+    VALUES ($1, 'meeting_booking_created')
+  `,
+        [user.id]
+      );
       await client.query('COMMIT');
 
-if (quotaMessage) {
-  return res.redirect(
-    dashboardRedirect(
-      'warning',
-      quotaMessage,
-      'meeting-room'
-    )
-  );
-}
+      if (quotaMessage) {
+        return res.redirect(
+          dashboardRedirect(
+            'warning',
+            quotaMessage,
+            'meeting-room'
+          )
+        );
+      }
 
-return res.redirect(
-  dashboardRedirect(
-    'success',
-    'חדר הישיבות שוריין בהצלחה',
-    'meeting-room'
-  )
-);
+      return res.redirect(
+        dashboardRedirect(
+          'success',
+          'חדר הישיבות שוריין בהצלחה',
+          'meeting-room'
+        )
+      );
     } catch (error) {
       try {
         await client.query('ROLLBACK');
@@ -501,13 +510,13 @@ return res.redirect(
           rollbackError
         );
       }
-console.error('BOOKING ERROR:', {
-  message: error.message,
-  code: error.code,
-  detail: error.detail,
-  constraint: error.constraint,
-  stack: error.stack
-});
+      console.error('BOOKING ERROR:', {
+        message: error.message,
+        code: error.code,
+        detail: error.detail,
+        constraint: error.constraint,
+        stack: error.stack
+      });
       return next(error);
     } finally {
       client.release();
@@ -528,7 +537,7 @@ router.post(
             AND (
               booking_date + start_time
             ) > NOW()
-          RETURNING id
+          RETURNING id, user_id
         `,
         [
           req.params.id,
@@ -545,6 +554,16 @@ router.post(
           )
         );
       }
+      await db.query(
+        `
+    INSERT INTO user_activity (
+      user_id,
+      event_type
+    )
+    VALUES ($1, 'meeting_booking_cancelled')
+  `,
+        [req.session.userId]
+      );
 
       return res.redirect(
         dashboardRedirect(

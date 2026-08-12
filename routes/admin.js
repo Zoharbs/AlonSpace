@@ -238,6 +238,220 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/analytics', async (req, res, next) => {
+  try {
+    // =========================
+    // נתונים כלליים
+    // =========================
+
+    const summaryResult = await db.query(`
+      SELECT
+
+        (
+          SELECT COUNT(*)::INTEGER
+          FROM users
+          WHERE
+            role = 'tenant'
+            AND is_active = TRUE
+        ) AS total_clients,
+
+        (
+          SELECT COUNT(*)::INTEGER
+          FROM users
+          WHERE
+            role = 'tenant'
+            AND is_active = TRUE
+            AND last_login_at >=
+              DATE_TRUNC('month', NOW())
+        ) AS active_clients_month,
+
+        (
+          SELECT COUNT(*)::INTEGER
+          FROM user_activity
+          WHERE
+            event_type = 'login'
+            AND created_at >=
+              DATE_TRUNC('month', NOW())
+        ) AS logins_month,
+
+        (
+          SELECT COUNT(*)::INTEGER
+          FROM meeting_bookings
+          WHERE
+            booking_date >=
+              DATE_TRUNC('month', CURRENT_DATE)::DATE
+            AND booking_date <
+              (
+                DATE_TRUNC('month', CURRENT_DATE)
+                + INTERVAL '1 month'
+              )::DATE
+        ) AS bookings_month,
+
+        (
+          SELECT
+            COALESCE(
+              SUM(
+                EXTRACT(
+                  EPOCH FROM (end_time - start_time)
+                ) / 3600
+              ),
+              0
+            )::NUMERIC
+          FROM meeting_bookings
+          WHERE
+            booking_date >=
+              DATE_TRUNC('month', CURRENT_DATE)::DATE
+            AND booking_date <
+              (
+                DATE_TRUNC('month', CURRENT_DATE)
+                + INTERVAL '1 month'
+              )::DATE
+        ) AS meeting_hours_month
+    `);
+
+
+    // =========================
+    // פעילות לפי לקוח
+    // =========================
+
+    const clientsActivityResult = await db.query(`
+      SELECT
+        u.id,
+        u.display_name,
+        u.business_name,
+        u.office_number,
+        u.floor,
+        u.last_login_at,
+        u.login_count,
+
+        COUNT(mb.id) FILTER (
+          WHERE
+            mb.booking_date >=
+              DATE_TRUNC('month', CURRENT_DATE)::DATE
+            AND mb.booking_date <
+              (
+                DATE_TRUNC('month', CURRENT_DATE)
+                + INTERVAL '1 month'
+              )::DATE
+        )::INTEGER AS bookings_month,
+
+        COALESCE(
+          SUM(
+            CASE
+              WHEN
+                mb.booking_date >=
+                  DATE_TRUNC('month', CURRENT_DATE)::DATE
+                AND mb.booking_date <
+                  (
+                    DATE_TRUNC('month', CURRENT_DATE)
+                    + INTERVAL '1 month'
+                  )::DATE
+              THEN
+                EXTRACT(
+                  EPOCH FROM (
+                    mb.end_time - mb.start_time
+                  )
+                ) / 3600
+              ELSE 0
+            END
+          ),
+          0
+        )::NUMERIC AS meeting_hours_month
+
+      FROM users u
+
+      LEFT JOIN meeting_bookings mb
+        ON mb.user_id = u.id
+
+      WHERE
+        u.role = 'tenant'
+        AND u.is_active = TRUE
+
+      GROUP BY
+        u.id,
+        u.display_name,
+        u.business_name,
+        u.office_number,
+        u.floor,
+        u.last_login_at,
+        u.login_count
+
+      ORDER BY
+        u.last_login_at DESC NULLS LAST,
+        LOWER(u.display_name)
+    `);
+
+
+    // =========================
+    // פעילות אחרונה
+    // =========================
+
+    const recentActivityResult = await db.query(`
+      SELECT
+        ua.id,
+        ua.event_type,
+        ua.created_at,
+        u.display_name,
+        u.business_name
+
+      FROM user_activity ua
+
+      JOIN users u
+        ON u.id = ua.user_id
+
+      WHERE
+        u.role = 'tenant'
+
+      ORDER BY
+        ua.created_at DESC
+
+      LIMIT 50
+    `);
+
+
+    // =========================
+    // סקרים
+    // כרגע רק כמה השלימו
+    // =========================
+
+    const surveyStatsResult = await db.query(`
+      SELECT
+        COUNT(*)::INTEGER AS completed_surveys
+      FROM onboarding_surveys
+    `);
+
+
+    const summary = summaryResult.rows[0];
+
+    return res.render('admin/analytics', {
+      title: 'Analytics — AlonSpace',
+      layout: false,
+
+      adminName: req.session.userName,
+
+      summary,
+
+      clientsActivity:
+        clientsActivityResult.rows,
+
+      recentActivity:
+        recentActivityResult.rows,
+
+      completedSurveys:
+        surveyStatsResult.rows[0]
+          .completed_surveys,
+    });
+
+  } catch (error) {
+    console.error(
+      'ADMIN ANALYTICS ERROR:',
+      error
+    );
+
+    return next(error);
+  }
+});
+
 router.post('/clients/create', async (req, res, next) => {
   try {
     const {

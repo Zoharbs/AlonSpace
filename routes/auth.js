@@ -101,16 +101,43 @@ router.post('/login', async (req, res, next) => {
           ? user.display_name
           : null;
 
+
+
       req.session.save((saveError) => {
         if (saveError) {
           return next(saveError);
         }
 
+        // =========================
+        // Analytics - successful login
+        // =========================
 
+        await db.query(
+          `
+    UPDATE users
+    SET
+      last_login_at = NOW(),
+      login_count = COALESCE(login_count, 0) + 1,
+      updated_at = NOW()
+    WHERE id = $1
+  `,
+          [user.id]
+        );
 
-return res.redirect(
-  redirectForRole(user.role)
-);
+        await db.query(
+          `
+    INSERT INTO user_activity (
+      user_id,
+      event_type
+    )
+    VALUES ($1, 'login')
+  `,
+          [user.id]
+        );
+
+        return res.redirect(
+          redirectForRole(user.role)
+        );
       });
     });
   } catch (error) {
@@ -191,7 +218,28 @@ router.get('/magic-login', async (req, res, next) => {
       if (saveError) {
         return next(saveError);
       }
+      await db.query(
+        `
+    UPDATE users
+    SET
+      last_login_at = NOW(),
+      login_count = COALESCE(login_count, 0) + 1,
+      updated_at = NOW()
+    WHERE id = $1
+  `,
+        [user.id]
+      );
 
+      await db.query(
+        `
+    INSERT INTO user_activity (
+      user_id,
+      event_type
+    )
+    VALUES ($1, 'login')
+  `,
+        [user.id]
+      );
       return res.redirect('/dashboard');
     });
 
@@ -218,55 +266,55 @@ router.get('/change-password', (req, res) => {
   });
 });
 router.post('/change-password', async (req, res, next) => {
-    try {
-      if (
-        !req.session?.userId ||
-        !req.session?.userRole
-      ) {
-        return res.redirect('/login');
-      }
+  try {
+    if (
+      !req.session?.userId ||
+      !req.session?.userRole
+    ) {
+      return res.redirect('/login');
+    }
 
-      const newPassword = String(
-        req.body.new_password || ''
+    const newPassword = String(
+      req.body.new_password || ''
+    );
+
+    const confirmPassword = String(
+      req.body.confirm_password || ''
+    );
+
+    if (newPassword.length < 8) {
+      return res.status(400).render(
+        'change-password',
+        {
+          title:
+            'בחירת סיסמה חדשה — AlonSpace',
+          error:
+            'הסיסמה חייבת להכיל לפחות 8 תווים',
+          layout: false,
+        }
       );
+    }
 
-      const confirmPassword = String(
-        req.body.confirm_password || ''
+    if (newPassword !== confirmPassword) {
+      return res.status(400).render(
+        'change-password',
+        {
+          title:
+            'בחירת סיסמה חדשה — AlonSpace',
+          error:
+            'הסיסמאות שהוזנו אינן תואמות',
+          layout: false,
+        }
       );
+    }
 
-      if (newPassword.length < 8) {
-        return res.status(400).render(
-          'change-password',
-          {
-            title:
-              'בחירת סיסמה חדשה — AlonSpace',
-            error:
-              'הסיסמה חייבת להכיל לפחות 8 תווים',
-            layout: false,
-          }
-        );
-      }
+    const passwordHash = await bcrypt.hash(
+      newPassword,
+      12
+    );
 
-      if (newPassword !== confirmPassword) {
-        return res.status(400).render(
-          'change-password',
-          {
-            title:
-              'בחירת סיסמה חדשה — AlonSpace',
-            error:
-              'הסיסמאות שהוזנו אינן תואמות',
-            layout: false,
-          }
-        );
-      }
-
-      const passwordHash = await bcrypt.hash(
-        newPassword,
-        12
-      );
-
-      const result = await db.query(
-        `
+    const result = await db.query(
+      `
           UPDATE users
           SET
             password_hash = $1,
@@ -277,42 +325,42 @@ router.post('/change-password', async (req, res, next) => {
             AND is_active = TRUE
           RETURNING id
         `,
-        [
-          passwordHash,
-          req.session.userId,
-        ]
-      );
+      [
+        passwordHash,
+        req.session.userId,
+      ]
+    );
 
-      if (result.rows.length === 0) {
-        return res.status(404).render(
-          'change-password',
-          {
-            title:
-              'בחירת סיסמה חדשה — AlonSpace',
-            error:
-              'המשתמש לא נמצא או שהחשבון אינו פעיל',
-            layout: false,
-          }
-        );
+    if (result.rows.length === 0) {
+      return res.status(404).render(
+        'change-password',
+        {
+          title:
+            'בחירת סיסמה חדשה — AlonSpace',
+          error:
+            'המשתמש לא נמצא או שהחשבון אינו פעיל',
+          layout: false,
+        }
+      );
+    }
+
+    req.session.mustChangePassword = false;
+
+    return req.session.save((saveError) => {
+      if (saveError) {
+        return next(saveError);
       }
 
-      req.session.mustChangePassword = false;
-
-      return req.session.save((saveError) => {
-        if (saveError) {
-          return next(saveError);
-        }
-
-        return res.redirect(
-          redirectForRole(
-            req.session.userRole
-          )
-        );
-      });
-    } catch (error) {
-      return next(error);
-    }
+      return res.redirect(
+        redirectForRole(
+          req.session.userRole
+        )
+      );
+    });
+  } catch (error) {
+    return next(error);
   }
+}
 );
 router.post('/logout', (req, res, next) => {
   req.session.destroy((error) => {
