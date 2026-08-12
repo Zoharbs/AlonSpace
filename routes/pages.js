@@ -198,6 +198,42 @@ router.get('/api/slots', (req, res) => {
     slots
   });
 });
+router.post('/api/booking', async (req, res, next) => {
+  try {
+    const {
+      booking_date,
+      time_slot,
+      name,
+      phone,
+      email,
+      message
+    } = req.body;
+
+    if (!booking_date || !time_slot || !name || !phone) {
+      return res.status(400).json({
+        error: 'נא למלא תאריך, שעה, שם וטלפון'
+      });
+    }
+
+    // כרגע אנחנו רק מאשרים שהבקשה תקינה.
+    // בשלב הבא נחבר את זה לוואטסאפ.
+    return res.json({
+      success: true,
+      booking: {
+        booking_date,
+        time_slot,
+        name,
+        phone,
+        email: email || '',
+        message: message || ''
+      }
+    });
+
+  } catch (error) {
+    console.error('BOOKING ERROR:', error);
+    return next(error);
+  }
+});
 router.get(
   ['/offices', '/checkout'],
   (req, res) => {
