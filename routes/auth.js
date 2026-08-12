@@ -104,41 +104,44 @@ router.post('/login', async (req, res, next) => {
 
 
 req.session.save(async (saveError) => {
-          if (saveError) {
-          return next(saveError);
-        }
+  if (saveError) {
+    return next(saveError);
+  }
 
-        // =========================
-        // Analytics - successful login
-        // =========================
+  try {
+    await db.query(
+      `
+        UPDATE users
+        SET
+          last_login_at = NOW(),
+          login_count = COALESCE(login_count, 0) + 1,
+          updated_at = NOW()
+        WHERE id = $1
+      `,
+      [user.id]
+    );
 
-        await db.query(
-          `
-    UPDATE users
-    SET
-      last_login_at = NOW(),
-      login_count = COALESCE(login_count, 0) + 1,
-      updated_at = NOW()
-    WHERE id = $1
-  `,
-          [user.id]
-        );
+    await db.query(
+      `
+        INSERT INTO user_activity (
+          user_id,
+          event_type
+        )
+        VALUES ($1, 'login')
+      `,
+      [user.id]
+    );
+  } catch (analyticsError) {
+    console.error(
+      'LOGIN ANALYTICS ERROR:',
+      analyticsError
+    );
+  }
 
-        await db.query(
-          `
-    INSERT INTO user_activity (
-      user_id,
-      event_type
-    )
-    VALUES ($1, 'login')
-  `,
-          [user.id]
-        );
-
-        return res.redirect(
-          redirectForRole(user.role)
-        );
-      });
+  return res.redirect(
+    redirectForRole(user.role)
+  );
+});
     });
   } catch (error) {
     return next(error);
@@ -213,35 +216,43 @@ router.get('/magic-login', async (req, res, next) => {
     req.session.userName = user.display_name;
     req.session.mustChangePassword =
       user.must_change_password;
+return req.session.save(async (saveError) => {
+  if (saveError) {
+    return next(saveError);
+  }
 
-return req.session.save(async (saveError) => {  
-      if (saveError) {
-        return next(saveError);
-      }
-      await db.query(
-        `
-    UPDATE users
-    SET
-      last_login_at = NOW(),
-      login_count = COALESCE(login_count, 0) + 1,
-      updated_at = NOW()
-    WHERE id = $1
-  `,
-        [user.id]
-      );
+  try {
+    await db.query(
+      `
+        UPDATE users
+        SET
+          last_login_at = NOW(),
+          login_count = COALESCE(login_count, 0) + 1,
+          updated_at = NOW()
+        WHERE id = $1
+      `,
+      [user.id]
+    );
 
-      await db.query(
-        `
-    INSERT INTO user_activity (
-      user_id,
-      event_type
-    )
-    VALUES ($1, 'login')
-  `,
-        [user.id]
-      );
-      return res.redirect('/dashboard');
-    });
+    await db.query(
+      `
+        INSERT INTO user_activity (
+          user_id,
+          event_type
+        )
+        VALUES ($1, 'login')
+      `,
+      [user.id]
+    );
+  } catch (analyticsError) {
+    console.error(
+      'MAGIC LOGIN ANALYTICS ERROR:',
+      analyticsError
+    );
+  }
+
+  return res.redirect('/dashboard');
+});
 
   } catch (error) {
     return next(error);
