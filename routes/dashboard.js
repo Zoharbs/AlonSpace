@@ -114,7 +114,18 @@ router.get('/', async (req, res, next) => {
         res.redirect('/login');
       });
     }
+const surveyResult = await db.query(
+  `
+    SELECT id
+    FROM onboarding_surveys
+    WHERE user_id = $1
+    LIMIT 1
+  `,
+  [user.id]
+);
 
+const shouldShowSurvey =
+  surveyResult.rows.length === 0;
     const currentMonth =
       new Date().toISOString().slice(0, 7);
 
@@ -208,6 +219,7 @@ router.get('/', async (req, res, next) => {
       warning: req.query.warning || null,
       quotaExceeded,
       hasChargeableBookings,
+      shouldShowSurvey,
     });
   } catch (error) {
     return next(error);

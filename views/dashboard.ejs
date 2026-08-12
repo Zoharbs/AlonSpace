@@ -235,6 +235,64 @@
 .calendar-slot.selected-range {
   background:#f3e7bd;
 }
+.onboarding-survey-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 28px;
+  padding: 22px 24px;
+
+  background: var(--cream);
+  border: 1px solid var(--stone-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.onboarding-survey-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.onboarding-survey-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: var(--oak);
+  color: var(--cream);
+
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.onboarding-survey-card h3 {
+  margin: 0 0 5px;
+}
+
+.onboarding-survey-card p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 700px) {
+  .onboarding-survey-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .onboarding-survey-card .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
       @media (max-width:900px) {
         .meeting-portal-grid {
           grid-template-columns: 1fr;
@@ -269,7 +327,39 @@
         </p>
       </div>
     </section>
+<% if (shouldShowSurvey) { %>
 
+  <div class="onboarding-survey-card">
+
+    <div class="onboarding-survey-content">
+
+      <div class="onboarding-survey-icon">
+        ✓
+      </div>
+
+      <div>
+        <h3>
+          עזרו לנו להתאים את AlonSpace אליכם
+        </h3>
+
+        <p>
+          הכנו סקר קצר של כדקה שיעזור לנו להבין
+          איך אתם משתמשים במתחם ומה חשוב לכם.
+        </p>
+      </div>
+
+    </div>
+
+    <a
+      href="/dashboard/survey"
+      class="btn btn-primary"
+    >
+      לסקר הקצר
+    </a>
+
+  </div>
+
+<% } %>
     <main>
       <section style="padding-top:0;">
         <div class="container">
