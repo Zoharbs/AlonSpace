@@ -867,6 +867,11 @@ section { padding: 88px 0; position: relative; }
 
 .terms-check a:hover { opacity: .8; }
 
+.hero-visual {
+  order: -1;
+  aspect-ratio: 16/10;
+}
+
 /* Footer */
 
 .site-footer {
