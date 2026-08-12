@@ -103,8 +103,8 @@ router.post('/login', async (req, res, next) => {
 
 
 
-      req.session.save((saveError) => {
-        if (saveError) {
+req.session.save(async (saveError) => {
+          if (saveError) {
           return next(saveError);
         }
 
@@ -214,7 +214,7 @@ router.get('/magic-login', async (req, res, next) => {
     req.session.mustChangePassword =
       user.must_change_password;
 
-    return req.session.save((saveError) => {
+return req.session.save(async (saveError) => {  
       if (saveError) {
         return next(saveError);
       }

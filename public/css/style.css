@@ -91,12 +91,7 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 14px;
 }
 
-.eyebrow::before {
-  content: '';
-  width: 22px;
-  height: 1px;
-  background: var(--oak);
-}
+
 
 /* Buttons */
 
