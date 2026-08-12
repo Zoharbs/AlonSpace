@@ -1403,7 +1403,32 @@ router.get('/setup-analytics-db', async (req, res) => {
       )
     `);
 
+// =========================
+// Onboarding survey table
+// =========================
 
+await db.query(`
+  CREATE TABLE IF NOT EXISTS onboarding_surveys (
+    id BIGSERIAL PRIMARY KEY,
+
+    user_id BIGINT NOT NULL UNIQUE
+      REFERENCES users(id)
+      ON DELETE CASCADE,
+
+    uses_meeting_room BOOLEAN,
+
+    meeting_room_times_per_month INTEGER,
+
+    primary_office_use TEXT,
+
+    most_important_feature TEXT,
+
+    improvement_suggestion TEXT,
+
+    completed_at TIMESTAMPTZ
+      NOT NULL DEFAULT NOW()
+  )
+`);
     // =========================
     // Indexes
     // =========================
