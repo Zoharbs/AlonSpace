@@ -141,8 +141,46 @@ async function loadSlots() {
 
 dateInput.addEventListener('change', loadSlots);
 
-form.addEventListener('submit', async function (e) {
+form.addEventListener('submit', function (e) {
   e.preventDefault();
+
+  const data = Object.fromEntries(new FormData(this).entries());
+
+  if (!data.booking_date || !data.time_slot || !data.name || !data.phone) {
+    formMsg.textContent = 'נא למלא תאריך, שעה, שם וטלפון.';
+    formMsg.className = 'form-msg show err';
+    return;
+  }
+
+  const formattedDate = new Date(
+    data.booking_date + 'T12:00:00'
+  ).toLocaleDateString('he-IL');
+
+  let message =
+`שלום, אני רוצה לתאם סיור ב-AlonSpace.
+
+שם: ${data.name}
+טלפון: ${data.phone}
+תאריך: ${formattedDate}
+שעה: ${data.time_slot}`;
+
+  if (data.email) {
+    message += `\nאימייל: ${data.email}`;
+  }
+
+  if (data.message) {
+    message += `\nהערה: ${data.message}`;
+  }
+
+  message += `\n\nאשמח לאישור הסיור.`;
+
+  const whatsappNumber = '972XXXXXXXXX';
+
+  const whatsappUrl =
+    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+  window.open(whatsappUrl, '_blank');
+});  e.preventDefault();
 
   submitBtn.disabled = true;
   submitBtn.textContent = 'שולח...';
