@@ -1203,7 +1203,7 @@ section { padding: 88px 0; position: relative; }
   left: 50%;
   top: 50%;
 
-transform: translate(-80%, -50%);
+transform: translate(-100%, -50%);
 
   display: flex;
   margin: 0;
