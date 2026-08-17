@@ -2,246 +2,291 @@
   path !=='undefined' ? path : '' ; const isTenant=loggedInUser && loggedInUser.role==='tenant' ; const
   isAdmin=loggedInUser && loggedInUser.role==='admin' ; %>
 
-  <style>
-    .header-account {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+<style>
+  /* =========================
+     ACCOUNT
+  ========================= */
 
-    .header-account-name {
-      color: var(--cream);
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .header-logout-form {
-      margin: 0;
-    }
-
-    .header-logout {
-      background: transparent;
-      color: var(--cream);
-      border: 1px solid rgba(247, 242, 230, .45);
-    }
-
-    .header-logout:hover {
-      background: var(--cream);
-      color: var(--ink);
-    }
-
-    @media (max-width: 900px) {
-      
-
-      .mobile-nav-action {
-        display: block;
-      }
-
-      .mobile-nav-login {
-        font-weight: 700;
-      }
-
-      .mobile-nav-tour {
-        font-weight: 700;
-      }
-
-      .header-account-name {
-        display: none;
-      }
-
-
-
-      .header-account {
-        margin-inline-start: auto;
-      }
-
-      .header-logout {
-        padding: 9px 12px;
-        font-size: .82rem;
-      }
-      .nav-dropdown {
-  width: 100%;
-  display: block;
-}
-
-.nav-dropdown-trigger {
-  width: 100%;
-}
-
-.nav-dropdown-menu {
-  position: static;
-  min-width: 0;
-  width: 100%;
-  margin-top: 4px;
-  padding: 4px 12px;
-
-  background: transparent;
-  box-shadow: none;
-
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-}
-
-.nav-dropdown-menu a {
-  color: var(--cream) !important;
-  padding: 8px 16px;
-  font-size: .9rem;
-  opacity: .8;
-}
-    }
-
-    .nav-dropdown {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .nav-dropdown-trigger {
-      display: flex !important;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .nav-dropdown-arrow {
-      font-size: .8em;
-      transition: transform .2s ease;
-    }
-
-    .nav-dropdown-menu {
-      position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
-
-      min-width: 190px;
-      padding: 8px;
-
-      background: var(--cream);
-      border-radius: 10px;
-      box-shadow: var(--shadow);
-
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-6px);
-
-      transition:
-        opacity .2s ease,
-        visibility .2s ease,
-        transform .2s ease;
-
-      z-index: 1000;
-    }
-
-    .nav-dropdown-menu a {
-      display: block;
-      padding: 10px 12px;
-
-      color: var(--ink) !important;
-      text-decoration: none;
-      white-space: nowrap;
-
-      border-radius: 7px;
-    }
-
-    .nav-dropdown-menu a:hover {
-      background: var(--stone);
-    }
-
-    .nav-dropdown:hover .nav-dropdown-menu,
-    .nav-dropdown:focus-within .nav-dropdown-menu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .nav-dropdown:hover .nav-dropdown-arrow,
-    .nav-dropdown:focus-within .nav-dropdown-arrow {
-      transform: rotate(180deg);
-    }
-
-    .mobile-nav-action {
-      display: none;
-    }
-
-@media (max-width: 900px) {
-
-  .header-inner {
-    display: grid !important;
-    grid-template-columns: 44px 1fr 44px;
+  .header-account {
+    display: flex;
     align-items: center;
-    width: 100%;
-    height: 64px;
-    position: relative;
+    gap: 10px;
   }
 
-  /* לוגו בצד ימין */
-  .brand {
-    justify-self: end;
-    grid-column: 3;
+  .header-account-name {
+    color: var(--cream);
+    font-weight: 700;
+    white-space: nowrap;
   }
 
-  .brand-logo {
-    width: 38px;
-    height: 38px;
-  }
-
-  .brand-text {
-    font-size: 1.05rem !important;
-  }
-
-
-  /* התחברות בדיוק באמצע */
-  .header-cta {
-    display: flex !important;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+  .header-logout-form {
     margin: 0;
   }
 
-  .header-booking-btn {
-    display: none !important;
-  }
-
-  .header-login-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 7px 16px;
-    min-height: 36px;
-
-    border: 1px solid rgba(247, 242, 230, 0.35);
-    border-radius: 999px;
-
-    background: rgba(255, 255, 255, 0.06);
+  .header-logout {
+    background: transparent;
     color: var(--cream);
-
-    font-size: 0.82rem;
-    font-weight: 600;
-    line-height: 1;
-
-    box-shadow: none;
+    border: 1px solid rgba(247, 242, 230, .45);
   }
 
-  .header-login-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: var(--cream);
+  .header-logout:hover {
+    background: var(--cream);
+    color: var(--ink);
   }
 
 
-  /* המבורגר בצד שמאל */
-  .nav-toggle {
+  /* =========================
+     DROPDOWN - DESKTOP
+  ========================= */
+
+  .nav-dropdown {
+    position: relative;
     display: flex;
-    grid-column: 1;
-    justify-self: start;
-
-    width: 40px;
-    height: 40px;
+    align-items: center;
   }
 
-}
-  </style>
+  .nav-dropdown-trigger {
+    display: flex !important;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .nav-dropdown-arrow {
+    font-size: .8em;
+    transition: transform .2s ease;
+  }
+
+  .nav-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+
+    min-width: 190px;
+    padding: 8px;
+
+    background: var(--cream);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+
+    transition:
+      opacity .2s ease,
+      visibility .2s ease,
+      transform .2s ease;
+
+    z-index: 1000;
+  }
+
+  .nav-dropdown-menu a {
+    display: block;
+    padding: 10px 12px;
+
+    color: var(--ink) !important;
+    text-decoration: none;
+    white-space: nowrap;
+
+    border-radius: 7px;
+  }
+
+  .nav-dropdown-menu a:hover {
+    background: var(--stone);
+  }
+
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .nav-dropdown:hover .nav-dropdown-arrow,
+  .nav-dropdown:focus-within .nav-dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+
+  /* מוסתר בדסקטופ */
+  .mobile-nav-action {
+    display: none;
+  }
+
+
+  /* ==================================================
+     MOBILE
+     לוגו ימין | התחברות מרכז | המבורגר שמאל
+  ================================================== */
+
+  @media (max-width: 900px) {
+
+    .header-inner {
+      position: relative;
+      display: flex !important;
+      align-items: center;
+
+      height: 72px;
+      min-height: 72px;
+
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+
+    /* ---------- לוגו: ימין ---------- */
+
+    .brand {
+      position: absolute !important;
+
+      right: 16px !important;
+      left: auto !important;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      margin: 0 !important;
+      z-index: 3;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      font-size: 1rem !important;
+      white-space: nowrap;
+    }
+
+
+    /* ---------- התחברות: מרכז ---------- */
+
+    .header-cta {
+      display: flex !important;
+
+      position: absolute !important;
+
+      top: 50%;
+      left: 50%;
+
+      right: auto !important;
+
+      transform: translate(-50%, -50%);
+
+      margin: 0 !important;
+      padding: 0;
+
+      z-index: 3;
+    }
+
+    /* מסתירים קביעת סיור בהדר במובייל */
+    .header-cta .btn-gold {
+      display: none !important;
+    }
+
+    .header-cta .btn-outline-light {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 40px;
+      padding: 8px 18px;
+
+      font-size: .88rem;
+      font-weight: 700;
+
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+
+    /* ---------- המבורגר: שמאל ---------- */
+
+    .nav-toggle {
+      display: flex !important;
+
+      position: absolute !important;
+
+      left: 16px !important;
+      right: auto !important;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      width: 40px;
+      height: 40px;
+
+      margin: 0 !important;
+
+      z-index: 4;
+    }
+
+
+    /* ---------- חשבון מחובר ---------- */
+
+    .header-account-name {
+      display: none;
+    }
+
+    .header-account {
+      margin-inline-start: auto;
+    }
+
+    .header-logout {
+      padding: 9px 12px;
+      font-size: .82rem;
+    }
+
+
+    /* ---------- dropdown בתוך תפריט מובייל ---------- */
+
+    .nav-dropdown {
+      width: 100%;
+      display: block;
+    }
+
+    .nav-dropdown-trigger {
+      width: 100%;
+    }
+
+    .nav-dropdown-menu {
+      position: static;
+
+      width: 100%;
+      min-width: 0;
+
+      margin-top: 4px;
+      padding: 4px 12px;
+
+      background: transparent;
+      box-shadow: none;
+
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+
+    .nav-dropdown-menu a {
+      color: var(--cream) !important;
+      padding: 8px 16px;
+      font-size: .9rem;
+      opacity: .8;
+    }
+
+
+    /* לא צריך התחברות נוספת בתוך ההמבורגר */
+    .mobile-nav-action,
+    .mobile-login-link {
+      display: none !important;
+    }
+  }
+</style>
 
   <header class="site-header">
     <div class="container header-inner">
