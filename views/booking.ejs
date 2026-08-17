@@ -3,387 +3,297 @@
 
 <section class="page-hero">
   <div class="container" style="position:relative; z-index:2;">
-    <div class="breadcrumb"><a href="/">דף הבית</a> / קביעת סיור</div>
+    <div class="breadcrumb">
+      <a href="/">דף הבית</a> / קביעת סיור
+    </div>
+
     <span class="eyebrow">סיור אישי</span>
+
     <h1>בואו לראות את המשרדים.</h1>
-    <p>השאירו פרטים, בחרו זמן בשבוע הקרוב, ואנחנו נחזור אליכם לאישור הסיור.</p>
+
+    <p>
+      השאירו פרטים, בחרו זמן בשבועיים הקרובים,
+      ואנחנו נחזור אליכם לאישור הסיור.
+    </p>
   </div>
 </section>
 
+
 <section>
   <div class="container booking-layout">
+
+    <!-- צד הסבר -->
     <div class="booking-side">
+
       <span class="eyebrow">מה קורה בסיור?</span>
+
       <h2>20 דקות, בלי התחייבות.</h2>
+
       <p>
-        נראה לכם את המתחם, את המשרדים הפנויים, את חדר הישיבות והשירותים מסביב.
+        נראה לכם את המתחם, את המשרדים הפנויים,
+        את חדר הישיבות והשירותים מסביב.
         אם זה מתאים - ממשיכים משם.
       </p>
 
       <div class="booking-points">
         <div>✓ מגדלי אלון, תל אביב</div>
         <div>✓ משרדים פרטיים ומרוהטים</div>
-        <div>✓ תיאום לפי זמינות בשבוע הקרוב</div>
+        <div>✓ תיאום לפי זמינות בשבועיים הקרובים</div>
       </div>
+
     </div>
 
+
+    <!-- טופס -->
     <div>
+
       <div id="formMsg" class="form-msg"></div>
 
-<form id="bookingForm" class="booking-card">
+      <form id="bookingForm" class="booking-card">
 
-  <div class="form-row-2">
-    <div class="field">
-      <label for="name">שם מלא</label>
-      <input type="text" id="name" name="name" required>
+        <div class="form-row-2">
+
+          <div class="field">
+            <label for="name">שם מלא</label>
+
+            <input
+              type="text"
+              id="name"
+              name="name"
+              autocomplete="name"
+              required
+            >
+          </div>
+
+
+          <div class="field">
+            <label for="phone">טלפון</label>
+
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              autocomplete="tel"
+              required
+            >
+          </div>
+
+        </div>
+
+
+        <div class="form-row-2">
+
+          <div class="field">
+
+            <label for="booking_date">
+              בחרו יום
+            </label>
+
+            <input
+              type="date"
+              id="booking_date"
+              name="booking_date"
+              lang="he"
+              required
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="time_slot">
+              בחרו שעה
+            </label>
+
+            <select
+              id="time_slot"
+              name="time_slot"
+              required
+            >
+              <option value="">
+                בחרו שעה
+              </option>
+
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="12:00">12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="message">
+            משהו חשוב שנדע?
+          </label>
+
+          <textarea
+            id="message"
+            name="message"
+            placeholder="למשל: כמה אנשים יגיעו, מתי תרצו להיכנס או כל שאלה אחרת."
+          ></textarea>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="btn btn-gold btn-block"
+        >
+          שלח
+        </button>
+
+      </form>
+
     </div>
 
-    <div class="field">
-      <label for="phone">טלפון</label>
-      <input type="tel" id="phone" name="phone" required>
-    </div>
-  </div>
-
-  <div class="form-row-2">
-
-    <div class="field">
-      <label for="booking_date">בחרו יום</label>
-      <input
-        type="date"
-        id="booking_date"
-        name="booking_date"
-        lang="he"
-        required
-      >
-    </div>
-
-    <div class="field">
-      <label for="time_slot">בחרו שעה</label>
-
-      <select id="time_slot" name="time_slot" required>
-        <option value="">בחרו שעה</option>
-        <option value="09:00">09:00</option>
-        <option value="10:00">10:00</option>
-        <option value="11:00">11:00</option>
-        <option value="12:00">12:00</option>
-        <option value="13:00">13:00</option>
-        <option value="14:00">14:00</option>
-        <option value="15:00">15:00</option>
-        <option value="16:00">16:00</option>
-        <option value="17:00">17:00</option>
-      </select>
-    </div>
-
-  </div>
-
-  <div class="field">
-    <label for="message">משהו חשוב שנדע?</label>
-    <textarea
-      id="message"
-      name="message"
-      placeholder="למשל: כמה אנשים יגיעו, מתי תרצו להיכנס או כל שאלה אחרת."
-    ></textarea>
-  </div>
-
-  <button type="submit" class="btn btn-gold btn-block">
-    שלח
-  </button>
-
-</form>
-    </div>
   </div>
 </section>
+
 
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
-<%- include('partials/head', { title }) %>
-<%- include('partials/header') %>
 
-<section class="page-hero">
-  <div class="container" style="position:relative; z-index:2;">
-    <div class="breadcrumb"><a href="/">דף הבית</a> / קביעת סיור</div>
-    <span class="eyebrow">סיור אישי</span>
-    <h1>בואו לראות את המשרדים.</h1>
-    <p>השאירו פרטים, בחרו זמן בשבוע הקרוב, ואנחנו נחזור אליכם לאישור הסיור.</p>
-  </div>
-</section>
 
-<section>
-  <div class="container booking-layout">
-    <div class="booking-side">
-      <span class="eyebrow">מה קורה בסיור?</span>
-      <h2>20 דקות, בלי התחייבות.</h2>
-      <p>
-        נראה לכם את המתחם, את המשרדים הפנויים, את חדר הישיבות והשירותים מסביב.
-        אם זה מתאים - ממשיכים משם.
-      </p>
-
-      <div class="booking-points">
-        <div>✓ מגדלי אלון, תל אביב</div>
-        <div>✓ משרדים פרטיים ומרוהטים</div>
-        <div>✓ תיאום לפי זמינות בשבוע הקרוב</div>
-      </div>
-    </div>
-
-    <div>
-      <div id="formMsg" class="form-msg"></div>
-
-<form id="bookingForm" class="booking-card">
-
-  <div class="form-row-2">
-    <div class="field">
-      <label for="name">שם מלא</label>
-      <input type="text" id="name" name="name" required>
-    </div>
-
-    <div class="field">
-      <label for="phone">טלפון</label>
-      <input type="tel" id="phone" name="phone" required>
-    </div>
-  </div>
-
-  <div class="form-row-2">
-
-    <div class="field">
-      <label for="booking_date">בחרו יום</label>
-      <input
-        type="date"
-        id="booking_date"
-        name="booking_date"
-        lang="he"
-        required
-      >
-    </div>
-
-    <div class="field">
-      <label for="time_slot">בחרו שעה</label>
-
-      <select id="time_slot" name="time_slot" required>
-        <option value="">בחרו שעה</option>
-        <option value="09:00">09:00</option>
-        <option value="10:00">10:00</option>
-        <option value="11:00">11:00</option>
-        <option value="12:00">12:00</option>
-        <option value="13:00">13:00</option>
-        <option value="14:00">14:00</option>
-        <option value="15:00">15:00</option>
-        <option value="16:00">16:00</option>
-        <option value="17:00">17:00</option>
-      </select>
-    </div>
-
-  </div>
-
-  <div class="field">
-    <label for="message">משהו חשוב שנדע?</label>
-    <textarea
-      id="message"
-      name="message"
-      placeholder="למשל: כמה אנשים יגיעו, מתי תרצו להיכנס או כל שאלה אחרת."
-    ></textarea>
-  </div>
-
-  <button type="submit" class="btn btn-gold btn-block">
-    שלח
-  </button>
-
-</form>
-    </div>
-  </div>
-</section>
-
-<%- include('partials/footer') %>
-<%- include('partials/scripts') %>
 <script>
-const dateInput = document.getElementById('booking_date');
-const slotGrid = document.getElementById('slotGrid');
-const timeSlotInput = document.getElementById('time_slot');
-const submitBtn = document.getElementById('submitBtn');
-const form = document.getElementById('bookingForm');
-const formMsg = document.getElementById('formMsg');
+const form =
+  document.getElementById('bookingForm');
+
+const dateInput =
+  document.getElementById('booking_date');
+
+const formMsg =
+  document.getElementById('formMsg');
+
 
 // ========================================
-// הגבלת בחירת התאריך לשבועיים הקרובים
+// הגבלת תאריך לשבועיים הקרובים
 // ========================================
 
 function formatDateForInput(date) {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+
+  const month =
+    String(date.getMonth() + 1)
+      .padStart(2, '0');
+
+  const day =
+    String(date.getDate())
+      .padStart(2, '0');
 
   return `${year}-${month}-${day}`;
 }
 
+
 const today = new Date();
 
 const maxDate = new Date();
-maxDate.setDate(today.getDate() + 14);
+maxDate.setDate(
+  maxDate.getDate() + 14
+);
 
-dateInput.min = formatDateForInput(today);
-dateInput.max = formatDateForInput(maxDate);
+dateInput.min =
+  formatDateForInput(today);
 
-
-// ========================================
-// מצב כפתור קביעת הסיור
-// ========================================
-
-function updateSubmitState() {
-  const ready =
-    dateInput.value &&
-    timeSlotInput.value;
-
-  submitBtn.disabled = !ready;
-
-  submitBtn.textContent =
-    ready
-      ? 'המשך לוואטסאפ'
-      : 'בחרו תאריך ושעה';
-}
+dateInput.max =
+  formatDateForInput(maxDate);
 
 
 // ========================================
-// טעינת שעות פנויות
+// שליחה לוואטסאפ
 // ========================================
 
-async function loadSlots() {
-  timeSlotInput.value = '';
-  updateSubmitState();
+form.addEventListener(
+  'submit',
+  function (e) {
 
-  if (!dateInput.value) {
-    return;
-  }
+    e.preventDefault();
 
-  slotGrid.innerHTML =
-    '<div class="slot-empty">טוען שעות...</div>';
+    const data =
+      Object.fromEntries(
+        new FormData(form).entries()
+      );
 
-  try {
-    const res = await fetch(
-      '/api/slots?date=' +
-      encodeURIComponent(dateInput.value)
-    );
-
-    if (!res.ok) {
-      throw new Error('Failed to load slots');
-    }
-
-    const data = await res.json();
 
     if (
-      !Array.isArray(data.slots) ||
-      data.slots.length === 0
+      !data.name ||
+      !data.phone ||
+      !data.booking_date ||
+      !data.time_slot
     ) {
-      slotGrid.innerHTML =
-        '<div class="slot-empty">אין שעות פנויות בתאריך הזה. נסו יום אחר.</div>';
+
+      formMsg.textContent =
+        'נא למלא שם, טלפון, יום ושעה.';
+
+      formMsg.className =
+        'form-msg show err';
 
       return;
     }
 
-    slotGrid.innerHTML = '';
 
-    data.slots.forEach((slot) => {
-      const btn = document.createElement('button');
-
-      btn.type = 'button';
-      btn.className = 'slot-btn';
-      btn.textContent = slot;
-
-      btn.addEventListener('click', () => {
-
-        document
-          .querySelectorAll('.slot-btn')
-          .forEach((button) => {
-            button.classList.remove('selected');
-          });
-
-        btn.classList.add('selected');
-
-        timeSlotInput.value = slot;
-
-        updateSubmitState();
-      });
-
-      slotGrid.appendChild(btn);
-    });
-
-  } catch (error) {
-    console.error('SLOTS ERROR:', error);
-
-    slotGrid.innerHTML =
-      '<div class="slot-empty">שגיאה בטעינת השעות. נסו שוב.</div>';
-  }
-}
+    const selectedDate =
+      new Date(
+        data.booking_date + 'T12:00:00'
+      );
 
 
-// ========================================
-// שינוי תאריך
-// ========================================
+    const formattedDate =
+      selectedDate.toLocaleDateString(
+        'he-IL'
+      );
 
-dateInput.addEventListener('change', loadSlots);
+
+    const dayName =
+      selectedDate.toLocaleDateString(
+        'he-IL',
+        {
+          weekday: 'long'
+        }
+      );
 
 
-// ========================================
-// שליחת הבקשה לוואטסאפ
-// ========================================
-
-form.addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const data =
-    Object.fromEntries(
-      new FormData(form).entries()
-    );
-
-  if (
-    !data.booking_date ||
-    !data.time_slot ||
-    !data.name ||
-    !data.phone
-  ) {
-    formMsg.textContent =
-      'נא למלא תאריך, שעה, שם וטלפון.';
-
-    formMsg.className =
-      'form-msg show err';
-
-    return;
-  }
-
-  const formattedDate =
-    new Date(
-      data.booking_date + 'T12:00:00'
-    ).toLocaleDateString('he-IL');
-
-  let message =
-`שלום, אני רוצה לתאם סיור ב-AlonSpace.
+    let message =
+`היי, אשמח להגיע לסיור ביום ${dayName} (${formattedDate}) בשעה ${data.time_slot}
 
 שם: ${data.name}
-טלפון: ${data.phone}
-תאריך: ${formattedDate}
-שעה: ${data.time_slot}`;
+טלפון: ${data.phone}`;
 
-  if (data.email) {
+
+    if (data.message.trim()) {
+
+      message +=
+        `\nהערות: ${data.message.trim()}`;
+
+    }
+
+
     message +=
-      `\nאימייל: ${data.email}`;
+      `\n\nאשמח לאישור הסיור.`;
+
+
+    const whatsappNumber =
+      '972544730266';
+
+
+    const whatsappUrl =
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+
+    window.location.href =
+      whatsappUrl;
+
   }
-
-  if (data.message) {
-    message +=
-      `\nהערה: ${data.message}`;
-  }
-
-  message +=
-    `\n\nאשמח לאישור הסיור.`;
-
-  const whatsappNumber =
-    '972544730266';
-
-  const whatsappUrl =
-    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-
-  window.open(
-    whatsappUrl,
-    '_blank',
-    'noopener,noreferrer'
-  );
-});
+);
 </script>
