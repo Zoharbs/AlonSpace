@@ -2029,3 +2029,8 @@ align-self: center;
     padding: 20px;
   }
 }
+@media (max-width: 900px){
+  .hero-whatsapp-btn {
+    display: none;
+  }
+}
