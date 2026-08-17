@@ -95,12 +95,7 @@
     background: var(--stone);
   }
 
-  .nav-dropdown:hover .nav-dropdown-menu,
-  .nav-dropdown:focus-within .nav-dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
+
 
   .nav-dropdown:hover .nav-dropdown-arrow,
   .nav-dropdown:focus-within .nav-dropdown-arrow {
@@ -168,42 +163,38 @@
     /* ---------- התחברות: מרכז ---------- */
 
     .header-cta {
-      display: flex !important;
+  display: flex !important;
 
-      position: absolute !important;
+  position: fixed !important;
+  top: 36px;
+  left: 50vw !important;
+  right: auto !important;
 
-      top: 50%;
-      left: 50%;
+  transform: translate(-50%, -50%);
 
-      right: auto !important;
+  margin: 0 !important;
+  padding: 0;
 
-      transform: translate(-50%, -50%);
+  z-index: 1001;
+}
 
-      margin: 0 !important;
-      padding: 0;
+.header-cta .btn-gold {
+  display: none !important;
+}
 
-      z-index: 3;
-    }
+.header-cta .btn-outline-light {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
 
-    /* מסתירים קביעת סיור בהדר במובייל */
-    .header-cta .btn-gold {
-      display: none !important;
-    }
+  min-height: 40px;
+  padding: 8px 18px;
 
-    .header-cta .btn-outline-light {
-      display: inline-flex !important;
-      align-items: center;
-      justify-content: center;
-
-      min-height: 40px;
-      padding: 8px 18px;
-
-      font-size: .88rem;
-      font-weight: 700;
-
-      border-radius: 999px;
-      white-space: nowrap;
-    }
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
 
 
     /* ---------- המבורגר: שמאל ---------- */
@@ -247,38 +238,52 @@
     /* ---------- dropdown בתוך תפריט מובייל ---------- */
 
     .nav-dropdown {
-      width: 100%;
-      display: block;
-    }
+  width: 100%;
+  display: block;
+}
 
-    .nav-dropdown-trigger {
-      width: 100%;
-    }
+.nav-dropdown-trigger {
+  width: 100%;
+  display: flex !important;
+  align-items: center;
+  gap: 5px;
+}
 
-    .nav-dropdown-menu {
-      position: static;
+.nav-dropdown-menu {
+  position: static;
+  width: 100%;
+  min-width: 0;
 
-      width: 100%;
-      min-width: 0;
+  margin: 0;
+  padding: 0 12px;
 
-      margin-top: 4px;
-      padding: 4px 12px;
+  background: transparent;
+  box-shadow: none;
 
-      background: transparent;
-      box-shadow: none;
+  /* סגור כברירת מחדל */
+  display: none;
 
-      opacity: 1;
-      visibility: visible;
-      transform: none;
-    }
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
 
-    .nav-dropdown-menu a {
-      color: var(--cream) !important;
-      padding: 8px 16px;
-      font-size: .9rem;
-      opacity: .8;
-    }
+/* נפתח רק כשלוחצים */
+.nav-dropdown.open .nav-dropdown-menu {
+  display: block;
+}
 
+.nav-dropdown-menu a {
+  color: var(--cream) !important;
+  padding: 8px 16px;
+  font-size: .9rem;
+  opacity: .8;
+}
+
+/* סיבוב החץ */
+.nav-dropdown.open .nav-dropdown-arrow {
+  transform: rotate(180deg);
+}
 
     /* לא צריך התחברות נוספת בתוך ההמבורגר */
     .mobile-nav-action,
@@ -286,6 +291,16 @@
       display: none !important;
     }
   }
+   .nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  display: none;
+}
+
+.nav-dropdown.open .nav-dropdown-menu,
+.nav-dropdown.open:hover .nav-dropdown-menu,
+.nav-dropdown.open:focus-within .nav-dropdown-menu {
+  display: block;
+}
 </style>
 
   <header class="site-header">

@@ -66,3 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const dropdown = document.querySelector('.nav-dropdown');
+  const trigger = document.querySelector('.nav-dropdown-trigger');
+
+  if (!dropdown || !trigger) return;
+
+  trigger.addEventListener('click', function (e) {
+    if (window.innerWidth <= 900) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      dropdown.classList.toggle('open');
+    }
+  });
+});
+</script>
