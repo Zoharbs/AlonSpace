@@ -1,248 +1,238 @@
 <%- include('partials/head', { title }) %>
-<%- include('partials/header') %>
+  <%- include('partials/header') %>
 
-<section class="hero">
-  <div class="container">
-    <div class="hero-copy fade-up in">
-      <span class="eyebrow">מגדלי אלון · תל אביב</span>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-copy fade-up in">
+          <span class="eyebrow">מגדלי אלון · תל אביב</span>
 
-      <h1>משרד פרטי במיקום שעובד בשבילך.</h1>
+          <h1>משרד פרטי במיקום שעובד בשבילך.</h1>
 
-      <p class="hero-sub">
-        AlonSpace מציעה משרדים פרטיים ומרוהטים במגדלי אלון, תל אביב -
-        סביבת עבודה שקטה, נגישה ומוכנה לעבודה מהיום הראשון.
-      </p>
+          <p class="hero-sub">
+            AlonSpace מציעה משרדים פרטיים ומרוהטים במגדלי אלון, תל אביב -
+            סביבת עבודה שקטה, נגישה ומוכנה לעבודה מהיום הראשון.
+          </p>
 
-      <div class="hero-actions">
-        <a href="/booking" class="btn btn-gold">קביעת סיור</a>
-        <a href="<%= site.whatsapp %>" target="_blank" rel="noopener" class="btn btn-outline-light">
-              <svg
+          <div class="hero-actions">
+            <a href="/booking" class="btn btn-gold">קביעת סיור</a>
+            <a href="<%= site.whatsapp %>" target="_blank" rel="noopener" class="btn btn-outline-light">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 
-      width="22"
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.009-.371-.011-.57-.011-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479s1.065 2.875 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.693.625.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 017.021 2.91 9.825 9.825 0 012.9 7.026c-.003 5.45-4.437 9.884-9.885 9.884" />
 
-      height="22"
-
-      viewBox="0 0 24 24"
-
-      fill="currentColor"
-
-      aria-hidden="true"
-
-    >
-
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.009-.371-.011-.57-.011-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479s1.065 2.875 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.693.625.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 017.021 2.91 9.825 9.825 0 012.9 7.026c-.003 5.45-4.437 9.884-9.885 9.884"/>
-
-    </svg>
-        </a>
-      </div>
+              </svg>
+            </a>
+          </div>
 
 
-        <div class="hero-stat">
-          <span class="num">2</span>
-          <span class="label">מתחמים במגדל אלון 2</span>
+          <div class="hero-stat">
+            <span class="num">2</span>
+            <span class="label">מתחמים במגדל אלון 2</span>
+          </div>
         </div>
-    </div>
 
-    <div class="hero-visual">
-      <img src="/images/14.jpeg" alt="משרד פרטי ב-AlonSpace">
-      <div class="hero-visual-tag">משרד פרטי, שקט ומרוהט בלב תל אביב</div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="section-head center">
-      <span class="eyebrow">מה מקבלים</span>
-      <h2>כל מה שצריך כדי להתחיל לעבוד</h2>
-    </div>
-
-    <div class="grid grid-3">
-      <div class="card">
-        <h3>משרדים פרטיים</h3>
-        <p>חלל אישי ושקט שמתאים לעצמאים, צוותים קטנים וכל מי שצריך מקום מקצועי לעבוד ממנו.</p>
+        <div class="hero-visual">
+          <img src="/images/14.jpeg" alt="משרד פרטי ב-AlonSpace">
+          <div class="hero-visual-tag">משרד פרטי, שקט ומרוהט בלב תל אביב</div>
+        </div>
       </div>
+    </section>
 
-      <div class="card">
-        <h3>מיקום מרכזי</h3>
-        <p>מגדלי אלון, יגאל אלון 94 תל אביב - קרוב לצירי תחבורה מרכזיים ולרכבת השלום.</p>
+    <section>
+      <div class="container">
+        <div class="section-head center">
+          <span class="eyebrow">מה מקבלים</span>
+          <h2>כל מה שצריך כדי להתחיל לעבוד</h2>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="card">
+            <h3>משרדים פרטיים</h3>
+            <p>חלל אישי ושקט שמתאים לעצמאים, צוותים קטנים וכל מי שצריך מקום מקצועי לעבוד ממנו.</p>
+          </div>
+
+          <div class="card">
+            <h3>מיקום מרכזי</h3>
+            <p>מגדלי אלון, יגאל אלון 94 תל אביב - קרוב לצירי תחבורה מרכזיים ולרכבת השלום.</p>
+          </div>
+
+          <div class="card">
+            <h3>מוכן לעבודה</h3>
+            <p>משרדים מרוהטים במידת הצורך עם שירותים משלימים כמו חדר ישיבות, מטבחון, אינטרנט וניקיון.
+            </p>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="card">
-        <h3>מוכן לעבודה</h3>
- <p>משרדים מרוהטים במידת הצורך עם שירותים משלימים כמו חדר ישיבות, מטבחון, אינטרנט וניקיון.
-</p>
+    <section class="section-dark">
+      <div class="container">
+        <div class="split-section">
+          <div>
+            <span class="eyebrow">המתחם</span>
+            <h2>לא עוד חלל עבודה. משרד פרטי אמיתי.</h2>
+            <p class="hero-sub">
+              ב-AlonSpace הדגש הוא על פרטיות, שקט ונראות מקצועית. זה פתרון שמתאים למי שרוצה משרד מסודר במרכז תל אביב,
+              במודל הכל כלול- בתשלום אחד.
+
+            </p>
+            <a href="/amenities" class="btn btn-outline-light">המתחמים שלנו</a>
+          </div>
+
+          <div class="hero-visual small-visual">
+            <img src="/images/8.jpeg" alt="מתחם AlonSpace">
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
+    <section class="home-benefits-section">
+      <div class="container">
 
-<section class="section-dark">
-  <div class="container">
-    <div class="split-section">
-      <div>
-        <span class="eyebrow">המתחם</span>
-        <h2>לא עוד חלל עבודה. משרד פרטי אמיתי.</h2>
-        <p class="hero-sub">
-   ב-AlonSpace הדגש הוא על פרטיות, שקט ונראות מקצועית. זה פתרון שמתאים למי שרוצה משרד מסודר במרכז תל אביב, במודל הכל כלול- בתשלום אחד.
+        <div class="section-head" style="text-align:center;">
+          <span class="eyebrow">AlonSpace</span>
 
+          <h2>
+            כל מה שאתם צריכים
+            <span style="color:var(--oak);">
+              במקום אחד
+            </span>
+          </h2>
+        </div>
+
+        <div class="home-benefits-intro">
+
+          <article class="home-benefit-highlight primary">
+            <span class="eyebrow">המטרה שלנו</span>
+
+            <h3 class="white">שתרגישו שמצאתם את המקום הנכון</h3>
+
+            <p>
+              לספק סביבת עבודה שתהיו מרוצים להגיע אליה בכל יום ולהרגיש בה בנוח.
+            </p>
+          </article>
+
+          <article class="home-benefit-highlight">
+            <span class="eyebrow">היעד שלנו</span>
+
+            <h3>הכול כלול מהיום הראשון</h3>
+            <p>
+              להנגיש לפרילנסרים, עצמאיים ועסקים קטנים שירות ומשרד ברמות הגבוהות בלי חוזים דרקוניים.
+            </p>
+          </article>
+
+        </div>
+
+        <div class="home-benefits-list">
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              משרד מאובזר בהתאם לצורך הלקוח
+            </span>
+          </div>
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              חדר ישיבות
+            </span>
+          </div>
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              מטבחון מאובזר לשימוש יומיומי
+            </span>
+          </div>
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              חדר כושר וסאונה
+            </span>
+          </div>
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              מקלחות
+            </span>
+          </div>
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              גישה 24/7 עם קוד אישי
+            </span>
+          </div>
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              אינטרנט מהיר
+            </span>
+          </div>
+
+          <div class="home-benefit-item">
+            <span class="home-benefit-arrow">←</span>
+
+            <span>
+              ניקיון יומי
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+    <section class="section-alt">
+      <div class="container">
+        <div class="section-head center">
+          <span class="eyebrow">הצצה למשרדים</span>
+          <h2>המתחמים שלנו</h2>
+        </div>
+
+        <div class="grid grid-4">
+          <div class="card-office">
+            <div class="img"><img src="/images/1.jpeg" alt="משרד פרטי"></div>
+          </div>
+          <div class="card-office">
+            <div class="img"><img src="/images/2.jpg" alt="חדר ישיבות"></div>
+          </div>
+          <div class="card-office">
+            <div class="img"><img src="/images/3.jpeg" alt="משרד ב-AlonSpace"></div>
+          </div>
+          <div class="card-office">
+            <div class="img"><img src="/images/4.jpeg" alt="משרדים להשכרה"></div>
+          </div>
+        </div>
+
+        <div class="text-center" style="margin-top:32px;">
+          <a href="/gallery" class="btn btn-outline">לגלריה המלאה</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark text-center">
+      <div class="container">
+        <h2>רוצים לראות אם זה מתאים לכם?</h2>
+        <p class="hero-sub" style="margin-inline:auto;">
+          קבעו סיור קצר במתחם ונראה לכם את המשרדים הפנויים.
         </p>
-        <a href="/amenities" class="btn btn-outline-light">המתחמים שלנו</a>
+        <div class="hero-actions" style="justify-content:center;">
+          <a href="/booking" class="btn btn-gold">קביעת סיור</a>
+          <a href="/contact" class="btn btn-outline-light">יצירת קשר</a>
+        </div>
       </div>
+    </section>
 
-      <div class="hero-visual small-visual">
-        <img src="/images/8.jpeg" alt="מתחם AlonSpace">
-      </div>
-    </div>
-  </div>
-</section>
-<section class="home-benefits-section">
-  <div class="container">
-
-    <div class="section-head" style="text-align:center;">
-      <span class="eyebrow">AlonSpace</span>
-
-      <h2>
-        כל מה שאתם צריכים
-        <span style="color:var(--oak);">
-          במקום אחד
-        </span>
-      </h2>
-    </div>
-
-    <div class="home-benefits-intro">
-
-      <article class="home-benefit-highlight primary">
-        <span class="eyebrow">המטרה שלנו</span>
-
-        <h3 class="white">שתרגישו שמצאתם את המקום הנכון</h3>
-
-        <p>
-לספק סביבת עבודה שתהיו מרוצים להגיע אליה בכל יום ולהרגיש בה בנוח.
-        </p>
-      </article>
-
-      <article class="home-benefit-highlight">
-        <span class="eyebrow">היעד שלנו</span>
-
-<h3>הכול כלול מהיום הראשון</h3>
-        <p>
-להנגיש לפרילנסרים, עצמאיים ועסקים קטנים שירות ומשרד ברמות הגבוהות בלי חוזים דרקוניים.
-        </p>
-      </article>
-
-    </div>
-
-    <div class="home-benefits-list">
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          משרד מאובזר בהתאם לצורך הלקוח
-        </span>
-      </div>
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          חדר ישיבות
-        </span>
-      </div>
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          מטבחון מאובזר לשימוש יומיומי
-        </span>
-      </div>
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          חדר כושר וסאונה
-        </span>
-      </div>
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          מקלחות
-        </span>
-      </div>
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          גישה 24/7 עם קוד אישי
-        </span>
-      </div>
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          אינטרנט מהיר
-        </span>
-      </div>
-
-      <div class="home-benefit-item">
-        <span class="home-benefit-arrow">←</span>
-
-        <span>
-          ניקיון יומי
-        </span>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-<section class="section-alt">
-  <div class="container">
-    <div class="section-head center">
-      <span class="eyebrow">הצצה למשרדים</span>
-      <h2>המתחמים שלנו</h2>
-    </div>
-
-    <div class="grid grid-4">
-      <div class="card-office">
-        <div class="img"><img src="/images/1.jpeg" alt="משרד פרטי"></div>
-      </div>
-      <div class="card-office">
-        <div class="img"><img src="/images/2.jpg" alt="חדר ישיבות"></div>
-      </div>
-      <div class="card-office">
-        <div class="img"><img src="/images/3.jpeg" alt="משרד ב-AlonSpace"></div>
-      </div>
-      <div class="card-office">
-        <div class="img"><img src="/images/4.jpeg" alt="משרדים להשכרה"></div>
-      </div>
-    </div>
-
-    <div class="text-center" style="margin-top:32px;">
-      <a href="/gallery" class="btn btn-outline">לגלריה המלאה</a>
-    </div>
-  </div>
-</section>
-
-<section class="section-dark text-center">
-  <div class="container">
-    <h2>רוצים לראות אם זה מתאים לכם?</h2>
-    <p class="hero-sub" style="margin-inline:auto;">
-      קבעו סיור קצר במתחם ונראה לכם את המשרדים הפנויים.
-    </p>
-    <div class="hero-actions" style="justify-content:center;">
-      <a href="/booking" class="btn btn-gold">קביעת סיור</a>
-      <a href="/contact" class="btn btn-outline-light">יצירת קשר</a>
-    </div>
-  </div>
-</section>
-
-<%- include('partials/footer') %>
-<%- include('partials/scripts') %>
+    <%- include('partials/footer') %>
+      <%- include('partials/scripts') %>
