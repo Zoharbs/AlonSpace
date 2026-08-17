@@ -96,6 +96,104 @@
 
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
+<%- include('partials/head', { title }) %>
+<%- include('partials/header') %>
+
+<section class="page-hero">
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="breadcrumb"><a href="/">דף הבית</a> / קביעת סיור</div>
+    <span class="eyebrow">סיור אישי</span>
+    <h1>בואו לראות את המשרדים.</h1>
+    <p>השאירו פרטים, בחרו זמן בשבוע הקרוב, ואנחנו נחזור אליכם לאישור הסיור.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container booking-layout">
+    <div class="booking-side">
+      <span class="eyebrow">מה קורה בסיור?</span>
+      <h2>20 דקות, בלי התחייבות.</h2>
+      <p>
+        נראה לכם את המתחם, את המשרדים הפנויים, את חדר הישיבות והשירותים מסביב.
+        אם זה מתאים - ממשיכים משם.
+      </p>
+
+      <div class="booking-points">
+        <div>✓ מגדלי אלון, תל אביב</div>
+        <div>✓ משרדים פרטיים ומרוהטים</div>
+        <div>✓ תיאום לפי זמינות בשבוע הקרוב</div>
+      </div>
+    </div>
+
+    <div>
+      <div id="formMsg" class="form-msg"></div>
+
+<form id="bookingForm" class="booking-card">
+
+  <div class="form-row-2">
+    <div class="field">
+      <label for="name">שם מלא</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+
+    <div class="field">
+      <label for="phone">טלפון</label>
+      <input type="tel" id="phone" name="phone" required>
+    </div>
+  </div>
+
+  <div class="form-row-2">
+
+    <div class="field">
+      <label for="booking_date">בחרו יום</label>
+      <input
+        type="date"
+        id="booking_date"
+        name="booking_date"
+        lang="he"
+        required
+      >
+    </div>
+
+    <div class="field">
+      <label for="time_slot">בחרו שעה</label>
+
+      <select id="time_slot" name="time_slot" required>
+        <option value="">בחרו שעה</option>
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="field">
+    <label for="message">משהו חשוב שנדע?</label>
+    <textarea
+      id="message"
+      name="message"
+      placeholder="למשל: כמה אנשים יגיעו, מתי תרצו להיכנס או כל שאלה אחרת."
+    ></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-gold btn-block">
+    שלח
+  </button>
+
+</form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
 <script>
 const dateInput = document.getElementById('booking_date');
 const slotGrid = document.getElementById('slotGrid');
