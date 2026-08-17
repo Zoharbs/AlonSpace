@@ -1,7 +1,7 @@
 <% const loggedInUser=typeof currentUser !=='undefined' && currentUser ? currentUser : null; const currentPath=typeof
   path !=='undefined' ? path : '' ; const isTenant=loggedInUser && loggedInUser.role==='tenant' ; const
   isAdmin=loggedInUser && loggedInUser.role==='admin' ; %>
-
+<!--
 <style>
   /* =========================
      ACCOUNT
@@ -197,7 +197,7 @@
   display: block;
 }
 </style>
-
+-->
   <header class="site-header">
     <div class="container header-inner">
       <a href="<%= isAdmin ? '/admin' : (isTenant ? '/dashboard' : '/') %>" class="brand">
@@ -251,27 +251,14 @@
     ) ? 'active' : '' %>"
     aria-expanded="false"
   >
-    אודות
-
-    <span class="nav-dropdown-arrow">
-      ▾
-    </span>
+    <span>אודות</span>
+    <span class="nav-dropdown-arrow">▾</span>
   </button>
 
   <div class="nav-dropdown-menu">
-
-    <a href="/about">
-      אודות AlonSpace
-    </a>
-
-    <a href="/privacy">
-      מדיניות פרטיות
-    </a>
-
-    <a href="/accessibility">
-      הצהרת נגישות
-    </a>
-
+    <a href="/about">אודות AlonSpace</a>
+    <a href="/privacy">מדיניות פרטיות</a>
+    <a href="/accessibility">הצהרת נגישות</a>
   </div>
 
 </div>
@@ -338,11 +325,15 @@
 
 <div class="header-cta">
 
-  <a href="/booking" class="btn btn-gold header-booking-btn">
+  <a href="/booking"
+     target="_blank"
+     rel="noopener"
+     class="btn btn-gold header-booking-btn">
     קביעת סיור
   </a>
 
-  <a href="/login" class="btn btn-outline-light header-login-btn">
+  <a href="/login"
+     class="btn btn-outline-light header-login-btn">
     התחברות
   </a>
 
@@ -357,24 +348,21 @@
             </button>
     </div>
   </header>
-  <script>
+<script>
 document.addEventListener('DOMContentLoaded', () => {
   const dropdown = document.querySelector('.nav-dropdown');
   const trigger = document.querySelector('.nav-dropdown-trigger');
 
   if (!dropdown || !trigger) return;
 
-  trigger.addEventListener('click', (event) => {
-    if (window.innerWidth > 900) return;
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
 
-    event.preventDefault();
-    event.stopPropagation();
-
-    const isOpen = dropdown.classList.toggle('open');
+    dropdown.classList.toggle('open');
 
     trigger.setAttribute(
       'aria-expanded',
-      isOpen ? 'true' : 'false'
+      dropdown.classList.contains('open') ? 'true' : 'false'
     );
   });
 });
