@@ -43,7 +43,7 @@ router.use(requireAdmin);
 router.get('/', async (req, res, next) => {
   try {
     const quotaAlertsResult = await db.query(
-  `
+      `
     SELECT
       u.id,
       u.display_name,
@@ -96,7 +96,7 @@ router.get('/', async (req, res, next) => {
 
     ORDER BY used_hours DESC
   `
-);
+    );
     const [
       clientsResult,
       messagesResult,
@@ -420,11 +420,11 @@ router.get('/analytics', async (req, res, next) => {
       FROM onboarding_surveys
     `);
 
-// =========================
-// Analytics של האתר הציבורי
-// =========================
+    // =========================
+    // Analytics של האתר הציבורי
+    // =========================
 
-const websiteAnalyticsResult = await db.query(`
+    const websiteAnalyticsResult = await db.query(`
   SELECT
 
     COUNT(*) FILTER (
@@ -457,7 +457,7 @@ const websiteAnalyticsResult = await db.query(`
 `);
 
 
-const popularPagesResult = await db.query(`
+    const popularPagesResult = await db.query(`
   SELECT
     ae.page_path AS path,
     COUNT(*)::INTEGER AS views
@@ -483,7 +483,7 @@ const popularPagesResult = await db.query(`
 `);
 
 
-const recentWebsiteActivityResult = await db.query(`
+    const recentWebsiteActivityResult = await db.query(`
   SELECT
     ae.event_type,
     ae.page_path AS path,
@@ -519,18 +519,18 @@ const recentWebsiteActivityResult = await db.query(`
 
       recentActivity:
         recentActivityResult.rows,
-completedSurveys:
-  surveyStatsResult.rows[0]
-    .completed_surveys,
+      completedSurveys:
+        surveyStatsResult.rows[0]
+          .completed_surveys,
 
-websiteAnalytics:
-  websiteAnalyticsResult.rows[0],
+      websiteAnalytics:
+        websiteAnalyticsResult.rows[0],
 
-popularPages:
-  popularPagesResult.rows,
+      popularPages:
+        popularPagesResult.rows,
 
-recentWebsiteActivity:
-  recentWebsiteActivityResult.rows,
+      recentWebsiteActivity:
+        recentWebsiteActivityResult.rows,
     });
 
   } catch (error) {
@@ -610,16 +610,16 @@ router.post('/clients/create', async (req, res, next) => {
     );
 
     const magicLoginToken =
-  crypto.randomBytes(32).toString('hex');
+      crypto.randomBytes(32).toString('hex');
 
-const magicLoginTokenHash =
-  crypto
-    .createHash('sha256')
-    .update(magicLoginToken)
-    .digest('hex');
+    const magicLoginTokenHash =
+      crypto
+        .createHash('sha256')
+        .update(magicLoginToken)
+        .digest('hex');
 
-const magicLoginExpiresAt =
-  new Date(Date.now() + 48 * 60 * 60 * 1000);
+    const magicLoginExpiresAt =
+      new Date(Date.now() + 48 * 60 * 60 * 1000);
 
     const createResult = await db.query(
       `
@@ -685,21 +685,21 @@ magic_login_used_at
           6
         ),
         magicLoginTokenHash,
-magicLoginExpiresAt,
+        magicLoginExpiresAt,
       ]
     );
 
     const createdClient = createResult.rows[0];
 
-req.session.newClientInvite = {
-  userId: createdClient.id,
-  displayName: createdClient.display_name,
-  username: createdClient.username,
-  temporaryPassword: cleanPassword,
-  phone: createdClient.phone || null,
-  magicLoginUrl:
-    `https://alonspace.com/magic-login?token=${magicLoginToken}`,
-};
+    req.session.newClientInvite = {
+      userId: createdClient.id,
+      displayName: createdClient.display_name,
+      username: createdClient.username,
+      temporaryPassword: cleanPassword,
+      phone: createdClient.phone || null,
+      magicLoginUrl:
+        `https://alonspace.com/magic-login?token=${magicLoginToken}`,
+    };
 
     return req.session.save((saveError) => {
       if (saveError) {
@@ -830,7 +830,58 @@ router.post('/clients/:id/update',
     }
   }
 );
+router.post(
+  '/make-admin',
+  async (req, res, next) => {
+    try {
+      const userId = Number(req.body.user_id);
 
+      if (!userId) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'יש לבחור משתמש'
+          )
+        );
+      }
+
+      const result = await db.query(
+        `
+          UPDATE users
+          SET
+            role = 'admin',
+            updated_at = NOW()
+          WHERE
+            id = $1
+            AND role = 'tenant'
+          RETURNING
+            id,
+            display_name
+        `,
+        [userId]
+      );
+
+      if (!result.rows.length) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'המשתמש לא נמצא או שהוא כבר אדמין'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          `${result.rows[0].display_name} הוגדר כאדמין`
+        )
+      );
+
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 router.post(
   '/clients/:id/reset-password',
   async (req, res, next) => {
@@ -1339,7 +1390,7 @@ router.post(
         tenant.monthly_meeting_hours || 6
       );
 
-      
+
 
       await client.query(
         `
@@ -1455,6 +1506,79 @@ router.post(
     }
   }
 );
+router.post(
+  '/users/:id/role',
+  async (req, res, next) => {
+    try {
+      const userId = Number(req.params.id);
+      const newRole = String(
+        req.body.role || ''
+      ).trim();
+
+      if (!['tenant', 'admin'].includes(newRole)) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'סוג ההרשאה אינו תקין'
+          )
+        );
+      }
+
+      // לא מאפשרים לאדמין שמחובר כרגע
+      // להסיר לעצמו את הרשאת האדמין
+      if (
+        userId === Number(req.session.userId) &&
+        newRole !== 'admin'
+      ) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'לא ניתן להסיר מעצמך הרשאת אדמין'
+          )
+        );
+      }
+
+      const result = await db.query(
+        `
+          UPDATE users
+          SET
+            role = $1,
+            updated_at = NOW()
+          WHERE id = $2
+          RETURNING
+            id,
+            display_name,
+            role
+        `,
+        [
+          newRole,
+          userId
+        ]
+      );
+
+      if (result.rows.length === 0) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'המשתמש לא נמצא'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          newRole === 'admin'
+            ? `${result.rows[0].display_name} הוגדר כאדמין`
+            : `${result.rows[0].display_name} הוגדר כדייר`
+        )
+      );
+
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
 router.get('/setup-analytics-db', async (req, res) => {
   try {
@@ -1494,11 +1618,11 @@ router.get('/setup-analytics-db', async (req, res) => {
       )
     `);
 
-// =========================
-// Onboarding survey table
-// =========================
+    // =========================
+    // Onboarding survey table
+    // =========================
 
-await db.query(`
+    await db.query(`
   CREATE TABLE IF NOT EXISTS onboarding_surveys (
     id BIGSERIAL PRIMARY KEY,
 
