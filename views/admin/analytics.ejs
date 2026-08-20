@@ -678,7 +678,120 @@
 
   </section>
 
+<!----> =====================
+     פעילות באתר הציבורי
+====================== -->
 
+<section class="analytics-card">
+
+  <h2>פעילות באתר</h2>
+
+  <p class="analytics-card-description">
+    נתוני שימוש באתר הציבורי של AlonSpace.
+  </p>
+
+  <div class="analytics-stats">
+
+    <div class="analytics-stat">
+      <span class="analytics-stat-number">
+        <%= websiteAnalytics.visitors_today || 0 %>
+      </span>
+
+      <span class="analytics-stat-label">
+        מבקרים היום
+      </span>
+    </div>
+
+
+    <div class="analytics-stat">
+      <span class="analytics-stat-number">
+        <%= websiteAnalytics.page_views_today || 0 %>
+      </span>
+
+      <span class="analytics-stat-label">
+        צפיות היום
+      </span>
+    </div>
+
+
+    <div class="analytics-stat">
+      <span class="analytics-stat-number">
+        <%= websiteAnalytics.visitors_month || 0 %>
+      </span>
+
+      <span class="analytics-stat-label">
+        מבקרים החודש
+      </span>
+    </div>
+
+
+    <div class="analytics-stat">
+      <span class="analytics-stat-number">
+        <%= websiteAnalytics.page_views_month || 0 %>
+      </span>
+
+      <span class="analytics-stat-label">
+        צפיות החודש
+      </span>
+    </div>
+
+  </div>
+
+</section>
+<section class="analytics-card">
+
+  <h2>העמודים הנצפים ביותר</h2>
+
+  <p class="analytics-card-description">
+    העמודים שקיבלו הכי הרבה צפיות החודש.
+  </p>
+
+  <div class="analytics-table-wrap">
+
+    <table class="analytics-table">
+
+      <thead>
+        <tr>
+          <th>עמוד</th>
+          <th>צפיות</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <% if (!popularPages.length) { %>
+
+          <tr>
+            <td colspan="2">
+              עדיין אין נתונים.
+            </td>
+          </tr>
+
+        <% } %>
+
+        <% popularPages.forEach(page => { %>
+
+          <tr>
+            <td>
+              <%= page.path %>
+            </td>
+
+            <td>
+              <strong>
+                <%= page.views %>
+              </strong>
+            </td>
+          </tr>
+
+        <% }) %>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
 </main>
 
 </body>

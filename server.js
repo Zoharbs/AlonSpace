@@ -143,6 +143,34 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  // מזהה קבוע יחסית לדפדפן
+  if (!req.cookies.alonspace_visitor) {
+    const visitorId = require('crypto').randomUUID();
+
+    res.cookie('alonspace_visitor', visitorId, {
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    req.analyticsVisitorId = visitorId;
+  } else {
+    req.analyticsVisitorId =
+      req.cookies.alonspace_visitor;
+  }
+
+  // מזהה של ה-session הנוכחי
+  req.analyticsSessionId = req.sessionID;
+
+  next();
+});
+const analyticsMiddleware =
+  require('./middleware/analytics');
+
+app.use(analyticsMiddleware);
+
 app.use('/api', require('./routes/api'));
 app.use('/', require('./routes/auth'));
 app.use('/admin', require('./routes/admin'));

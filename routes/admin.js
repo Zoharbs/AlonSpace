@@ -420,7 +420,66 @@ router.get('/analytics', async (req, res, next) => {
       FROM onboarding_surveys
     `);
 
+// =========================
+// Analytics של האתר הציבורי
+// =========================
 
+const websiteAnalyticsResult = await db.query(`
+  SELECT
+
+    COUNT(*) FILTER (
+      WHERE created_at >= CURRENT_DATE
+    )::INTEGER AS page_views_today,
+
+    COUNT(*) FILTER (
+      WHERE created_at >= DATE_TRUNC('month', NOW())
+    )::INTEGER AS page_views_month,
+
+    COUNT(DISTINCT session_id) FILTER (
+      WHERE created_at >= CURRENT_DATE
+    )::INTEGER AS visitors_today,
+
+    COUNT(DISTINCT session_id) FILTER (
+      WHERE created_at >= DATE_TRUNC('month', NOW())
+    )::INTEGER AS visitors_month
+
+  FROM analytics_events
+
+  WHERE event_type = 'page_view'
+`);
+
+
+const popularPagesResult = await db.query(`
+  SELECT
+    path,
+    COUNT(*)::INTEGER AS views
+
+  FROM analytics_events
+
+  WHERE
+    event_type = 'page_view'
+    AND created_at >= DATE_TRUNC('month', NOW())
+
+  GROUP BY path
+
+  ORDER BY views DESC
+
+  LIMIT 20
+`);
+
+
+const recentWebsiteActivityResult = await db.query(`
+  SELECT
+    event_type,
+    path,
+    created_at
+
+  FROM analytics_events
+
+  ORDER BY created_at DESC
+
+  LIMIT 50
+`);
     const summary = summaryResult.rows[0];
 
     return res.render('admin/analytics', {
@@ -436,10 +495,18 @@ router.get('/analytics', async (req, res, next) => {
 
       recentActivity:
         recentActivityResult.rows,
+completedSurveys:
+  surveyStatsResult.rows[0]
+    .completed_surveys,
 
-      completedSurveys:
-        surveyStatsResult.rows[0]
-          .completed_surveys,
+websiteAnalytics:
+  websiteAnalyticsResult.rows[0],
+
+popularPages:
+  popularPagesResult.rows,
+
+recentWebsiteActivity:
+  recentWebsiteActivityResult.rows,
     });
 
   } catch (error) {
