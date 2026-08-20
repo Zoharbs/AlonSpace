@@ -1432,7 +1432,7 @@
     ========================= */
 
     const adminMeetingBookings =
-  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
