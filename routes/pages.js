@@ -234,12 +234,7 @@ router.post('/api/booking', async (req, res, next) => {
     return next(error);
   }
 });
-router.get(
-  ['/offices', '/checkout'],
-  (req, res) => {
-    return res.redirect(302, '/');
-  }
-);
+
 
 router.get('/terms', (req, res) => {
   return res.render('terms', {
@@ -254,5 +249,182 @@ router.get('/privacy', (req, res) => {
 router.get('/accessibility', (req, res) => {
   res.render('accessibility');
 });
+// ========================================
+// מסך חדר ישיבות - טלוויזיה
+// ========================================
+
+router.get(
+  '/meeting-room-display/:floor',
+  async (req, res, next) => {
+    try {
+      const floor = Number(req.params.floor);
+
+      // יש מסכים רק בקומות 4 ו-6
+      if (![4, 6].includes(floor)) {
+        return res.status(404).send(
+          'חדר הישיבות לא נמצא'
+        );
+      }
+
+      const roomResult = await db.query(
+        `
+          SELECT id, floor
+          FROM meeting_rooms
+          WHERE floor = $1
+          LIMIT 1
+        `,
+        [floor]
+      );
+
+      const room = roomResult.rows[0];
+
+      if (!room) {
+        return res.status(404).send(
+          'לא נמצא חדר ישיבות בקומה הזאת'
+        );
+      }
+
+      return res.render(
+        'meeting-room-display',
+        {
+          title:
+            `חדר ישיבות קומה ${floor} - AlonSpace`,
+          floor,
+          roomId: room.id,
+        }
+      );
+
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+
+// ========================================
+// API מצב חדר ישיבות
+// ========================================
+
+router.get(
+  '/api/meeting-room-display/:floor',
+  async (req, res, next) => {
+    try {
+      const floor = Number(req.params.floor);
+
+      if (![4, 6].includes(floor)) {
+        return res.status(404).json({
+          error: 'חדר הישיבות לא נמצא',
+        });
+      }
+
+      const roomResult = await db.query(
+        `
+          SELECT id
+          FROM meeting_rooms
+          WHERE floor = $1
+          LIMIT 1
+        `,
+        [floor]
+      );
+
+      const room = roomResult.rows[0];
+
+      if (!room) {
+        return res.status(404).json({
+          error: 'לא נמצא חדר ישיבות בקומה הזאת',
+        });
+      }
+
+      /*
+       * מחפשים:
+       * 1. האם יש הזמנה פעילה עכשיו
+       * 2. אם אין - מה ההזמנה הבאה היום
+       */
+
+      const result = await db.query(
+        `
+          SELECT
+            id,
+            start_time,
+            end_time
+
+          FROM meeting_bookings
+
+          WHERE
+            meeting_room_id = $1
+
+            AND booking_date =
+              (NOW() AT TIME ZONE 'Asia/Jerusalem')::DATE
+
+            AND end_time >
+              (NOW() AT TIME ZONE 'Asia/Jerusalem')::TIME
+
+          ORDER BY
+            start_time ASC
+
+          LIMIT 1
+        `,
+        [room.id]
+      );
+
+      const booking = result.rows[0];
+
+      // אין יותר הזמנות היום
+      if (!booking) {
+        return res.json({
+          status: 'free',
+          floor,
+          until: null,
+        });
+      }
+
+      // מה השעה עכשיו בישראל?
+      const nowResult = await db.query(`
+        SELECT
+          (NOW() AT TIME ZONE 'Asia/Jerusalem')::TIME
+            AS current_time
+      `);
+
+      const currentTime =
+        nowResult.rows[0].current_time;
+
+      /*
+       * אם ההזמנה כבר התחילה:
+       * החדר תפוס עד שעת הסיום.
+       */
+      if (
+        String(booking.start_time) <=
+        String(currentTime)
+      ) {
+        return res.json({
+          status: 'busy',
+          floor,
+          until:
+            String(booking.end_time).slice(0, 5),
+        });
+      }
+
+      /*
+       * אחרת ההזמנה עוד לא התחילה:
+       * החדר פנוי עד שעת ההתחלה שלה.
+       */
+      return res.json({
+        status: 'free',
+        floor,
+        until:
+          String(booking.start_time).slice(0, 5),
+      });
+
+    } catch (error) {
+      console.error(
+        'MEETING ROOM DISPLAY ERROR:',
+        error
+      );
+
+      return next(error);
+    }
+  }
+);
+
 
 module.exports = router;
