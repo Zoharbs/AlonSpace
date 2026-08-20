@@ -131,13 +131,6 @@ router.get('/', async (req, res, next) => {
           is_active DESC,
           LOWER(display_name) ASC
       `),
-
-      db.query(`
-        SELECT *
-        FROM messages
-        ORDER BY created_at DESC
-        LIMIT 100
-      `),
       db.query(`
   SELECT
     id,
@@ -152,7 +145,14 @@ router.get('/', async (req, res, next) => {
   ORDER BY
     is_active DESC,
     LOWER(display_name) ASC
-`),
+      `),
+      db.query(`
+        SELECT *
+        FROM messages
+        ORDER BY created_at DESC
+        LIMIT 100
+      `),
+
       db.query(`
         SELECT *
         FROM testimonials
