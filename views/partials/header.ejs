@@ -198,13 +198,21 @@
 }
 </style>
 -->
-  <header class="site-header">
+  
+
+<header class="site-header">
     <div class="container header-inner">
       <a href="<%= isAdmin ? '/admin' : (isTenant ? '/dashboard' : '/') %>" class="brand">
         <img src="/images/Asset 11.svg" alt="AlonSpace" class="brand-logo">
-        <span class="brand-text">
-          <%= isTenant ? 'פורטל הדיירים' : 'AlonSpace' %>
-        </span>
+<span class="brand-text">
+  <% if (isTenant) { %>
+    פורטל הדיירים
+  <% } else if (isAdmin) { %>
+    ניהול AlonSpace
+  <% } else { %>
+    AlonSpace
+  <% } %>
+</span>
       </a>
 
       <nav class="nav" id="mainNav">
@@ -224,16 +232,25 @@
             יצירת קשר
           </a>
 
-          <% } else if (isAdmin) { %>
+         <% } else if (isAdmin) { %>
 
-            <a href="/admin" class="<%= currentPath.startsWith('/admin') ? 'active' : '' %>">
-              פאנל ניהול
-            </a>
+  <a href="/admin#clients"
+     class="<%= currentPath === '/admin' ? 'active' : '' %>">
+    לקוחות
+  </a>
 
-            <a href="/" target="_blank" rel="noopener">
-              צפייה באתר
-            </a>
+  <a href="/admin#meeting-room">
+    חדרי ישיבות
+  </a>
 
+  <a href="/admin/analytics"
+     class="<%= currentPath.startsWith('/admin/analytics') ? 'active' : '' %>">
+    נתונים
+  </a>
+
+  <a href="/" target="_blank" rel="noopener">
+    צפייה באתר
+  </a>
             <% } else { %>
 
               <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">
