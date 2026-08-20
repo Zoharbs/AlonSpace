@@ -99,6 +99,7 @@ router.get('/', async (req, res, next) => {
     );
     const [
       clientsResult,
+      adminsResult,
       messagesResult,
       testimonialsResult,
       meetingBookingsResult,
@@ -137,7 +138,21 @@ router.get('/', async (req, res, next) => {
         ORDER BY created_at DESC
         LIMIT 100
       `),
-
+      db.query(`
+  SELECT
+    id,
+    username,
+    email,
+    display_name,
+    phone,
+    is_active,
+    created_at
+  FROM users
+  WHERE role = 'admin'
+  ORDER BY
+    is_active DESC,
+    LOWER(display_name) ASC
+`),
       db.query(`
         SELECT *
         FROM testimonials
@@ -223,6 +238,7 @@ router.get('/', async (req, res, next) => {
       layout: false,
       adminName: req.session.userName,
       clients: clientsResult.rows,
+      admins: adminsResult.rows,
       messages: messagesResult.rows,
       testimonials: testimonialsResult.rows,
       meetingBookings: meetingBookingsResult.rows,
@@ -1732,4 +1748,92 @@ router.get('/setup-analytics-db', async (req, res) => {
     });
   }
 });
+router.post(
+  '/admins/:id/update',
+  async (req, res, next) => {
+    try {
+      const {
+        display_name,
+        username,
+        email,
+        phone,
+        is_active,
+      } = req.body;
+
+      const cleanDisplayName =
+        String(display_name || '').trim();
+
+      const cleanUsername =
+        String(username || '').trim();
+
+      if (!cleanDisplayName || !cleanUsername) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'שם ושם משתמש הם שדות חובה'
+          )
+        );
+      }
+
+      // לא מאפשר לאדמין להשבית את עצמו
+      const active =
+        Number(req.params.id) ===
+        Number(req.session.userId)
+          ? true
+          : Boolean(is_active);
+
+      const result = await db.query(
+        `
+          UPDATE users
+          SET
+            display_name = $1,
+            username = $2,
+            email = $3,
+            phone = $4,
+            is_active = $5,
+            updated_at = NOW()
+          WHERE
+            id = $6
+            AND role = 'admin'
+          RETURNING id
+        `,
+        [
+          cleanDisplayName,
+          cleanUsername,
+          normalizeOptional(email),
+          normalizeOptional(phone),
+          active,
+          req.params.id,
+        ]
+      );
+
+      if (!result.rows.length) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'האדמין לא נמצא'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          'פרטי האדמין עודכנו'
+        )
+      );
+    } catch (error) {
+      if (error.code === '23505') {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'שם המשתמש או האימייל כבר קיימים'
+          )
+        );
+      }
+
+      return next(error);
+    }
+  }
+);
 module.exports = router;

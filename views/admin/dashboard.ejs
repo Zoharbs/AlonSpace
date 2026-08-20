@@ -1080,6 +1080,107 @@
                       </div>
                     </div>
                   </details>
+
+                </section>
+
+                <section class="admin-card">
+
+                  <h2>ניהול אדמינים</h2>
+
+                  <p class="small">
+                    ניהול המשתמשים בעלי הרשאת מנהל במערכת.
+                  </p>
+
+                  <% if (!admins.length) { %>
+                    <p>אין אדמינים במערכת.</p>
+                    <% } %>
+
+                      <% admins.forEach(admin=> { %>
+
+                        <details class="admin-collapse client-card">
+
+                          <summary>
+
+                            <div>
+                              <strong>
+                                <%= admin.display_name %>
+                              </strong>
+
+                              <span class="small">
+                                @<%= admin.username %>
+                              </span>
+                            </div>
+
+                            <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
+                              <%= admin.is_active ? 'פעיל' : 'מושבת' %>
+                            </span>
+
+                          </summary>
+
+                          <div class="admin-card">
+
+                            <form method="POST" action="/admin/admins/<%= admin.id %>/update" class="form-grid">
+
+                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                              <div class="form-row-2">
+
+                                <div class="field">
+                                  <label>שם</label>
+
+                                  <input type="text" name="display_name" value="<%= admin.display_name || '' %>"
+                                    required>
+                                </div>
+
+                                <div class="field">
+                                  <label>שם משתמש</label>
+
+                                  <input type="text" name="username" value="<%= admin.username || '' %>" required>
+                                </div>
+
+                                <div class="field">
+                                  <label>אימייל</label>
+
+                                  <input type="email" name="email" value="<%= admin.email || '' %>">
+                                </div>
+
+                                <div class="field">
+                                  <label>טלפון</label>
+
+                                  <input type="text" name="phone" value="<%= admin.phone || '' %>">
+                                </div>
+
+                              </div>
+
+                              <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
+
+                                <label class="terms-check">
+                                  <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked' : '' %>
+                                  >
+
+                                  אדמין פעיל
+                                </label>
+
+                                <% } else { %>
+
+                                  <p class="small">
+                                    זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
+                                  </p>
+
+                                  <% } %>
+
+                                    <button type="submit" class="btn btn-primary">
+                                      שמור שינויים
+                                    </button>
+
+                            </form>
+
+                          </div>
+
+                        </details>
+
+                        <% }) %>
+
                 </section>
 
                 <section class="tab-panel" id="tab-meeting-room">
