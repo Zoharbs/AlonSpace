@@ -471,7 +471,7 @@ const popularPagesResult = await db.query(`
 const recentWebsiteActivityResult = await db.query(`
   SELECT
     event_type,
-    path,
+    page_path AS path,
     created_at
 
   FROM analytics_events
