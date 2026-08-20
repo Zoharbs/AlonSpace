@@ -7,8 +7,14 @@ function analyticsMiddleware(req, res, next) {
     req.path.startsWith('/css') ||
     req.path.startsWith('/js') ||
     req.path.startsWith('/images') ||
-    req.path.startsWith('/favicon')
+    req.path.startsWith('/favicon') ||
+    req.path.startsWith('/admin')
   ) {
+    return next();
+  }
+
+  // אדמין מחובר לא נכנס ל-Analytics בכלל
+  if (req.session?.userRole === 'admin') {
     return next();
   }
 

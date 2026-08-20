@@ -428,39 +428,54 @@ const websiteAnalyticsResult = await db.query(`
   SELECT
 
     COUNT(*) FILTER (
-      WHERE created_at >= CURRENT_DATE
+      WHERE ae.created_at >= CURRENT_DATE
     )::INTEGER AS page_views_today,
 
     COUNT(*) FILTER (
-      WHERE created_at >= DATE_TRUNC('month', NOW())
+      WHERE ae.created_at >= DATE_TRUNC('month', NOW())
     )::INTEGER AS page_views_month,
 
-    COUNT(DISTINCT session_id) FILTER (
-      WHERE created_at >= CURRENT_DATE
+    COUNT(DISTINCT ae.visitor_id) FILTER (
+      WHERE ae.created_at >= CURRENT_DATE
     )::INTEGER AS visitors_today,
 
-    COUNT(DISTINCT session_id) FILTER (
-      WHERE created_at >= DATE_TRUNC('month', NOW())
+    COUNT(DISTINCT ae.visitor_id) FILTER (
+      WHERE ae.created_at >= DATE_TRUNC('month', NOW())
     )::INTEGER AS visitors_month
 
-  FROM analytics_events
+  FROM analytics_events ae
 
-  WHERE event_type = 'page_view'
+  LEFT JOIN users u
+    ON u.id = ae.user_id
+
+  WHERE
+    ae.event_type = 'page_view'
+    AND (
+      u.id IS NULL
+      OR u.role <> 'admin'
+    )
 `);
 
 
 const popularPagesResult = await db.query(`
   SELECT
-    page_path AS path,
+    ae.page_path AS path,
     COUNT(*)::INTEGER AS views
 
-  FROM analytics_events
+  FROM analytics_events ae
+
+  LEFT JOIN users u
+    ON u.id = ae.user_id
 
   WHERE
-    event_type = 'page_view'
-    AND created_at >= DATE_TRUNC('month', NOW())
+    ae.event_type = 'page_view'
+    AND ae.created_at >= DATE_TRUNC('month', NOW())
+    AND (
+      u.id IS NULL
+      OR u.role <> 'admin'
+    )
 
-  GROUP BY path
+  GROUP BY ae.page_path
 
   ORDER BY views DESC
 
@@ -470,16 +485,25 @@ const popularPagesResult = await db.query(`
 
 const recentWebsiteActivityResult = await db.query(`
   SELECT
-    event_type,
-    page_path AS path,
-    created_at
+    ae.event_type,
+    ae.page_path AS path,
+    ae.created_at
 
-  FROM analytics_events
+  FROM analytics_events ae
 
-  ORDER BY created_at DESC
+  LEFT JOIN users u
+    ON u.id = ae.user_id
+
+  WHERE
+    u.id IS NULL
+    OR u.role <> 'admin'
+
+  ORDER BY ae.created_at DESC
 
   LIMIT 50
 `);
+
+
     const summary = summaryResult.rows[0];
 
     return res.render('admin/analytics', {
