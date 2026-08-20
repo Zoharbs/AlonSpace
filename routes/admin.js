@@ -451,7 +451,7 @@ const websiteAnalyticsResult = await db.query(`
 
 const popularPagesResult = await db.query(`
   SELECT
-    path,
+    page_path,
     COUNT(*)::INTEGER AS views
 
   FROM analytics_events
