@@ -830,8 +830,7 @@ router.post('/clients/:id/update',
     }
   }
 );
-router.post(
-  '/make-admin',
+router.post('/make-admin',
   async (req, res, next) => {
     try {
       const userId = Number(req.body.user_id);
@@ -882,45 +881,66 @@ router.post(
     }
   }
 );
-router.post(
-  '/clients/:id/reset-password',
+router.post('/clients/:id/reset-password',
   async (req, res, next) => {
     try {
+      // יצירת סיסמה זמנית חדשה
       const newPassword =
-        "alon-" +
-        Math.floor(1000 + Math.random() * 9000);
-
-      if (newPassword.length < 8) {
-        return res.redirect(
-          adminRedirect(
-            'error',
-            'הסיסמה החדשה חייבת להכיל לפחות 8 תווים'
-          )
-        );
-      }
+        "Alon-" +
+        Math.floor(10000 + Math.random() * 90000);
 
       const passwordHash = await bcrypt.hash(
         newPassword,
         12
       );
 
+      // יצירת Magic Login חדש
+      const magicLoginToken =
+        crypto.randomBytes(32).toString('hex');
+
+      const magicLoginTokenHash =
+        crypto
+          .createHash('sha256')
+          .update(magicLoginToken)
+          .digest('hex');
+
+      // תקף ל-48 שעות
+      const magicLoginExpiresAt =
+        new Date(
+          Date.now() +
+          48 * 60 * 60 * 1000
+        );
+
+      // עדכון המשתמש
       const result = await db.query(
         `
           UPDATE users
           SET
             password_hash = $1,
             must_change_password = TRUE,
+
+            magic_login_token_hash = $2,
+            magic_login_expires_at = $3,
+            magic_login_used_at = NULL,
+
             updated_at = NOW()
+
           WHERE
-            id = $2
+            id = $4
             AND role = 'tenant'
+
           RETURNING
-  id,
-  username,
-  display_name,
-  phone
+            id,
+            username,
+            display_name,
+            phone
         `,
-        [passwordHash, req.params.id]
+        [
+          passwordHash,
+          magicLoginTokenHash,
+          magicLoginExpiresAt,
+          req.params.id
+        ]
       );
 
       if (result.rows.length === 0) {
@@ -934,35 +954,40 @@ router.post(
 
       const client = result.rows[0];
 
+      // יצירת הודעת ההתחברות
       req.session.newClientInvite = {
         userId: client.id,
         displayName: client.display_name,
         username: client.username,
         temporaryPassword: newPassword,
         phone: client.phone || null,
+
+        magicLoginUrl:
+          `https://alonspace.com/magic-login?token=${magicLoginToken}`,
       };
 
-      return req.session.save((saveError) => {
-        if (saveError) {
-          return next(saveError);
-        }
+      return req.session.save(
+        (saveError) => {
+          if (saveError) {
+            return next(saveError);
+          }
 
-        return res.redirect(
-          adminRedirect(
-            'success',
-            'הסיסמה אופסה. הודעת ההתחברות מוכנה להעתקה.'
-          )
-        );
-      });
+          return res.redirect(
+            adminRedirect(
+              'success',
+              'הסיסמה אופסה. נוצר גם קישור כניסה מהירה חדש ל־48 שעות.'
+            )
+          );
+        }
+      );
+
     } catch (error) {
       return next(error);
     }
   }
 );
 
-
-router.post(
-  '/clients/:id/delete',
+router.post('/clients/:id/delete',
   async (req, res, next) => {
     try {
       const result = await db.query(
@@ -1000,8 +1025,7 @@ router.post(
   }
 );
 
-router.post(
-  '/meeting-bookings/:id/delete',
+router.post('/meeting-bookings/:id/delete',
   async (req, res, next) => {
     try {
       await db.query(
@@ -1044,8 +1068,7 @@ router.post('/messages/:id/read',
   }
 );
 
-router.post(
-  '/messages/:id/delete',
+router.post('/messages/:id/delete',
   async (req, res, next) => {
     try {
       await db.query(
@@ -1063,8 +1086,7 @@ router.post(
   }
 );
 
-router.post(
-  '/testimonials/:id/approve',
+router.post('/testimonials/:id/approve',
   async (req, res, next) => {
     try {
       await db.query(
@@ -1144,8 +1166,7 @@ router.get('/debug/database', async (req, res, next) => {
     });
   }
 });
-router.post(
-  '/testimonials/:id/reject',
+router.post('/testimonials/:id/reject',
   async (req, res, next) => {
     try {
       await db.query(
@@ -1163,8 +1184,7 @@ router.post(
     }
   }
 );
-router.post(
-  '/meeting-bookings/create',
+router.post('/meeting-bookings/create',
   async (req, res, next) => {
     const client = await db.pool.connect();
 
@@ -1446,8 +1466,7 @@ router.post(
     }
   }
 );
-router.post(
-  '/testimonials/:id/delete',
+router.post('/testimonials/:id/delete',
   async (req, res, next) => {
     try {
       await db.query(
@@ -1464,8 +1483,7 @@ router.post(
     }
   }
 );
-router.post(
-  '/clients/:id/permanent-delete',
+router.post('/clients/:id/permanent-delete',
   async (req, res, next) => {
     try {
       await db.query(
@@ -1506,8 +1524,7 @@ router.post(
     }
   }
 );
-router.post(
-  '/users/:id/role',
+router.post('/users/:id/role',
   async (req, res, next) => {
     try {
       const userId = Number(req.params.id);
