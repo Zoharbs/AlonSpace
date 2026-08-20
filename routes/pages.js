@@ -313,109 +313,155 @@ router.get(
 
       if (![4, 6].includes(floor)) {
         return res.status(404).json({
-          error: 'חדר הישיבות לא נמצא',
+          error: 'חדר ישיבות לא נמצא'
         });
       }
 
-      const roomResult = await db.query(
+      // כל השריונים של היום בקומה הזאת
+      // שעדיין לא הסתיימו
+      const result = await db.query(
         `
-          SELECT id
-          FROM meeting_rooms
-          WHERE floor = $1
-          LIMIT 1
+          SELECT
+            mb.start_time,
+            mb.end_time
+          FROM meeting_bookings mb
+          JOIN meeting_rooms mr
+            ON mr.id = mb.meeting_room_id
+          WHERE
+            mr.floor = $1
+            AND mb.booking_date = CURRENT_DATE
+            AND mb.end_time > CURRENT_TIME
+          ORDER BY
+            mb.start_time ASC
         `,
         [floor]
       );
 
-      const room = roomResult.rows[0];
+      const bookings = result.rows;
 
-      if (!room) {
-        return res.status(404).json({
-          error: 'לא נמצא חדר ישיבות בקומה הזאת',
-        });
-      }
-
-      /*
-       * מחפשים:
-       * 1. האם יש הזמנה פעילה עכשיו
-       * 2. אם אין - מה ההזמנה הבאה היום
-       */
-
-      const result = await db.query(
-        `
-          SELECT
-            id,
-            start_time,
-            end_time
-
-          FROM meeting_bookings
-
-          WHERE
-            meeting_room_id = $1
-
-            AND booking_date =
-              (NOW() AT TIME ZONE 'Asia/Jerusalem')::DATE
-
-            AND end_time >
-              (NOW() AT TIME ZONE 'Asia/Jerusalem')::TIME
-
-          ORDER BY
-            start_time ASC
-
-          LIMIT 1
-        `,
-        [room.id]
-      );
-
-      const booking = result.rows[0];
-
-      // אין יותר הזמנות היום
-      if (!booking) {
-        return res.json({
-          status: 'free',
-          floor,
-          until: null,
-        });
-      }
-
-      // מה השעה עכשיו בישראל?
       const nowResult = await db.query(`
         SELECT
-          (NOW() AT TIME ZONE 'Asia/Jerusalem')::TIME
-            AS current_time
+          CURRENT_TIME AS current_time
       `);
 
       const currentTime =
-        nowResult.rows[0].current_time;
+        String(
+          nowResult.rows[0].current_time
+        ).slice(0, 5);
 
-      /*
-       * אם ההזמנה כבר התחילה:
-       * החדר תפוס עד שעת הסיום.
-       */
-      if (
-        String(booking.start_time) <=
-        String(currentTime)
-      ) {
+
+      // =====================================
+      // האם החדר תפוס כרגע?
+      // =====================================
+
+      const activeIndex =
+        bookings.findIndex(booking => {
+          const start =
+            String(booking.start_time)
+              .slice(0, 5);
+
+          const end =
+            String(booking.end_time)
+              .slice(0, 5);
+
+          return (
+            start <= currentTime &&
+            end > currentTime
+          );
+        });
+
+
+      // =====================================
+      // תפוס כרגע
+      // =====================================
+
+      if (activeIndex !== -1) {
+
+        let busyUntil =
+          String(
+            bookings[activeIndex].end_time
+          ).slice(0, 5);
+
+
+        // ממשיכים לעבור על השריונים הבאים.
+        // אם הבא מתחיל לפני/בדיוק כשהרצף
+        // הנוכחי מסתיים - זה עדיין אותו רצף תפוס.
+        for (
+          let i = activeIndex + 1;
+          i < bookings.length;
+          i++
+        ) {
+
+          const nextStart =
+            String(
+              bookings[i].start_time
+            ).slice(0, 5);
+
+          const nextEnd =
+            String(
+              bookings[i].end_time
+            ).slice(0, 5);
+
+
+          if (nextStart <= busyUntil) {
+
+            if (nextEnd > busyUntil) {
+              busyUntil = nextEnd;
+            }
+
+          } else {
+
+            // יש רווח בין השריונים,
+            // לכן כאן מסתיים הרצף.
+            break;
+          }
+        }
+
+
         return res.json({
           status: 'busy',
-          floor,
-          until:
-            String(booking.end_time).slice(0, 5),
+          until: busyUntil
         });
       }
 
-      /*
-       * אחרת ההזמנה עוד לא התחילה:
-       * החדר פנוי עד שעת ההתחלה שלה.
-       */
+
+      // =====================================
+      // החדר פנוי כרגע
+      // =====================================
+
+      const nextBooking =
+        bookings.find(booking => {
+
+          const start =
+            String(
+              booking.start_time
+            ).slice(0, 5);
+
+          return start > currentTime;
+        });
+
+
+      if (nextBooking) {
+
+        return res.json({
+          status: 'free',
+          until:
+            String(
+              nextBooking.start_time
+            ).slice(0, 5)
+        });
+      }
+
+
+      // אין עוד שריונים היום
+
       return res.json({
         status: 'free',
-        floor,
-        until:
-          String(booking.start_time).slice(0, 5),
+        until: null
       });
 
     } catch (error) {
+
       console.error(
         'MEETING ROOM DISPLAY ERROR:',
         error
