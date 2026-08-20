@@ -721,60 +721,6 @@
 
               <% } %>
 
-                <section class="admin-card">
-
-                  <h2>ניהול אדמינים</h2>
-
-                  <p class="small">
-                    בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
-                  </p>
-
-                  <form method="POST" action="/admin/make-admin" style="
-      display:flex;
-      gap:12px;
-      align-items:end;
-      flex-wrap:wrap;
-      margin-top:18px;
-    ">
-
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                    <div class="field" style="flex:1;min-width:220px;">
-
-                      <label for="adminUser">
-                        משתמש
-                      </label>
-
-                      <select id="adminUser" name="user_id" required>
-
-                        <option value="">
-                          בחר משתמש
-                        </option>
-
-                        <% clients.forEach(client=> { %>
-
-                          <option value="<%= client.id %>">
-                            <%= client.display_name %>
-                              (@<%= client.username %>)
-                                <% if (client.business_name) { %>
-                                  - <%= client.business_name %>
-                                    <% } %>
-                          </option>
-
-                          <% }) %>
-
-                      </select>
-
-                    </div>
-
-                    <button type="submit" class="btn btn-primary"
-                      onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
-                      הפוך לאדמין
-                    </button>
-
-                  </form>
-
-                </section>
 
                 <div class="stat-cards">
                   <div class="stat-card">
@@ -1081,6 +1027,60 @@
                     </div>
                   </details>
 
+                <section class="admin-card">
+
+                  <h2>ניהול אדמינים</h2>
+
+                  <p class="small">
+                    בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
+                  </p>
+
+                  <form method="POST" action="/admin/make-admin" style="
+      display:flex;
+      gap:12px;
+      align-items:end;
+      flex-wrap:wrap;
+      margin-top:18px;
+    ">
+
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                    <div class="field" style="flex:1;min-width:220px;">
+
+                      <label for="adminUser">
+                        משתמש
+                      </label>
+
+                      <select id="adminUser" name="user_id" required>
+
+                        <option value="">
+                          בחר משתמש
+                        </option>
+
+                        <% clients.forEach(client=> { %>
+
+                          <option value="<%= client.id %>">
+                            <%= client.display_name %>
+                              (@<%= client.username %>)
+                                <% if (client.business_name) { %>
+                                  - <%= client.business_name %>
+                                    <% } %>
+                          </option>
+
+                          <% }) %>
+
+                      </select>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                      onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
+                      הפוך לאדמין
+                    </button>
+
+                  </form>
+
+                </section>
                 </section>
 
                 <section class="admin-card">
