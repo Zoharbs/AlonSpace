@@ -116,7 +116,7 @@ app.use('/login', loginLimiter);
 
 app.use((req, res, next) => {
   res.locals.path = req.path;
-
+res.locals.cookieConsent =req.cookies.alonspace_cookie_consent || null;
   res.locals.site = {
     name: 'AlonSpace',
     phone: '054-4730266',
@@ -144,15 +144,28 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  // מזהה קבוע יחסית לדפדפן
+  const analyticsAllowed =
+    req.cookies.alonspace_cookie_consent === 'accepted';
+
+  req.analyticsAllowed = analyticsAllowed;
+  req.analyticsVisitorId = null;
+  req.analyticsSessionId = null;
+
+  if (!analyticsAllowed) {
+    return next();
+  }
+
+  // מזהה קבוע יחסית לדפדפן - רק לאחר הסכמה
   if (!req.cookies.alonspace_visitor) {
-    const visitorId = require('crypto').randomUUID();
+    const visitorId =
+      require('crypto').randomUUID();
 
     res.cookie('alonspace_visitor', visitorId, {
       maxAge: 1000 * 60 * 60 * 24 * 365,
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure:
+        process.env.NODE_ENV === 'production',
     });
 
     req.analyticsVisitorId = visitorId;
@@ -161,14 +174,55 @@ app.use((req, res, next) => {
       req.cookies.alonspace_visitor;
   }
 
-  // מזהה של ה-session הנוכחי
   req.analyticsSessionId = req.sessionID;
 
   next();
 });
 const analyticsMiddleware =
   require('./middleware/analytics');
+app.post('/cookie-consent', (req, res) => {
+  const choice = req.body.choice;
 
+  if (
+    choice !== 'accepted' &&
+    choice !== 'necessary'
+  ) {
+    return res.status(400).send('בחירה לא תקינה');
+  }
+
+  res.cookie(
+    'alonspace_cookie_consent',
+    choice,
+    {
+      maxAge:
+        1000 * 60 * 60 * 24 * 365,
+      httpOnly: true,
+      sameSite: 'lax',
+      secure:
+        process.env.NODE_ENV === 'production',
+    }
+  );
+
+  // אם המשתמש בחר הכרחיות בלבד,
+  // מוחקים visitor cookie ישן אם קיים.
+  if (choice === 'necessary') {
+    res.clearCookie('alonspace_visitor', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure:
+        process.env.NODE_ENV === 'production',
+    });
+  }
+
+  const returnTo =
+    typeof req.body.returnTo === 'string' &&
+    req.body.returnTo.startsWith('/') &&
+    !req.body.returnTo.startsWith('//')
+      ? req.body.returnTo
+      : '/';
+
+  return res.redirect(returnTo);
+});
 app.use(analyticsMiddleware);
 
 app.use('/api', require('./routes/api'));
@@ -224,6 +278,7 @@ app.use((req, res) => {
             חזרה לדף הבית
           </a>
         </div>
+        <%- include('partials/cookie-banner') %>
       </body>
     </html>
   `);

@@ -1,6 +1,11 @@
 const { pool } = require('../db');
 
 function analyticsMiddleware(req, res, next) {
+  // אין Analytics ללא הסכמה
+  if (!req.analyticsAllowed) {
+    return next();
+  }
+
   if (
     req.method !== 'GET' ||
     req.path.startsWith('/api') ||
@@ -13,13 +18,17 @@ function analyticsMiddleware(req, res, next) {
     return next();
   }
 
-  // אדמין מחובר לא נכנס ל-Analytics בכלל
+  // אדמין מחובר לא נכנס ל-Analytics
   if (req.session?.userRole === 'admin') {
     return next();
   }
 
   res.on('finish', () => {
-    if (res.statusCode >= 400) {
+    // שומרים רק עמודים שהוחזרו בהצלחה
+    if (
+      res.statusCode < 200 ||
+      res.statusCode >= 300
+    ) {
       return;
     }
 
@@ -38,14 +47,19 @@ function analyticsMiddleware(req, res, next) {
       `,
       [
         'page_view',
-        req.originalUrl,
+
+        // לא שומרים query string
+        req.path,
+
         req.analyticsVisitorId || null,
         req.analyticsSessionId || null,
         req.session?.userId || null,
         req.get('referer') || null,
+
         JSON.stringify({
-          userAgent: req.get('user-agent') || null
-        })
+          userAgent:
+            req.get('user-agent') || null,
+        }),
       ]
     ).catch((error) => {
       console.error(

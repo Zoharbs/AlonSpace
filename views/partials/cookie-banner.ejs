@@ -1,0 +1,83 @@
+<% if (!cookieConsent) { %>
+
+  <div class="cookie-banner">
+
+    <div class="cookie-banner-content">
+
+      <div class="cookie-banner-text">
+        <strong>הפרטיות שלך חשובה לנו</strong>
+
+        <p>
+          אנו משתמשים בעוגיות הכרחיות להפעלת האתר.
+          באישורך, נשתמש גם בעוגיות אנליטיות כדי
+          להבין כיצד משתמשים באתר ולשפר אותו.
+        </p>
+
+        <a href="/privacy">
+          מידע נוסף במדיניות הפרטיות
+        </a>
+      </div>
+
+      <div class="cookie-banner-actions">
+
+        <form method="POST" action="/cookie-consent">
+          <input
+            type="hidden"
+            name="_csrf"
+            value="<%= csrfToken %>"
+          >
+
+          <input
+            type="hidden"
+            name="choice"
+            value="accepted"
+          >
+
+          <input
+            type="hidden"
+            name="returnTo"
+            value="<%= path || '/' %>"
+          >
+
+          <button
+            type="submit"
+            class="btn btn-gold"
+          >
+            אישור
+          </button>
+        </form>
+
+        <form method="POST" action="/cookie-consent">
+          <input
+            type="hidden"
+            name="_csrf"
+            value="<%= csrfToken %>"
+          >
+
+          <input
+            type="hidden"
+            name="choice"
+            value="necessary"
+          >
+
+          <input
+            type="hidden"
+            name="returnTo"
+            value="<%= path || '/' %>"
+          >
+
+          <button
+            type="submit"
+            class="cookie-necessary-btn"
+          >
+            הכרחיות בלבד
+          </button>
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+<% } %>
