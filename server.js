@@ -278,7 +278,7 @@ app.use((req, res) => {
             חזרה לדף הבית
           </a>
         </div>
-        <%- include('partials/cookie-banner') %>
+        
       </body>
     </html>
   `);
