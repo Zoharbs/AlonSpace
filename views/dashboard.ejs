@@ -31,12 +31,19 @@
         padding-top: 54px;
       }
 
-      .meeting-portal-grid {
-        display: grid;
-        grid-template-columns: 360px minmax(0, 1fr);
-        gap: 28px;
-        align-items: start;
-      }
+.meeting-portal-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(280px, 320px)
+    minmax(0, 1fr);
+
+  gap: 32px;
+
+  align-items: start;
+
+  width: 100%;
+}
 
       .meeting-booking-card {
         position: sticky;
@@ -648,6 +655,288 @@
   .calendar-slot,
   .calendar-time-label {
     height: 34px;
+  }
+}
+.tenant-section .container {
+  max-width: 1600px;
+  width: calc(100% - 64px);
+}
+/* =====================================
+   TENANT WEEKLY CALENDAR
+===================================== */
+
+.weekly-calendar-wrap {
+  width: 100%;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid rgba(35, 32, 65, 0.07);
+  border-radius: 24px;
+
+  box-shadow:
+    0 8px 30px rgba(30, 27, 60, 0.045);
+}
+
+.weekly-calendar {
+  display: grid;
+
+  grid-template-columns:
+    58px repeat(7, minmax(0, 1fr));
+
+  width: 100%;
+  min-width: 0;
+
+  background: #ffffff;
+}
+
+
+/* =====================================
+   DAY HEADERS
+===================================== */
+
+.calendar-corner,
+.calendar-day-header {
+  height: 86px;
+
+  background: #fbfaff;
+
+  border-bottom:
+    1px solid rgba(45, 40, 80, 0.07);
+}
+
+.calendar-corner {
+  border-left:
+    1px solid rgba(45, 40, 80, 0.055);
+}
+
+.calendar-day-header {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  border-left:
+    1px solid rgba(45, 40, 80, 0.055);
+}
+
+.calendar-day-name {
+  color: #151522;
+
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.calendar-day-date {
+  color: #777589;
+
+  font-size: .82rem;
+  font-weight: 500;
+}
+
+
+/* TODAY */
+
+.calendar-day-header.today {
+  background: #f8f6ff;
+}
+
+.calendar-day-header.today::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: 0;
+  left: 22%;
+  right: 22%;
+
+  height: 3px;
+
+  border-radius: 10px 10px 0 0;
+
+  background: #7865f6;
+}
+
+
+/* =====================================
+   TIME LABELS
+===================================== */
+
+.calendar-time-label {
+  height: 42px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  padding-top: 7px;
+
+  background: #fcfbff;
+
+  color: #747287;
+
+  font-size: .75rem;
+  font-weight: 500;
+
+  border-left:
+    1px solid rgba(45, 40, 80, 0.055);
+
+  border-bottom:
+    1px solid rgba(45, 40, 80, 0.045);
+}
+
+
+/* =====================================
+   CALENDAR CELLS
+===================================== */
+
+.calendar-slot {
+  position: relative;
+
+  height: 42px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  /*
+    הקווים בכוונה מאוד עדינים.
+  */
+
+  border-left:
+    1px solid rgba(45, 40, 80, 0.04);
+
+  border-bottom:
+    1px solid rgba(45, 40, 80, 0.045);
+
+  cursor: pointer;
+
+  user-select: none;
+
+  transition:
+    background-color .12s ease;
+}
+
+
+/* hover */
+
+.calendar-slot:not(.past):hover {
+  background: #faf9ff;
+}
+
+
+/* past */
+
+.calendar-slot.past {
+  background: #f8f8fa;
+
+  cursor: default;
+}
+
+
+/* =====================================
+   SELECTION
+===================================== */
+
+.calendar-slot.selected-start,
+.calendar-slot.selected-range {
+  background: #ebe8ff;
+}
+
+.calendar-slot.selected-start {
+  box-shadow:
+    inset 3px 0 0 #7865f6;
+}
+
+
+/* =====================================
+   BOOKINGS
+===================================== */
+
+.calendar-booking {
+  position: absolute;
+
+  top: 3px;
+  right: 5px;
+  left: 5px;
+
+  z-index: 5;
+
+  box-sizing: border-box;
+
+  padding: 7px 9px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: #ebeaf0;
+
+  box-shadow:
+    0 2px 7px rgba(30, 28, 55, 0.06);
+
+  color: #242333;
+
+  font-size: .72rem;
+  line-height: 1.35;
+
+  overflow: hidden;
+}
+
+.calendar-booking strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* booking של המשתמש */
+
+.calendar-booking.mine {
+  background: #e7e3ff;
+
+  color: #302a65;
+
+  box-shadow:
+    inset 3px 0 0 #7865f6,
+    0 2px 7px rgba(30, 28, 55, 0.05);
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 900px) {
+
+  .tenant-section .container {
+    width: calc(100% - 28px);
+  }
+
+  .meeting-portal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-calendar-wrap {
+    overflow-x: auto;
+  }
+
+  .weekly-calendar {
+    grid-template-columns:
+      55px repeat(7, minmax(100px, 1fr));
+
+    min-width: 755px;
   }
 }
     </style>
@@ -1394,7 +1683,7 @@
                       );
 
                       bookingElement.style.height =
-                        `calc(${slotCount * 36}px - 6px)`;
+                        `calc(${slotCount * 42}px - 6px)`;
 
                       if (booking.is_mine) {
                         bookingElement.innerHTML = `
