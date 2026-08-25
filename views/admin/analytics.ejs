@@ -341,7 +341,7 @@
 
         <%= summary.active_clients_month %>
         /
-        <%= summary.total_clients %>
+        <%= stats.activeClients %>
 
       </span>
 
@@ -545,35 +545,214 @@
        סקר
   ====================== -->
 
-  <section class="analytics-card">
+<section class="analytics-card survey-results-section">
 
-    <h2>
-      שאלון היכרות
-    </h2>
+  <div class="survey-results-heading">
+    <div>
+      <span class="eyebrow">משוב מהדיירים</span>
+      <h2>שאלון היכרות</h2>
 
-    <div class="survey-placeholder">
+      <p class="small">
+        תמונת מצב מתוך השאלונים שמולאו על ידי הדיירים.
+      </p>
+    </div>
 
-      <div>
+    <div class="survey-completion">
+      <strong>
+        <%= surveys.length %>/<%= stats.activeClients %>
+      </strong>
 
-        <div class="survey-number">
-          <%= completedSurveys %>
-          /
-          <%= summary.total_clients %>
-        </div>
+      <span>השלימו</span>
+    </div>
+  </div>
 
-        <span class="small">
-          לקוחות השלימו את השאלון
-        </span>
 
-      </div>
+  <div class="survey-stats">
 
-      <span class="small">
-        תוצאות מפורטות יופיעו כאן לאחר שנחבר את השאלון.
-      </span>
+    <div class="survey-stat">
+      <span>השלימו שאלון</span>
+
+      <strong>
+        <%= surveys.length %>
+      </strong>
+
+      <small>
+        מתוך <%= stats.activeClients %> לקוחות
+      </small>
+    </div>
+
+
+    <div class="survey-stat">
+      <span>משתמשים בחדר הישיבות</span>
+
+      <strong>
+        <%= meetingRoomUsagePercent %>%
+      </strong>
+
+      <small>
+        מתוך ממלאי השאלון
+      </small>
+    </div>
+
+
+    <div class="survey-stat">
+      <span>שימוש ממוצע בחדר</span>
+
+      <strong>
+        <%= averageMeetingRoomUsage %>
+      </strong>
+
+      <small>
+        פעמים בחודש
+      </small>
+    </div>
+
+  </div>
+
+
+  <% if (!surveys.length) { %>
+
+    <div class="survey-empty">
+      עדיין לא התקבלו תשובות לשאלון.
+    </div>
+
+  <% } else { %>
+
+    <div class="survey-responses">
+
+      <% surveys.forEach(survey => { %>
+
+        <details class="survey-response">
+
+          <summary>
+
+            <div class="survey-response-person">
+
+              <strong>
+                <%= survey.display_name %>
+              </strong>
+
+              <span class="small">
+
+                <% if (survey.business_name) { %>
+                  <%= survey.business_name %> ·
+                <% } %>
+
+                משרד <%= survey.office_number || '-' %>
+                ·
+                קומה <%= survey.floor || '-' %>
+
+              </span>
+
+            </div>
+
+
+            <div class="survey-room-status">
+
+              <% if (survey.uses_meeting_room) { %>
+
+                <span class="pill ok">
+                  משתמש בחדר הישיבות
+                </span>
+
+              <% } else { %>
+
+                <span class="pill">
+                  לא משתמש בחדר
+                </span>
+
+              <% } %>
+
+            </div>
+
+          </summary>
+
+
+          <div class="survey-response-content">
+
+            <div class="survey-answer">
+
+              <span>
+                שימוש בחדר הישיבות
+              </span>
+
+              <strong>
+                <%= survey.uses_meeting_room ? 'כן' : 'לא' %>
+              </strong>
+
+            </div>
+
+
+            <% if (
+              survey.uses_meeting_room &&
+              survey.meeting_room_times_per_month !== null
+            ) { %>
+
+              <div class="survey-answer">
+
+                <span>
+                  תדירות שימוש משוערת
+                </span>
+
+                <strong>
+                  <%= survey.meeting_room_times_per_month %>
+                  פעמים בחודש
+                </strong>
+
+              </div>
+
+            <% } %>
+
+
+            <div class="survey-answer survey-answer-text">
+
+              <span>
+                השימוש העיקרי במשרד
+              </span>
+
+              <p>
+                <%= survey.primary_office_use || 'לא נמסרה תשובה' %>
+              </p>
+
+            </div>
+
+
+            <div class="survey-answer survey-answer-text">
+
+              <span>
+                הדבר החשוב ביותר במתחם
+              </span>
+
+              <p>
+                <%= survey.most_important_feature || 'לא נמסרה תשובה' %>
+              </p>
+
+            </div>
+
+
+            <div class="survey-answer survey-answer-text">
+
+              <span>
+                מה כדאי לשפר?
+              </span>
+
+              <p>
+                <%= survey.improvement_suggestion || 'לא נמסרה תשובה' %>
+              </p>
+
+            </div>
+
+          </div>
+
+        </details>
+
+      <% }) %>
 
     </div>
 
-  </section>
+  <% } %>
+
+</section>
 
 
 

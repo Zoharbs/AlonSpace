@@ -25,7 +25,7 @@
       action="/dashboard/survey"
       method="POST"
       class="booking-card"
-    >
+    ><input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
       <div class="field">
         <label>האם אתם משתמשים בחדר הישיבות?</label>

@@ -220,7 +220,50 @@ router.get('/', async (req, res, next) => {
   ORDER BY floor ASC
 `),
     ]);
+const surveyResults = await db.query(`
+  SELECT
+    s.id,
+    s.user_id,
+    s.uses_meeting_room,
+    s.meeting_room_times_per_month,
+    s.primary_office_use,
+    s.most_important_feature,
+    s.improvement_suggestion,
+    u.display_name,
+    u.business_name,
+    u.office_number,
+    u.floor
+  FROM onboarding_surveys s
+  JOIN users u
+    ON u.id = s.user_id
+  ORDER BY u.display_name ASC
+`);
+const surveys = surveyResults.rows;
 
+const meetingRoomUsers = surveys.filter(
+  survey => survey.uses_meeting_room === true
+);
+
+const meetingRoomUsagePercent = surveys.length
+  ? Math.round(
+      (meetingRoomUsers.length / surveys.length) * 100
+    )
+  : 0;
+
+const usageValues = meetingRoomUsers
+  .map(survey =>
+    Number(survey.meeting_room_times_per_month)
+  )
+  .filter(value => Number.isFinite(value));
+
+const averageMeetingRoomUsage = usageValues.length
+  ? (
+      usageValues.reduce(
+        (sum, value) => sum + value,
+        0
+      ) / usageValues.length
+    ).toFixed(1)
+  : '0';
     const stats = {
       activeClients: activeClientsResult.rows[0].count,
       upcomingMeetings: upcomingMeetingsResult.rows[0].count,
@@ -233,22 +276,32 @@ router.get('/', async (req, res, next) => {
 
     // ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
     delete req.session.newClientInvite;
-    return res.render('admin/dashboard', {
-      title: 'פאנל ניהול - AlonSpace',
-      layout: false,
-      adminName: req.session.userName,
-      clients: clientsResult.rows,
-      admins: adminsResult.rows,
-      messages: messagesResult.rows,
-      testimonials: testimonialsResult.rows,
-      meetingBookings: meetingBookingsResult.rows,
-      meetingRooms: meetingRoomsResult.rows,
-      stats,
-      error: req.query.error || null,
-      success: req.query.success || null,
-      quotaAlerts: quotaAlertsResult.rows,
-      newClientInvite,
-    });
+return res.render('admin/dashboard', {
+  title: 'פאנל ניהול - AlonSpace',
+  layout: false,
+  adminName: req.session.userName,
+
+  clients: clientsResult.rows,
+  admins: adminsResult.rows,
+  messages: messagesResult.rows,
+  testimonials: testimonialsResult.rows,
+
+  meetingBookings: meetingBookingsResult.rows,
+  meetingRooms: meetingRoomsResult.rows,
+
+  // שאלון
+  surveys,
+  meetingRoomUsagePercent,
+  averageMeetingRoomUsage,
+
+  stats,
+
+  error: req.query.error || null,
+  success: req.query.success || null,
+
+  quotaAlerts: quotaAlertsResult.rows,
+  newClientInvite,
+});
   } catch (error) {
     return next(error);
   }
