@@ -102,157 +102,228 @@
         flex-wrap: wrap;
       }
 
-      .weekly-calendar-wrap {
-        overflow: auto;
-        max-height: 720px;
+.weekly-calendar-wrap {
+  width: 100%;
+  overflow: hidden;
 
-        background: #fff;
-        border: 1px solid #dedce8;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow);
-      }
+  border: 1px solid rgba(20, 20, 45, 0.08);
+  border-radius: 20px;
 
-      .weekly-calendar {
-        display: grid;
-        grid-template-columns: 70px repeat(7, minmax(125px, 1fr));
-        min-width: 980px;
-        position: relative;
-      }
+  background: #fff;
 
-      .calendar-corner,
-      .calendar-day-header,
-      .calendar-time-label,
-      .calendar-slot {
-        border-left: 1px solid var(--stone-dark);
-        border-bottom: 1px solid var(--stone-dark);
-      }
+  box-shadow:
+    0 10px 30px rgba(25, 25, 50, 0.04);
+}
 
-      .calendar-corner {
-        min-height: 70px;
-        background: #f7f7f9;
-      }
+.weekly-calendar {
+  display: grid;
 
-      .calendar-day-header {
-        min-height: 70px;
-        padding: 10px;
-        text-align: center;
+  /*
+    עמודת שעות + 7 ימים.
+    כולם חייבים להיכנס לרוחב הקיים.
+  */
+  grid-template-columns:
+    64px repeat(7, minmax(0, 1fr));
 
-        background: #fff;
+  width: 100%;
+  min-width: 0;
 
-        position: sticky;
-        top: 0;
-        z-index: 5;
-      }
+  background: #fff;
+}
 
-      .calendar-day-header.today {
-        background: #fff;
-        box-shadow: inset 0 -3px 0 #7668e8;
-      }
 
-      .calendar-time-label {
-        height: 42px;
-        padding: 5px 8px;
+/* =========================
+   כותרות הימים
+========================= */
 
-        font-size: .75rem;
-        color: var(--ink-soft);
+.calendar-corner,
+.calendar-day-header {
+  height: 82px;
 
-        background: #f7f7f9;
+  background: #faf9fd;
 
-        text-align: center;
-      }
+  border-bottom: 1px solid
+    rgba(55, 50, 90, 0.10);
+}
 
-      .calendar-slot {
-        height: 42px;
-        position: relative;
+.calendar-corner {
+  border-left: 1px solid
+    rgba(55, 50, 90, 0.08);
+}
 
-        background: #fff;
+.calendar-day-header {
+  display: flex;
+  flex-direction: column;
 
-        cursor: pointer;
-        transition: background .15s ease;
-      }
+  align-items: center;
+  justify-content: center;
 
-      .calendar-slot:hover:not(.past) {
-        background: #f7f6fb;
-      }
+  gap: 6px;
 
-      .calendar-slot.past {
-        background: #f1f1f3;
-        cursor: not-allowed;
-      }
+  position: relative;
 
-      .calendar-slot.selected-start,
-      .calendar-slot.selected-range {
-        background: #ebe8ff;
-      }
+  border-left: 1px solid
+    rgba(55, 50, 90, 0.08);
+}
 
-      .calendar-slot.selected-start {
-        box-shadow: inset 0 0 0 2px #7668e8;
-      }
+.calendar-day-name {
+  font-size: .95rem;
+  font-weight: 800;
 
-      .calendar-day-name {
-        display: block;
-        font-weight: 700;
-      }
+  color: #151522;
+}
 
-      .calendar-day-date {
-        display: block;
-        margin-top: 4px;
-        font-size: .8rem;
-        color: var(--ink-soft);
-      }
+.calendar-day-date {
+  font-size: .82rem;
+  font-weight: 500;
 
-      .calendar-time-label {
-        height: 48px;
-        padding: 5px 8px;
-        font-size: .75rem;
-        color: var(--ink-soft);
-        background: var(--stone);
-        text-align: center;
-      }
+  color: #68677d;
+}
 
-      .calendar-slot {
-        height: 42px;
-        position: relative;
-        background: #ffffff;
-        cursor: pointer;
-        transition: background .15s ease;
-      }
 
-      .calendar-slot:hover:not(.past) {
-        background: #f8f8fa;
-      }
+/* היום הנוכחי */
 
-      .calendar-slot.past {
-        background: #f3f3f5;
-        cursor: not-allowed;
-      }
+.calendar-day-header.today {
+  background: #f7f5ff;
+}
 
-      .calendar-day-header {
-        background: #ffffff;
-      }
+.calendar-day-header.today::after {
+  content: "";
 
-      .calendar-day-header.today {
-        background: #ffffff;
-        box-shadow: inset 0 -3px 0 #7668e8;
-      }
+  position: absolute;
 
-      .calendar-booking {
-        position: absolute;
-        inset: 3px;
-        z-index: 3;
-        padding: 5px 7px;
-        border-radius: 7px;
-        background: var(--ink);
-        color: var(--cream);
-        font-size: .72rem;
-        line-height: 1.25;
-        overflow: hidden;
-        cursor: default;
-      }
+  right: 14%;
+  left: 14%;
+  bottom: 0;
 
-      .calendar-booking.mine {
-        background: var(--oak-dark);
-      }
+  height: 3px;
+
+  border-radius: 999px 999px 0 0;
+
+  background: #7865f6;
+}
+
+
+/* =========================
+   שעות
+========================= */
+
+.calendar-time-label {
+  height: 38px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding-top: 6px;
+
+  box-sizing: border-box;
+
+  background: #fbfafd;
+
+  color: #68677d;
+
+  font-size: .76rem;
+
+  border-left: 1px solid
+    rgba(55, 50, 90, 0.08);
+
+  border-bottom: 1px solid
+    rgba(55, 50, 90, 0.065);
+}
+
+
+/* =========================
+   משבצות
+========================= */
+
+.calendar-slot {
+  position: relative;
+
+  height: 38px;
+
+  box-sizing: border-box;
+
+  background: #fff;
+
+  border-left: 1px solid
+    rgba(55, 50, 90, 0.065);
+
+  border-bottom: 1px solid
+    rgba(55, 50, 90, 0.065);
+
+  cursor: pointer;
+
+  user-select: none;
+
+  transition:
+    background .12s ease;
+}
+
+
+/* hover עדין */
+
+.calendar-slot:not(.past):hover {
+  background: #faf9ff;
+}
+
+
+/* עבר */
+
+.calendar-slot.past {
+  background: #f7f7f9;
+  cursor: default;
+}
+
+
+/* =========================
+   בחירת טווח
+========================= */
+
+.calendar-slot.selected-start,
+.calendar-slot.selected-range {
+  background: #ebe8ff;
+}
+
+.calendar-slot.selected-start {
+  box-shadow:
+    inset 3px 0 0 #7865f6;
+}
+
+
+/* =========================
+   שריונים
+========================= */
+
+.calendar-booking {
+  position: absolute;
+
+  top: 3px;
+  right: 4px;
+  left: 4px;
+
+  z-index: 5;
+
+  box-sizing: border-box;
+
+  padding: 6px 7px;
+
+  border-radius: 7px;
+
+  background: #e8e6ee;
+
+  border-right: 3px solid #77738a;
+
+  font-size: .72rem;
+  line-height: 1.35;
+
+  overflow: hidden;
+}
+
+.calendar-booking.mine {
+  background: #e6e2ff;
+  border-right-color: #7865f6;
+}
 
       .calendar-booking strong {
         display: block;
