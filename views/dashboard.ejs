@@ -372,6 +372,229 @@
           position: static;
         }
       }
+      /* =========================
+   WEEKLY CALENDAR - CLEAN UI
+========================= */
+
+.weekly-calendar-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(20, 20, 45, 0.10);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.weekly-calendar {
+  display: grid;
+  grid-template-columns: 72px repeat(7, minmax(115px, 1fr));
+  min-width: 900px;
+  background: #fff;
+}
+
+/* כותרות ימים */
+
+.calendar-corner,
+.calendar-day-header {
+  height: 88px;
+  background: #f7f6fc;
+  border-bottom: 1px solid #dddbea;
+}
+
+.calendar-corner {
+  border-left: 1px solid #e3e1ed;
+}
+
+.calendar-day-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  border-left: 1px solid #e3e1ed;
+
+  position: relative;
+}
+
+.calendar-day-name {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #111223;
+}
+
+.calendar-day-date {
+  font-size: .88rem;
+  color: #62627a;
+}
+
+/* היום הנוכחי */
+
+.calendar-day-header.today::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  height: 4px;
+
+  background: #7765f5;
+}
+
+.calendar-day-header.today {
+  background: #f4f2ff;
+}
+
+
+/* =========================
+   TIME COLUMN
+========================= */
+
+.calendar-time-label {
+  height: 36px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding-top: 5px;
+
+  font-size: .78rem;
+  color: #66667d;
+
+  background: #faf9fd;
+
+  border-left: 1px solid #e5e3ee;
+  border-bottom: 1px solid #eeeeF4;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   CALENDAR CELLS
+========================= */
+
+.calendar-slot {
+  position: relative;
+
+  height: 36px;
+
+  background: #fff;
+
+  border-left: 1px solid #eceaf3;
+  border-bottom: 1px solid #eeeeF4;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  user-select: none;
+}
+
+/* עבר */
+
+.calendar-slot.past {
+  background: #f5f5f7;
+  cursor: default;
+}
+
+/* hover */
+
+.calendar-slot:not(.past):hover {
+  background: #f7f6ff;
+}
+
+
+/* =========================
+   RANGE SELECTION
+========================= */
+
+.calendar-slot.selected-start,
+.calendar-slot.selected-range {
+  background: #e8e4ff;
+}
+
+.calendar-slot.selected-start {
+  box-shadow:
+    inset 0 2px 0 #7765f5,
+    inset 0 -2px 0 #7765f5;
+}
+
+.calendar-slot.selected-range {
+  border-bottom-color: #d9d3ff;
+}
+
+
+/* =========================
+   BOOKINGS
+========================= */
+
+.calendar-booking {
+  position: absolute;
+
+  top: 3px;
+  right: 4px;
+  left: 4px;
+
+  z-index: 5;
+
+  border-radius: 8px;
+
+  padding: 7px 8px;
+
+  box-sizing: border-box;
+
+  background: #dedbe8;
+
+  border-right: 4px solid #77738a;
+
+  font-size: .76rem;
+  line-height: 1.35;
+
+  overflow: hidden;
+
+  cursor: default;
+}
+
+.calendar-booking strong {
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* השריון של המשתמש */
+
+.calendar-booking.mine {
+  background: #e4e0ff;
+  border-right-color: #7765f5;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+  .weekly-calendar {
+    grid-template-columns:
+      60px repeat(7, minmax(105px, 1fr));
+
+    min-width: 800px;
+  }
+
+  .calendar-corner,
+  .calendar-day-header {
+    height: 76px;
+  }
+
+  .calendar-slot,
+  .calendar-time-label {
+    height: 34px;
+  }
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -1116,7 +1339,7 @@
                       );
 
                       bookingElement.style.height =
-                        `calc(${slotCount * 42}px - 6px)`;
+                        `calc(${slotCount * 36}px - 6px)`;
 
                       if (booking.is_mine) {
                         bookingElement.innerHTML = `
