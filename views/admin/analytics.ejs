@@ -341,7 +341,7 @@
 
         <%= summary.active_clients_month %>
         /
-        <%= stats.activeClients %>
+        <%= summary.activeClients %>
 
       </span>
 
@@ -559,7 +559,7 @@
 
     <div class="survey-completion">
       <strong>
-        <%= surveys.length %>/<%= stats.activeClients %>
+<%= surveys.length %>/<%= summary.total_clients %>
       </strong>
 
       <span>השלימו</span>
@@ -577,7 +577,7 @@
       </strong>
 
       <small>
-        מתוך <%= stats.activeClients %> לקוחות
+        מתוך <%= summary.total_clients %> לקוחות
       </small>
     </div>
 
