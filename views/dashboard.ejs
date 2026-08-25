@@ -103,8 +103,11 @@
       }
 
       .weekly-calendar-wrap {
-        overflow-x: auto;
-        background: var(--cream);
+        overflow: auto;
+        max-height: 720px;
+
+        background: #fff;
+        border: 1px solid #dedce8;
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow);
       }
@@ -126,23 +129,65 @@
 
       .calendar-corner {
         min-height: 70px;
-        background: var(--stone-dark);
+        background: #f7f7f9;
       }
 
       .calendar-day-header {
         min-height: 70px;
         padding: 10px;
         text-align: center;
-        background: var(--stone-dark);
+
+        background: #fff;
+
         position: sticky;
         top: 0;
         z-index: 5;
       }
 
-.calendar-day-header.today {
-  background: var(--stone-dark);
-  box-shadow: inset 0 -3px 0 var(--oak);
-}
+      .calendar-day-header.today {
+        background: #fff;
+        box-shadow: inset 0 -3px 0 #7668e8;
+      }
+
+      .calendar-time-label {
+        height: 42px;
+        padding: 5px 8px;
+
+        font-size: .75rem;
+        color: var(--ink-soft);
+
+        background: #f7f7f9;
+
+        text-align: center;
+      }
+
+      .calendar-slot {
+        height: 42px;
+        position: relative;
+
+        background: #fff;
+
+        cursor: pointer;
+        transition: background .15s ease;
+      }
+
+      .calendar-slot:hover:not(.past) {
+        background: #f7f6fb;
+      }
+
+      .calendar-slot.past {
+        background: #f1f1f3;
+        cursor: not-allowed;
+      }
+
+      .calendar-slot.selected-start,
+      .calendar-slot.selected-range {
+        background: #ebe8ff;
+      }
+
+      .calendar-slot.selected-start {
+        box-shadow: inset 0 0 0 2px #7668e8;
+      }
 
       .calendar-day-name {
         display: block;
@@ -165,25 +210,32 @@
         text-align: center;
       }
 
-     .calendar-slot {
-  height: 48px;
-  position: relative;
-  background: var(--cream);
-  cursor: pointer;
-  transition: background .15s ease;
-}
+      .calendar-slot {
+        height: 42px;
+        position: relative;
+        background: #ffffff;
+        cursor: pointer;
+        transition: background .15s ease;
+      }
 
-/* שעה פנויה נשארת באותו בסיס צבע */
-.calendar-slot:hover:not(.past) {
-  background: var(--cream);
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .06);
-}
+      .calendar-slot:hover:not(.past) {
+        background: #f8f8fa;
+      }
 
-/* שעות שכבר עברו - אפור עדין בלבד */
-.calendar-slot.past {
-  background: #f1f0ec;
-  cursor: not-allowed;
-}
+      .calendar-slot.past {
+        background: #f3f3f5;
+        cursor: not-allowed;
+      }
+
+      .calendar-day-header {
+        background: #ffffff;
+      }
+
+      .calendar-day-header.today {
+        background: #ffffff;
+        box-shadow: inset 0 -3px 0 #7668e8;
+      }
+
       .calendar-booking {
         position: absolute;
         inset: 3px;
@@ -230,72 +282,75 @@
       .my-booking-item:last-child {
         border-bottom: 0;
       }
-.calendar-slot.selected-start {
-  background:#e8d49a;
-  box-shadow:inset 0 0 0 2px var(--oak-dark);
-}
 
-.calendar-slot.selected-range {
-  background:#f3e7bd;
-}
-.onboarding-survey-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+      .calendar-slot.selected-start {
+        background: #e8d49a;
+        box-shadow: inset 0 0 0 2px var(--oak-dark);
+      }
 
-  margin-bottom: 28px;
-  padding: 22px 24px;
+      .calendar-slot.selected-range {
+        background: #f3e7bd;
+      }
 
-  background: var(--cream);
-  border: 1px solid var(--stone-dark);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-}
+      .onboarding-survey-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
 
-.onboarding-survey-content {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+        margin-bottom: 28px;
+        padding: 22px 24px;
 
-.onboarding-survey-icon {
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
+        background: var(--cream);
+        border: 1px solid var(--stone-dark);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+      }
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+      .onboarding-survey-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
 
-  border-radius: 50%;
-  background: var(--oak);
-  color: var(--cream);
+      .onboarding-survey-icon {
+        width: 44px;
+        height: 44px;
+        flex: 0 0 44px;
 
-  font-size: 1.2rem;
-  font-weight: 700;
-}
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-.onboarding-survey-card h3 {
-  margin: 0 0 5px;
-}
+        border-radius: 50%;
+        background: var(--oak);
+        color: var(--cream);
 
-.onboarding-survey-card p {
-  margin: 0;
-  color: var(--ink-soft);
-}
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
 
-@media (max-width: 700px) {
-  .onboarding-survey-card {
-    align-items: stretch;
-    flex-direction: column;
-  }
+      .onboarding-survey-card h3 {
+        margin: 0 0 5px;
+      }
 
-  .onboarding-survey-card .btn {
-    width: 100%;
-    text-align: center;
-  }
-}
+      .onboarding-survey-card p {
+        margin: 0;
+        color: var(--ink-soft);
+      }
+
+      @media (max-width: 700px) {
+        .onboarding-survey-card {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .onboarding-survey-card .btn {
+          width: 100%;
+          text-align: center;
+        }
+      }
+
       @media (max-width:900px) {
         .meeting-portal-grid {
           grid-template-columns: 1fr;
@@ -330,664 +385,873 @@
         </p>
       </div>
     </section>
-<% if (shouldShowSurvey) { %>
+    <% if (shouldShowSurvey) { %>
 
-  <div class="onboarding-survey-card">
+      <div class="onboarding-survey-card">
 
-    <div class="onboarding-survey-content">
+        <div class="onboarding-survey-content">
 
-      <div class="onboarding-survey-icon">
-        ✓
-      </div>
+          <div class="onboarding-survey-icon">
+            ✓
+          </div>
 
-      <div>
-        <h3>
-          עזרו לנו להתאים את AlonSpace אליכם
-        </h3>
-
-        <p>
-          הכנו סקר קצר של כדקה שיעזור לנו להבין
-          איך אתם משתמשים במתחם ומה חשוב לכם.
-        </p>
-      </div>
-
-    </div>
-<br>
-    <a
-      href="/dashboard/survey"
-      class="btn btn-primary"
-    >
-      לסקר הקצר
-    </a>
-<br>
-  </div>
-
-<% } %>
-    <main>
-      <section style="padding-top:0;">
-        <div class="container">
-          <% if (error) { %>
-            <div class="form-msg show err">
-              <%= error %>
-            </div>
-            <% } %>
-
-              <% if (success) { %>
-                <div class="form-msg show ok">
-                  <%= success %>
-                </div>
-                <% } %>
-<% if (quotaExceeded) { %>
-
-  <div class="quota-warning">
-
-    <% if (hasChargeableBookings) { %>
-
-      <strong>
-        שימוש מעבר למכסת חדר הישיבות
-      </strong>
-
-      <p>
-        עברת את מכסת
-        <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
-        השעות החודשית.
-
-        בוצעו החודש שריונים נוספים מעבר למכסה,
-        ולכן חלק מהשימוש עשוי להיות כרוך בתשלום.
-      </p>
-
-    <% } else { %>
-
-      <strong>
-        עברת את מכסת חדר הישיבות החודשית
-      </strong>
-
-      <p>
-        ניצלת יותר מ־
-        <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
-        שעות החודש.
-
-        השריון הנוכחי אושר.
-        שימוש נוסף מעבר למכסה עשוי להיות כרוך בתשלום.
-      </p>
-
-    <% } %>
-
-  </div>
-
-<% } %>
-                  <div class="tenant-summary">
-                    <article class="tenant-summary-card">
-                      <span class="eyebrow">המשרד שלי</span>
-
-                      <h3>
-                        <%= user.office_number ? `משרד ${user.office_number}` : 'משרד טרם הוגדר' %>
-                      </h3>
-
-                      <p class="small">
-                        <%= user.floor ? `קומה ${user.floor}` : 'קומה טרם הוגדרה' %>
-                      </p>
-
-                      <% if (user.business_name) { %>
-                        <p><strong>
-                            <%= user.business_name %>
-                          </strong></p>
-                        <% } %>
-                    </article>
-
-                    <article class="tenant-summary-card">
-                      <span class="eyebrow">תקופת השכירות</span>
-
-                      <% if (user.rental_start_date || user.rental_end_date) { %>
-                        <h3>
-                          <%= formatDate(user.rental_start_date) %>
-                          –
-                          <%= formatDate(user.rental_end_date) %>
-                        </h3>
-
-                        <p class="small">
-                          תקופת השכירות המעודכנת בחשבון
-                        </p>
-                      <% } else { %>
-                        <h3>טרם הוגדרה</h3>
-
-                        <p class="small">
-                          יש לפנות להנהלת AlonSpace לעדכון התקופה
-                        </p>
-                      <% } %>
-                    </article>
-
-                    <article class="tenant-summary-card"
-                      style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%">
-                      <span class="eyebrow">חדר ישיבות</span>
-
-                      <h3>
-                        <%= remainingHours.toFixed(1) %> שעות נותרו
-                      </h3>
-
-                      <p class="small">
-                        נוצלו:
-                        <%= usedHours.toFixed(1) %>
-                          מתוך
-                          <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
-                            שעות החודש
-                      </p>
-
-                      <div class="quota-line" aria-hidden="true">
-                        <span></span>
-                      </div>
-                    </article>
-                  </div>
-        </div>
-      </section>
-<% if (user.must_change_password) { %>
-
-  <div class="password-recommendation">
-
-    <div>
-      <strong>עדיין משתמשים בסיסמה הראשונית?</strong>
-
-      <p>
-        מומלץ לשנות אותה לסיסמה אישית שתהיה רק שלכם.
-      </p>
-    </div>
-
-    <a
-      href="/change-password"
-      class="btn btn-outline"
-    >
-      שינוי סיסמה
-    </a>
-
-  </div>
-
-<% } %>
-      <section class="tenant-section" id="meeting-room">
-        <div class="container">
-          <div class="section-head">
-            <span class="eyebrow">חדר הישיבות שלך</span>
-
-            <h2>
-              חדר ישיבות - קומה <%= user.floor %>
-            </h2>
+          <div>
+            <h3>
+              עזרו לנו להתאים את AlonSpace אליכם
+            </h3>
 
             <p>
-              לחצו על שעה פנויה בלוח כדי להתחיל שריון.
-              מוצגים רק השריונים של חדר הישיבות בקומה שלך.
+              הכנו סקר קצר של כדקה שיעזור לנו להבין
+              איך אתם משתמשים במתחם ומה חשוב לכם.
             </p>
           </div>
 
-          <div class="meeting-calendar-toolbar">
-            <div class="calendar-navigation">
-              <button type="button" class="btn btn-outline" id="previousWeek">
-                השבוע הקודם
-              </button>
+        </div>
+        <br>
+        <a href="/dashboard/survey" class="btn btn-primary">
+          לסקר הקצר
+        </a>
+        <br>
+      </div>
 
-              <button type="button" class="btn btn-outline" id="currentWeek">
-                השבוע הנוכחי
-              </button>
-
-              <button type="button" class="btn btn-outline" id="nextWeek">
-                השבוע הבא
-              </button>
-            </div>
-
-            <strong id="calendarWeekTitle"></strong>
-          </div>
-
-          <div class="meeting-portal-grid">
-            <aside class="booking-card meeting-booking-card">
-              <h3>שריון חדש</h3>
-
-              <form method="POST" action="/dashboard/meeting-bookings/create" class="form-grid" id="meetingBookingForm">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                <div class="field">
-                  <label for="booking_date">תאריך</label>
-
-                  <input id="booking_date" type="date" name="booking_date" required>
+      <% } %>
+        <main>
+          <section style="padding-top:0;">
+            <div class="container">
+              <% if (error) { %>
+                <div class="form-msg show err">
+                  <%= error %>
                 </div>
+                <% } %>
 
-                <div class="form-row-2">
-                  <div class="field">
-                    <label for="start_time">משעה</label>
+                  <% if (success) { %>
+                    <div class="form-msg show ok">
+                      <%= success %>
+                    </div>
+                    <% } %>
+                      <% if (quotaExceeded) { %>
 
-                    <input id="start_time" type="time" name="start_time" step="1800" required>
-                  </div>
+                        <div class="quota-warning">
 
-                  <div class="field">
-                    <label for="end_time">עד שעה</label>
+                          <% if (hasChargeableBookings) { %>
 
-                    <input id="end_time" type="time" name="end_time" step="1800" required>
-                  </div>
-                </div>
+                            <strong>
+                              שימוש מעבר למכסת חדר הישיבות
+                            </strong>
 
-                <div class="field">
-                  <label for="note">הערה</label>
+                            <p>
+                              עברת את מכסת
+                              <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+                                השעות החודשית.
 
-                  <input id="note" type="text" name="note" maxlength="200" placeholder="אופציונלי">
-                </div>
+                                בוצעו החודש שריונים נוספים מעבר למכסה,
+                                ולכן חלק מהשימוש עשוי להיות כרוך בתשלום.
+                            </p>
 
-                <button class="btn btn-primary btn-block" type="submit">
-                  שריון חדר הישיבות
-                </button>
-              </form>
-            </aside>
+                            <% } else { %>
 
-            <div class="weekly-calendar-wrap">
-              <div class="weekly-calendar" id="weeklyCalendar"></div>
-            </div>
-          </div>
+                              <strong>
+                                עברת את מכסת חדר הישיבות החודשית
+                              </strong>
 
-          <div class="admin-card my-bookings-card">
-            <h3>השריונים שלי</h3>
+                              <p>
+                                ניצלת יותר מ־
+                                <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+                                  שעות החודש.
 
-            <div class="my-bookings-list">
-              <% const myBookings=meetingBookings.filter(booking=> booking.is_mine); %>
+                                  השריון הנוכחי אושר.
+                                  שימוש נוסף מעבר למכסה עשוי להיות כרוך בתשלום.
+                              </p>
 
-                <% if (!myBookings.length) { %>
-                  <p class="small">
-                    אין לך כרגע שריונים עתידיים.
-                  </p>
-                  <% } %>
+                              <% } %>
 
-                    <% myBookings.forEach(booking=> { %>
-                      <article class="my-booking-item">
-                        <div>
-                          <strong>
-                            <%= formatDate(booking.booking_date) %>
-                          </strong>
-
-                          <br>
-
-                          <span class="small">
-                            <%= String(booking.start_time).slice(0, 5) %>
-                              –
-                              <%= String(booking.end_time).slice(0, 5) %>
-                          </span>
-
-                          <% if (booking.note) { %>
-                            <br>
-                            <span class="small">
-                              <%= booking.note %>
-                            </span>
-                            <% } %>
                         </div>
 
-                        <form method="POST" action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
-                          onsubmit="return confirm('לבטל את השריון?')">
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <% } %>
+                          <div class="tenant-summary">
+                            <article class="tenant-summary-card">
+                              <span class="eyebrow">המשרד שלי</span>
 
-                          <button class="btn btn-outline" type="submit" style="padding:7px 12px;">
-                            ביטול
-                          </button>
-                        </form>
-                      </article>
-                      <% }) %>
+                              <h3>
+                                <%= user.office_number ? `משרד ${user.office_number}` : 'משרד טרם הוגדר' %>
+                              </h3>
+
+                              <p class="small">
+                                <%= user.floor ? `קומה ${user.floor}` : 'קומה טרם הוגדרה' %>
+                              </p>
+
+                              <% if (user.business_name) { %>
+                                <p><strong>
+                                    <%= user.business_name %>
+                                  </strong></p>
+                                <% } %>
+                            </article>
+
+                            <article class="tenant-summary-card">
+                              <span class="eyebrow">תקופת השכירות</span>
+
+                              <% if (user.rental_start_date || user.rental_end_date) { %>
+                                <h3>
+                                  <%= formatDate(user.rental_start_date) %>
+                                    –
+                                    <%= formatDate(user.rental_end_date) %>
+                                </h3>
+
+                                <p class="small">
+                                  תקופת השכירות המעודכנת בחשבון
+                                </p>
+                                <% } else { %>
+                                  <h3>טרם הוגדרה</h3>
+
+                                  <p class="small">
+                                    יש לפנות להנהלת AlonSpace לעדכון התקופה
+                                  </p>
+                                  <% } %>
+                            </article>
+
+                            <article class="tenant-summary-card"
+                              style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%">
+                              <span class="eyebrow">חדר ישיבות</span>
+
+                              <h3>
+                                <%= remainingHours.toFixed(1) %> שעות נותרו
+                              </h3>
+
+                              <p class="small">
+                                נוצלו:
+                                <%= usedHours.toFixed(1) %>
+                                  מתוך
+                                  <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+                                    שעות החודש
+                              </p>
+
+                              <div class="quota-line" aria-hidden="true">
+                                <span></span>
+                              </div>
+                            </article>
+                          </div>
             </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <%- include('partials/footer') %>
-      <%- include('partials/scripts') %>
-
-        <script>
-          const dateInput = document.getElementById('booking_date');
-
-          if (dateInput) {
-            const now = new Date();
-            const localDate = new Date(
-              now.getTime() - now.getTimezoneOffset() * 60000
-            ).toISOString().slice(0, 10);
-
-            dateInput.min = localDate;
-          }
-        </script>
-        <script>
-  const meetingBookings = <%- JSON
-    .stringify(meetingBookings)
-    .replace(/</g, '\\u003c') %>;
-
-  const calendar = document.getElementById('weeklyCalendar');
-  const weekTitle = document.getElementById('calendarWeekTitle');
-
-  const bookingDateInput = document.getElementById('booking_date');
-  const startTimeInput = document.getElementById('start_time');
-  const endTimeInput = document.getElementById('end_time');
-  const bookingForm = document.getElementById('meetingBookingForm');
-
-  const dayNames = [
-    'ראשון',
-    'שני',
-    'שלישי',
-    'רביעי',
-    'חמישי',
-    'שישי',
-    'שבת',
-  ];
-
-  const calendarStartHour = 8;
-  const calendarEndHour = 21;
-  const slotMinutes = 30;
-
-  let displayedWeekStart = getStartOfWeek(new Date());
-let selectedStartSlot = null;
-  function getStartOfWeek(date) {
-    const result = new Date(date);
-    result.setHours(0, 0, 0, 0);
-    result.setDate(result.getDate() - result.getDay());
-    return result;
-  }
-
-  function addDays(date, amount) {
-    const result = new Date(date);
-    result.setDate(result.getDate() + amount);
-    return result;
-  }
-
-  function dateKey(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
-
-  function normalizeBookingDate(value) {
-    return String(value || '').slice(0, 10);
-  }
-
-  function normalizeTime(value) {
-    return String(value || '').slice(0, 5);
-  }
-
-  function timeToMinutes(value) {
-    const [hours, minutes] = normalizeTime(value)
-      .split(':')
-      .map(Number);
-
-    return hours * 60 + minutes;
-  }
-
-  function minutesToTime(minutes) {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-
-    return (
-      String(hours).padStart(2, '0') +
-      ':' +
-      String(remainingMinutes).padStart(2, '0')
-    );
-  }
-
-  function isPastSlot(day, minutes) {
-    const slotDate = new Date(day);
-    slotDate.setHours(
-      Math.floor(minutes / 60),
-      minutes % 60,
-      0,
-      0
-    );
-
-    return slotDate <= new Date();
-  }
-
-  function renderCalendar() {
-    calendar.innerHTML = '';
-
-    const weekEnd = addDays(displayedWeekStart, 6);
-
-    weekTitle.textContent =
-      displayedWeekStart.toLocaleDateString('he-IL', {
-        day: 'numeric',
-        month: 'long',
-      }) +
-      ' – ' +
-      weekEnd.toLocaleDateString('he-IL', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
-
-    const corner = document.createElement('div');
-    corner.className = 'calendar-corner';
-    calendar.appendChild(corner);
-
-    const todayKey = dateKey(new Date());
-
-    for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
-      const day = addDays(displayedWeekStart, dayIndex);
-      const header = document.createElement('div');
-
-      header.className = 'calendar-day-header';
-
-      if (dateKey(day) === todayKey) {
-        header.classList.add('today');
-      }
-
-      header.innerHTML = `
-        <span class="calendar-day-name">
-          ${dayNames[dayIndex]}
-        </span>
-
-        <span class="calendar-day-date">
-          ${day.toLocaleDateString('he-IL', {
-            day: '2-digit',
-            month: '2-digit',
-          })}
-        </span>
-      `;
-
-      calendar.appendChild(header);
-    }
-
-    for (
-      let minutes = calendarStartHour * 60;
-      minutes < calendarEndHour * 60;
-      minutes += slotMinutes
-    ) {
-      const timeLabel = document.createElement('div');
-      timeLabel.className = 'calendar-time-label';
-      timeLabel.textContent = minutesToTime(minutes);
-
-      calendar.appendChild(timeLabel);
-
-      for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
-        const day = addDays(displayedWeekStart, dayIndex);
-        const currentDateKey = dateKey(day);
-
-        const slot = document.createElement('div');
-        slot.className = 'calendar-slot';
-        slot.dataset.date = currentDateKey;
-        slot.dataset.startMinutes = String(minutes);
-
-        const past = isPastSlot(day, minutes);
-
-        if (past) {
-          slot.classList.add('past');
-        } else {
-          slot.addEventListener('click', () => {
-  if (
-    !selectedStartSlot ||
-    selectedStartSlot.date !== currentDateKey
-  ) {
-    selectedStartSlot = {
-      date: currentDateKey,
-      minutes,
-      element: slot,
-    };
-
-    document
-      .querySelectorAll('.calendar-slot.selected-start')
-      .forEach((item) => {
-        item.classList.remove('selected-start');
-      });
-
-    slot.classList.add('selected-start');
-
-    bookingDateInput.value = currentDateKey;
-    startTimeInput.value = minutesToTime(minutes);
-    endTimeInput.value = '';
-
-    return;
-  }
-
-  if (minutes <= selectedStartSlot.minutes) {
-    selectedStartSlot.element.classList.remove(
-      'selected-start'
-    );
-
-    selectedStartSlot = {
-      date: currentDateKey,
-      minutes,
-      element: slot,
-    };
-
-    slot.classList.add('selected-start');
-
-    bookingDateInput.value = currentDateKey;
-    startTimeInput.value = minutesToTime(minutes);
-    endTimeInput.value = '';
-
-    return;
-  }
-
-  bookingDateInput.value = currentDateKey;
-  startTimeInput.value = minutesToTime(
-    selectedStartSlot.minutes
-  );
-  endTimeInput.value = minutesToTime(
-    minutes+slotMinutes
-  );
-
-  document
-    .querySelectorAll('.calendar-slot.selected-range')
-    .forEach((item) => {
-      item.classList.remove('selected-range');
-    });
-
-  document
-    .querySelectorAll(
-      `.calendar-slot[data-date="${currentDateKey}"]`
-    )
-    .forEach((item) => {
-      const itemMinutes = Number(
-        item.dataset.startMinutes
-      );
-
-      if (
-        itemMinutes >= selectedStartSlot.minutes &&
-        itemMinutes <= minutes
-      ) {
-        item.classList.add('selected-range');
-      }
-    });
-
-  selectedStartSlot.element.classList.remove(
-    'selected-start'
-  );
-
-  selectedStartSlot = null;
-
-  bookingForm.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-  });
-});
-        }
-
-        const booking = meetingBookings.find((item) => {
-          return (
-            normalizeBookingDate(item.booking_date) === currentDateKey &&
-            timeToMinutes(item.start_time) <= minutes &&
-            timeToMinutes(item.end_time) > minutes
-          );
-        });
-
-        if (
-          booking &&
-          timeToMinutes(booking.start_time) === minutes
-        ) {
-          const bookingElement = document.createElement('div');
-
-          bookingElement.className = 'calendar-booking';
-
-          if (booking.is_mine) {
-            bookingElement.classList.add('mine');
-          }
-
-          const durationMinutes =
-            timeToMinutes(booking.end_time) -
-            timeToMinutes(booking.start_time);
-
-          const slotCount = Math.max(
-            1,
-            durationMinutes / slotMinutes
-          );
-
-          bookingElement.style.height =
-            `calc(${slotCount * 48}px - 6px)`;
-
-         if (booking.is_mine) {
-  bookingElement.innerHTML = `
-    <strong>השריון שלי</strong>
-
-    ${normalizeTime(booking.start_time)}
-    –
-    ${normalizeTime(booking.end_time)}
-  `;
-
-  bookingElement.title =
-    `השריון שלי\n` +
-    `${normalizeTime(booking.start_time)}–${normalizeTime(booking.end_time)}` +
-    (booking.note ? `\n${booking.note}` : '');
-} else {
-  bookingElement.innerHTML = `
-    <strong>תפוס</strong>
-
-    ${normalizeTime(booking.start_time)}
-    –
-    ${normalizeTime(booking.end_time)}
-  `;
-
-  bookingElement.title =
-    `תפוס\n` +
-    `${normalizeTime(booking.start_time)}–${normalizeTime(booking.end_time)}`;
-}
-
-          slot.appendChild(bookingElement);
-        }
-
-        calendar.appendChild(slot);
-      }
-    }
-  }
-
-  document
-    .getElementById('previousWeek')
-    .addEventListener('click', () => {
-      displayedWeekStart = addDays(displayedWeekStart, -7);
-      renderCalendar();
-    });
-
-  document
-    .getElementById('nextWeek')
-    .addEventListener('click', () => {
-      displayedWeekStart = addDays(displayedWeekStart, 7);
-      renderCalendar();
-    });
-
-  document
-    .getElementById('currentWeek')
-    .addEventListener('click', () => {
-      displayedWeekStart = getStartOfWeek(new Date());
-      renderCalendar();
-    });
-
-  const today = dateKey(new Date());
-  bookingDateInput.min = today;
-
-  renderCalendar();
-</script>
+          </section>
+          <% if (user.must_change_password) { %>
+
+            <div class="password-recommendation">
+
+              <div>
+                <strong>עדיין משתמשים בסיסמה הראשונית?</strong>
+
+                <p>
+                  מומלץ לשנות אותה לסיסמה אישית שתהיה רק שלכם.
+                </p>
+              </div>
+
+              <a href="/change-password" class="btn btn-outline">
+                שינוי סיסמה
+              </a>
+
+            </div>
+
+            <% } %>
+              <section class="tenant-section" id="meeting-room">
+                <div class="container">
+                  <div class="section-head">
+                    <span class="eyebrow">חדר הישיבות שלך</span>
+
+                    <h2>
+                      חדר ישיבות - קומה <%= user.floor %>
+                    </h2>
+
+                    <p>
+                      לחצו על שעה פנויה בלוח כדי להתחיל שריון.
+                      מוצגים רק השריונים של חדר הישיבות בקומה שלך.
+                    </p>
+                  </div>
+
+                  <div class="meeting-calendar-toolbar">
+                    <div class="calendar-navigation">
+                      <button type="button" class="btn btn-outline" id="previousWeek">
+                        השבוע הקודם
+                      </button>
+
+                      <button type="button" class="btn btn-outline" id="currentWeek">
+                        השבוע הנוכחי
+                      </button>
+
+                      <button type="button" class="btn btn-outline" id="nextWeek">
+                        השבוע הבא
+                      </button>
+                    </div>
+
+                    <strong id="calendarWeekTitle"></strong>
+                  </div>
+
+                  <div class="meeting-portal-grid">
+                    <aside class="booking-card meeting-booking-card">
+                      <h3>שריון חדש</h3>
+
+                      <form method="POST" action="/dashboard/meeting-bookings/create" class="form-grid"
+                        id="meetingBookingForm">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                        <div class="field">
+                          <label for="booking_date">תאריך</label>
+
+                          <input id="booking_date" type="date" name="booking_date" required>
+                        </div>
+
+                        <div class="form-row-2">
+
+                          <div class="field">
+                            <label for="start_time">משעה</label>
+
+                            <select id="start_time" name="start_time" required>
+                              <option value="">בחר שעה</option>
+
+                              <% for (let hour=8; hour <=20; hour++) { %>
+                                <option value="<%= String(hour).padStart(2, '0') %>:00">
+                                  <%= String(hour).padStart(2, '0' ) %>:00
+                                </option>
+
+                                <option value="<%= String(hour).padStart(2, '0') %>:30">
+                                  <%= String(hour).padStart(2, '0' ) %>:30
+                                </option>
+                                <% } %>
+                            </select>
+                          </div>
+
+                          <div class="field">
+                            <label for="end_time">עד שעה</label>
+
+                            <select id="end_time" name="end_time" required>
+                              <option value="">בחר שעה</option>
+
+                              <% for (let hour=8; hour <=20; hour++) { %>
+                                <option value="<%= String(hour).padStart(2, '0') %>:00">
+                                  <%= String(hour).padStart(2, '0' ) %>:00
+                                </option>
+
+                                <option value="<%= String(hour).padStart(2, '0') %>:30">
+                                  <%= String(hour).padStart(2, '0' ) %>:30
+                                </option>
+                                <% } %>
+
+                                  <option value="21:00">21:00</option>
+                            </select>
+                          </div>
+
+                        </div>
+
+                        <div class="field">
+                          <label for="note">הערה</label>
+
+                          <input id="note" type="text" name="note" maxlength="200" placeholder="אופציונלי">
+                        </div>
+
+                        <button class="btn btn-primary btn-block" type="submit">
+                          שריון חדר הישיבות
+                        </button>
+                      </form>
+                    </aside>
+
+                    <div class="weekly-calendar-wrap">
+                      <div class="weekly-calendar" id="weeklyCalendar"></div>
+                    </div>
+                  </div>
+
+                  <div class="admin-card my-bookings-card">
+                    <h3>השריונים שלי</h3>
+
+                    <div class="my-bookings-list">
+                      <% const myBookings=meetingBookings.filter(booking=> booking.is_mine); %>
+
+                        <% if (!myBookings.length) { %>
+                          <p class="small">
+                            אין לך כרגע שריונים עתידיים.
+                          </p>
+                          <% } %>
+
+                            <% myBookings.forEach(booking=> { %>
+                              <article class="my-booking-item">
+                                <div>
+                                  <strong>
+                                    <%= formatDate(booking.booking_date) %>
+                                  </strong>
+
+                                  <br>
+
+                                  <span class="small">
+                                    <%= String(booking.start_time).slice(0, 5) %>
+                                      –
+                                      <%= String(booking.end_time).slice(0, 5) %>
+                                  </span>
+
+                                  <% if (booking.note) { %>
+                                    <br>
+                                    <span class="small">
+                                      <%= booking.note %>
+                                    </span>
+                                    <% } %>
+                                </div>
+
+                                <form method="POST" action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
+                                  onsubmit="return confirm('לבטל את השריון?')">
+                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                  <button class="btn btn-outline" type="submit" style="padding:7px 12px;">
+                                    ביטול
+                                  </button>
+                                </form>
+                              </article>
+                              <% }) %>
+                    </div>
+                  </div>
+                </div>
+              </section>
+        </main>
+
+        <%- include('partials/footer') %>
+          <%- include('partials/scripts') %>
+
+            <script>
+              const dateInput = document.getElementById('booking_date');
+
+              if (dateInput) {
+                const now = new Date();
+                const localDate = new Date(
+                  now.getTime() - now.getTimezoneOffset() * 60000
+                ).toISOString().slice(0, 10);
+
+                dateInput.min = localDate;
+              }
+            </script>
+            <script>
+              const meetingBookings = <%- JSON
+                .stringify(meetingBookings)
+                .replace(/</g, '\\u003c') %>;
+
+              const calendar = document.getElementById('weeklyCalendar');
+              const weekTitle = document.getElementById('calendarWeekTitle');
+
+              const bookingDateInput = document.getElementById('booking_date');
+              const startTimeInput = document.getElementById('start_time');
+              const endTimeInput = document.getElementById('end_time');
+              const bookingForm = document.getElementById('meetingBookingForm');
+
+              const dayNames = [
+                'ראשון',
+                'שני',
+                'שלישי',
+                'רביעי',
+                'חמישי',
+                'שישי',
+                'שבת',
+              ];
+
+              const calendarStartHour = 8;
+              const calendarEndHour = 21;
+              const slotMinutes = 30;
+
+              let displayedWeekStart = getStartOfWeek(new Date());
+              let selectedStartSlot = null;
+
+              let isCalendarDragging = false;
+              let dragStartSlot = null;
+              let dragCurrentSlot = null;
+              let dragMoved = false;
+
+              function getStartOfWeek(date) {
+                const result = new Date(date);
+                result.setHours(0, 0, 0, 0);
+                result.setDate(result.getDate() - result.getDay());
+                return result;
+              }
+
+              function addDays(date, amount) {
+                const result = new Date(date);
+                result.setDate(result.getDate() + amount);
+                return result;
+              }
+
+              function dateKey(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+
+                return `${year}-${month}-${day}`;
+              }
+
+              function normalizeBookingDate(value) {
+                return String(value || '').slice(0, 10);
+              }
+
+              function normalizeTime(value) {
+                return String(value || '').slice(0, 5);
+              }
+
+              function timeToMinutes(value) {
+                const [hours, minutes] = normalizeTime(value)
+                  .split(':')
+                  .map(Number);
+
+                return hours * 60 + minutes;
+              }
+
+              function minutesToTime(minutes) {
+                const hours = Math.floor(minutes / 60);
+                const remainingMinutes = minutes % 60;
+
+                return (
+                  String(hours).padStart(2, '0') +
+                  ':' +
+                  String(remainingMinutes).padStart(2, '0')
+                );
+              }
+
+              function isPastSlot(day, minutes) {
+                const slotDate = new Date(day);
+
+                slotDate.setHours(
+                  Math.floor(minutes / 60),
+                  minutes % 60,
+                  0,
+                  0
+                );
+
+                return slotDate <= new Date();
+              }
+
+              function clearCalendarSelection() {
+                calendar
+                  .querySelectorAll('.calendar-slot')
+                  .forEach((slot) => {
+                    slot.classList.remove(
+                      'selected-start',
+                      'selected-range'
+                    );
+                  });
+              }
+
+              function paintCalendarRange(
+                date,
+                startMinutes,
+                endMinutes
+              ) {
+                clearCalendarSelection();
+
+                calendar
+                  .querySelectorAll(
+                    `.calendar-slot[data-date="${date}"]`
+                  )
+                  .forEach((slot) => {
+                    const slotMinutesValue =
+                      Number(slot.dataset.startMinutes);
+
+                    if (
+                      slotMinutesValue >= startMinutes &&
+                      slotMinutesValue <= endMinutes
+                    ) {
+                      slot.classList.add('selected-range');
+                    }
+                  });
+              }
+
+              function rangeHasBooking(
+                date,
+                startMinutes,
+                endMinutes
+              ) {
+                return meetingBookings.some((booking) => {
+                  if (
+                    normalizeBookingDate(booking.booking_date) !== date
+                  ) {
+                    return false;
+                  }
+
+                  const bookingStart =
+                    timeToMinutes(booking.start_time);
+
+                  const bookingEnd =
+                    timeToMinutes(booking.end_time);
+
+                  return (
+                    startMinutes < bookingEnd &&
+                    endMinutes > bookingStart
+                  );
+                });
+              }
+
+              function setFirstClickSelection(date, minutes, element) {
+                clearCalendarSelection();
+
+                selectedStartSlot = {
+                  date,
+                  minutes,
+                  element,
+                };
+
+                element.classList.add('selected-start');
+
+                bookingDateInput.value = date;
+                startTimeInput.value = minutesToTime(minutes);
+                endTimeInput.value = '';
+              }
+
+              function finishCalendarRange(
+                date,
+                firstMinutes,
+                lastMinutes
+              ) {
+                const startMinutes = Math.min(
+                  firstMinutes,
+                  lastMinutes
+                );
+
+                const endMinutes =
+                  Math.max(firstMinutes, lastMinutes) +
+                  slotMinutes;
+
+                if (
+                  rangeHasBooking(
+                    date,
+                    startMinutes,
+                    endMinutes
+                  )
+                ) {
+                  clearCalendarSelection();
+                  selectedStartSlot = null;
+
+                  alert('חלק מהטווח שבחרת כבר תפוס.');
+                  return;
+                }
+
+                bookingDateInput.value = date;
+                startTimeInput.value =
+                  minutesToTime(startMinutes);
+                endTimeInput.value =
+                  minutesToTime(endMinutes);
+
+                paintCalendarRange(
+                  date,
+                  startMinutes,
+                  endMinutes - slotMinutes
+                );
+
+                selectedStartSlot = null;
+
+                bookingForm.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'center',
+                });
+              }
+
+              function renderCalendar() {
+                calendar.innerHTML = '';
+
+                const weekEnd = addDays(displayedWeekStart, 6);
+
+                weekTitle.textContent =
+                  displayedWeekStart.toLocaleDateString('he-IL', {
+                    day: 'numeric',
+                    month: 'long',
+                  }) +
+                  ' – ' +
+                  weekEnd.toLocaleDateString('he-IL', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  });
+
+                const corner = document.createElement('div');
+                corner.className = 'calendar-corner';
+                calendar.appendChild(corner);
+
+                const todayKey = dateKey(new Date());
+
+                for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
+                  const day = addDays(displayedWeekStart, dayIndex);
+                  const header = document.createElement('div');
+
+                  header.className = 'calendar-day-header';
+
+                  if (dateKey(day) === todayKey) {
+                    header.classList.add('today');
+                  }
+
+                  header.innerHTML = `
+                    <span class="calendar-day-name">
+                      ${dayNames[dayIndex]}
+                    </span>
+
+                    <span class="calendar-day-date">
+                      ${day.toLocaleDateString('he-IL', {
+                        day: '2-digit',
+                        month: '2-digit',
+                      })}
+                    </span>
+                  `;
+
+                  calendar.appendChild(header);
+                }
+
+                for (
+                  let minutes = calendarStartHour * 60;
+                  minutes < calendarEndHour * 60;
+                  minutes += slotMinutes
+                ) {
+                  const timeLabel = document.createElement('div');
+
+                  timeLabel.className = 'calendar-time-label';
+                  timeLabel.textContent = minutesToTime(minutes);
+
+                  calendar.appendChild(timeLabel);
+
+                  for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
+                    const day = addDays(displayedWeekStart, dayIndex);
+                    const currentDateKey = dateKey(day);
+
+                    const slot = document.createElement('div');
+
+                    slot.className = 'calendar-slot';
+                    slot.dataset.date = currentDateKey;
+                    slot.dataset.startMinutes = String(minutes);
+
+                    const past = isPastSlot(day, minutes);
+
+                    if (past) {
+                      slot.classList.add('past');
+                    } else {
+                      slot.addEventListener('mousedown', (event) => {
+                        event.preventDefault();
+
+                        isCalendarDragging = true;
+                        dragMoved = false;
+
+                        dragStartSlot = {
+                          date: currentDateKey,
+                          minutes,
+                          element: slot,
+                        };
+
+                        dragCurrentSlot = dragStartSlot;
+
+                        if (!selectedStartSlot) {
+                          clearCalendarSelection();
+                          slot.classList.add('selected-start');
+                        }
+                      });
+
+                      slot.addEventListener('mouseenter', () => {
+                        if (
+                          !isCalendarDragging ||
+                          !dragStartSlot
+                        ) {
+                          return;
+                        }
+
+                        if (
+                          dragStartSlot.date !== currentDateKey
+                        ) {
+                          return;
+                        }
+
+                        if (
+                          minutes !== dragStartSlot.minutes
+                        ) {
+                          dragMoved = true;
+                        }
+
+                        dragCurrentSlot = {
+                          date: currentDateKey,
+                          minutes,
+                          element: slot,
+                        };
+
+                        const rangeStart = Math.min(
+                          dragStartSlot.minutes,
+                          minutes
+                        );
+
+                        const rangeEnd = Math.max(
+                          dragStartSlot.minutes,
+                          minutes
+                        );
+
+                        paintCalendarRange(
+                          currentDateKey,
+                          rangeStart,
+                          rangeEnd
+                        );
+                      });
+                    }
+
+                    const booking = meetingBookings.find((item) => {
+                      return (
+                        normalizeBookingDate(item.booking_date) ===
+                          currentDateKey &&
+                        timeToMinutes(item.start_time) <= minutes &&
+                        timeToMinutes(item.end_time) > minutes
+                      );
+                    });
+
+                    if (
+                      booking &&
+                      timeToMinutes(booking.start_time) === minutes
+                    ) {
+                      const bookingElement =
+                        document.createElement('div');
+
+                      bookingElement.className =
+                        'calendar-booking';
+
+                      if (booking.is_mine) {
+                        bookingElement.classList.add('mine');
+                      }
+
+                      const durationMinutes =
+                        timeToMinutes(booking.end_time) -
+                        timeToMinutes(booking.start_time);
+
+                      const slotCount = Math.max(
+                        1,
+                        durationMinutes / slotMinutes
+                      );
+
+                      bookingElement.style.height =
+                        `calc(${slotCount * 42}px - 6px)`;
+
+                      if (booking.is_mine) {
+                        bookingElement.innerHTML = `
+                          <strong>השריון שלי</strong>
+                          ${normalizeTime(booking.start_time)}
+                          –
+                          ${normalizeTime(booking.end_time)}
+                        `;
+
+                        bookingElement.title =
+                          `השריון שלי\n` +
+                          `${normalizeTime(booking.start_time)}–${normalizeTime(booking.end_time)}` +
+                          (booking.note
+                            ? `\n${booking.note}`
+                            : '');
+                      } else {
+                        bookingElement.innerHTML = `
+                          <strong>תפוס</strong>
+                          ${normalizeTime(booking.start_time)}
+                          –
+                          ${normalizeTime(booking.end_time)}
+                        `;
+
+                        bookingElement.title =
+                          `תפוס\n` +
+                          `${normalizeTime(booking.start_time)}–${normalizeTime(booking.end_time)}`;
+                      }
+
+                      slot.appendChild(bookingElement);
+                    }
+
+                    calendar.appendChild(slot);
+                  }
+                }
+              }
+
+              document.addEventListener('mouseup', () => {
+                if (
+                  !isCalendarDragging ||
+                  !dragStartSlot
+                ) {
+                  return;
+                }
+
+                isCalendarDragging = false;
+
+                const start = dragStartSlot;
+                const end = dragCurrentSlot || dragStartSlot;
+
+                if (dragMoved) {
+                  if (start.date === end.date) {
+                    finishCalendarRange(
+                      start.date,
+                      start.minutes,
+                      end.minutes
+                    );
+                  } else {
+                    clearCalendarSelection();
+                    selectedStartSlot = null;
+                  }
+
+                  dragStartSlot = null;
+                  dragCurrentSlot = null;
+                  dragMoved = false;
+
+                  return;
+                }
+
+                if (!selectedStartSlot) {
+                  setFirstClickSelection(
+                    start.date,
+                    start.minutes,
+                    start.element
+                  );
+
+                  dragStartSlot = null;
+                  dragCurrentSlot = null;
+                  return;
+                }
+
+                if (selectedStartSlot.date !== start.date) {
+                  setFirstClickSelection(
+                    start.date,
+                    start.minutes,
+                    start.element
+                  );
+
+                  dragStartSlot = null;
+                  dragCurrentSlot = null;
+                  return;
+                }
+
+                finishCalendarRange(
+                  start.date,
+                  selectedStartSlot.minutes,
+                  start.minutes
+                );
+
+                dragStartSlot = null;
+                dragCurrentSlot = null;
+                dragMoved = false;
+              });
+
+              document
+                .getElementById('previousWeek')
+                .addEventListener('click', () => {
+                  displayedWeekStart =
+                    addDays(displayedWeekStart, -7);
+
+                  selectedStartSlot = null;
+                  renderCalendar();
+                });
+
+              document
+                .getElementById('nextWeek')
+                .addEventListener('click', () => {
+                  displayedWeekStart =
+                    addDays(displayedWeekStart, 7);
+
+                  selectedStartSlot = null;
+                  renderCalendar();
+                });
+
+              document
+                .getElementById('currentWeek')
+                .addEventListener('click', () => {
+                  displayedWeekStart =
+                    getStartOfWeek(new Date());
+
+                  selectedStartSlot = null;
+                  renderCalendar();
+                });
+
+              const today = dateKey(new Date());
+              bookingDateInput.min = today;
+
+              renderCalendar();
+            </script>
