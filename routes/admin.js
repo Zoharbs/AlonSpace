@@ -483,11 +483,61 @@ router.get('/analytics', async (req, res, next) => {
     // כרגע רק כמה השלימו
     // =========================
 
-    const surveyStatsResult = await db.query(`
-      SELECT
-        COUNT(*)::INTEGER AS completed_surveys
-      FROM onboarding_surveys
-    `);
+const surveyResults = await db.query(`
+  SELECT
+    s.id,
+    s.user_id,
+    s.uses_meeting_room,
+    s.meeting_room_times_per_month,
+    s.primary_office_use,
+    s.most_important_feature,
+    s.improvement_suggestion,
+
+    u.display_name,
+    u.business_name,
+    u.office_number,
+    u.floor
+
+  FROM onboarding_surveys s
+
+  JOIN users u
+    ON u.id = s.user_id
+
+  WHERE
+    u.role = 'tenant'
+
+  ORDER BY
+    LOWER(u.display_name) ASC
+`);
+
+const surveys = surveyResults.rows;
+
+const meetingRoomUsers = surveys.filter(
+  survey => survey.uses_meeting_room === true
+);
+
+const meetingRoomUsagePercent = surveys.length
+  ? Math.round(
+      (meetingRoomUsers.length / surveys.length) * 100
+    )
+  : 0;
+
+const usageValues = meetingRoomUsers
+  .map(survey =>
+    Number(survey.meeting_room_times_per_month)
+  )
+  .filter(value => Number.isFinite(value));
+
+const averageMeetingRoomUsage = usageValues.length
+  ? (
+      usageValues.reduce(
+        (sum, value) => sum + value,
+        0
+      ) / usageValues.length
+    ).toFixed(1)
+  : '0';
+
+const completedSurveys = surveys.length;
 
     // =========================
     // Analytics של האתר הציבורי
@@ -588,9 +638,10 @@ router.get('/analytics', async (req, res, next) => {
 
       recentActivity:
         recentActivityResult.rows,
-      completedSurveys:
-        surveyStatsResult.rows[0]
-          .completed_surveys,
+completedSurveys,
+surveys,
+meetingRoomUsagePercent,
+averageMeetingRoomUsage,
 
       websiteAnalytics:
         websiteAnalyticsResult.rows[0],
