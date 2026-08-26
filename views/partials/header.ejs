@@ -324,40 +324,36 @@
 
       </nav>
 
-      <% if (loggedInUser) { %>
+      <div class="header-cta">
 
-        <div class="header-account">
-          <span class="header-account-name">
-            שלום, <%= loggedInUser.name %>
-          </span>
+  <% if (loggedInUser) { %>
 
-          <form method="POST" action="/logout" class="header-logout-form">
-            <button type="submit" class="btn header-logout">
-              התנתקות
-            </button>
-          </form>
-        </div>
+    <form method="POST" action="/logout" class="header-logout-form">
+      <button
+        type="submit"
+        class="btn btn-outline-light header-login-btn header-logout"
+      >
+        התנתקות
+      </button>
+    </form>
 
-        <% } else { %>
+  <% } else { %>
 
-<div class="header-cta">
+    <a href="/booking"
+       target="_blank"
+       rel="noopener"
+       class="btn btn-gold header-booking-btn">
+      קביעת סיור
+    </a>
 
-  <a href="/booking"
-     target="_blank"
-     rel="noopener"
-     class="btn btn-gold header-booking-btn">
-    קביעת סיור
-  </a>
+    <a href="/login"
+       class="btn btn-outline-light header-login-btn">
+      התחברות
+    </a>
 
-  <a href="/login"
-     class="btn btn-outline-light header-login-btn">
-    התחברות
-  </a>
+  <% } %>
 
 </div>
-
-          <% } %>
-
             <button class="nav-toggle" id="navToggle" aria-label="פתיחת תפריט" aria-expanded="false" type="button">
               <span></span>
               <span></span>

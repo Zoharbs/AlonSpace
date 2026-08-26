@@ -2738,3 +2738,12 @@ align-self: center;
     grid-template-columns: 1fr;
   }
 }
+.header-logout-form {
+  margin: 0;
+  display: flex;
+}
+
+.header-logout {
+  cursor: pointer;
+  font: inherit;
+}
