@@ -191,6 +191,73 @@ ADD COLUMN IF NOT EXISTS meeting_quota_warning_month VARCHAR(7);
 ALTER TABLE meeting_bookings
 ADD COLUMN IF NOT EXISTS billing_status VARCHAR(20) DEFAULT 'included';
 `);
+// =====================================================
+// מעקב אחרי מי יצר את השריון
+// =====================================================
+
+await query(`
+  ALTER TABLE meeting_bookings
+  ADD COLUMN IF NOT EXISTS created_by_user_id BIGINT;
+
+  ALTER TABLE meeting_bookings
+  ADD COLUMN IF NOT EXISTS booking_source VARCHAR(20);
+`);
+
+// שריונים ישנים נחשבים כאילו נוצרו על ידי הלקוח עצמו.
+// כך אנחנו לא משאירים נתונים ישנים ללא מקור.
+await query(`
+  UPDATE meeting_bookings
+  SET
+    created_by_user_id = user_id,
+    booking_source = 'tenant'
+  WHERE
+    created_by_user_id IS NULL
+    OR booking_source IS NULL;
+`);
+
+// Foreign key למשתמש שביצע בפועל את השריון
+await query(`
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1
+      FROM pg_constraint
+      WHERE conname = 'meeting_bookings_created_by_fk'
+    ) THEN
+      ALTER TABLE meeting_bookings
+      ADD CONSTRAINT meeting_bookings_created_by_fk
+      FOREIGN KEY (created_by_user_id)
+      REFERENCES users(id)
+      ON DELETE SET NULL;
+    END IF;
+  END
+  $$;
+`);
+
+// booking_source יכול להיות רק tenant או admin
+await query(`
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1
+      FROM pg_constraint
+      WHERE conname = 'meeting_bookings_source_check'
+    ) THEN
+      ALTER TABLE meeting_bookings
+      ADD CONSTRAINT meeting_bookings_source_check
+      CHECK (
+        booking_source IN ('tenant', 'admin')
+      );
+    END IF;
+  END
+  $$;
+`);
+
+await query(`
+  CREATE INDEX IF NOT EXISTS
+    idx_meeting_bookings_created_by
+  ON meeting_bookings(created_by_user_id);
+`);
   await seedAdmin();
   await seedGallery();
   await seedTestimonials();

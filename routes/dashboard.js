@@ -341,14 +341,14 @@ router.post('/meeting-bookings/create',
       // נעילה ברמת transaction לפי התאריך,
       // כדי ששני משתמשים לא יצליחו לשריין
       // את אותו זמן בו-זמנית.
-      await client.query(
-        `
-          SELECT pg_advisory_xact_lock(
-            hashtext($1)
-          )
-        `,
-        [`meeting-room:${bookingDate}`]
-      );
+await client.query(
+  `
+    SELECT pg_advisory_xact_lock(
+      hashtext($1)
+    )
+  `,
+  [`meeting-room:${roomId}:${bookingDate}`]
+);
 
       const conflictResult =
         await client.query(
@@ -453,8 +453,8 @@ router.post('/meeting-bookings/create',
         }
       }
 
-      await client.query(
-        `
+await client.query(
+  `
     INSERT INTO meeting_bookings (
       user_id,
       meeting_room_id,
@@ -462,7 +462,9 @@ router.post('/meeting-bookings/create',
       start_time,
       end_time,
       note,
-      billing_status
+      billing_status,
+      created_by_user_id,
+      booking_source
     )
     VALUES (
       $1,
@@ -471,19 +473,22 @@ router.post('/meeting-bookings/create',
       $4,
       $5,
       $6,
-      $7
+      $7,
+      $8,
+      'tenant'
     )
   `,
-        [
-          user.id,
-          roomId,
-          bookingDate,
-          startTime,
-          endTime,
-          note || null,
-          billingStatus
-        ]
-      );
+  [
+    user.id,
+    roomId,
+    bookingDate,
+    startTime,
+    endTime,
+    note || null,
+    billingStatus,
+    req.session.userId
+  ]
+);
       await client.query(
         `
     INSERT INTO user_activity (

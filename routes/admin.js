@@ -1530,39 +1530,121 @@ router.post('/meeting-bookings/create',
         tenant.monthly_meeting_hours || 6
       );
 
+const monthKey =
+  booking_date.slice(0, 7);
 
+const newTotalHours =
+  usedHours + requestedHours;
 
-      await client.query(
-        `
-          INSERT INTO meeting_bookings (
-            user_id,
-            meeting_room_id,
-            booking_date,
-            start_time,
-            end_time,
-            note
-          )
-          VALUES (
-            $1,
-            $2,
-            $3,
-            $4,
-            $5,
-            $6
-          )
-        `,
-        [
-          tenant.id,
-          room.id,
-          booking_date,
-          start_time,
-          end_time,
-          String(note || '').trim() || null,
-        ]
-      );
+let billingStatus = 'included';
 
-      await client.query('COMMIT');
+if (newTotalHours > monthlyLimit) {
 
+  const warningResult = await client.query(
+    `
+      SELECT meeting_quota_warning_month
+      FROM users
+      WHERE id = $1
+      FOR UPDATE
+    `,
+    [tenant.id]
+  );
+
+  const warningMonth =
+    warningResult.rows[0]
+      ?.meeting_quota_warning_month;
+
+  if (warningMonth !== monthKey) {
+
+    billingStatus = 'warning';
+
+    await client.query(
+      `
+        UPDATE users
+        SET
+          meeting_quota_warning_month = $1,
+          updated_at = NOW()
+        WHERE id = $2
+      `,
+      [
+        monthKey,
+        tenant.id
+      ]
+    );
+
+  } else {
+
+    billingStatus = 'chargeable';
+
+  }
+}
+
+await client.query(
+  `
+    INSERT INTO meeting_bookings (
+      user_id,
+      meeting_room_id,
+      booking_date,
+      start_time,
+      end_time,
+      note,
+      billing_status,
+      created_by_user_id,
+      booking_source
+    )
+    VALUES (
+      $1,
+      $2,
+      $3,
+      $4,
+      $5,
+      $6,
+      $7,
+      $8,
+      'admin'
+    )
+  `,
+  [
+    tenant.id,
+    room.id,
+    booking_date,
+    start_time,
+    end_time,
+    String(note || '').trim() || null,
+    billingStatus,
+    req.session.userId
+  ]
+);
+
+// רישום מפורש שהשריון נוצר על ידי אדמין
+await client.query(
+  `
+    INSERT INTO user_activity (
+      user_id,
+      event_type,
+      event_data
+    )
+    VALUES (
+      $1,
+      'meeting_booking_created_by_admin',
+      $2::jsonb
+    )
+  `,
+  [
+    tenant.id,
+    JSON.stringify({
+      created_by_admin_id:
+        Number(req.session.userId),
+      meeting_room_id:
+        Number(room.id),
+      booking_date,
+      start_time,
+      end_time
+    })
+  ]
+);
+
+await client.query('COMMIT');
       return res.redirect(
         adminRedirect(
           'success',
