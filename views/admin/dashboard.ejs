@@ -2876,38 +2876,6 @@ if (past) {
        התאמת לקוח לחדר
     ========================= */
 
-adminUserSelect
-  ?.addEventListener(
-    'change',
-    () => {
-
-      const selectedOption =
-        adminUserSelect.options[
-          adminUserSelect.selectedIndex
-        ];
-
-      const tenantFloor =
-        selectedOption?.dataset.floor;
-
-
-      if (!tenantFloor) {
-        return;
-      }
-
-
-      if (
-        String(tenantFloor) !==
-        String(selectedAdminRoomFloor)
-      ) {
-        alert(
-          `הלקוח שבחרת שייך לקומה ${tenantFloor}. ` +
-          `יש לבחור לקוח מקומה ${selectedAdminRoomFloor}.`
-        );
-
-        adminUserSelect.value = '';
-      }
-    }
-  );
 
 let adminBookingSubmitting = false;
 

@@ -1396,17 +1396,6 @@ router.post('/meeting-bookings/create',
         );
       }
 
-      if (Number(tenant.floor) !== Number(room.floor)) {
-        await client.query('ROLLBACK');
-
-        return res.redirect(
-          adminRedirect(
-            'error',
-            `לקוח מקומה ${tenant.floor} יכול לשריין רק את חדר קומה ${tenant.floor}`,
-            'meeting-room'
-          )
-        );
-      }
 
       const startMinutes =
         Number(start_time.slice(0, 2)) * 60 +
