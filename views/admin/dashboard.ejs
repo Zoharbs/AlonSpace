@@ -271,25 +271,25 @@
       z-index: 5;
     }
 
-.calendar-day-header.today {
-  background: #f8f6ff;
-}
+    .calendar-day-header.today {
+      background: #f8f6ff;
+    }
 
-.calendar-day-header.today::after {
-  content: "";
+    .calendar-day-header.today::after {
+      content: "";
 
-  position: absolute;
+      position: absolute;
 
-  bottom: 0;
-  left: 22%;
-  right: 22%;
+      bottom: 0;
+      left: 22%;
+      right: 22%;
 
-  height: 3px;
+      height: 3px;
 
-  border-radius: 10px 10px 0 0;
+      border-radius: 10px 10px 0 0;
 
-  background: #7865f6;
-}
+      background: #7865f6;
+    }
 
     .calendar-day-name {
       display: block;
@@ -320,9 +320,9 @@
       transition: background .15s ease;
     }
 
-.calendar-slot:not(.past):hover {
-  background: #faf9ff;
-}
+    .calendar-slot:not(.past):hover {
+      background: #faf9ff;
+    }
 
     .calendar-slot.past {
       background: #eceae4;
@@ -344,12 +344,12 @@
       z-index: 3;
       padding: 5px 7px;
       border-radius: 7px;
-background: #e7e3ff;
-color: #302a65;
+      background: #e7e3ff;
+      color: #302a65;
 
-box-shadow:
-  inset 3px 0 0 #7865f6,
-  0 2px 7px rgba(30, 28, 55, 0.05);
+      box-shadow:
+        inset 3px 0 0 #7865f6,
+        0 2px 7px rgba(30, 28, 55, 0.05);
       font-size: .72rem;
       line-height: 1.25;
       overflow: hidden;
@@ -556,125 +556,265 @@ box-shadow:
         grid-template-columns: 1fr;
       }
     }
+
     /* =====================================
    ADMIN BOOKING POPUP
 ===================================== */
 
-.booking-popup-overlay {
-  position: fixed;
-  inset: 0;
+    .booking-popup-overlay {
+      position: fixed;
+      inset: 0;
 
-  display: none;
-  align-items: center;
-  justify-content: center;
+      display: none;
+      align-items: center;
+      justify-content: center;
 
-  padding: 20px;
+      padding: 20px;
 
-  background: rgba(18, 18, 30, .48);
+      background: rgba(18, 18, 30, .48);
 
-  z-index: 99999;
+      z-index: 99999;
+    }
+
+    .booking-popup-overlay.open {
+      display: flex;
+    }
+
+    .booking-popup {
+      width: min(480px, 100%);
+
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+
+      background: var(--cream);
+
+      border-radius: 22px;
+
+      padding: 24px;
+
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, .22);
+    }
+
+    .booking-popup-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 20px;
+
+      margin-bottom: 18px;
+    }
+
+    .booking-popup-head h3 {
+      margin: 4px 0 0;
+    }
+
+    .booking-popup-close {
+      width: 38px;
+      height: 38px;
+
+      border: 0;
+      border-radius: 50%;
+
+      background: var(--stone);
+
+      font-size: 1.5rem;
+      line-height: 1;
+
+      cursor: pointer;
+    }
+
+    .booking-popup-time {
+      display: grid;
+      gap: 5px;
+
+      margin-bottom: 20px;
+      padding: 14px 16px;
+
+      background: var(--stone);
+
+      border-radius: 12px;
+    }
+
+    .booking-popup-actions {
+      display: flex;
+      justify-content: flex-end;
+
+      gap: 10px;
+
+      margin-top: 8px;
+    }
+
+
+    @media (max-width: 700px) {
+
+      .booking-popup-overlay {
+        align-items: flex-end;
+
+        padding: 0;
+      }
+
+      .booking-popup {
+        width: 100%;
+
+        max-height: 88vh;
+
+        border-radius: 22px 22px 0 0;
+
+        padding:
+          22px 18px calc(22px + env(safe-area-inset-bottom));
+      }
+
+      .booking-popup-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .booking-popup-actions .btn {
+        width: 100%;
+      }
+    }
+    /* =====================================
+   ADMIN CALENDAR - FINAL DESIGN
+   זהה לעיצוב לוח הדייר
+===================================== */
+
+#adminWeeklyCalendar {
+  background: #ffffff;
 }
 
-.booking-popup-overlay.open {
-  display: flex;
+
+/* כותרות ימים */
+
+#adminWeeklyCalendar .calendar-corner,
+#adminWeeklyCalendar .calendar-day-header {
+  background: #fbfaff;
+
+  border-left:
+    1px solid rgba(45, 40, 80, 0.055);
+
+  border-bottom:
+    1px solid rgba(45, 40, 80, 0.07);
 }
 
-.booking-popup {
-  width: min(480px, 100%);
 
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
+#adminWeeklyCalendar .calendar-day-header {
+  color: #151522;
+}
 
-  background: var(--cream);
 
-  border-radius: 22px;
+#adminWeeklyCalendar .calendar-day-name {
+  color: #151522;
 
-  padding: 24px;
+  font-size: 1rem;
+  font-weight: 800;
+}
 
+
+#adminWeeklyCalendar .calendar-day-date {
+  color: #777589;
+
+  font-size: .82rem;
+  font-weight: 500;
+}
+
+
+/* היום הנוכחי */
+
+#adminWeeklyCalendar .calendar-day-header.today {
+  background: #f8f6ff;
+}
+
+
+#adminWeeklyCalendar
+.calendar-day-header.today::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: 0;
+  left: 22%;
+  right: 22%;
+
+  height: 3px;
+
+  border-radius: 10px 10px 0 0;
+
+  background: #7865f6;
+}
+
+
+/* עמודת שעות */
+
+#adminWeeklyCalendar .calendar-time-label {
+  background: #fcfbff;
+
+  color: #747287;
+
+  border-left:
+    1px solid rgba(45, 40, 80, 0.055);
+
+  border-bottom:
+    1px solid rgba(45, 40, 80, 0.045);
+}
+
+
+/* משבצות */
+
+#adminWeeklyCalendar .calendar-slot {
+  background: #ffffff;
+
+  border-left:
+    1px solid rgba(45, 40, 80, 0.04);
+
+  border-bottom:
+    1px solid rgba(45, 40, 80, 0.045);
+}
+
+
+#adminWeeklyCalendar
+.calendar-slot:not(.past):hover {
+  background: #faf9ff;
+}
+
+
+/* עבר */
+
+#adminWeeklyCalendar .calendar-slot.past {
+  background: #f8f8fa;
+}
+
+
+/* בחירת טווח */
+
+#adminWeeklyCalendar
+.calendar-slot.selected-start,
+#adminWeeklyCalendar
+.calendar-slot.selected-range {
+  background: #ebe8ff;
+}
+
+
+#adminWeeklyCalendar
+.calendar-slot.selected-start {
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, .22);
+    inset 3px 0 0 #7865f6;
 }
 
-.booking-popup-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
 
-  gap: 20px;
+/* שריונים */
 
-  margin-bottom: 18px;
-}
+#adminWeeklyCalendar .calendar-booking {
+  background: #e7e3ff;
 
-.booking-popup-head h3 {
-  margin: 4px 0 0;
-}
-
-.booking-popup-close {
-  width: 38px;
-  height: 38px;
+  color: #302a65;
 
   border: 0;
-  border-radius: 50%;
 
-  background: var(--stone);
-
-  font-size: 1.5rem;
-  line-height: 1;
-
-  cursor: pointer;
-}
-
-.booking-popup-time {
-  display: grid;
-  gap: 5px;
-
-  margin-bottom: 20px;
-  padding: 14px 16px;
-
-  background: var(--stone);
-
-  border-radius: 12px;
-}
-
-.booking-popup-actions {
-  display: flex;
-  justify-content: flex-end;
-
-  gap: 10px;
-
-  margin-top: 8px;
-}
-
-
-@media (max-width: 700px) {
-
-  .booking-popup-overlay {
-    align-items: flex-end;
-
-    padding: 0;
-  }
-
-  .booking-popup {
-    width: 100%;
-
-    max-height: 88vh;
-
-    border-radius: 22px 22px 0 0;
-
-    padding:
-      22px
-      18px
-      calc(22px + env(safe-area-inset-bottom));
-  }
-
-  .booking-popup-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .booking-popup-actions .btn {
-    width: 100%;
-  }
+  box-shadow:
+    inset 3px 0 0 #7865f6,
+    0 2px 7px rgba(30, 28, 55, 0.05);
 }
   </style>
 </head>
@@ -1168,16 +1308,16 @@ box-shadow:
                   </details>
 
 
-                
-                <section class="admin-card">
 
-                  <h2>בחירת מנהלים </h2>
+                  <section class="admin-card">
 
-                  <p class="small">
-                    בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
-                  </p>
+                    <h2>בחירת מנהלים </h2>
 
-                  <form method="POST" action="/admin/make-admin" style="
+                    <p class="small">
+                      בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
+                    </p>
+
+                    <form method="POST" action="/admin/make-admin" style="
       display:flex;
       gap:12px;
       align-items:end;
@@ -1185,150 +1325,150 @@ box-shadow:
       margin-top:18px;
     ">
 
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                    <div class="field" style="flex:1;min-width:220px;">
+                      <div class="field" style="flex:1;min-width:220px;">
 
-                      <label for="adminUser">
-                        משתמש
-                      </label>
+                        <label for="adminUser">
+                          משתמש
+                        </label>
 
-                      <select id="adminUser" name="user_id" required>
+                        <select id="adminUser" name="user_id" required>
 
-                        <option value="">
-                          בחר משתמש
-                        </option>
-
-                        <% clients.forEach(client=> { %>
-
-                          <option value="<%= client.id %>">
-                            <%= client.display_name %>
-                              (@<%= client.username %>)
-                                <% if (client.business_name) { %>
-                                  - <%= client.business_name %>
-                                    <% } %>
+                          <option value="">
+                            בחר משתמש
                           </option>
+
+                          <% clients.forEach(client=> { %>
+
+                            <option value="<%= client.id %>">
+                              <%= client.display_name %>
+                                (@<%= client.username %>)
+                                  <% if (client.business_name) { %>
+                                    - <%= client.business_name %>
+                                      <% } %>
+                            </option>
+
+                            <% }) %>
+
+                        </select>
+
+                      </div>
+
+                      <button type="submit" class="btn btn-primary"
+                        onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
+                        הפוך לאדמין
+                      </button>
+
+                    </form>
+
+                  </section>
+                  <section class="admin-card">
+
+                    <h2>ניהול אדמינים</h2>
+
+                    <p class="small">
+                      ניהול המשתמשים בעלי הרשאת מנהל במערכת.
+                    </p>
+
+                    <% if (!admins.length) { %>
+                      <p>אין אדמינים במערכת.</p>
+                      <% } %>
+
+                        <% admins.forEach(admin=> { %>
+
+                          <details class="admin-collapse client-card">
+
+                            <summary>
+
+                              <div>
+                                <strong>
+                                  <%= admin.display_name %>
+                                </strong>
+
+                                <span class="small">
+                                  @<%= admin.username %>
+                                </span>
+                              </div>
+
+                              <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
+                                <%= admin.is_active ? 'פעיל' : 'מושבת' %>
+                              </span>
+
+                            </summary>
+
+                            <div class="admin-card">
+
+                              <form method="POST" action="/admin/admins/<%= admin.id %>/update" class="form-grid">
+
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                <div class="form-row-2">
+
+                                  <div class="field">
+                                    <label>שם</label>
+
+                                    <input type="text" name="display_name" value="<%= admin.display_name || '' %>"
+                                      required>
+                                  </div>
+
+                                  <div class="field">
+                                    <label>שם משתמש</label>
+
+                                    <input type="text" name="username" value="<%= admin.username || '' %>" required>
+                                  </div>
+
+                                  <div class="field">
+                                    <label>אימייל</label>
+
+                                    <input type="email" name="email" value="<%= admin.email || '' %>">
+                                  </div>
+
+                                  <div class="field">
+                                    <label>טלפון</label>
+
+                                    <input type="text" name="phone" value="<%= admin.phone || '' %>">
+                                  </div>
+
+                                </div>
+
+                                <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
+
+                                  <label class="terms-check">
+                                    <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked' : '' %>
+                                    >
+
+                                    אדמין פעיל
+                                  </label>
+
+                                  <% } else { %>
+
+                                    <p class="small">
+                                      זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
+                                    </p>
+
+                                    <% } %>
+
+                                      <button type="submit" class="btn btn-primary">
+                                        שמור שינויים
+                                      </button>
+
+                              </form>
+
+                            </div>
+
+                          </details>
 
                           <% }) %>
 
-                      </select>
-
-                    </div>
-
-                    <button type="submit" class="btn btn-primary"
-                      onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
-                      הפוך לאדמין
-                    </button>
-
-                  </form>
+                  </section>
+                  <!-- סוף ניהול אדמינים -->
 
                 </section>
-                <section class="admin-card">
-
-                  <h2>ניהול אדמינים</h2>
-
-                  <p class="small">
-                    ניהול המשתמשים בעלי הרשאת מנהל במערכת.
-                  </p>
-
-                  <% if (!admins.length) { %>
-                    <p>אין אדמינים במערכת.</p>
-                    <% } %>
-
-                      <% admins.forEach(admin=> { %>
-
-                        <details class="admin-collapse client-card">
-
-                          <summary>
-
-                            <div>
-                              <strong>
-                                <%= admin.display_name %>
-                              </strong>
-
-                              <span class="small">
-                                @<%= admin.username %>
-                              </span>
-                            </div>
-
-                            <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
-                              <%= admin.is_active ? 'פעיל' : 'מושבת' %>
-                            </span>
-
-                          </summary>
-
-                          <div class="admin-card">
-
-                            <form method="POST" action="/admin/admins/<%= admin.id %>/update" class="form-grid">
-
-                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                              <div class="form-row-2">
-
-                                <div class="field">
-                                  <label>שם</label>
-
-                                  <input type="text" name="display_name" value="<%= admin.display_name || '' %>"
-                                    required>
-                                </div>
-
-                                <div class="field">
-                                  <label>שם משתמש</label>
-
-                                  <input type="text" name="username" value="<%= admin.username || '' %>" required>
-                                </div>
-
-                                <div class="field">
-                                  <label>אימייל</label>
-
-                                  <input type="email" name="email" value="<%= admin.email || '' %>">
-                                </div>
-
-                                <div class="field">
-                                  <label>טלפון</label>
-
-                                  <input type="text" name="phone" value="<%= admin.phone || '' %>">
-                                </div>
-
-                              </div>
-
-                              <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
-
-                                <label class="terms-check">
-                                  <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked' : '' %>
-                                  >
-
-                                  אדמין פעיל
-                                </label>
-
-                                <% } else { %>
-
-                                  <p class="small">
-                                    זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
-                                  </p>
-
-                                  <% } %>
-
-                                    <button type="submit" class="btn btn-primary">
-                                      שמור שינויים
-                                    </button>
-
-                            </form>
-
-                          </div>
-
-                        </details>
-
-                        <% }) %>
-
-                </section>
-                <!-- סוף ניהול אדמינים -->
-
-              </section>
-              <!-- סוף tab-clients -->
+                <!-- סוף tab-clients -->
 
 
-              <section class="tab-panel" id="tab-meeting-room">
+                <section class="tab-panel" id="tab-meeting-room">
 
                   <div class="admin-card" style="
     display:flex;
@@ -1385,189 +1525,133 @@ box-shadow:
                   <div class="weekly-calendar-wrap">
                     <div class="weekly-calendar" id="adminWeeklyCalendar"></div>
                   </div>
-<!-- חלון יצירת שריון אדמין -->
-<div
-  class="booking-popup-overlay"
-  id="adminBookingPopupOverlay"
->
-  <div
-    class="booking-popup"
-    id="adminBookingPopup"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="adminBookingPopupTitle"
-  >
+                  <!-- חלון יצירת שריון אדמין -->
+                  <div class="booking-popup-overlay" id="adminBookingPopupOverlay">
+                    <div class="booking-popup" id="adminBookingPopup" role="dialog" aria-modal="true"
+                      aria-labelledby="adminBookingPopupTitle">
 
-    <div class="booking-popup-head">
+                      <div class="booking-popup-head">
 
-      <div>
-        <span class="eyebrow">
-          חדר ישיבות
-        </span>
+                        <div>
+                          <span class="eyebrow">
+                            חדר ישיבות
+                          </span>
 
-        <h3 id="adminBookingPopupTitle">
-          יצירת שריון
-        </h3>
-      </div>
+                          <h3 id="adminBookingPopupTitle">
+                            יצירת שריון
+                          </h3>
+                        </div>
 
-      <button
-        type="button"
-        class="booking-popup-close"
-        id="adminBookingPopupClose"
-        aria-label="סגירת החלון"
-      >
-        ×
-      </button>
+                        <button type="button" class="booking-popup-close" id="adminBookingPopupClose"
+                          aria-label="סגירת החלון">
+                          ×
+                        </button>
 
-    </div>
+                      </div>
 
 
-    <div class="booking-popup-time">
+                      <div class="booking-popup-time">
 
-      <strong id="adminBookingPopupDate"></strong>
+                        <strong id="adminBookingPopupDate"></strong>
 
-      <span id="adminBookingPopupTime"></span>
+                        <span id="adminBookingPopupTime"></span>
 
-    </div>
-
-
-    <form
-      method="POST"
-      action="/admin/meeting-bookings/create"
-      class="form-grid"
-      id="adminMeetingBookingForm"
-    >
-
-      <input
-        type="hidden"
-        name="_csrf"
-        value="<%= csrfToken %>"
-      >
+                      </div>
 
 
-      <!-- לקוח -->
+                      <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
+                        id="adminMeetingBookingForm">
 
-      <div class="field">
-
-        <label for="booking-user">
-          לקוח
-        </label>
-
-        <select
-          id="booking-user"
-          name="user_id"
-          required
-        >
-
-          <option value="">
-            בחירת לקוח
-          </option>
-
-          <% clients
-            .filter(client => client.is_active)
-            .forEach(client => { %>
-
-            <option
-              value="<%= client.id %>"
-              data-floor="<%= client.floor || '' %>"
-            >
-              <%= client.display_name %>
-              - קומה <%= client.floor || 'לא הוגדרה' %>
-            </option>
-
-          <% }) %>
-
-        </select>
-
-      </div>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
 
-      <!-- החדר נשמר אוטומטית -->
+                        <!-- לקוח -->
 
-      <input
-        type="hidden"
-        id="booking-room"
-        name="meeting_room_id"
-      >
+                        <div class="field">
 
+                          <label for="booking-user">
+                            לקוח
+                          </label>
 
-      <!-- תאריך -->
+                          <select id="booking-user" name="user_id" required>
 
-      <input
-        type="hidden"
-        id="admin_booking_date"
-        name="booking_date"
-      >
+                            <option value="">
+                              בחירת לקוח
+                            </option>
 
+                            <% clients .filter(client=> client.is_active)
+                              .forEach(client => { %>
 
-      <!-- התחלה -->
+                              <option value="<%= client.id %>" data-floor="<%= client.floor || '' %>">
+                                <%= client.display_name %>
+                                  - קומה <%= client.floor || 'לא הוגדרה' %>
+                              </option>
 
-      <input
-        type="hidden"
-        id="admin_start_time"
-        name="start_time"
-      >
+                              <% }) %>
 
+                          </select>
 
-      <!-- סיום -->
-
-      <div class="field">
-
-        <label for="admin_end_time">
-          שעת סיום
-        </label>
-
-        <select
-          id="admin_end_time"
-          name="end_time"
-          required
-        ></select>
-
-      </div>
+                        </div>
 
 
-      <!-- הערה -->
+                        <!-- החדר נשמר אוטומטית -->
 
-      <div class="field">
-
-        <label for="admin_booking_note">
-          הערה
-        </label>
-
-        <input
-          id="admin_booking_note"
-          type="text"
-          name="note"
-          maxlength="200"
-          placeholder="אופציונלי"
-        >
-
-      </div>
+                        <input type="hidden" id="booking-room" name="meeting_room_id">
 
 
-      <div class="booking-popup-actions">
+                        <!-- תאריך -->
 
-        <button
-          type="button"
-          class="btn btn-outline"
-          id="adminBookingPopupCancel"
-        >
-          ביטול
-        </button>
+                        <input type="hidden" id="admin_booking_date" name="booking_date">
 
-        <button
-          type="submit"
-          class="btn btn-primary"
-        >
-          יצירת שריון
-        </button>
 
-      </div>
+                        <!-- התחלה -->
 
-    </form>
+                        <input type="hidden" id="admin_start_time" name="start_time">
 
-  </div>
-</div>
+
+                        <!-- סיום -->
+
+                        <div class="field">
+
+                          <label for="admin_end_time">
+                            שעת סיום
+                          </label>
+
+                          <select id="admin_end_time" name="end_time" required></select>
+
+                        </div>
+
+
+                        <!-- הערה -->
+
+                        <div class="field">
+
+                          <label for="admin_booking_note">
+                            הערה
+                          </label>
+
+                          <input id="admin_booking_note" type="text" name="note" maxlength="200"
+                            placeholder="אופציונלי">
+
+                        </div>
+
+
+                        <div class="booking-popup-actions">
+
+                          <button type="button" class="btn btn-outline" id="adminBookingPopupCancel">
+                            ביטול
+                          </button>
+
+                          <button type="submit" class="btn btn-primary">
+                            יצירת שריון
+                          </button>
+
+                        </div>
+
+                      </form>
+
+                    </div>
+                  </div>
                   <div class="table-wrap">
                     <table>
                       <thead>
@@ -1676,7 +1760,7 @@ box-shadow:
     ========================= */
 
     const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
@@ -1702,30 +1786,30 @@ box-shadow:
     const adminEndTimeInput =
       document.getElementById('admin_end_time');
 
-const adminBookingPopupOverlay =
-  document.getElementById(
-    'adminBookingPopupOverlay'
-  );
+    const adminBookingPopupOverlay =
+      document.getElementById(
+        'adminBookingPopupOverlay'
+      );
 
-const adminBookingPopupClose =
-  document.getElementById(
-    'adminBookingPopupClose'
-  );
+    const adminBookingPopupClose =
+      document.getElementById(
+        'adminBookingPopupClose'
+      );
 
-const adminBookingPopupCancel =
-  document.getElementById(
-    'adminBookingPopupCancel'
-  );
+    const adminBookingPopupCancel =
+      document.getElementById(
+        'adminBookingPopupCancel'
+      );
 
-const adminBookingPopupDate =
-  document.getElementById(
-    'adminBookingPopupDate'
-  );
+    const adminBookingPopupDate =
+      document.getElementById(
+        'adminBookingPopupDate'
+      );
 
-const adminBookingPopupTime =
-  document.getElementById(
-    'adminBookingPopupTime'
-  );
+    const adminBookingPopupTime =
+      document.getElementById(
+        'adminBookingPopupTime'
+      );
 
     const adminSelectedBookingRange =
       document.getElementById(
@@ -1759,15 +1843,15 @@ const adminBookingPopupTime =
     let adminDisplayedWeekStart =
       getAdminStartOfWeek(new Date());
 
-let adminSelectedStartSlot = null;
+    let adminSelectedStartSlot = null;
 
-let isAdminCalendarDragging = false;
-let adminDragStartSlot = null;
-let adminDragCurrentSlot = null;
-let adminDragMoved = false;
+    let isAdminCalendarDragging = false;
+    let adminDragStartSlot = null;
+    let adminDragCurrentSlot = null;
+    let adminDragMoved = false;
 
-let selectedAdminRoomFloor =
-  localStorage.getItem('adminMeetingRoomFloor') || '4';
+    let selectedAdminRoomFloor =
+      localStorage.getItem('adminMeetingRoomFloor') || '4';
 
 
     /* =========================
@@ -1876,29 +1960,29 @@ let selectedAdminRoomFloor =
       );
     }
 
-function syncAdminRoomSelect(roomFloor) {
-  if (!adminRoomSelect) {
-    return;
-  }
+    function syncAdminRoomSelect(roomFloor) {
+      if (!adminRoomSelect) {
+        return;
+      }
 
-  const room =
-    <%- JSON.stringify(meetingRooms || [])
-      .replace(/</g, '\\u003c') %>
+      const room =
+    <% - JSON.stringify(meetingRooms || [])
+          .replace(/</g, '\\u003c') %>
       .find(
-        item =>
-          String(item.floor) ===
-          String(roomFloor)
-      );
+            item =>
+              String(item.floor) ===
+              String(roomFloor)
+          );
 
 
-  if (room) {
-    adminRoomSelect.value =
-      room.id;
-  }
-}
-   
+      if (room) {
+        adminRoomSelect.value =
+          room.id;
+      }
+    }
 
-function clearAdminCalendarSelection() {
+
+    function clearAdminCalendarSelection() {
       adminSelectedStartSlot = null;
 
       document
@@ -1980,170 +2064,267 @@ function clearAdminCalendarSelection() {
     }
 
 
-function formatAdminSelectedDate(dateString) {
-  const [year, month, day] =
-    dateString.split('-').map(Number);
-
-  const date =
-    new Date(
-      year,
-      month - 1,
-      day
-    );
-
-  return date.toLocaleDateString(
-    'he-IL',
-    {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    }
-  );
-}
-
-
-function fillAdminEndTimeOptions(
-  date,
-  startMinutes
-) {
-  if (!adminEndTimeInput) {
-    return;
-  }
-
-  adminEndTimeInput.innerHTML = '';
-
-  for (
-    let endMinutes =
-      startMinutes + adminSlotMinutes;
-
-    endMinutes <=
-      adminCalendarEndHour * 60;
-
-    endMinutes += adminSlotMinutes
-  ) {
-
-    /*
-      ברגע שפוגשים שריון קיים,
-      לא מאפשרים לעבור דרכו.
-    */
-
-    if (
-      adminRangeHasBooking(
-        date,
-        startMinutes,
-        endMinutes
-      )
-    ) {
-      break;
-    }
-
-    const option =
-      document.createElement('option');
-
-    option.value =
-      adminMinutesToTime(endMinutes);
-
-    option.textContent =
-      adminMinutesToTime(endMinutes);
-
-    adminEndTimeInput.appendChild(option);
-  }
-}
-
-
-function openAdminBookingPopup(
-  date,
-  startMinutes,
-  endMinutes
-) {
-  adminBookingDateInput.value =
-    date;
-
-  adminStartTimeInput.value =
-    adminMinutesToTime(startMinutes);
-
-
-  fillAdminEndTimeOptions(
-    date,
-    startMinutes
-  );
-
-
-  /*
-    אם הטווח הגיע מגרירה בדסקטופ,
-    ננסה לבחור את שעת הסיום שנגררה.
-  */
-
-  const wantedEnd =
-    adminMinutesToTime(endMinutes);
-
-  const endExists =
-    Array
-      .from(adminEndTimeInput.options)
-      .some(
-        option =>
-          option.value === wantedEnd
-      );
-
-  if (endExists) {
-    adminEndTimeInput.value =
-      wantedEnd;
-  }
-
-
-  adminBookingPopupDate.textContent =
-    formatAdminSelectedDate(date);
-
-  adminBookingPopupTime.textContent =
-    `${adminMinutesToTime(startMinutes)}–` +
-    `${adminEndTimeInput.value}`;
-
-
-  adminBookingPopupOverlay
-    .classList.add('open');
-
-  document.body.style.overflow =
-    'hidden';
-}
-
-
-function closeAdminBookingPopup(
-  clearSelection = true
-) {
-  adminBookingPopupOverlay
-    ?.classList.remove('open');
-
-  document.body.style.overflow = '';
-
-  if (clearSelection) {
-    clearAdminCalendarSelection();
-  }
-}
-
-adminEndTimeInput
-  ?.addEventListener(
-    'change',
-    () => {
+    function formatAdminSelectedDate(dateString) {
+      const [year, month, day] =
+        dateString.split('-').map(Number);
 
       const date =
-        adminBookingDateInput.value;
+        new Date(
+          year,
+          month - 1,
+          day
+        );
 
+      return date.toLocaleDateString(
+        'he-IL',
+        {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+        }
+      );
+    }
+
+
+    function fillAdminEndTimeOptions(
+      date,
+      startMinutes
+    ) {
+      if (!adminEndTimeInput) {
+        return;
+      }
+
+      adminEndTimeInput.innerHTML = '';
+
+      for (
+        let endMinutes =
+          startMinutes + adminSlotMinutes;
+
+        endMinutes <=
+        adminCalendarEndHour * 60;
+
+        endMinutes += adminSlotMinutes
+      ) {
+
+        /*
+          ברגע שפוגשים שריון קיים,
+          לא מאפשרים לעבור דרכו.
+        */
+
+        if (
+          adminRangeHasBooking(
+            date,
+            startMinutes,
+            endMinutes
+          )
+        ) {
+          break;
+        }
+
+        const option =
+          document.createElement('option');
+
+        option.value =
+          adminMinutesToTime(endMinutes);
+
+        option.textContent =
+          adminMinutesToTime(endMinutes);
+
+        adminEndTimeInput.appendChild(option);
+      }
+    }
+
+
+    function openAdminBookingPopup(
+      date,
+      startMinutes,
+      endMinutes
+    ) {
+      adminBookingDateInput.value =
+        date;
+
+      adminStartTimeInput.value =
+        adminMinutesToTime(startMinutes);
+
+
+      fillAdminEndTimeOptions(
+        date,
+        startMinutes
+      );
+
+
+      /*
+        אם הטווח הגיע מגרירה בדסקטופ,
+        ננסה לבחור את שעת הסיום שנגררה.
+      */
+
+      const wantedEnd =
+        adminMinutesToTime(endMinutes);
+
+      const endExists =
+        Array
+          .from(adminEndTimeInput.options)
+          .some(
+            option =>
+              option.value === wantedEnd
+          );
+
+      if (endExists) {
+        adminEndTimeInput.value =
+          wantedEnd;
+      }
+
+
+      adminBookingPopupDate.textContent =
+        formatAdminSelectedDate(date);
+
+      adminBookingPopupTime.textContent =
+        `${adminMinutesToTime(startMinutes)}–` +
+        `${adminEndTimeInput.value}`;
+
+
+      adminBookingPopupOverlay
+        .classList.add('open');
+
+      document.body.style.overflow =
+        'hidden';
+    }
+
+
+    function closeAdminBookingPopup(
+      clearSelection = true
+    ) {
+      adminBookingPopupOverlay
+        ?.classList.remove('open');
+
+      document.body.style.overflow = '';
+
+      if (clearSelection) {
+        clearAdminCalendarSelection();
+      }
+    }
+
+    adminEndTimeInput
+      ?.addEventListener(
+        'change',
+        () => {
+
+          const date =
+            adminBookingDateInput.value;
+
+          const startMinutes =
+            adminTimeToMinutes(
+              adminStartTimeInput.value
+            );
+
+          const endMinutes =
+            adminTimeToMinutes(
+              adminEndTimeInput.value
+            );
+
+
+          if (
+            !date ||
+            startMinutes === null ||
+            endMinutes === null
+          ) {
+            return;
+          }
+
+
+          clearAdminCalendarSelection();
+
+          highlightAdminRange(
+            date,
+            startMinutes,
+            endMinutes
+          );
+
+
+          adminBookingPopupTime.textContent =
+            `${adminMinutesToTime(startMinutes)}–` +
+            `${adminMinutesToTime(endMinutes)}`;
+        }
+      );
+
+    adminBookingPopupClose
+      ?.addEventListener(
+        'click',
+        () => {
+          closeAdminBookingPopup();
+        }
+      );
+
+
+    adminBookingPopupCancel
+      ?.addEventListener(
+        'click',
+        () => {
+          closeAdminBookingPopup();
+        }
+      );
+
+
+    adminBookingPopupOverlay
+      ?.addEventListener(
+        'click',
+        (event) => {
+
+          if (
+            event.target ===
+            adminBookingPopupOverlay
+          ) {
+            closeAdminBookingPopup();
+          }
+        }
+      );
+
+
+    document.addEventListener(
+      'keydown',
+      (event) => {
+
+        if (
+          event.key === 'Escape' &&
+          adminBookingPopupOverlay
+            ?.classList.contains('open')
+        ) {
+          closeAdminBookingPopup();
+        }
+      }
+    );
+
+    function finishAdminCalendarRange(
+      date,
+      firstMinutes,
+      lastMinutes
+    ) {
       const startMinutes =
-        adminTimeToMinutes(
-          adminStartTimeInput.value
+        Math.min(
+          firstMinutes,
+          lastMinutes
         );
 
       const endMinutes =
-        adminTimeToMinutes(
-          adminEndTimeInput.value
-        );
+        Math.max(
+          firstMinutes,
+          lastMinutes
+        ) + adminSlotMinutes;
 
 
       if (
-        !date ||
-        startMinutes === null ||
-        endMinutes === null
+        adminRangeHasBooking(
+          date,
+          startMinutes,
+          endMinutes
+        )
       ) {
+        clearAdminCalendarSelection();
+
+        alert(
+          'חלק מהטווח שבחרת כבר תפוס.'
+        );
+
         return;
       }
 
@@ -2157,115 +2338,18 @@ adminEndTimeInput
       );
 
 
-      adminBookingPopupTime.textContent =
-        `${adminMinutesToTime(startMinutes)}–` +
-        `${adminMinutesToTime(endMinutes)}`;
+      adminSelectedStartSlot = null;
+
+
+      openAdminBookingPopup(
+        date,
+        startMinutes,
+        endMinutes
+      );
     }
-  );
-
-adminBookingPopupClose
-  ?.addEventListener(
-    'click',
-    () => {
-      closeAdminBookingPopup();
-    }
-  );
-
-
-adminBookingPopupCancel
-  ?.addEventListener(
-    'click',
-    () => {
-      closeAdminBookingPopup();
-    }
-  );
-
-
-adminBookingPopupOverlay
-  ?.addEventListener(
-    'click',
-    (event) => {
-
-      if (
-        event.target ===
-        adminBookingPopupOverlay
-      ) {
-        closeAdminBookingPopup();
-      }
-    }
-  );
-
-
-document.addEventListener(
-  'keydown',
-  (event) => {
-
-    if (
-      event.key === 'Escape' &&
-      adminBookingPopupOverlay
-        ?.classList.contains('open')
-    ) {
-      closeAdminBookingPopup();
-    }
-  }
-);
-
-function finishAdminCalendarRange(
-  date,
-  firstMinutes,
-  lastMinutes
-) {
-  const startMinutes =
-    Math.min(
-      firstMinutes,
-      lastMinutes
-    );
-
-  const endMinutes =
-    Math.max(
-      firstMinutes,
-      lastMinutes
-    ) + adminSlotMinutes;
-
-
-  if (
-    adminRangeHasBooking(
-      date,
-      startMinutes,
-      endMinutes
-    )
-  ) {
-    clearAdminCalendarSelection();
-
-    alert(
-      'חלק מהטווח שבחרת כבר תפוס.'
-    );
-
-    return;
-  }
-
-
-  clearAdminCalendarSelection();
-
-  highlightAdminRange(
-    date,
-    startMinutes,
-    endMinutes
-  );
-
-
-  adminSelectedStartSlot = null;
-
-
-  openAdminBookingPopup(
-    date,
-    startMinutes,
-    endMinutes
-  );
-}
-/* =========================
-       סינון טבלת השריונים
-    ========================= */
+    /* =========================
+           סינון טבלת השריונים
+        ========================= */
 
     function filterAdminBookingTable(roomFloor) {
       meetingBookingRows.forEach((row) => {
@@ -2395,157 +2479,157 @@ function finishAdminCalendarRange(
           const past =
             isAdminPastSlot(day, minutes);
 
-if (past) {
+          if (past) {
 
-  slot.classList.add('past');
+            slot.classList.add('past');
 
-} else {
+          } else {
 
-  /*
-    MOBILE / TOUCH:
-    לחיצה אחת פותחת שריון של חצי שעה.
-    משם משנים שעת סיום ב-popup.
-  */
+            /*
+              MOBILE / TOUCH:
+              לחיצה אחת פותחת שריון של חצי שעה.
+              משם משנים שעת סיום ב-popup.
+            */
 
-  slot.addEventListener(
-    'click',
-    (event) => {
+            slot.addEventListener(
+              'click',
+              (event) => {
 
-      if (
-        window.matchMedia(
-          '(max-width: 900px)'
-        ).matches
-      ) {
-        event.preventDefault();
+                if (
+                  window.matchMedia(
+                    '(max-width: 900px)'
+                  ).matches
+                ) {
+                  event.preventDefault();
 
-        finishAdminCalendarRange(
-          currentDateKey,
-          minutes,
-          minutes
-        );
-      }
-    }
-  );
-
-
-  /*
-    DESKTOP:
-    Google Calendar style drag.
-  */
-
-  slot.addEventListener(
-    'mousedown',
-    (event) => {
-
-      if (
-        window.matchMedia(
-          '(max-width: 900px)'
-        ).matches
-      ) {
-        return;
-      }
+                  finishAdminCalendarRange(
+                    currentDateKey,
+                    minutes,
+                    minutes
+                  );
+                }
+              }
+            );
 
 
-      if (event.button !== 0) {
-        return;
-      }
+            /*
+              DESKTOP:
+              Google Calendar style drag.
+            */
+
+            slot.addEventListener(
+              'mousedown',
+              (event) => {
+
+                if (
+                  window.matchMedia(
+                    '(max-width: 900px)'
+                  ).matches
+                ) {
+                  return;
+                }
 
 
-      event.preventDefault();
+                if (event.button !== 0) {
+                  return;
+                }
 
 
-      isAdminCalendarDragging = true;
-
-      adminDragMoved = false;
+                event.preventDefault();
 
 
-      adminDragStartSlot = {
-        date: currentDateKey,
-        minutes,
-        element: slot,
-      };
+                isAdminCalendarDragging = true;
+
+                adminDragMoved = false;
 
 
-      adminDragCurrentSlot =
-        adminDragStartSlot;
+                adminDragStartSlot = {
+                  date: currentDateKey,
+                  minutes,
+                  element: slot,
+                };
 
 
-      clearAdminCalendarSelection();
-
-      slot.classList.add(
-        'selected-start'
-      );
-    }
-  );
+                adminDragCurrentSlot =
+                  adminDragStartSlot;
 
 
-  slot.addEventListener(
-    'mouseenter',
-    () => {
+                clearAdminCalendarSelection();
 
-      if (
-        window.matchMedia(
-          '(max-width: 900px)'
-        ).matches
-      ) {
-        return;
-      }
+                slot.classList.add(
+                  'selected-start'
+                );
+              }
+            );
 
 
-      if (
-        !isAdminCalendarDragging ||
-        !adminDragStartSlot
-      ) {
-        return;
-      }
+            slot.addEventListener(
+              'mouseenter',
+              () => {
+
+                if (
+                  window.matchMedia(
+                    '(max-width: 900px)'
+                  ).matches
+                ) {
+                  return;
+                }
 
 
-      if (
-        adminDragStartSlot.date !==
-        currentDateKey
-      ) {
-        return;
-      }
+                if (
+                  !isAdminCalendarDragging ||
+                  !adminDragStartSlot
+                ) {
+                  return;
+                }
 
 
-      if (
-        minutes !==
-        adminDragStartSlot.minutes
-      ) {
-        adminDragMoved = true;
-      }
+                if (
+                  adminDragStartSlot.date !==
+                  currentDateKey
+                ) {
+                  return;
+                }
 
 
-      adminDragCurrentSlot = {
-        date: currentDateKey,
-        minutes,
-        element: slot,
-      };
+                if (
+                  minutes !==
+                  adminDragStartSlot.minutes
+                ) {
+                  adminDragMoved = true;
+                }
 
 
-      const rangeStart =
-        Math.min(
-          adminDragStartSlot.minutes,
-          minutes
-        );
-
-      const rangeEnd =
-        Math.max(
-          adminDragStartSlot.minutes,
-          minutes
-        ) + adminSlotMinutes;
+                adminDragCurrentSlot = {
+                  date: currentDateKey,
+                  minutes,
+                  element: slot,
+                };
 
 
-      clearAdminCalendarSelection();
+                const rangeStart =
+                  Math.min(
+                    adminDragStartSlot.minutes,
+                    minutes
+                  );
 
-      highlightAdminRange(
-        currentDateKey,
-        rangeStart,
-        rangeEnd
-      );
-    }
-  );
-}
+                const rangeEnd =
+                  Math.max(
+                    adminDragStartSlot.minutes,
+                    minutes
+                  ) + adminSlotMinutes;
+
+
+                clearAdminCalendarSelection();
+
+                highlightAdminRange(
+                  currentDateKey,
+                  rangeStart,
+                  rangeEnd
+                );
+              }
+            );
+          }
           const booking =
             adminMeetingBookings.find((item) => {
               const bookingStart =
@@ -2636,52 +2720,52 @@ if (past) {
 
 
     document.addEventListener(
-  'mouseup',
-  () => {
-    if (
-  window.matchMedia(
-    '(max-width: 900px)'
-  ).matches
-) {
-  return;
-}
-    if (
-      !isAdminCalendarDragging ||
-      !adminDragStartSlot
-    ) {
-      return;
-    }
+      'mouseup',
+      () => {
+        if (
+          window.matchMedia(
+            '(max-width: 900px)'
+          ).matches
+        ) {
+          return;
+        }
+        if (
+          !isAdminCalendarDragging ||
+          !adminDragStartSlot
+        ) {
+          return;
+        }
 
-    isAdminCalendarDragging = false;
+        isAdminCalendarDragging = false;
 
-    const start =
-      adminDragStartSlot;
+        const start =
+          adminDragStartSlot;
 
-    const end =
-      adminDragCurrentSlot ||
-      adminDragStartSlot;
+        const end =
+          adminDragCurrentSlot ||
+          adminDragStartSlot;
 
-    if (start.date !== end.date) {
-      clearAdminCalendarSelection();
+        if (start.date !== end.date) {
+          clearAdminCalendarSelection();
 
-      adminDragStartSlot = null;
-      adminDragCurrentSlot = null;
-      adminDragMoved = false;
+          adminDragStartSlot = null;
+          adminDragCurrentSlot = null;
+          adminDragMoved = false;
 
-      return;
-    }
+          return;
+        }
 
-    finishAdminCalendarRange(
-      start.date,
-      start.minutes,
-      end.minutes
+        finishAdminCalendarRange(
+          start.date,
+          start.minutes,
+          end.minutes
+        );
+
+        adminDragStartSlot = null;
+        adminDragCurrentSlot = null;
+        adminDragMoved = false;
+      }
     );
-
-    adminDragStartSlot = null;
-    adminDragCurrentSlot = null;
-    adminDragMoved = false;
-  }
-);
 
     /* =========================
        בחירת טווח בלוח
@@ -2897,41 +2981,41 @@ if (past) {
     ========================= */
 
 
-let adminBookingSubmitting = false;
+    let adminBookingSubmitting = false;
 
-adminBookingForm?.addEventListener('submit', (event) => {
+    adminBookingForm?.addEventListener('submit', (event) => {
 
-  if (adminBookingSubmitting) {
+      if (adminBookingSubmitting) {
 
-    event.preventDefault();
+        event.preventDefault();
 
-    return;
+        return;
 
-  }
+      }
 
-  adminBookingSubmitting = true;
+      adminBookingSubmitting = true;
 
-  const submitButton =
+      const submitButton =
 
-    adminBookingForm.querySelector(
+        adminBookingForm.querySelector(
 
-      'button[type="submit"]'
+          'button[type="submit"]'
 
-    );
+        );
 
-  if (submitButton) {
+      if (submitButton) {
 
-    submitButton.disabled = true;
+        submitButton.disabled = true;
 
-    submitButton.textContent = 'יוצר שריון...';
+        submitButton.textContent = 'יוצר שריון...';
 
-  }
+      }
 
-});
+    });
 
-/* =============================
-       אתחול
-    ========================= */
+    /* =============================
+           אתחול
+        ========================= */
 
     if (
       selectedAdminRoomFloor !== '4' &&

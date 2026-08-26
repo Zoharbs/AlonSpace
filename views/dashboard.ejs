@@ -31,19 +31,18 @@
         padding-top: 54px;
       }
 
-.meeting-portal-grid {
-  display: grid;
+      .meeting-portal-grid {
+        display: grid;
 
-  grid-template-columns:
-    minmax(280px, 320px)
-    minmax(0, 1fr);
+        grid-template-columns:
+          minmax(280px, 320px) minmax(0, 1fr);
 
-  gap: 32px;
+        gap: 32px;
 
-  align-items: start;
+        align-items: start;
 
-  width: 100%;
-}
+        width: 100%;
+      }
 
       .meeting-booking-card {
         position: sticky;
@@ -109,228 +108,221 @@
         flex-wrap: wrap;
       }
 
-.weekly-calendar-wrap {
-  width: 100%;
-  overflow: hidden;
+      .weekly-calendar-wrap {
+        width: 100%;
+        overflow: hidden;
 
-  border: 1px solid rgba(20, 20, 45, 0.08);
-  border-radius: 20px;
+        border: 1px solid rgba(20, 20, 45, 0.08);
+        border-radius: 20px;
 
-  background: #fff;
+        background: #fff;
 
-  box-shadow:
-    0 10px 30px rgba(25, 25, 50, 0.04);
-}
+        box-shadow:
+          0 10px 30px rgba(25, 25, 50, 0.04);
+      }
 
-.weekly-calendar {
-  display: grid;
+      .weekly-calendar {
+        display: grid;
 
-  /*
+        /*
     עמודת שעות + 7 ימים.
     כולם חייבים להיכנס לרוחב הקיים.
   */
-  grid-template-columns:
-    64px repeat(7, minmax(0, 1fr));
+        grid-template-columns:
+          64px repeat(7, minmax(0, 1fr));
 
-  width: 100%;
-  min-width: 0;
+        width: 100%;
+        min-width: 0;
 
-  background: #fff;
-}
+        background: #fff;
+      }
 
 
-/* =========================
+      /* =========================
    כותרות הימים
 ========================= */
 
-.calendar-corner,
-.calendar-day-header {
-  height: 82px;
+      .calendar-corner,
+      .calendar-day-header {
+        height: 82px;
 
-  background: #faf9fd;
+        background: #faf9fd;
 
-  border-bottom: 1px solid
-    rgba(55, 50, 90, 0.10);
-}
+        border-bottom: 1px solid rgba(55, 50, 90, 0.10);
+      }
 
-.calendar-corner {
-  border-left: 1px solid
-    rgba(55, 50, 90, 0.08);
-}
+      .calendar-corner {
+        border-left: 1px solid rgba(55, 50, 90, 0.08);
+      }
 
-.calendar-day-header {
-  display: flex;
-  flex-direction: column;
+      .calendar-day-header {
+        display: flex;
+        flex-direction: column;
 
-  align-items: center;
-  justify-content: center;
+        align-items: center;
+        justify-content: center;
 
-  gap: 6px;
+        gap: 6px;
 
-  position: relative;
+        position: relative;
 
-  border-left: 1px solid
-    rgba(55, 50, 90, 0.08);
-}
+        border-left: 1px solid rgba(55, 50, 90, 0.08);
+      }
 
-.calendar-day-name {
-  font-size: .95rem;
-  font-weight: 800;
+      .calendar-day-name {
+        font-size: .95rem;
+        font-weight: 800;
 
-  color: #151522;
-}
+        color: #151522;
+      }
 
-.calendar-day-date {
-  font-size: .82rem;
-  font-weight: 500;
+      .calendar-day-date {
+        font-size: .82rem;
+        font-weight: 500;
 
-  color: #68677d;
-}
+        color: #68677d;
+      }
 
 
-/* היום הנוכחי */
+      /* היום הנוכחי */
 
-.calendar-day-header.today {
-  background: #f7f5ff;
-}
+      .calendar-day-header.today {
+        background: #f7f5ff;
+      }
 
-.calendar-day-header.today::after {
-  content: "";
+      .calendar-day-header.today::after {
+        content: "";
 
-  position: absolute;
+        position: absolute;
 
-  right: 14%;
-  left: 14%;
-  bottom: 0;
+        right: 14%;
+        left: 14%;
+        bottom: 0;
 
-  height: 3px;
+        height: 3px;
 
-  border-radius: 999px 999px 0 0;
+        border-radius: 999px 999px 0 0;
 
-  background: #7865f6;
-}
+        background: #7865f6;
+      }
 
 
-/* =========================
+      /* =========================
    שעות
 ========================= */
 
-.calendar-time-label {
-  height: 38px;
+      .calendar-time-label {
+        height: 38px;
 
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
 
-  padding-top: 6px;
+        padding-top: 6px;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  background: #fbfafd;
+        background: #fbfafd;
 
-  color: #68677d;
+        color: #68677d;
 
-  font-size: .76rem;
+        font-size: .76rem;
 
-  border-left: 1px solid
-    rgba(55, 50, 90, 0.08);
+        border-left: 1px solid rgba(55, 50, 90, 0.08);
 
-  border-bottom: 1px solid
-    rgba(55, 50, 90, 0.065);
-}
+        border-bottom: 1px solid rgba(55, 50, 90, 0.065);
+      }
 
 
-/* =========================
+      /* =========================
    משבצות
 ========================= */
 
-.calendar-slot {
-  position: relative;
+      .calendar-slot {
+        position: relative;
 
-  height: 38px;
+        height: 38px;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  background: #fff;
+        background: #fff;
 
-  border-left: 1px solid
-    rgba(55, 50, 90, 0.065);
+        border-left: 1px solid rgba(55, 50, 90, 0.065);
 
-  border-bottom: 1px solid
-    rgba(55, 50, 90, 0.065);
+        border-bottom: 1px solid rgba(55, 50, 90, 0.065);
 
-  cursor: pointer;
+        cursor: pointer;
 
-  user-select: none;
+        user-select: none;
 
-  transition:
-    background .12s ease;
-}
+        transition:
+          background .12s ease;
+      }
 
 
-/* hover עדין */
+      /* hover עדין */
 
-.calendar-slot:not(.past):hover {
-  background: #faf9ff;
-}
-
-
-/* עבר */
-
-.calendar-slot.past {
-  background: #f7f7f9;
-  cursor: default;
-}
+      .calendar-slot:not(.past):hover {
+        background: #faf9ff;
+      }
 
 
-/* =========================
+      /* עבר */
+
+      .calendar-slot.past {
+        background: #f7f7f9;
+        cursor: default;
+      }
+
+
+      /* =========================
    בחירת טווח
 ========================= */
 
-.calendar-slot.selected-start,
-.calendar-slot.selected-range {
-  background: #ebe8ff;
-}
+      .calendar-slot.selected-start,
+      .calendar-slot.selected-range {
+        background: #ebe8ff;
+      }
 
-.calendar-slot.selected-start {
-  box-shadow:
-    inset 3px 0 0 #7865f6;
-}
+      .calendar-slot.selected-start {
+        box-shadow:
+          inset 3px 0 0 #7865f6;
+      }
 
 
-/* =========================
+      /* =========================
    שריונים
 ========================= */
 
-.calendar-booking {
-  position: absolute;
+      .calendar-booking {
+        position: absolute;
 
-  top: 3px;
-  right: 4px;
-  left: 4px;
+        top: 3px;
+        right: 4px;
+        left: 4px;
 
-  z-index: 5;
+        z-index: 5;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  padding: 6px 7px;
+        padding: 6px 7px;
 
-  border-radius: 7px;
+        border-radius: 7px;
 
-  background: #e8e6ee;
+        background: #e8e6ee;
 
-  border-right: 3px solid #77738a;
+        border-right: 3px solid #77738a;
 
-  font-size: .72rem;
-  line-height: 1.35;
+        font-size: .72rem;
+        line-height: 1.35;
 
-  overflow: hidden;
-}
+        overflow: hidden;
+      }
 
-.calendar-booking.mine {
-  background: #e6e2ff;
-  border-right-color: #7865f6;
-}
+      .calendar-booking.mine {
+        background: #e6e2ff;
+        border-right-color: #7865f6;
+      }
 
       .calendar-booking strong {
         display: block;
@@ -362,14 +354,14 @@
       }
 
       .calendar-slot.selected-start,
-.calendar-slot.selected-range {
-  background: #ebe8ff;
-}
+      .calendar-slot.selected-range {
+        background: #ebe8ff;
+      }
 
-.calendar-slot.selected-start {
-  box-shadow:
-    inset 3px 0 0 #7865f6;
-}
+      .calendar-slot.selected-start {
+        box-shadow:
+          inset 3px 0 0 #7865f6;
+      }
 
       .onboarding-survey-card {
         display: flex;
@@ -453,560 +445,565 @@
       }
 
 
-/* כותרות ימים */
+      /* כותרות ימים */
 
-.calendar-corner,
-.calendar-day-header {
-  height: 88px;
-  background: #f7f6fc;
-  border-bottom: 1px solid #dddbea;
-}
+      .calendar-corner,
+      .calendar-day-header {
+        height: 88px;
+        background: #f7f6fc;
+        border-bottom: 1px solid #dddbea;
+      }
 
-.calendar-corner {
-  border-left: 1px solid #e3e1ed;
-}
+      .calendar-corner {
+        border-left: 1px solid #e3e1ed;
+      }
 
-.calendar-day-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+      .calendar-day-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
-  gap: 7px;
+        gap: 7px;
 
-  border-left: 1px solid #e3e1ed;
+        border-left: 1px solid #e3e1ed;
 
-  position: relative;
-}
+        position: relative;
+      }
 
-.calendar-day-name {
-  font-weight: 800;
-  font-size: 1rem;
-  color: #111223;
-}
+      .calendar-day-name {
+        font-weight: 800;
+        font-size: 1rem;
+        color: #111223;
+      }
 
-.calendar-day-date {
-  font-size: .88rem;
-  color: #62627a;
-}
+      .calendar-day-date {
+        font-size: .88rem;
+        color: #62627a;
+      }
 
-/* היום הנוכחי */
+      /* היום הנוכחי */
 
-.calendar-day-header.today::after {
-  content: "";
+      .calendar-day-header.today::after {
+        content: "";
 
-  position: absolute;
+        position: absolute;
 
-  bottom: 0;
-  left: 0;
-  right: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
 
-  height: 4px;
+        height: 4px;
 
-  background: #7765f5;
-}
+        background: #7765f5;
+      }
 
-.calendar-day-header.today {
-  background: #f4f2ff;
-}
+      .calendar-day-header.today {
+        background: #f4f2ff;
+      }
 
 
-/* =========================
+      /* =========================
    TIME COLUMN
 ========================= */
 
-.calendar-time-label {
-  height: 36px;
+      .calendar-time-label {
+        height: 36px;
 
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
 
-  padding-top: 5px;
+        padding-top: 5px;
 
-  font-size: .78rem;
-  color: #66667d;
+        font-size: .78rem;
+        color: #66667d;
 
-  background: #faf9fd;
+        background: #faf9fd;
 
-  border-left: 1px solid #e5e3ee;
-  border-bottom: 1px solid #eeeeF4;
+        border-left: 1px solid #e5e3ee;
+        border-bottom: 1px solid #eeeeF4;
 
-  box-sizing: border-box;
-}
+        box-sizing: border-box;
+      }
 
 
-/* =========================
+      /* =========================
    CALENDAR CELLS
 ========================= */
 
-.calendar-slot {
-  position: relative;
+      .calendar-slot {
+        position: relative;
 
-  height: 36px;
+        height: 36px;
 
-  background: #fff;
+        background: #fff;
 
-  border-left: 1px solid #eceaf3;
-  border-bottom: 1px solid #eeeeF4;
+        border-left: 1px solid #eceaf3;
+        border-bottom: 1px solid #eeeeF4;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  cursor: pointer;
+        cursor: pointer;
 
-  user-select: none;
-}
+        user-select: none;
+      }
 
-/* עבר */
+      /* עבר */
 
-.calendar-slot.past {
-  background: #f5f5f7;
-  cursor: default;
-}
+      .calendar-slot.past {
+        background: #f5f5f7;
+        cursor: default;
+      }
 
-/* hover */
+      /* hover */
 
-.calendar-slot:not(.past):hover {
-  background: #f7f6ff;
-}
+      .calendar-slot:not(.past):hover {
+        background: #f7f6ff;
+      }
 
 
-/* =========================
+      /* =========================
    RANGE SELECTION
 ========================= */
 
-.calendar-slot.selected-start,
-.calendar-slot.selected-range {
-  background: #e8e4ff;
-}
+      .calendar-slot.selected-start,
+      .calendar-slot.selected-range {
+        background: #e8e4ff;
+      }
 
-.calendar-slot.selected-start {
-  box-shadow:
-    inset 0 2px 0 #7765f5,
-    inset 0 -2px 0 #7765f5;
-}
+      .calendar-slot.selected-start {
+        box-shadow:
+          inset 0 2px 0 #7765f5,
+          inset 0 -2px 0 #7765f5;
+      }
 
-.calendar-slot.selected-range {
-  border-bottom-color: #d9d3ff;
-}
+      .calendar-slot.selected-range {
+        border-bottom-color: #d9d3ff;
+      }
 
 
-/* =========================
+      /* =========================
    BOOKINGS
 ========================= */
 
-.calendar-booking {
-  position: absolute;
+      .calendar-booking {
+        position: absolute;
 
-  top: 3px;
-  right: 4px;
-  left: 4px;
+        top: 3px;
+        right: 4px;
+        left: 4px;
 
-  z-index: 5;
+        z-index: 5;
 
-  border-radius: 8px;
+        border-radius: 8px;
 
-  padding: 7px 8px;
+        padding: 7px 8px;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  background: #dedbe8;
+        background: #dedbe8;
 
-  border-right: 4px solid #77738a;
+        border-right: 4px solid #77738a;
 
-  font-size: .76rem;
-  line-height: 1.35;
+        font-size: .76rem;
+        line-height: 1.35;
 
-  overflow: hidden;
+        overflow: hidden;
 
-  cursor: default;
-}
+        cursor: default;
+      }
 
-.calendar-booking strong {
-  display: block;
-  margin-bottom: 3px;
-}
+      .calendar-booking strong {
+        display: block;
+        margin-bottom: 3px;
+      }
 
-/* השריון של המשתמש */
+      /* השריון של המשתמש */
 
-.calendar-booking.mine {
-  background: #e4e0ff;
-  border-right-color: #7765f5;
-}
+      .calendar-booking.mine {
+        background: #e4e0ff;
+        border-right-color: #7765f5;
+      }
 
 
-/* =========================
+      /* =========================
    MOBILE
 ========================= */
 
-@media (max-width: 900px) {
+      @media (max-width: 900px) {
 
-  .weekly-calendar {
-    grid-template-columns:
-      60px repeat(7, minmax(105px, 1fr));
+        .weekly-calendar {
+          grid-template-columns:
+            60px repeat(7, minmax(105px, 1fr));
 
-    min-width: 800px;
-  }
+          min-width: 800px;
+        }
 
-  .calendar-corner,
-  .calendar-day-header {
-    height: 76px;
-  }
+        .calendar-corner,
+        .calendar-day-header {
+          height: 76px;
+        }
 
-  .calendar-slot,
-  .calendar-time-label {
-    height: 34px;
-  }
-}
-.tenant-section .container {
-  max-width: 1600px;
-  width: calc(100% - 64px);
-}
-/* =====================================
+        .calendar-slot,
+        .calendar-time-label {
+          height: 34px;
+        }
+      }
+
+      .tenant-section .container {
+        max-width: 1600px;
+        width: calc(100% - 64px);
+      }
+
+      /* =====================================
    TENANT WEEKLY CALENDAR
 ===================================== */
 
-.weekly-calendar-wrap {
-  width: 100%;
+      .weekly-calendar-wrap {
+        width: 100%;
 
-  overflow: hidden;
+        overflow: hidden;
 
-  background: #ffffff;
+        background: #ffffff;
 
-  border: 1px solid rgba(35, 32, 65, 0.07);
-  border-radius: 24px;
+        border: 1px solid rgba(35, 32, 65, 0.07);
+        border-radius: 24px;
 
-  box-shadow:
-    0 8px 30px rgba(30, 27, 60, 0.045);
-}
+        box-shadow:
+          0 8px 30px rgba(30, 27, 60, 0.045);
+      }
 
-.weekly-calendar {
-  display: grid;
+      .weekly-calendar {
+        display: grid;
 
-  grid-template-columns:
-    58px repeat(7, minmax(0, 1fr));
+        grid-template-columns:
+          58px repeat(7, minmax(0, 1fr));
 
-  width: 100%;
-  min-width: 0;
+        width: 100%;
+        min-width: 0;
 
-  background: #ffffff;
-}
+        background: #ffffff;
+      }
 
 
-/* =====================================
+      /* =====================================
    DAY HEADERS
 ===================================== */
 
-.calendar-corner,
-.calendar-day-header {
-  height: 86px;
+      .calendar-corner,
+      .calendar-day-header {
+        height: 86px;
 
-  background: #fbfaff;
+        background: #fbfaff;
 
-  border-bottom:
-    1px solid rgba(45, 40, 80, 0.07);
-}
+        border-bottom:
+          1px solid rgba(45, 40, 80, 0.07);
+      }
 
-.calendar-corner {
-  border-left:
-    1px solid rgba(45, 40, 80, 0.055);
-}
+      .calendar-corner {
+        border-left:
+          1px solid rgba(45, 40, 80, 0.055);
+      }
 
-.calendar-day-header {
-  position: relative;
+      .calendar-day-header {
+        position: relative;
 
-  display: flex;
-  flex-direction: column;
+        display: flex;
+        flex-direction: column;
 
-  align-items: center;
-  justify-content: center;
+        align-items: center;
+        justify-content: center;
 
-  gap: 7px;
+        gap: 7px;
 
-  border-left:
-    1px solid rgba(45, 40, 80, 0.055);
-}
+        border-left:
+          1px solid rgba(45, 40, 80, 0.055);
+      }
 
-.calendar-day-name {
-  color: #151522;
+      .calendar-day-name {
+        color: #151522;
 
-  font-size: 1rem;
-  font-weight: 800;
-}
+        font-size: 1rem;
+        font-weight: 800;
+      }
 
-.calendar-day-date {
-  color: #777589;
+      .calendar-day-date {
+        color: #777589;
 
-  font-size: .82rem;
-  font-weight: 500;
-}
-
-
-/* TODAY */
-
-.calendar-day-header.today {
-  background: #f8f6ff;
-}
-
-.calendar-day-header.today::after {
-  content: "";
-
-  position: absolute;
-
-  bottom: 0;
-  left: 22%;
-  right: 22%;
-
-  height: 3px;
-
-  border-radius: 10px 10px 0 0;
-
-  background: #7865f6;
-}
+        font-size: .82rem;
+        font-weight: 500;
+      }
 
 
-/* =====================================
+      /* TODAY */
+
+      .calendar-day-header.today {
+        background: #f8f6ff;
+      }
+
+      .calendar-day-header.today::after {
+        content: "";
+
+        position: absolute;
+
+        bottom: 0;
+        left: 22%;
+        right: 22%;
+
+        height: 3px;
+
+        border-radius: 10px 10px 0 0;
+
+        background: #7865f6;
+      }
+
+
+      /* =====================================
    TIME LABELS
 ===================================== */
 
-.calendar-time-label {
-  height: 42px;
+      .calendar-time-label {
+        height: 42px;
 
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  padding-top: 7px;
+        padding-top: 7px;
 
-  background: #fcfbff;
+        background: #fcfbff;
 
-  color: #747287;
+        color: #747287;
 
-  font-size: .75rem;
-  font-weight: 500;
+        font-size: .75rem;
+        font-weight: 500;
 
-  border-left:
-    1px solid rgba(45, 40, 80, 0.055);
+        border-left:
+          1px solid rgba(45, 40, 80, 0.055);
 
-  border-bottom:
-    1px solid rgba(45, 40, 80, 0.045);
-}
+        border-bottom:
+          1px solid rgba(45, 40, 80, 0.045);
+      }
 
 
-/* =====================================
+      /* =====================================
    CALENDAR CELLS
 ===================================== */
 
-.calendar-slot {
-  position: relative;
+      .calendar-slot {
+        position: relative;
 
-  height: 42px;
+        height: 42px;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  background: #ffffff;
+        background: #ffffff;
 
-  /*
+        /*
     הקווים בכוונה מאוד עדינים.
   */
 
-  border-left:
-    1px solid rgba(45, 40, 80, 0.04);
+        border-left:
+          1px solid rgba(45, 40, 80, 0.04);
 
-  border-bottom:
-    1px solid rgba(45, 40, 80, 0.045);
+        border-bottom:
+          1px solid rgba(45, 40, 80, 0.045);
 
-  cursor: pointer;
+        cursor: pointer;
 
-  user-select: none;
+        user-select: none;
 
-  transition:
-    background-color .12s ease;
-}
-
-
-/* hover */
-
-.calendar-slot:not(.past):hover {
-  background: #faf9ff;
-}
+        transition:
+          background-color .12s ease;
+      }
 
 
-/* past */
+      /* hover */
 
-.calendar-slot.past {
-  background: #f8f8fa;
-
-  cursor: default;
-}
+      .calendar-slot:not(.past):hover {
+        background: #faf9ff;
+      }
 
 
-/* =====================================
+      /* past */
+
+      .calendar-slot.past {
+        background: #f8f8fa;
+
+        cursor: default;
+      }
+
+
+      /* =====================================
    SELECTION
 ===================================== */
 
-.calendar-slot.selected-start,
-.calendar-slot.selected-range {
-  background: #ebe8ff;
-}
+      .calendar-slot.selected-start,
+      .calendar-slot.selected-range {
+        background: #ebe8ff;
+      }
 
-.calendar-slot.selected-start {
-  box-shadow:
-    inset 3px 0 0 #7865f6;
-}
+      .calendar-slot.selected-start {
+        box-shadow:
+          inset 3px 0 0 #7865f6;
+      }
 
 
-/* =====================================
+      /* =====================================
    BOOKINGS
 ===================================== */
 
-.calendar-booking {
-  position: absolute;
+      .calendar-booking {
+        position: absolute;
 
-  top: 3px;
-  right: 5px;
-  left: 5px;
+        top: 3px;
+        right: 5px;
+        left: 5px;
 
-  z-index: 5;
+        z-index: 5;
 
-  box-sizing: border-box;
+        box-sizing: border-box;
 
-  padding: 7px 9px;
+        padding: 7px 9px;
 
-  border: 0;
-  border-radius: 9px;
+        border: 0;
+        border-radius: 9px;
 
-  background: #ebeaf0;
+        background: #ebeaf0;
 
-  box-shadow:
-    0 2px 7px rgba(30, 28, 55, 0.06);
+        box-shadow:
+          0 2px 7px rgba(30, 28, 55, 0.06);
 
-  color: #242333;
+        color: #242333;
 
-  font-size: .72rem;
-  line-height: 1.35;
+        font-size: .72rem;
+        line-height: 1.35;
 
-  overflow: hidden;
-}
+        overflow: hidden;
+      }
 
-.calendar-booking strong {
-  display: block;
+      .calendar-booking strong {
+        display: block;
 
-  margin-bottom: 2px;
+        margin-bottom: 2px;
 
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-
-/* booking של המשתמש */
-
-.calendar-booking.mine {
-  background: #e7e3ff;
-
-  color: #302a65;
-
-  box-shadow:
-    inset 3px 0 0 #7865f6,
-    0 2px 7px rgba(30, 28, 55, 0.05);
-}
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
 
-/* =====================================
+      /* booking של המשתמש */
+
+      .calendar-booking.mine {
+        background: #e7e3ff;
+
+        color: #302a65;
+
+        box-shadow:
+          inset 3px 0 0 #7865f6,
+          0 2px 7px rgba(30, 28, 55, 0.05);
+      }
+
+
+      /* =====================================
    MOBILE
 ===================================== */
 
-@media (max-width: 900px) {
+      @media (max-width: 900px) {
 
-  .tenant-section .container {
-    width: calc(100% - 28px);
-  }
+        .tenant-section .container {
+          width: calc(100% - 28px);
+        }
 
-  .meeting-portal-grid {
-    grid-template-columns: 1fr;
-  }
+        .meeting-portal-grid {
+          grid-template-columns: 1fr;
+        }
 
-  .weekly-calendar-wrap {
-    overflow-x: auto;
-  }
+        .weekly-calendar-wrap {
+          overflow-x: auto;
+        }
 
-  .weekly-calendar {
-    grid-template-columns:
-      55px repeat(7, minmax(100px, 1fr));
+        .weekly-calendar {
+          grid-template-columns:
+            55px repeat(7, minmax(100px, 1fr));
 
-    min-width: 755px;
-  }
-}
-/* ========================================
+          min-width: 755px;
+        }
+      }
+
+      /* ========================================
    DASHBOARD MESSAGES
 ======================================== */
 
-main > section:first-child .form-msg,
-main > section:first-child .quota-warning {
-  position: relative;
-  inset: auto;
-  transform: none;
+      main>section:first-child .form-msg,
+      main>section:first-child .quota-warning {
+        position: relative;
+        inset: auto;
+        transform: none;
 
-  width: 100%;
-  margin: 0 0 24px;
-  box-sizing: border-box;
+        width: 100%;
+        margin: 0 0 24px;
+        box-sizing: border-box;
 
-  z-index: 1;
-}
+        z-index: 1;
+      }
 
-main > section:first-child .tenant-summary {
-  margin-top: 0;
-}
-.booking-admin-label {
-  display: inline-block;
-  margin-top: 4px;
+      main>section:first-child .tenant-summary {
+        margin-top: 0;
+      }
 
-  font-size: .67rem;
-  font-weight: 700;
+      .booking-admin-label {
+        display: inline-block;
+        margin-top: 4px;
 
-  color: #6657d9;
-}
-.booking-popup-time-editor {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+        font-size: .67rem;
+        font-weight: 700;
 
-  margin-top: 7px;
-}
+        color: #6657d9;
+      }
 
-.booking-popup-time-editor select {
-  appearance: none;
-  -webkit-appearance: none;
+      .booking-popup-time-editor {
+        display: flex;
+        align-items: center;
+        gap: 7px;
 
-  width: auto;
+        margin-top: 7px;
+      }
 
-  padding: 2px 4px;
+      .booking-popup-time-editor select {
+        appearance: none;
+        -webkit-appearance: none;
 
-  border: 0;
-  border-bottom: 1px dashed rgba(30, 30, 45, .3);
-  border-radius: 0;
+        width: auto;
 
-  background: transparent;
+        padding: 2px 4px;
 
-  color: inherit;
+        border: 0;
+        border-bottom: 1px dashed rgba(30, 30, 45, .3);
+        border-radius: 0;
 
-  font: inherit;
-  font-weight: 700;
+        background: transparent;
 
-  cursor: pointer;
-}
+        color: inherit;
 
-.booking-popup-time-editor select:focus {
-  outline: none;
-  border-bottom-color: var(--oak);
-}
+        font: inherit;
+        font-weight: 700;
 
-.booking-time-separator {
-  opacity: .65;
-}
+        cursor: pointer;
+      }
+
+      .booking-popup-time-editor select:focus {
+        outline: none;
+        border-bottom-color: var(--oak);
+      }
+
+      .booking-time-separator {
+        opacity: .65;
+      }
     </style>
 
     <section class="page-hero tenant-hero">
@@ -1220,137 +1217,89 @@ main > section:first-child .tenant-summary {
                   </div>
 
                   <div class="weekly-calendar-wrap">
-  <div class="weekly-calendar" id="weeklyCalendar"></div>
-</div>
+                    <div class="weekly-calendar" id="weeklyCalendar"></div>
+                  </div>
 
 
-<!-- חלון אישור שריון -->
-<div class="booking-popup-overlay" id="bookingPopupOverlay">
+                  <!-- חלון אישור שריון -->
+                  <div class="booking-popup-overlay" id="bookingPopupOverlay">
 
-  <div
-    class="booking-popup"
-    id="bookingPopup"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="bookingPopupTitle"
-  >
+                    <div class="booking-popup" id="bookingPopup" role="dialog" aria-modal="true"
+                      aria-labelledby="bookingPopupTitle">
 
-    <div class="booking-popup-head">
+                      <div class="booking-popup-head">
 
-      <div>
-        <span class="eyebrow">חדר הישיבות</span>
-        <h3 id="bookingPopupTitle">שריון חדש</h3>
-      </div>
+                        <div>
+                          <span class="eyebrow">חדר הישיבות</span>
+                          <h3 id="bookingPopupTitle">שריון חדש</h3>
+                        </div>
 
-      <button
-        type="button"
-        class="booking-popup-close"
-        id="bookingPopupClose"
-        aria-label="סגירת החלון"
-      >
-        ×
-      </button>
+                        <button type="button" class="booking-popup-close" id="bookingPopupClose"
+                          aria-label="סגירת החלון">
+                          ×
+                        </button>
 
-    </div>
+                      </div>
 
 
-<div class="booking-popup-time">
+                      <div class="booking-popup-time">
 
-  <strong id="bookingPopupDate"></strong>
+                        <strong id="bookingPopupDate"></strong>
 
-  <div class="booking-popup-time-editor">
+                        <div class="booking-popup-time-editor">
 
-    <select
-      id="bookingMobileStart"
-      aria-label="שעת התחלה"
-    ></select>
+                          <select id="bookingMobileStart" aria-label="שעת התחלה"></select>
 
-    <span class="booking-time-separator">
-      –
-    </span>
+                          <span class="booking-time-separator">
+                            –
+                          </span>
 
-    <select
-      id="bookingMobileEnd"
-      aria-label="שעת סיום"
-    ></select>
+                          <select id="bookingMobileEnd" aria-label="שעת סיום"></select>
 
-  </div>
+                        </div>
 
-</div>
+                      </div>
 
-    <form
-      method="POST"
-      action="/dashboard/meeting-bookings/create"
-      id="meetingBookingForm"
-      class="form-grid"
-    >
+                      <form method="POST" action="/dashboard/meeting-bookings/create" id="meetingBookingForm"
+                        class="form-grid">
 
-      <input
-        type="hidden"
-        name="_csrf"
-        value="<%= csrfToken %>"
-      >
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-      <input
-        type="hidden"
-        id="booking_date"
-        name="booking_date"
-      >
+                        <input type="hidden" id="booking_date" name="booking_date">
 
-      <input
-        type="hidden"
-        id="start_time"
-        name="start_time"
-      >
+                        <input type="hidden" id="start_time" name="start_time">
 
-      <input
-        type="hidden"
-        id="end_time"
-        name="end_time"
-      >
+                        <input type="hidden" id="end_time" name="end_time">
 
 
-      <div class="field">
+                        <div class="field">
 
-        <label for="note">
-          הערה
-        </label>
+                          <label for="note">
+                            הערה
+                          </label>
 
-        <input
-          id="note"
-          type="text"
-          name="note"
-          maxlength="200"
-          placeholder="אופציונלי"
-        >
+                          <input id="note" type="text" name="note" maxlength="200" placeholder="אופציונלי">
 
-      </div>
+                        </div>
 
 
-      <div class="booking-popup-actions">
+                        <div class="booking-popup-actions">
 
-        <button
-          type="button"
-          class="btn btn-outline"
-          id="bookingPopupCancel"
-        >
-          ביטול
-        </button>
+                          <button type="button" class="btn btn-outline" id="bookingPopupCancel">
+                            ביטול
+                          </button>
 
-        <button
-          type="submit"
-          class="btn btn-primary"
-        >
-          אישור שריון
-        </button>
+                          <button type="submit" class="btn btn-primary">
+                            אישור שריון
+                          </button>
 
-      </div>
+                        </div>
 
-    </form>
+                      </form>
 
-  </div>
+                    </div>
 
-</div>
+                  </div>
                   <div class="admin-card my-bookings-card">
                     <h3>השריונים שלי</h3>
 
@@ -1377,19 +1326,19 @@ main > section:first-child .tenant-summary {
                                       –
                                       <%= String(booking.end_time).slice(0, 5) %>
                                   </span>
-<% if (booking.booking_source === 'admin') { %>
-  <br>
-
-  <span class="small booking-admin-label">
-    נוצר על ידי מנהל
-  </span>
-<% } %>
-                                  <% if (booking.note) { %>
+                                  <% if (booking.booking_source==='admin' ) { %>
                                     <br>
-                                    <span class="small">
-                                      <%= booking.note %>
+
+                                    <span class="small booking-admin-label">
+                                      נוצר על ידי מנהל
                                     </span>
                                     <% } %>
+                                      <% if (booking.note) { %>
+                                        <br>
+                                        <span class="small">
+                                          <%= booking.note %>
+                                        </span>
+                                        <% } %>
                                 </div>
 
                                 <form method="POST" action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
@@ -1423,1420 +1372,1419 @@ main > section:first-child .tenant-summary {
                 dateInput.min = localDate;
               }
             </script>
-  <script>
-  const meetingBookings =
-    <%- JSON.stringify(meetingBookings || [])
-      .replace(/</g, '\\u003c') %>;
+            <script>
+              const meetingBookings =
+    <% - JSON.stringify(meetingBookings || [])
+                  .replace(/</g, '\\u003c') %>;
 
 
-  /* =====================================
-     ELEMENTS
-  ===================================== */
+              /* =====================================
+                 ELEMENTS
+              ===================================== */
 
-  const calendar =
-    document.getElementById('weeklyCalendar');
+              const calendar =
+                document.getElementById('weeklyCalendar');
 
-  const weekTitle =
-    document.getElementById('calendarWeekTitle');
+              const weekTitle =
+                document.getElementById('calendarWeekTitle');
 
-  const bookingForm =
-    document.getElementById('meetingBookingForm');
+              const bookingForm =
+                document.getElementById('meetingBookingForm');
 
-  const bookingDateInput =
-    document.getElementById('booking_date');
+              const bookingDateInput =
+                document.getElementById('booking_date');
 
-  const startTimeInput =
-    document.getElementById('start_time');
+              const startTimeInput =
+                document.getElementById('start_time');
 
-  const endTimeInput =
-    document.getElementById('end_time');
+              const endTimeInput =
+                document.getElementById('end_time');
 
 
-  const bookingPopupOverlay =
-    document.getElementById('bookingPopupOverlay');
+              const bookingPopupOverlay =
+                document.getElementById('bookingPopupOverlay');
 
-  const bookingPopup =
-    document.getElementById('bookingPopup');
+              const bookingPopup =
+                document.getElementById('bookingPopup');
 
-  const bookingPopupClose =
-    document.getElementById('bookingPopupClose');
+              const bookingPopupClose =
+                document.getElementById('bookingPopupClose');
 
-  const bookingPopupCancel =
-    document.getElementById('bookingPopupCancel');
+              const bookingPopupCancel =
+                document.getElementById('bookingPopupCancel');
 
-  const bookingPopupDate =
-    document.getElementById('bookingPopupDate');
+              const bookingPopupDate =
+                document.getElementById('bookingPopupDate');
 
-  const bookingPopupTime =
-    document.getElementById('bookingPopupTime');
+              const bookingPopupTime =
+                document.getElementById('bookingPopupTime');
 
-const bookingMobileStart =
-  document.getElementById('bookingMobileStart');
+              const bookingMobileStart =
+                document.getElementById('bookingMobileStart');
 
-const bookingMobileEnd =
-  document.getElementById('bookingMobileEnd');
-  /* =====================================
-     SETTINGS
-  ===================================== */
+              const bookingMobileEnd =
+                document.getElementById('bookingMobileEnd');
+              /* =====================================
+                 SETTINGS
+              ===================================== */
 
-  const dayNames = [
-    'ראשון',
-    'שני',
-    'שלישי',
-    'רביעי',
-    'חמישי',
-    'שישי',
-    'שבת',
-  ];
+              const dayNames = [
+                'ראשון',
+                'שני',
+                'שלישי',
+                'רביעי',
+                'חמישי',
+                'שישי',
+                'שבת',
+              ];
 
-  const calendarStartHour = 8;
-  const calendarEndHour = 21;
-  const slotMinutes = 30;
+              const calendarStartHour = 8;
+              const calendarEndHour = 21;
+              const slotMinutes = 30;
 
-  let displayedWeekStart =
-    getStartOfWeek(new Date());
+              let displayedWeekStart =
+                getStartOfWeek(new Date());
 
 
-  /* =====================================
-     SELECTION STATE
-  ===================================== */
+              /* =====================================
+                 SELECTION STATE
+              ===================================== */
 
-  let selectedStartSlot = null;
+              let selectedStartSlot = null;
 
-  let isCalendarDragging = false;
+              let isCalendarDragging = false;
 
-  let dragStartSlot = null;
-  let dragCurrentSlot = null;
+              let dragStartSlot = null;
+              let dragCurrentSlot = null;
 
-  let dragMoved = false;
+              let dragMoved = false;
 
-let touchStartX = 0;
-let touchStartY = 0;
-  /* =====================================
-     HELPERS
-  ===================================== */
+              let touchStartX = 0;
+              let touchStartY = 0;
+              /* =====================================
+                 HELPERS
+              ===================================== */
 
-  function getStartOfWeek(date) {
-    const result = new Date(date);
+              function getStartOfWeek(date) {
+                const result = new Date(date);
 
-    result.setHours(0, 0, 0, 0);
+                result.setHours(0, 0, 0, 0);
 
-    result.setDate(
-      result.getDate() - result.getDay()
-    );
+                result.setDate(
+                  result.getDate() - result.getDay()
+                );
 
-    return result;
-  }
+                return result;
+              }
 
 
-  function addDays(date, amount) {
-    const result = new Date(date);
+              function addDays(date, amount) {
+                const result = new Date(date);
 
-    result.setDate(
-      result.getDate() + amount
-    );
+                result.setDate(
+                  result.getDate() + amount
+                );
 
-    return result;
-  }
+                return result;
+              }
 
 
-  function dateKey(date) {
-    const year =
-      date.getFullYear();
+              function dateKey(date) {
+                const year =
+                  date.getFullYear();
 
-    const month =
-      String(
-        date.getMonth() + 1
-      ).padStart(2, '0');
+                const month =
+                  String(
+                    date.getMonth() + 1
+                  ).padStart(2, '0');
 
-    const day =
-      String(
-        date.getDate()
-      ).padStart(2, '0');
+                const day =
+                  String(
+                    date.getDate()
+                  ).padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
-  }
-
+                return `${year}-${month}-${day}`;
+              }
+
 
-  function normalizeBookingDate(value) {
-    return String(value || '').slice(0, 10);
-  }
+              function normalizeBookingDate(value) {
+                return String(value || '').slice(0, 10);
+              }
 
 
-  function normalizeTime(value) {
-    return String(value || '').slice(0, 5);
-  }
+              function normalizeTime(value) {
+                return String(value || '').slice(0, 5);
+              }
 
 
-  function timeToMinutes(value) {
-    const normalized =
-      normalizeTime(value);
+              function timeToMinutes(value) {
+                const normalized =
+                  normalizeTime(value);
 
-    const match =
-      /^(\d{2}):(\d{2})$/.exec(normalized);
+                const match =
+                  /^(\d{2}):(\d{2})$/.exec(normalized);
 
-    if (!match) {
-      return null;
-    }
+                if (!match) {
+                  return null;
+                }
 
-    return (
-      Number(match[1]) * 60 +
-      Number(match[2])
-    );
-  }
+                return (
+                  Number(match[1]) * 60 +
+                  Number(match[2])
+                );
+              }
 
 
-  function minutesToTime(minutes) {
-    const hours =
-      Math.floor(minutes / 60);
+              function minutesToTime(minutes) {
+                const hours =
+                  Math.floor(minutes / 60);
 
-    const remainingMinutes =
-      minutes % 60;
+                const remainingMinutes =
+                  minutes % 60;
 
-    return (
-      String(hours).padStart(2, '0') +
-      ':' +
-      String(remainingMinutes).padStart(2, '0')
-    );
-  }
+                return (
+                  String(hours).padStart(2, '0') +
+                  ':' +
+                  String(remainingMinutes).padStart(2, '0')
+                );
+              }
 
 
-  function isPastSlot(day, minutes) {
-    const slotDate =
-      new Date(day);
+              function isPastSlot(day, minutes) {
+                const slotDate =
+                  new Date(day);
 
-    slotDate.setHours(
-      Math.floor(minutes / 60),
-      minutes % 60,
-      0,
-      0
-    );
+                slotDate.setHours(
+                  Math.floor(minutes / 60),
+                  minutes % 60,
+                  0,
+                  0
+                );
 
-    return slotDate <= new Date();
-  }
+                return slotDate <= new Date();
+              }
 
 
-  function formatSelectedDate(dateString) {
-    const [year, month, day] =
-      dateString
-        .split('-')
-        .map(Number);
+              function formatSelectedDate(dateString) {
+                const [year, month, day] =
+                  dateString
+                    .split('-')
+                    .map(Number);
 
-    const date =
-      new Date(
-        year,
-        month - 1,
-        day
-      );
-
-    return date.toLocaleDateString(
-      'he-IL',
-      {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-      }
-    );
-  }
+                const date =
+                  new Date(
+                    year,
+                    month - 1,
+                    day
+                  );
+
+                return date.toLocaleDateString(
+                  'he-IL',
+                  {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                  }
+                );
+              }
 
-function fillMobileTimeOptions(
-  selectedStartMinutes,
-  selectedEndMinutes
-) {
-  bookingMobileStart.innerHTML = '';
-  bookingMobileEnd.innerHTML = '';
+              function fillMobileTimeOptions(
+                selectedStartMinutes,
+                selectedEndMinutes
+              ) {
+                bookingMobileStart.innerHTML = '';
+                bookingMobileEnd.innerHTML = '';
 
-  /*
-    שעות התחלה
-  */
-  for (
-    let minutes = calendarStartHour * 60;
-    minutes < calendarEndHour * 60;
-    minutes += slotMinutes
-  ) {
-    const option =
-      document.createElement('option');
-
-    option.value =
-      minutesToTime(minutes);
+                /*
+                  שעות התחלה
+                */
+                for (
+                  let minutes = calendarStartHour * 60;
+                  minutes < calendarEndHour * 60;
+                  minutes += slotMinutes
+                ) {
+                  const option =
+                    document.createElement('option');
+
+                  option.value =
+                    minutesToTime(minutes);
 
-    option.textContent =
-      minutesToTime(minutes);
+                  option.textContent =
+                    minutesToTime(minutes);
 
-    option.selected =
-      minutes === selectedStartMinutes;
+                  option.selected =
+                    minutes === selectedStartMinutes;
 
-    bookingMobileStart.appendChild(
-      option
-    );
-  }
+                  bookingMobileStart.appendChild(
+                    option
+                  );
+                }
 
 
-  /*
-    שעות סיום
-  */
-  for (
-    let minutes =
-      calendarStartHour * 60 + slotMinutes;
+                /*
+                  שעות סיום
+                */
+                for (
+                  let minutes =
+                    calendarStartHour * 60 + slotMinutes;
 
-    minutes <= calendarEndHour * 60;
+                  minutes <= calendarEndHour * 60;
 
-    minutes += slotMinutes
-  ) {
-    const option =
-      document.createElement('option');
+                  minutes += slotMinutes
+                ) {
+                  const option =
+                    document.createElement('option');
 
-    option.value =
-      minutesToTime(minutes);
+                  option.value =
+                    minutesToTime(minutes);
 
-    option.textContent =
-      minutesToTime(minutes);
+                  option.textContent =
+                    minutesToTime(minutes);
 
-    option.selected =
-      minutes === selectedEndMinutes;
+                  option.selected =
+                    minutes === selectedEndMinutes;
 
-    bookingMobileEnd.appendChild(
-      option
-    );
-  }
-}
+                  bookingMobileEnd.appendChild(
+                    option
+                  );
+                }
+              }
 
-function updateBookingTimesFromPopup() {
-  const startMinutes =
-    timeToMinutes(
-      bookingMobileStart.value
-    );
+              function updateBookingTimesFromPopup() {
+                const startMinutes =
+                  timeToMinutes(
+                    bookingMobileStart.value
+                  );
 
-  const endMinutes =
-    timeToMinutes(
-      bookingMobileEnd.value
-    );
+                const endMinutes =
+                  timeToMinutes(
+                    bookingMobileEnd.value
+                  );
 
-  if (
-    startMinutes === null ||
-    endMinutes === null
-  ) {
-    return;
-  }
-
+                if (
+                  startMinutes === null ||
+                  endMinutes === null
+                ) {
+                  return;
+                }
+
 
-  if (endMinutes <= startMinutes) {
-    alert(
-      'שעת הסיום חייבת להיות אחרי שעת ההתחלה.'
-    );
-
-    fillMobileTimeOptions(
-      timeToMinutes(startTimeInput.value),
-      timeToMinutes(endTimeInput.value)
-    );
+                if (endMinutes <= startMinutes) {
+                  alert(
+                    'שעת הסיום חייבת להיות אחרי שעת ההתחלה.'
+                  );
+
+                  fillMobileTimeOptions(
+                    timeToMinutes(startTimeInput.value),
+                    timeToMinutes(endTimeInput.value)
+                  );
 
-    return;
-  }
-
-
-  const date =
-    bookingDateInput.value;
-
-
-  if (
-    rangeHasBooking(
-      date,
-      startMinutes,
-      endMinutes
-    )
-  ) {
-    alert(
-      'חלק מהטווח שבחרת כבר תפוס.'
-    );
-
-    fillMobileTimeOptions(
-      timeToMinutes(startTimeInput.value),
-      timeToMinutes(endTimeInput.value)
-    );
-
-    return;
-  }
-
-
-  startTimeInput.value =
-    minutesToTime(startMinutes);
-
-  endTimeInput.value =
-    minutesToTime(endMinutes);
-
-
-  paintCalendarRange(
-    date,
-    startMinutes,
-    endMinutes - slotMinutes
-  );
-}
+                  return;
+                }
+
+
+                const date =
+                  bookingDateInput.value;
+
+
+                if (
+                  rangeHasBooking(
+                    date,
+                    startMinutes,
+                    endMinutes
+                  )
+                ) {
+                  alert(
+                    'חלק מהטווח שבחרת כבר תפוס.'
+                  );
+
+                  fillMobileTimeOptions(
+                    timeToMinutes(startTimeInput.value),
+                    timeToMinutes(endTimeInput.value)
+                  );
+
+                  return;
+                }
+
+
+                startTimeInput.value =
+                  minutesToTime(startMinutes);
+
+                endTimeInput.value =
+                  minutesToTime(endMinutes);
+
+
+                paintCalendarRange(
+                  date,
+                  startMinutes,
+                  endMinutes - slotMinutes
+                );
+              }
 
-
-bookingMobileStart
-  ?.addEventListener(
-    'change',
-    updateBookingTimesFromPopup
-  );
-
-
-bookingMobileEnd
-  ?.addEventListener(
-    'change',
-    updateBookingTimesFromPopup
-  );
-
-function updateBookingFromMobileTimes() {
-  if (
-    !bookingMobileStart ||
-    !bookingMobileEnd
-  ) {
-    return;
-  }
-
-  const startMinutes =
-    timeToMinutes(
-      bookingMobileStart.value
-    );
-
-  const endMinutes =
-    timeToMinutes(
-      bookingMobileEnd.value
-    );
-
-  if (
-    startMinutes === null ||
-    endMinutes === null
-  ) {
-    return;
-  }
-
-  if (endMinutes <= startMinutes) {
-    alert(
-      'שעת הסיום חייבת להיות אחרי שעת ההתחלה.'
-    );
-
-    bookingMobileStart.value =
-      startTimeInput.value;
-
-    bookingMobileEnd.value =
-      endTimeInput.value;
-
-    return;
-  }
-
-  const date =
-    bookingDateInput.value;
-
-  if (
-    rangeHasBooking(
-      date,
-      startMinutes,
-      endMinutes
-    )
-  ) {
-    alert(
-      'חלק מהטווח שבחרת כבר תפוס.'
-    );
-
-    bookingMobileStart.value =
-      startTimeInput.value;
-
-    bookingMobileEnd.value =
-      endTimeInput.value;
-
-    return;
-  }
-
-  startTimeInput.value =
-    minutesToTime(startMinutes);
-
-  endTimeInput.value =
-    minutesToTime(endMinutes);
-
-  bookingPopupTime.textContent =
-    `${minutesToTime(startMinutes)}–` +
-    `${minutesToTime(endMinutes)}`;
-
-  paintCalendarRange(
-    date,
-    startMinutes,
-    endMinutes - slotMinutes
-  );
-}
-
-
-bookingMobileStart?.addEventListener(
-  'change',
-  updateBookingFromMobileTimes
-);
-
-bookingMobileEnd?.addEventListener(
-  'change',
-  updateBookingFromMobileTimes
-);
-
-  /* =====================================
-     SELECTION
-  ===================================== */
-
-  function clearCalendarSelection() {
-    calendar
-      .querySelectorAll('.calendar-slot')
-      .forEach((slot) => {
-        slot.classList.remove(
-          'selected-start',
-          'selected-range'
-        );
-      });
-  }
-
-
-  function paintCalendarRange(
-    date,
-    startMinutes,
-    endMinutes
-  ) {
-    clearCalendarSelection();
-
-    calendar
-      .querySelectorAll(
-        `.calendar-slot[data-date="${date}"]`
-      )
-      .forEach((slot) => {
-        const slotMinutesValue =
-          Number(
-            slot.dataset.startMinutes
-          );
-
-        if (
-          slotMinutesValue >= startMinutes &&
-          slotMinutesValue <= endMinutes
-        ) {
-          slot.classList.add(
-            'selected-range'
-          );
-        }
-      });
-  }
-
-
-  function rangeHasBooking(
-    date,
-    startMinutes,
-    endMinutes
-  ) {
-    return meetingBookings.some(
-      (booking) => {
-
-        if (
-          normalizeBookingDate(
-            booking.booking_date
-          ) !== date
-        ) {
-          return false;
-        }
-
-        const bookingStart =
-          timeToMinutes(
-            booking.start_time
-          );
-
-        const bookingEnd =
-          timeToMinutes(
-            booking.end_time
-          );
-
-        if (
-          bookingStart === null ||
-          bookingEnd === null
-        ) {
-          return false;
-        }
-
-        return (
-          startMinutes < bookingEnd &&
-          endMinutes > bookingStart
-        );
-      }
-    );
-  }
-
-
-  /* =====================================
-     POPUP
-  ===================================== */
-
-  function openBookingPopup(
-    date,
-    startMinutes,
-    endMinutes
-  ) {
-    bookingDateInput.value =
-      date;
-
-    startTimeInput.value =
-      minutesToTime(startMinutes);
-
-    endTimeInput.value =
-      minutesToTime(endMinutes);
-fillMobileTimeOptions(
-  startMinutes,
-  endMinutes
-);
-
-    bookingPopupDate.textContent =
-      formatSelectedDate(date);
-
-
-
-
-    bookingPopupOverlay
-      .classList.add('open');
-
-    document.body.style.overflow =
-      'hidden';
-
-
-    window.setTimeout(() => {
-      document
-        .getElementById('note')
-        ?.focus();
-    }, 180);
-  }
-
-
-  function closeBookingPopup(
-    clearSelection = true
-  ) {
-    bookingPopupOverlay
-      .classList.remove('open');
-
-    document.body.style.overflow = '';
-
-    if (clearSelection) {
-      clearCalendarSelection();
-
-      selectedStartSlot = null;
-    }
-  }
-
-
-  bookingPopupClose
-    ?.addEventListener(
-      'click',
-      () => closeBookingPopup()
-    );
-
-
-  bookingPopupCancel
-    ?.addEventListener(
-      'click',
-      () => closeBookingPopup()
-    );
-
-
-  bookingPopupOverlay
-    ?.addEventListener(
-      'click',
-      (event) => {
-
-        if (
-          event.target ===
-          bookingPopupOverlay
-        ) {
-          closeBookingPopup();
-        }
-      }
-    );
-
-
-  document.addEventListener(
-    'keydown',
-    (event) => {
-
-      if (
-        event.key === 'Escape' &&
-        bookingPopupOverlay
-          ?.classList.contains('open')
-      ) {
-        closeBookingPopup();
-      }
-    }
-  );
-
-
-  /* =====================================
-     FINISH RANGE
-  ===================================== */
-
-  function finishCalendarRange(
-    date,
-    firstMinutes,
-    lastMinutes
-  ) {
-    const startMinutes =
-      Math.min(
-        firstMinutes,
-        lastMinutes
-      );
-
-    const endMinutes =
-      Math.max(
-        firstMinutes,
-        lastMinutes
-      ) + slotMinutes;
-
-
-    if (
-      rangeHasBooking(
-        date,
-        startMinutes,
-        endMinutes
-      )
-    ) {
-      clearCalendarSelection();
-
-      selectedStartSlot = null;
-
-      alert(
-        'חלק מהטווח שבחרת כבר תפוס.'
-      );
-
-      return;
-    }
-
-
-    paintCalendarRange(
-      date,
-      startMinutes,
-      endMinutes - slotMinutes
-    );
-
-
-    selectedStartSlot = null;
-
-
-    openBookingPopup(
-      date,
-      startMinutes,
-      endMinutes
-    );
-  }
-
-
-  function setFirstClickSelection(
-    date,
-    minutes,
-    element
-  ) {
-    clearCalendarSelection();
-
-    selectedStartSlot = {
-      date,
-      minutes,
-      element,
-    };
-
-    element.classList.add(
-      'selected-start'
-    );
-  }
-
-
-  /* =====================================
-     RENDER
-  ===================================== */
-
-  function renderCalendar() {
-    calendar.innerHTML = '';
-
-    selectedStartSlot = null;
-
-    const weekEnd =
-      addDays(
-        displayedWeekStart,
-        6
-      );
-
-
-    weekTitle.textContent =
-      displayedWeekStart
-        .toLocaleDateString(
-          'he-IL',
-          {
-            day: 'numeric',
-            month: 'long',
-          }
-        ) +
-      ' – ' +
-      weekEnd
-        .toLocaleDateString(
-          'he-IL',
-          {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          }
-        );
-
-
-    const corner =
-      document.createElement('div');
-
-    corner.className =
-      'calendar-corner';
-
-    calendar.appendChild(corner);
-
-
-    const todayKey =
-      dateKey(new Date());
-
-
-    /* DAY HEADERS */
-
-    for (
-      let dayIndex = 0;
-      dayIndex < 7;
-      dayIndex += 1
-    ) {
-      const day =
-        addDays(
-          displayedWeekStart,
-          dayIndex
-        );
-
-      const header =
-        document.createElement('div');
-
-      header.className =
-        'calendar-day-header';
-
-
-      if (
-        dateKey(day) === todayKey
-      ) {
-        header.classList.add(
-          'today'
-        );
-      }
-
-
-      header.innerHTML = `
+
+              bookingMobileStart
+                ?.addEventListener(
+                  'change',
+                  updateBookingTimesFromPopup
+                );
+
+
+              bookingMobileEnd
+                ?.addEventListener(
+                  'change',
+                  updateBookingTimesFromPopup
+                );
+
+              function updateBookingFromMobileTimes() {
+                if (
+                  !bookingMobileStart ||
+                  !bookingMobileEnd
+                ) {
+                  return;
+                }
+
+                const startMinutes =
+                  timeToMinutes(
+                    bookingMobileStart.value
+                  );
+
+                const endMinutes =
+                  timeToMinutes(
+                    bookingMobileEnd.value
+                  );
+
+                if (
+                  startMinutes === null ||
+                  endMinutes === null
+                ) {
+                  return;
+                }
+
+                if (endMinutes <= startMinutes) {
+                  alert(
+                    'שעת הסיום חייבת להיות אחרי שעת ההתחלה.'
+                  );
+
+                  bookingMobileStart.value =
+                    startTimeInput.value;
+
+                  bookingMobileEnd.value =
+                    endTimeInput.value;
+
+                  return;
+                }
+
+                const date =
+                  bookingDateInput.value;
+
+                if (
+                  rangeHasBooking(
+                    date,
+                    startMinutes,
+                    endMinutes
+                  )
+                ) {
+                  alert(
+                    'חלק מהטווח שבחרת כבר תפוס.'
+                  );
+
+                  bookingMobileStart.value =
+                    startTimeInput.value;
+
+                  bookingMobileEnd.value =
+                    endTimeInput.value;
+
+                  return;
+                }
+
+                startTimeInput.value =
+                  minutesToTime(startMinutes);
+
+                endTimeInput.value =
+                  minutesToTime(endMinutes);
+
+                bookingPopupTime.textContent =
+                  `${minutesToTime(startMinutes)}–` +
+                  `${minutesToTime(endMinutes)}`;
+
+                paintCalendarRange(
+                  date,
+                  startMinutes,
+                  endMinutes - slotMinutes
+                );
+              }
+
+
+              bookingMobileStart?.addEventListener(
+                'change',
+                updateBookingFromMobileTimes
+              );
+
+              bookingMobileEnd?.addEventListener(
+                'change',
+                updateBookingFromMobileTimes
+              );
+
+              /* =====================================
+                 SELECTION
+              ===================================== */
+
+              function clearCalendarSelection() {
+                calendar
+                  .querySelectorAll('.calendar-slot')
+                  .forEach((slot) => {
+                    slot.classList.remove(
+                      'selected-start',
+                      'selected-range'
+                    );
+                  });
+              }
+
+
+              function paintCalendarRange(
+                date,
+                startMinutes,
+                endMinutes
+              ) {
+                clearCalendarSelection();
+
+                calendar
+                  .querySelectorAll(
+                    `.calendar-slot[data-date="${date}"]`
+                  )
+                  .forEach((slot) => {
+                    const slotMinutesValue =
+                      Number(
+                        slot.dataset.startMinutes
+                      );
+
+                    if (
+                      slotMinutesValue >= startMinutes &&
+                      slotMinutesValue <= endMinutes
+                    ) {
+                      slot.classList.add(
+                        'selected-range'
+                      );
+                    }
+                  });
+              }
+
+
+              function rangeHasBooking(
+                date,
+                startMinutes,
+                endMinutes
+              ) {
+                return meetingBookings.some(
+                  (booking) => {
+
+                    if (
+                      normalizeBookingDate(
+                        booking.booking_date
+                      ) !== date
+                    ) {
+                      return false;
+                    }
+
+                    const bookingStart =
+                      timeToMinutes(
+                        booking.start_time
+                      );
+
+                    const bookingEnd =
+                      timeToMinutes(
+                        booking.end_time
+                      );
+
+                    if (
+                      bookingStart === null ||
+                      bookingEnd === null
+                    ) {
+                      return false;
+                    }
+
+                    return (
+                      startMinutes < bookingEnd &&
+                      endMinutes > bookingStart
+                    );
+                  }
+                );
+              }
+
+
+              /* =====================================
+                 POPUP
+              ===================================== */
+
+              function openBookingPopup(
+                date,
+                startMinutes,
+                endMinutes
+              ) {
+                bookingDateInput.value =
+                  date;
+
+                startTimeInput.value =
+                  minutesToTime(startMinutes);
+
+                endTimeInput.value =
+                  minutesToTime(endMinutes);
+                fillMobileTimeOptions(
+                  startMinutes,
+                  endMinutes
+                );
+
+                bookingPopupDate.textContent =
+                  formatSelectedDate(date);
+
+
+
+
+                bookingPopupOverlay
+                  .classList.add('open');
+
+                document.body.style.overflow =
+                  'hidden';
+
+
+                window.setTimeout(() => {
+                  document
+                    .getElementById('note')
+                    ?.focus();
+                }, 180);
+              }
+
+
+              function closeBookingPopup(
+                clearSelection = true
+              ) {
+                bookingPopupOverlay
+                  .classList.remove('open');
+
+                document.body.style.overflow = '';
+
+                if (clearSelection) {
+                  clearCalendarSelection();
+
+                  selectedStartSlot = null;
+                }
+              }
+
+
+              bookingPopupClose
+                ?.addEventListener(
+                  'click',
+                  () => closeBookingPopup()
+                );
+
+
+              bookingPopupCancel
+                ?.addEventListener(
+                  'click',
+                  () => closeBookingPopup()
+                );
+
+
+              bookingPopupOverlay
+                ?.addEventListener(
+                  'click',
+                  (event) => {
+
+                    if (
+                      event.target ===
+                      bookingPopupOverlay
+                    ) {
+                      closeBookingPopup();
+                    }
+                  }
+                );
+
+
+              document.addEventListener(
+                'keydown',
+                (event) => {
+
+                  if (
+                    event.key === 'Escape' &&
+                    bookingPopupOverlay
+                      ?.classList.contains('open')
+                  ) {
+                    closeBookingPopup();
+                  }
+                }
+              );
+
+
+              /* =====================================
+                 FINISH RANGE
+              ===================================== */
+
+              function finishCalendarRange(
+                date,
+                firstMinutes,
+                lastMinutes
+              ) {
+                const startMinutes =
+                  Math.min(
+                    firstMinutes,
+                    lastMinutes
+                  );
+
+                const endMinutes =
+                  Math.max(
+                    firstMinutes,
+                    lastMinutes
+                  ) + slotMinutes;
+
+
+                if (
+                  rangeHasBooking(
+                    date,
+                    startMinutes,
+                    endMinutes
+                  )
+                ) {
+                  clearCalendarSelection();
+
+                  selectedStartSlot = null;
+
+                  alert(
+                    'חלק מהטווח שבחרת כבר תפוס.'
+                  );
+
+                  return;
+                }
+
+
+                paintCalendarRange(
+                  date,
+                  startMinutes,
+                  endMinutes - slotMinutes
+                );
+
+
+                selectedStartSlot = null;
+
+
+                openBookingPopup(
+                  date,
+                  startMinutes,
+                  endMinutes
+                );
+              }
+
+
+              function setFirstClickSelection(
+                date,
+                minutes,
+                element
+              ) {
+                clearCalendarSelection();
+
+                selectedStartSlot = {
+                  date,
+                  minutes,
+                  element,
+                };
+
+                element.classList.add(
+                  'selected-start'
+                );
+              }
+
+
+              /* =====================================
+                 RENDER
+              ===================================== */
+
+              function renderCalendar() {
+                calendar.innerHTML = '';
+
+                selectedStartSlot = null;
+
+                const weekEnd =
+                  addDays(
+                    displayedWeekStart,
+                    6
+                  );
+
+
+                weekTitle.textContent =
+                  displayedWeekStart
+                    .toLocaleDateString(
+                      'he-IL',
+                      {
+                        day: 'numeric',
+                        month: 'long',
+                      }
+                    ) +
+                  ' – ' +
+                  weekEnd
+                    .toLocaleDateString(
+                      'he-IL',
+                      {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      }
+                    );
+
+
+                const corner =
+                  document.createElement('div');
+
+                corner.className =
+                  'calendar-corner';
+
+                calendar.appendChild(corner);
+
+
+                const todayKey =
+                  dateKey(new Date());
+
+
+                /* DAY HEADERS */
+
+                for (
+                  let dayIndex = 0;
+                  dayIndex < 7;
+                  dayIndex += 1
+                ) {
+                  const day =
+                    addDays(
+                      displayedWeekStart,
+                      dayIndex
+                    );
+
+                  const header =
+                    document.createElement('div');
+
+                  header.className =
+                    'calendar-day-header';
+
+
+                  if (
+                    dateKey(day) === todayKey
+                  ) {
+                    header.classList.add(
+                      'today'
+                    );
+                  }
+
+
+                  header.innerHTML = `
         <span class="calendar-day-name">
           ${dayNames[dayIndex]}
         </span>
 
         <span class="calendar-day-date">
           ${day.toLocaleDateString(
-            'he-IL',
-            {
-              day: '2-digit',
-              month: '2-digit',
-            }
-          )}
+                    'he-IL',
+                    {
+                      day: '2-digit',
+                      month: '2-digit',
+                    }
+                  )}
         </span>
       `;
 
 
-      calendar.appendChild(header);
-    }
+                  calendar.appendChild(header);
+                }
 
 
-    /* TIME ROWS */
+                /* TIME ROWS */
 
-    for (
-      let minutes =
-        calendarStartHour * 60;
+                for (
+                  let minutes =
+                    calendarStartHour * 60;
 
-      minutes <
-        calendarEndHour * 60;
+                  minutes <
+                  calendarEndHour * 60;
 
-      minutes += slotMinutes
-    ) {
+                  minutes += slotMinutes
+                ) {
 
-      const timeLabel =
-        document.createElement('div');
+                  const timeLabel =
+                    document.createElement('div');
 
-      timeLabel.className =
-        'calendar-time-label';
-
-      timeLabel.textContent =
-        minutesToTime(minutes);
+                  timeLabel.className =
+                    'calendar-time-label';
+
+                  timeLabel.textContent =
+                    minutesToTime(minutes);
 
-      calendar.appendChild(
-        timeLabel
-      );
-
-
-      for (
-        let dayIndex = 0;
-        dayIndex < 7;
-        dayIndex += 1
-      ) {
-
-        const day =
-          addDays(
-            displayedWeekStart,
-            dayIndex
-          );
-
-        const currentDateKey =
-          dateKey(day);
-
-        const slot =
-          document.createElement('div');
-
-        slot.className =
-          'calendar-slot';
-
-        slot.dataset.date =
-          currentDateKey;
-
-        slot.dataset.startMinutes =
-          String(minutes);
-
-
-        const past =
-          isPastSlot(
-            day,
-            minutes
-          );
-
-
-        if (past) {
-
-          slot.classList.add(
-            'past'
-          );
-
-        } else {
-/* =========================
-   MOBILE TAP
-========================= */
-
-slot.addEventListener(
-  'touchstart',
-  (event) => {
-    const touch =
-      event.touches[0];
-
-    touchStartX =
-      touch.clientX;
-
-    touchStartY =
-      touch.clientY;
-  },
-  {
-    passive: true
-  }
-);
-
-slot.addEventListener(
-  'touchend',
-  (event) => {
-    const touch =
-      event.changedTouches[0];
-
-    const movedX =
-      Math.abs(
-        touch.clientX -
-        touchStartX
-      );
-
-    const movedY =
-      Math.abs(
-        touch.clientY -
-        touchStartY
-      );
-
-    /*
-      הייתה תנועה של האצבע:
-      המשתמש גלל את הלוח/העמוד.
-    */
-    if (
-      movedX > 10 ||
-      movedY > 10
-    ) {
-      return;
-    }
-
-    /*
-      Tap אמיתי על המשבצת.
-    */
-    finishCalendarRange(
-      currentDateKey,
-      minutes,
-      minutes
-    );
-  },
-  {
-    passive: true
-  }
-);
-          /* =========================
-             MOUSE DOWN
-          ========================= */
-
-          slot.addEventListener(
-            'mousedown',
-            (event) => {
-
-              if (
-                event.button !== 0
-              ) {
-                return;
-              }
-
-              event.preventDefault();
-
-              isCalendarDragging = true;
-
-              dragMoved = false;
-
-              dragStartSlot = {
-                date:
-                  currentDateKey,
-
-                minutes,
-
-                element:
-                  slot,
-              };
-
-              dragCurrentSlot =
-                dragStartSlot;
-
-
-              if (
-                !selectedStartSlot
-              ) {
-                clearCalendarSelection();
-
-                slot.classList.add(
-                  'selected-start'
-                );
-              }
-            }
-          );
-
-
-          /* =========================
-             DRAG
-          ========================= */
-
-          slot.addEventListener(
-            'mouseenter',
-            () => {
-
-              if (
-                !isCalendarDragging ||
-                !dragStartSlot
-              ) {
-                return;
-              }
-
-
-              if (
-                dragStartSlot.date !==
-                currentDateKey
-              ) {
-                return;
-              }
-
-
-              if (
-                minutes !==
-                dragStartSlot.minutes
-              ) {
-                dragMoved = true;
-              }
-
-
-              dragCurrentSlot = {
-                date:
-                  currentDateKey,
-
-                minutes,
-
-                element:
-                  slot,
-              };
-
-
-              const rangeStart =
-                Math.min(
-                  dragStartSlot.minutes,
-                  minutes
-                );
-
-              const rangeEnd =
-                Math.max(
-                  dragStartSlot.minutes,
-                  minutes
-                );
+                  calendar.appendChild(
+                    timeLabel
+                  );
+
+
+                  for (
+                    let dayIndex = 0;
+                    dayIndex < 7;
+                    dayIndex += 1
+                  ) {
+
+                    const day =
+                      addDays(
+                        displayedWeekStart,
+                        dayIndex
+                      );
+
+                    const currentDateKey =
+                      dateKey(day);
+
+                    const slot =
+                      document.createElement('div');
+
+                    slot.className =
+                      'calendar-slot';
+
+                    slot.dataset.date =
+                      currentDateKey;
+
+                    slot.dataset.startMinutes =
+                      String(minutes);
+
+
+                    const past =
+                      isPastSlot(
+                        day,
+                        minutes
+                      );
+
+
+                    if (past) {
+
+                      slot.classList.add(
+                        'past'
+                      );
+
+                    } else {
+                      /* =========================
+                         MOBILE TAP
+                      ========================= */
+
+                      slot.addEventListener(
+                        'touchstart',
+                        (event) => {
+                          const touch =
+                            event.touches[0];
+
+                          touchStartX =
+                            touch.clientX;
+
+                          touchStartY =
+                            touch.clientY;
+                        },
+                        {
+                          passive: true
+                        }
+                      );
+
+                      slot.addEventListener(
+                        'touchend',
+                        (event) => {
+                          const touch =
+                            event.changedTouches[0];
+
+                          const movedX =
+                            Math.abs(
+                              touch.clientX -
+                              touchStartX
+                            );
+
+                          const movedY =
+                            Math.abs(
+                              touch.clientY -
+                              touchStartY
+                            );
+
+                          /*
+                            הייתה תנועה של האצבע:
+                            המשתמש גלל את הלוח/העמוד.
+                          */
+                          if (
+                            movedX > 10 ||
+                            movedY > 10
+                          ) {
+                            return;
+                          }
+
+                          /*
+                            Tap אמיתי על המשבצת.
+                          */
+                          finishCalendarRange(
+                            currentDateKey,
+                            minutes,
+                            minutes
+                          );
+                        },
+                        {
+                          passive: true
+                        }
+                      );
+                      /* =========================
+                         MOUSE DOWN
+                      ========================= */
+
+                      slot.addEventListener(
+                        'mousedown',
+                        (event) => {
+
+                          if (
+                            event.button !== 0
+                          ) {
+                            return;
+                          }
+
+                          event.preventDefault();
+
+                          isCalendarDragging = true;
+
+                          dragMoved = false;
+
+                          dragStartSlot = {
+                            date:
+                              currentDateKey,
+
+                            minutes,
+
+                            element:
+                              slot,
+                          };
+
+                          dragCurrentSlot =
+                            dragStartSlot;
+
+
+                          if (
+                            !selectedStartSlot
+                          ) {
+                            clearCalendarSelection();
+
+                            slot.classList.add(
+                              'selected-start'
+                            );
+                          }
+                        }
+                      );
+
+
+                      /* =========================
+                         DRAG
+                      ========================= */
+
+                      slot.addEventListener(
+                        'mouseenter',
+                        () => {
+
+                          if (
+                            !isCalendarDragging ||
+                            !dragStartSlot
+                          ) {
+                            return;
+                          }
+
+
+                          if (
+                            dragStartSlot.date !==
+                            currentDateKey
+                          ) {
+                            return;
+                          }
+
+
+                          if (
+                            minutes !==
+                            dragStartSlot.minutes
+                          ) {
+                            dragMoved = true;
+                          }
+
+
+                          dragCurrentSlot = {
+                            date:
+                              currentDateKey,
+
+                            minutes,
+
+                            element:
+                              slot,
+                          };
+
+
+                          const rangeStart =
+                            Math.min(
+                              dragStartSlot.minutes,
+                              minutes
+                            );
+
+                          const rangeEnd =
+                            Math.max(
+                              dragStartSlot.minutes,
+                              minutes
+                            );
 
-
-              paintCalendarRange(
-                currentDateKey,
-                rangeStart,
-                rangeEnd
-              );
-            }
-          );
-        }
+
+                          paintCalendarRange(
+                            currentDateKey,
+                            rangeStart,
+                            rangeEnd
+                          );
+                        }
+                      );
+                    }
 
 
-        /* =========================
-           EXISTING BOOKING
-        ========================= */
+                    /* =========================
+                       EXISTING BOOKING
+                    ========================= */
 
-        const booking =
-          meetingBookings.find(
-            (item) => {
+                    const booking =
+                      meetingBookings.find(
+                        (item) => {
 
-              const bookingStart =
-                timeToMinutes(
-                  item.start_time
-                );
+                          const bookingStart =
+                            timeToMinutes(
+                              item.start_time
+                            );
 
-              const bookingEnd =
-                timeToMinutes(
-                  item.end_time
-                );
+                          const bookingEnd =
+                            timeToMinutes(
+                              item.end_time
+                            );
 
 
-              return (
-                normalizeBookingDate(
-                  item.booking_date
-                ) ===
-                  currentDateKey &&
+                          return (
+                            normalizeBookingDate(
+                              item.booking_date
+                            ) ===
+                            currentDateKey &&
 
-                bookingStart !== null &&
+                            bookingStart !== null &&
 
-                bookingEnd !== null &&
+                            bookingEnd !== null &&
 
-                bookingStart <=
-                  minutes &&
+                            bookingStart <=
+                            minutes &&
 
-                bookingEnd >
-                  minutes
-              );
-            }
-          );
+                            bookingEnd >
+                            minutes
+                          );
+                        }
+                      );
 
 
-        if (
-          booking &&
-          timeToMinutes(
-            booking.start_time
-          ) === minutes
-        ) {
+                    if (
+                      booking &&
+                      timeToMinutes(
+                        booking.start_time
+                      ) === minutes
+                    ) {
 
-          const bookingElement =
-            document.createElement(
-              'div'
-            );
+                      const bookingElement =
+                        document.createElement(
+                          'div'
+                        );
 
-          bookingElement.className =
-            'calendar-booking';
+                      bookingElement.className =
+                        'calendar-booking';
 
 
-          if (booking.is_mine) {
-            bookingElement
-              .classList.add('mine');
-          }
+                      if (booking.is_mine) {
+                        bookingElement
+                          .classList.add('mine');
+                      }
 
 
-          const durationMinutes =
-            timeToMinutes(
-              booking.end_time
-            ) -
-            timeToMinutes(
-              booking.start_time
-            );
+                      const durationMinutes =
+                        timeToMinutes(
+                          booking.end_time
+                        ) -
+                        timeToMinutes(
+                          booking.start_time
+                        );
 
 
-          const slotCount =
-            Math.max(
-              1,
-              durationMinutes /
-                slotMinutes
-            );
+                      const slotCount =
+                        Math.max(
+                          1,
+                          durationMinutes /
+                          slotMinutes
+                        );
 
 
-          /*
-            גובה כל slot אצלך הוא 42px.
-          */
+                      /*
+                        גובה כל slot אצלך הוא 42px.
+                      */
 
-          bookingElement.style.height =
-            `calc(${slotCount * 42}px - 6px)`;
+                      bookingElement.style.height =
+                        `calc(${slotCount * 42}px - 6px)`;
 
 
-          if (booking.is_mine) {
+                      if (booking.is_mine) {
 
-            const createdByAdmin =
-              booking.booking_source ===
-              'admin';
+                        const createdByAdmin =
+                          booking.booking_source ===
+                          'admin';
 
 
-            bookingElement.innerHTML = `
+                        bookingElement.innerHTML = `
               <strong>
                 השריון שלי
               </strong>
 
               ${normalizeTime(
-                booking.start_time
-              )}
+                          booking.start_time
+                        )}
               –
               ${normalizeTime(
-                booking.end_time
-              )}
+                          booking.end_time
+                        )}
 
-              ${
-                createdByAdmin
-                  ? `
+              ${createdByAdmin
+                            ? `
                     <br>
                     <span class="booking-admin-label">
                       נוצר על ידי מנהל
                     </span>
                   `
-                  : ''
-              }
+                            : ''
+                          }
             `;
 
 
-            bookingElement.title =
-              `השריון שלי\n` +
-              `${normalizeTime(
-                booking.start_time
-              )}–${normalizeTime(
-                booking.end_time
-              )}` +
-              (
-                createdByAdmin
-                  ? '\nנוצר על ידי מנהל'
-                  : ''
-              ) +
-              (
-                booking.note
-                  ? `\n${booking.note}`
-                  : ''
-              );
+                        bookingElement.title =
+                          `השריון שלי\n` +
+                          `${normalizeTime(
+                            booking.start_time
+                          )}–${normalizeTime(
+                            booking.end_time
+                          )}` +
+                          (
+                            createdByAdmin
+                              ? '\nנוצר על ידי מנהל'
+                              : ''
+                          ) +
+                          (
+                            booking.note
+                              ? `\n${booking.note}`
+                              : ''
+                          );
 
-          } else {
+                      } else {
 
-            bookingElement.innerHTML = `
+                        bookingElement.innerHTML = `
               <strong>
                 תפוס
               </strong>
 
               ${normalizeTime(
-                booking.start_time
-              )}
+                          booking.start_time
+                        )}
               –
               ${normalizeTime(
-                booking.end_time
-              )}
+                          booking.end_time
+                        )}
             `;
 
 
-            bookingElement.title =
-              `תפוס\n` +
-              `${normalizeTime(
-                booking.start_time
-              )}–${normalizeTime(
-                booking.end_time
-              )}`;
-          }
+                        bookingElement.title =
+                          `תפוס\n` +
+                          `${normalizeTime(
+                            booking.start_time
+                          )}–${normalizeTime(
+                            booking.end_time
+                          )}`;
+                      }
 
 
-          slot.appendChild(
-            bookingElement
-          );
-        }
+                      slot.appendChild(
+                        bookingElement
+                      );
+                    }
 
 
-        calendar.appendChild(slot);
-      }
-    }
-  }
+                    calendar.appendChild(slot);
+                  }
+                }
+              }
 
 
-  /* =====================================
-     MOUSE UP
-  ===================================== */
+              /* =====================================
+                 MOUSE UP
+              ===================================== */
 
-  document.addEventListener(
-    'mouseup',
-    () => {
+              document.addEventListener(
+                'mouseup',
+                () => {
 
-      if (
-        !isCalendarDragging ||
-        !dragStartSlot
-      ) {
-        return;
-      }
-
-
-      isCalendarDragging = false;
+                  if (
+                    !isCalendarDragging ||
+                    !dragStartSlot
+                  ) {
+                    return;
+                  }
 
 
-      const start =
-        dragStartSlot;
-
-      const end =
-        dragCurrentSlot ||
-        dragStartSlot;
+                  isCalendarDragging = false;
 
 
-      /* DRAG */
+                  const start =
+                    dragStartSlot;
 
-      if (dragMoved) {
-
-        if (
-          start.date === end.date
-        ) {
-          finishCalendarRange(
-            start.date,
-            start.minutes,
-            end.minutes
-          );
-        } else {
-          clearCalendarSelection();
-
-          selectedStartSlot =
-            null;
-        }
+                  const end =
+                    dragCurrentSlot ||
+                    dragStartSlot;
 
 
-        dragStartSlot = null;
-        dragCurrentSlot = null;
-        dragMoved = false;
+                  /* DRAG */
 
-        return;
-      }
+                  if (dragMoved) {
 
+                    if (
+                      start.date === end.date
+                    ) {
+                      finishCalendarRange(
+                        start.date,
+                        start.minutes,
+                        end.minutes
+                      );
+                    } else {
+                      clearCalendarSelection();
 
-      /* SINGLE CLICK */
-
-if (!selectedStartSlot) {
-
-  finishCalendarRange(
-    start.date,
-    start.minutes,
-    start.minutes + slotMinutes
-  );
-
-  dragStartSlot = null;
-  dragCurrentSlot = null;
-  dragMoved = false;
-
-  return;
-}
+                      selectedStartSlot =
+                        null;
+                    }
 
 
-      /*
-        לחיצה שנייה באותו יום
-        סוגרת את הטווח.
-      */
+                    dragStartSlot = null;
+                    dragCurrentSlot = null;
+                    dragMoved = false;
 
-      if (
-        selectedStartSlot.date !==
-        start.date
-      ) {
-
-        setFirstClickSelection(
-          start.date,
-          start.minutes,
-          start.element
-        );
-
-        dragStartSlot = null;
-        dragCurrentSlot = null;
-
-        return;
-      }
+                    return;
+                  }
 
 
-      finishCalendarRange(
-        start.date,
-        selectedStartSlot.minutes,
-        start.minutes
-      );
+                  /* SINGLE CLICK */
+
+                  if (!selectedStartSlot) {
+
+                    finishCalendarRange(
+                      start.date,
+                      start.minutes,
+                      start.minutes + slotMinutes
+                    );
+
+                    dragStartSlot = null;
+                    dragCurrentSlot = null;
+                    dragMoved = false;
+
+                    return;
+                  }
 
 
-      dragStartSlot = null;
-      dragCurrentSlot = null;
-      dragMoved = false;
-    }
-  );
+                  /*
+                    לחיצה שנייה באותו יום
+                    סוגרת את הטווח.
+                  */
+
+                  if (
+                    selectedStartSlot.date !==
+                    start.date
+                  ) {
+
+                    setFirstClickSelection(
+                      start.date,
+                      start.minutes,
+                      start.element
+                    );
+
+                    dragStartSlot = null;
+                    dragCurrentSlot = null;
+
+                    return;
+                  }
 
 
-  /* =====================================
-     WEEK NAVIGATION
-  ===================================== */
-
-  document
-    .getElementById('previousWeek')
-    ?.addEventListener(
-      'click',
-      () => {
-
-        closeBookingPopup();
-
-        displayedWeekStart =
-          addDays(
-            displayedWeekStart,
-            -7
-          );
-
-        renderCalendar();
-      }
-    );
+                  finishCalendarRange(
+                    start.date,
+                    selectedStartSlot.minutes,
+                    start.minutes
+                  );
 
 
-  document
-    .getElementById('nextWeek')
-    ?.addEventListener(
-      'click',
-      () => {
-
-        closeBookingPopup();
-
-        displayedWeekStart =
-          addDays(
-            displayedWeekStart,
-            7
-          );
-
-        renderCalendar();
-      }
-    );
+                  dragStartSlot = null;
+                  dragCurrentSlot = null;
+                  dragMoved = false;
+                }
+              );
 
 
-  document
-    .getElementById('currentWeek')
-    ?.addEventListener(
-      'click',
-      () => {
+              /* =====================================
+                 WEEK NAVIGATION
+              ===================================== */
 
-        closeBookingPopup();
+              document
+                .getElementById('previousWeek')
+                ?.addEventListener(
+                  'click',
+                  () => {
 
-        displayedWeekStart =
-          getStartOfWeek(
-            new Date()
-          );
+                    closeBookingPopup();
 
-        renderCalendar();
-      }
-    );
+                    displayedWeekStart =
+                      addDays(
+                        displayedWeekStart,
+                        -7
+                      );
+
+                    renderCalendar();
+                  }
+                );
 
 
-  /* =====================================
-     INIT
-  ===================================== */
+              document
+                .getElementById('nextWeek')
+                ?.addEventListener(
+                  'click',
+                  () => {
 
-  renderCalendar();
-</script>
+                    closeBookingPopup();
+
+                    displayedWeekStart =
+                      addDays(
+                        displayedWeekStart,
+                        7
+                      );
+
+                    renderCalendar();
+                  }
+                );
+
+
+              document
+                .getElementById('currentWeek')
+                ?.addEventListener(
+                  'click',
+                  () => {
+
+                    closeBookingPopup();
+
+                    displayedWeekStart =
+                      getStartOfWeek(
+                        new Date()
+                      );
+
+                    renderCalendar();
+                  }
+                );
+
+
+              /* =====================================
+                 INIT
+              ===================================== */
+
+              renderCalendar();
+            </script>
