@@ -1879,8 +1879,9 @@ openAdminTab(
 
     const adminEndTimeInput =
       document.getElementById('admin_end_time');
-const adminPopupStartTime =
-  document.getElementById(
+
+      const adminPopupStartTime =
+    document.getElementById(
     'adminPopupStartTime'
   );
     const adminBookingPopupOverlay =
@@ -2264,65 +2265,79 @@ function syncAdminRoomSelect(roomFloor) {
   }
 }
 
-    function openAdminBookingPopup(
+  function openAdminBookingPopup(
+  date,
+  startMinutes,
+  endMinutes
+) {
+  if (
+    !adminBookingPopupOverlay ||
+    !adminBookingDateInput ||
+    !adminStartTimeInput ||
+    !adminEndTimeInput
+  ) {
+    console.error(
+      'Admin booking popup elements are missing'
+    );
+
+    return;
+  }
+
+  adminBookingDateInput.value = date;
+
+  adminStartTimeInput.value =
+    adminMinutesToTime(startMinutes);
+
+  // ממלא את בחירת שעת ההתחלה
+  if (adminPopupStartTime) {
+    fillAdminStartTimeOptions(
       date,
-      startMinutes,
-      endMinutes
-    ) {
-      adminBookingDateInput.value =
-        date;
+      startMinutes
+    );
 
-adminStartTimeInput.value =
-  adminMinutesToTime(startMinutes);
+    adminPopupStartTime.value =
+      adminMinutesToTime(startMinutes);
+  }
 
-fillAdminStartTimeOptions(
-  date,
-  startMinutes
-);
+  // ממלא שעות סיום אפשריות
+  fillAdminEndTimeOptions(
+    date,
+    startMinutes
+  );
 
-fillAdminEndTimeOptions(
-  date,
-  startMinutes
-);
+  const wantedEnd =
+    adminMinutesToTime(endMinutes);
 
+  const endExists =
+    Array.from(
+      adminEndTimeInput.options
+    ).some(
+      option =>
+        option.value === wantedEnd
+    );
 
-      /*
-        אם הטווח הגיע מגרירה בדסקטופ,
-        ננסה לבחור את שעת הסיום שנגררה.
-      */
+  if (endExists) {
+    adminEndTimeInput.value =
+      wantedEnd;
+  }
 
-      const wantedEnd =
-        adminMinutesToTime(endMinutes);
+  if (adminBookingPopupDate) {
+    adminBookingPopupDate.textContent =
+      formatAdminSelectedDate(date);
+  }
 
-      const endExists =
-        Array
-          .from(adminEndTimeInput.options)
-          .some(
-            option =>
-              option.value === wantedEnd
-          );
+  if (adminBookingPopupTime) {
+    adminBookingPopupTime.textContent =
+      `${adminMinutesToTime(startMinutes)}–` +
+      `${adminEndTimeInput.value}`;
+  }
 
-      if (endExists) {
-        adminEndTimeInput.value =
-          wantedEnd;
-      }
+  adminBookingPopupOverlay
+    .classList.add('open');
 
-
-      adminBookingPopupDate.textContent =
-        formatAdminSelectedDate(date);
-
-      adminBookingPopupTime.textContent =
-        `${adminMinutesToTime(startMinutes)}–` +
-        `${adminEndTimeInput.value}`;
-
-
-      adminBookingPopupOverlay
-        .classList.add('open');
-
-      document.body.style.overflow =
-        'hidden';
-    }
-
+  document.body.style.overflow =
+    'hidden';
+}
 
     function closeAdminBookingPopup(
       clearSelection = true
@@ -2336,7 +2351,9 @@ fillAdminEndTimeOptions(
         clearAdminCalendarSelection();
       }
     }
-adminPopupStartTime
+
+
+    adminPopupStartTime
   ?.addEventListener(
     'change',
     () => {
@@ -2500,64 +2517,76 @@ adminPopupStartTime
       }
     );
 
-    function finishAdminCalendarRange(
+  function finishAdminCalendarRange(
+  date,
+  firstMinutes,
+  lastMinutes
+) {
+  const startMinutes =
+    Math.min(firstMinutes, lastMinutes);
+
+  // לחיצה בודדת = שעה כברירת מחדל
+  let endMinutes;
+
+  if (firstMinutes === lastMinutes) {
+    endMinutes = startMinutes + 60;
+  } else {
+    endMinutes =
+      Math.max(firstMinutes, lastMinutes) +
+      adminSlotMinutes;
+  }
+
+  // לא לעבור את סוף היום
+  endMinutes = Math.min(
+    endMinutes,
+    adminCalendarEndHour * 60
+  );
+
+  // אם השעה המלאה נתקלת בשריון,
+  // ננסה לפחות חצי שעה
+  if (
+    adminRangeHasBooking(
       date,
-      firstMinutes,
-      lastMinutes
+      startMinutes,
+      endMinutes
+    )
+  ) {
+    const halfHourEnd =
+      startMinutes + adminSlotMinutes;
+
+    if (
+      !adminRangeHasBooking(
+        date,
+        startMinutes,
+        halfHourEnd
+      )
     ) {
-      const startMinutes =
-        Math.min(
-          firstMinutes,
-          lastMinutes
-        );
-
-const isSingleSlot =
-  firstMinutes === lastMinutes;
-
-const endMinutes =
-  isSingleSlot
-    ? startMinutes + 60
-    : Math.max(
-        firstMinutes,
-        lastMinutes
-      ) + adminSlotMinutes;
-
-      if (
-        adminRangeHasBooking(
-          date,
-          startMinutes,
-          endMinutes
-        )
-      ) {
-        clearAdminCalendarSelection();
-
-        alert(
-          'חלק מהטווח שבחרת כבר תפוס.'
-        );
-
-        return;
-      }
-
-
+      endMinutes = halfHourEnd;
+    } else {
       clearAdminCalendarSelection();
 
-      highlightAdminRange(
-        date,
-        startMinutes,
-        endMinutes
-      );
+      alert('השעה שבחרת כבר תפוסה.');
 
-
-      adminSelectedStartSlot = null;
-
-
-      openAdminBookingPopup(
-        date,
-        startMinutes,
-        endMinutes
-      );
+      return;
     }
-    
+  }
+
+  clearAdminCalendarSelection();
+
+  highlightAdminRange(
+    date,
+    startMinutes,
+    endMinutes
+  );
+
+  adminSelectedStartSlot = null;
+
+  openAdminBookingPopup(
+    date,
+    startMinutes,
+    endMinutes
+  );
+}
     /* =========================
            סינון טבלת השריונים
         ========================= */
