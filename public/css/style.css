@@ -2747,3 +2747,294 @@ align-self: center;
   cursor: pointer;
   font: inherit;
 }
+
+@media (max-width: 900px) {
+
+  .weekly-calendar-wrap {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .weekly-calendar {
+    grid-template-columns:
+      58px repeat(7, minmax(100px, 1fr));
+
+    min-width: 758px;
+  }
+
+  /* עמודת השעות נשארת קבועה בזמן גלילה */
+  .calendar-time-label {
+    position: sticky;
+    right: 0;
+    z-index: 20;
+
+    background: #fcfbff;
+
+    box-shadow:
+      -4px 0 8px rgba(30, 27, 60, 0.05);
+  }
+
+  /* הפינה העליונה של עמודת השעות */
+  .calendar-corner {
+    position: sticky;
+    right: 0;
+    z-index: 30;
+
+    background: #fbfaff;
+
+    box-shadow:
+      -4px 0 8px rgba(30, 27, 60, 0.05);
+  }
+}
+
+/* =====================================
+   BOOKING POPUP
+===================================== */
+
+.booking-popup-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(10, 10, 25, .28);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity .18s ease,
+    visibility .18s ease;
+}
+
+.booking-popup-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+.booking-popup {
+  width: min(420px, 100%);
+
+  padding: 24px;
+
+  background: var(--cream);
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 20px;
+
+  box-shadow:
+    0 22px 70px rgba(15, 15, 35, .22);
+
+  transform: translateY(10px) scale(.98);
+
+  transition: transform .18s ease;
+}
+
+.booking-popup-overlay.open .booking-popup {
+  transform: translateY(0) scale(1);
+}
+
+
+.booking-popup-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.booking-popup-head h3 {
+  margin: 4px 0 0;
+}
+
+
+.booking-popup-close {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: var(--ink);
+
+  font-size: 1.7rem;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.booking-popup-close:hover {
+  background: var(--stone);
+}
+
+
+.booking-popup-time {
+  display: grid;
+  gap: 5px;
+
+  margin-bottom: 20px;
+  padding: 15px 16px;
+
+  background: var(--stone);
+
+  border-radius: 12px;
+}
+
+.booking-popup-time strong {
+  font-size: 1rem;
+}
+
+.booking-popup-time span {
+  color: var(--ink-soft);
+  font-size: .9rem;
+}
+
+
+.booking-popup-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 8px;
+}
+/* =====================================
+   MOBILE CALENDAR
+===================================== */
+
+@media (max-width: 900px) {
+
+  .weekly-calendar-wrap {
+    position: relative;
+
+    width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  .weekly-calendar {
+    grid-template-columns:
+      58px repeat(7, minmax(100px, 1fr));
+
+    min-width: 758px;
+  }
+
+
+  /* =========================
+     STICKY TIME COLUMN
+  ========================= */
+
+  .calendar-time-label {
+    position: sticky;
+
+    right: 0;
+
+    z-index: 20;
+
+    background: #fcfbff;
+
+    box-shadow:
+      -5px 0 10px rgba(30, 27, 60, .055);
+  }
+
+
+  .calendar-corner {
+    position: sticky;
+
+    right: 0;
+
+    z-index: 30;
+
+    background: #fbfaff;
+
+    box-shadow:
+      -5px 0 10px rgba(30, 27, 60, .055);
+  }
+
+
+  /* =========================
+     BOTTOM SHEET
+  ========================= */
+
+  .booking-popup-overlay {
+    align-items: flex-end;
+
+    padding: 0;
+
+    background: rgba(10, 10, 25, .35);
+  }
+
+
+  .booking-popup {
+    width: 100%;
+    max-width: none;
+
+    padding:
+      22px
+      20px
+      calc(22px + env(safe-area-inset-bottom));
+
+    border-radius: 22px 22px 0 0;
+
+    transform: translateY(100%);
+  }
+
+
+  .booking-popup-overlay.open .booking-popup {
+    transform: translateY(0);
+  }
+
+
+  .booking-popup::before {
+    content: "";
+
+    display: block;
+
+    width: 42px;
+    height: 4px;
+
+    margin:
+      -8px auto
+      18px;
+
+    border-radius: 999px;
+
+    background: var(--stone-dark);
+  }
+
+
+  .booking-popup-actions {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .booking-popup-actions .btn {
+    width: 100%;
+  }
+}
