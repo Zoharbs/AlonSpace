@@ -258,6 +258,7 @@ await query(`
     idx_meeting_bookings_created_by
   ON meeting_bookings(created_by_user_id);
 `);
+
   await seedAdmin();
   await seedGallery();
   await seedTestimonials();
