@@ -1971,24 +1971,5 @@ router.post(
     }
   }
 );
-let adminBookingSubmitting = false;
 
-adminBookingForm?.addEventListener('submit', (event) => {
-  if (adminBookingSubmitting) {
-    event.preventDefault();
-    return;
-  }
-
-  adminBookingSubmitting = true;
-
-  const submitButton =
-    adminBookingForm.querySelector(
-      'button[type="submit"]'
-    );
-
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.textContent = 'יוצר שריון...';
-  }
-});
 module.exports = router;

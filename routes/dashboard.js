@@ -178,6 +178,7 @@ const shouldShowSurvey =
           mb.id,
           mb.user_id,
           mb.booking_date,
+          mb.booking_source,
           mb.start_time,
           mb.end_time,
           mb.note,
