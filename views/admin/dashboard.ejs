@@ -1752,17 +1752,6 @@
       });
     });
 
-    const pageHash = window.location.hash.replace('#', '');
-
-    if (pageHash) {
-      const matchingButton = document.querySelector(
-        `.tab-btn[data-tab="${pageHash}"]`
-      );
-
-      if (matchingButton) {
-        matchingButton.click();
-      }
-    }
 
 
     /* =========================
@@ -3037,6 +3026,23 @@
     selectAdminRoom(
       selectedAdminRoomFloor
     );
+    /* =========================
+   פתיחת טאב לפי ה-URL
+========================= */
+
+const pageHash =
+  window.location.hash.replace('#', '');
+
+if (pageHash) {
+  const matchingButton =
+    document.querySelector(
+      `.tab-btn[data-tab="${pageHash}"]`
+    );
+
+  if (matchingButton) {
+    matchingButton.click();
+  }
+}
   </script>
 
 
