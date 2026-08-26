@@ -1725,34 +1725,81 @@
 
   <script>
     /* =========================
-       טאבים
-    ========================= */
+   ADMIN TABS
+========================= */
 
-    document.querySelectorAll('.tab-btn').forEach((button) => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach((item) => {
-          item.classList.remove('active');
-        });
+function openAdminTab(tabName, updateHash = true) {
 
-        document.querySelectorAll('.tab-panel').forEach((panel) => {
-          panel.classList.remove('active');
-        });
+  const buttons =
+    document.querySelectorAll('.tab-btn');
 
-        button.classList.add('active');
+  const panels =
+    document.querySelectorAll('.tab-panel');
 
-        const panel = document.getElementById(
-          'tab-' + button.dataset.tab
+  const targetButton =
+    document.querySelector(
+      `.tab-btn[data-tab="${tabName}"]`
+    );
+
+  const targetPanel =
+    document.getElementById(
+      `tab-${tabName}`
+    );
+
+  if (!targetButton || !targetPanel) {
+    return;
+  }
+
+  buttons.forEach((button) => {
+    button.classList.remove('active');
+  });
+
+  panels.forEach((panel) => {
+    panel.classList.remove('active');
+  });
+
+  targetButton.classList.add('active');
+  targetPanel.classList.add('active');
+
+  if (updateHash) {
+    history.replaceState(
+      null,
+      '',
+      `#${tabName}`
+    );
+  }
+}
+
+
+document
+  .querySelectorAll('.tab-btn')
+  .forEach((button) => {
+
+    button.addEventListener(
+      'click',
+      (event) => {
+
+        event.preventDefault();
+
+        openAdminTab(
+          button.dataset.tab
         );
-
-        if (panel) {
-          panel.classList.add('active');
-        }
-
-        window.location.hash = button.dataset.tab;
-      });
-    });
+      }
+    );
+  });
 
 
+/* פתיחת הטאב הנכון בטעינת העמוד */
+
+const initialAdminTab =
+  window.location.hash === '#meeting-room'
+    ? 'meeting-room'
+    : 'clients';
+
+openAdminTab(
+  initialAdminTab,
+  false
+);
 
     /* =========================
        נתוני השריונים
