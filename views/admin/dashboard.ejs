@@ -2006,27 +2006,23 @@ openAdminTab(
       );
     }
 
-    function syncAdminRoomSelect(roomFloor) {
-      if (!adminRoomSelect) {
-        return;
-      }
+function syncAdminRoomSelect(roomFloor) {
+  if (!adminRoomSelect) {
+    return;
+  }
 
-      const room =
-    <% - JSON.stringify(meetingRooms || [])
-          .replace(/</g, '\\u003c') %>
-      .find(
-            item =>
-              String(item.floor) ===
-              String(roomFloor)
-          );
+  const adminMeetingRooms =
+    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
+  const room = adminMeetingRooms.find(
+    (item) =>
+      String(item.floor) === String(roomFloor)
+  );
 
-      if (room) {
-        adminRoomSelect.value =
-          room.id;
-      }
-    }
-
+  if (room) {
+    adminRoomSelect.value = room.id;
+  }
+}
 
     function clearAdminCalendarSelection() {
       adminSelectedStartSlot = null;
@@ -3073,23 +3069,7 @@ openAdminTab(
     selectAdminRoom(
       selectedAdminRoomFloor
     );
-    /* =========================
-   פתיחת טאב לפי ה-URL
-========================= */
-
-const pageHash =
-  window.location.hash.replace('#', '');
-
-if (pageHash) {
-  const matchingButton =
-    document.querySelector(
-      `.tab-btn[data-tab="${pageHash}"]`
-    );
-
-  if (matchingButton) {
-    matchingButton.click();
-  }
-}
+    
   </script>
 
 
