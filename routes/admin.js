@@ -1549,8 +1549,8 @@ await client.query(
       $4,
       $5,
       $6,
+      'included',
       $7,
-      $8,
       'admin'
     )
   `,
@@ -1561,7 +1561,6 @@ await client.query(
     start_time,
     end_time,
     String(note || '').trim() || null,
-    billingStatus,
     req.session.userId
   ]
 );
