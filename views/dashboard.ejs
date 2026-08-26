@@ -361,14 +361,15 @@
         border-bottom: 0;
       }
 
-      .calendar-slot.selected-start {
-        background: #e8d49a;
-        box-shadow: inset 0 0 0 2px var(--oak-dark);
-      }
+      .calendar-slot.selected-start,
+.calendar-slot.selected-range {
+  background: #ebe8ff;
+}
 
-      .calendar-slot.selected-range {
-        background: #f3e7bd;
-      }
+.calendar-slot.selected-start {
+  box-shadow:
+    inset 3px 0 0 #7865f6;
+}
 
       .onboarding-survey-card {
         display: flex;
@@ -968,6 +969,44 @@ main > section:first-child .tenant-summary {
 
   color: #6657d9;
 }
+.booking-popup-time-editor {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 7px;
+}
+
+.booking-popup-time-editor select {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: auto;
+
+  padding: 2px 4px;
+
+  border: 0;
+  border-bottom: 1px dashed rgba(30, 30, 45, .3);
+  border-radius: 0;
+
+  background: transparent;
+
+  color: inherit;
+
+  font: inherit;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.booking-popup-time-editor select:focus {
+  outline: none;
+  border-bottom-color: var(--oak);
+}
+
+.booking-time-separator {
+  opacity: .65;
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -1215,33 +1254,30 @@ main > section:first-child .tenant-summary {
     </div>
 
 
-    <div class="booking-popup-time">
+<div class="booking-popup-time">
 
-      <strong id="bookingPopupDate"></strong>
+  <strong id="bookingPopupDate"></strong>
 
-      <span id="bookingPopupTime"></span>
+  <div class="booking-popup-time-editor">
 
-    </div>
+    <select
+      id="bookingMobileStart"
+      aria-label="שעת התחלה"
+    ></select>
 
-<div class="booking-mobile-time-fields">
+    <span class="booking-time-separator">
+      –
+    </span>
 
-  <div class="field">
-    <label for="bookingMobileStart">
-      משעה
-    </label>
+    <select
+      id="bookingMobileEnd"
+      aria-label="שעת סיום"
+    ></select>
 
-    <select id="bookingMobileStart"></select>
-  </div>
-
-  <div class="field">
-    <label for="bookingMobileEnd">
-      עד שעה
-    </label>
-
-    <select id="bookingMobileEnd"></select>
   </div>
 
 </div>
+
     <form
       method="POST"
       action="/dashboard/meeting-bookings/create"
@@ -1603,70 +1639,152 @@ let touchStartY = 0;
     );
   }
 
-  function fillMobileTimeOptions(
+function fillMobileTimeOptions(
   selectedStartMinutes,
   selectedEndMinutes
 ) {
+  bookingMobileStart.innerHTML = '';
+  bookingMobileEnd.innerHTML = '';
+
+  /*
+    שעות התחלה
+  */
+  for (
+    let minutes = calendarStartHour * 60;
+    minutes < calendarEndHour * 60;
+    minutes += slotMinutes
+  ) {
+    const option =
+      document.createElement('option');
+
+    option.value =
+      minutesToTime(minutes);
+
+    option.textContent =
+      minutesToTime(minutes);
+
+    option.selected =
+      minutes === selectedStartMinutes;
+
+    bookingMobileStart.appendChild(
+      option
+    );
+  }
+
+
+  /*
+    שעות סיום
+  */
+  for (
+    let minutes =
+      calendarStartHour * 60 + slotMinutes;
+
+    minutes <= calendarEndHour * 60;
+
+    minutes += slotMinutes
+  ) {
+    const option =
+      document.createElement('option');
+
+    option.value =
+      minutesToTime(minutes);
+
+    option.textContent =
+      minutesToTime(minutes);
+
+    option.selected =
+      minutes === selectedEndMinutes;
+
+    bookingMobileEnd.appendChild(
+      option
+    );
+  }
+}
+
+function updateBookingTimesFromPopup() {
+  const startMinutes =
+    timeToMinutes(
+      bookingMobileStart.value
+    );
+
+  const endMinutes =
+    timeToMinutes(
+      bookingMobileEnd.value
+    );
+
   if (
-    !bookingMobileStart ||
-    !bookingMobileEnd
+    startMinutes === null ||
+    endMinutes === null
   ) {
     return;
   }
 
-  bookingMobileStart.innerHTML = '';
-  bookingMobileEnd.innerHTML = '';
 
-  for (
-    let minutes = calendarStartHour * 60;
-    minutes <= calendarEndHour * 60;
-    minutes += slotMinutes
-  ) {
-    const time =
-      minutesToTime(minutes);
+  if (endMinutes <= startMinutes) {
+    alert(
+      'שעת הסיום חייבת להיות אחרי שעת ההתחלה.'
+    );
 
-    /*
-      START לא יכול להיות 21:00,
-      כי חייב להישאר לפחות slot אחד.
-    */
-    if (minutes < calendarEndHour * 60) {
-      const startOption =
-        document.createElement('option');
+    fillMobileTimeOptions(
+      timeToMinutes(startTimeInput.value),
+      timeToMinutes(endTimeInput.value)
+    );
 
-      startOption.value = time;
-      startOption.textContent = time;
-
-      bookingMobileStart.appendChild(
-        startOption
-      );
-    }
-
-    /*
-      END מתחיל לפחות ב-08:30.
-    */
-    if (
-      minutes >
-      calendarStartHour * 60
-    ) {
-      const endOption =
-        document.createElement('option');
-
-      endOption.value = time;
-      endOption.textContent = time;
-
-      bookingMobileEnd.appendChild(
-        endOption
-      );
-    }
+    return;
   }
 
-  bookingMobileStart.value =
-    minutesToTime(selectedStartMinutes);
 
-  bookingMobileEnd.value =
-    minutesToTime(selectedEndMinutes);
+  const date =
+    bookingDateInput.value;
+
+
+  if (
+    rangeHasBooking(
+      date,
+      startMinutes,
+      endMinutes
+    )
+  ) {
+    alert(
+      'חלק מהטווח שבחרת כבר תפוס.'
+    );
+
+    fillMobileTimeOptions(
+      timeToMinutes(startTimeInput.value),
+      timeToMinutes(endTimeInput.value)
+    );
+
+    return;
+  }
+
+
+  startTimeInput.value =
+    minutesToTime(startMinutes);
+
+  endTimeInput.value =
+    minutesToTime(endMinutes);
+
+
+  paintCalendarRange(
+    date,
+    startMinutes,
+    endMinutes - slotMinutes
+  );
 }
 
+
+bookingMobileStart
+  ?.addEventListener(
+    'change',
+    updateBookingTimesFromPopup
+  );
+
+
+bookingMobileEnd
+  ?.addEventListener(
+    'change',
+    updateBookingTimesFromPopup
+  );
 
 function updateBookingFromMobileTimes() {
   if (
@@ -1870,9 +1988,7 @@ fillMobileTimeOptions(
     bookingPopupDate.textContent =
       formatSelectedDate(date);
 
-    bookingPopupTime.textContent =
-      `${minutesToTime(startMinutes)}–` +
-      `${minutesToTime(endMinutes)}`;
+
 
 
     bookingPopupOverlay
@@ -2610,7 +2726,7 @@ if (!selectedStartSlot) {
   finishCalendarRange(
     start.date,
     start.minutes,
-    start.minutes
+    start.minutes + slotMinutes
   );
 
   dragStartSlot = null;

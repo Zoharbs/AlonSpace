@@ -271,9 +271,25 @@
       z-index: 5;
     }
 
-    .calendar-day-header.today {
-      background: #e8dfc6;
-    }
+.calendar-day-header.today {
+  background: #f8f6ff;
+}
+
+.calendar-day-header.today::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: 0;
+  left: 22%;
+  right: 22%;
+
+  height: 3px;
+
+  border-radius: 10px 10px 0 0;
+
+  background: #7865f6;
+}
 
     .calendar-day-name {
       display: block;
@@ -304,9 +320,9 @@
       transition: background .15s ease;
     }
 
-    .calendar-slot:hover {
-      background: #f5edd8;
-    }
+.calendar-slot:not(.past):hover {
+  background: #faf9ff;
+}
 
     .calendar-slot.past {
       background: #eceae4;
@@ -328,8 +344,12 @@
       z-index: 3;
       padding: 5px 7px;
       border-radius: 7px;
-      background: var(--ink);
-      color: var(--cream);
+background: #e7e3ff;
+color: #302a65;
+
+box-shadow:
+  inset 3px 0 0 #7865f6,
+  0 2px 7px rgba(30, 28, 55, 0.05);
       font-size: .72rem;
       line-height: 1.25;
       overflow: hidden;
