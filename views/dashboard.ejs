@@ -1223,7 +1223,25 @@ main > section:first-child .tenant-summary {
 
     </div>
 
+<div class="booking-mobile-time-fields">
 
+  <div class="field">
+    <label for="bookingMobileStart">
+      משעה
+    </label>
+
+    <select id="bookingMobileStart"></select>
+  </div>
+
+  <div class="field">
+    <label for="bookingMobileEnd">
+      עד שעה
+    </label>
+
+    <select id="bookingMobileEnd"></select>
+  </div>
+
+</div>
     <form
       method="POST"
       action="/dashboard/meeting-bookings/create"
@@ -1416,7 +1434,11 @@ main > section:first-child .tenant-summary {
   const bookingPopupTime =
     document.getElementById('bookingPopupTime');
 
+const bookingMobileStart =
+  document.getElementById('bookingMobileStart');
 
+const bookingMobileEnd =
+  document.getElementById('bookingMobileEnd');
   /* =====================================
      SETTINGS
   ===================================== */
@@ -1452,7 +1474,8 @@ main > section:first-child .tenant-summary {
 
   let dragMoved = false;
 
-
+let touchStartX = 0;
+let touchStartY = 0;
   /* =====================================
      HELPERS
   ===================================== */
@@ -1580,6 +1603,160 @@ main > section:first-child .tenant-summary {
     );
   }
 
+  function fillMobileTimeOptions(
+  selectedStartMinutes,
+  selectedEndMinutes
+) {
+  if (
+    !bookingMobileStart ||
+    !bookingMobileEnd
+  ) {
+    return;
+  }
+
+  bookingMobileStart.innerHTML = '';
+  bookingMobileEnd.innerHTML = '';
+
+  for (
+    let minutes = calendarStartHour * 60;
+    minutes <= calendarEndHour * 60;
+    minutes += slotMinutes
+  ) {
+    const time =
+      minutesToTime(minutes);
+
+    /*
+      START לא יכול להיות 21:00,
+      כי חייב להישאר לפחות slot אחד.
+    */
+    if (minutes < calendarEndHour * 60) {
+      const startOption =
+        document.createElement('option');
+
+      startOption.value = time;
+      startOption.textContent = time;
+
+      bookingMobileStart.appendChild(
+        startOption
+      );
+    }
+
+    /*
+      END מתחיל לפחות ב-08:30.
+    */
+    if (
+      minutes >
+      calendarStartHour * 60
+    ) {
+      const endOption =
+        document.createElement('option');
+
+      endOption.value = time;
+      endOption.textContent = time;
+
+      bookingMobileEnd.appendChild(
+        endOption
+      );
+    }
+  }
+
+  bookingMobileStart.value =
+    minutesToTime(selectedStartMinutes);
+
+  bookingMobileEnd.value =
+    minutesToTime(selectedEndMinutes);
+}
+
+
+function updateBookingFromMobileTimes() {
+  if (
+    !bookingMobileStart ||
+    !bookingMobileEnd
+  ) {
+    return;
+  }
+
+  const startMinutes =
+    timeToMinutes(
+      bookingMobileStart.value
+    );
+
+  const endMinutes =
+    timeToMinutes(
+      bookingMobileEnd.value
+    );
+
+  if (
+    startMinutes === null ||
+    endMinutes === null
+  ) {
+    return;
+  }
+
+  if (endMinutes <= startMinutes) {
+    alert(
+      'שעת הסיום חייבת להיות אחרי שעת ההתחלה.'
+    );
+
+    bookingMobileStart.value =
+      startTimeInput.value;
+
+    bookingMobileEnd.value =
+      endTimeInput.value;
+
+    return;
+  }
+
+  const date =
+    bookingDateInput.value;
+
+  if (
+    rangeHasBooking(
+      date,
+      startMinutes,
+      endMinutes
+    )
+  ) {
+    alert(
+      'חלק מהטווח שבחרת כבר תפוס.'
+    );
+
+    bookingMobileStart.value =
+      startTimeInput.value;
+
+    bookingMobileEnd.value =
+      endTimeInput.value;
+
+    return;
+  }
+
+  startTimeInput.value =
+    minutesToTime(startMinutes);
+
+  endTimeInput.value =
+    minutesToTime(endMinutes);
+
+  bookingPopupTime.textContent =
+    `${minutesToTime(startMinutes)}–` +
+    `${minutesToTime(endMinutes)}`;
+
+  paintCalendarRange(
+    date,
+    startMinutes,
+    endMinutes - slotMinutes
+  );
+}
+
+
+bookingMobileStart?.addEventListener(
+  'change',
+  updateBookingFromMobileTimes
+);
+
+bookingMobileEnd?.addEventListener(
+  'change',
+  updateBookingFromMobileTimes
+);
 
   /* =====================================
      SELECTION
@@ -1685,7 +1862,10 @@ main > section:first-child .tenant-summary {
 
     endTimeInput.value =
       minutesToTime(endMinutes);
-
+fillMobileTimeOptions(
+  startMinutes,
+  endMinutes
+);
 
     bookingPopupDate.textContent =
       formatSelectedDate(date);
@@ -2016,7 +2196,69 @@ main > section:first-child .tenant-summary {
           );
 
         } else {
+/* =========================
+   MOBILE TAP
+========================= */
 
+slot.addEventListener(
+  'touchstart',
+  (event) => {
+    const touch =
+      event.touches[0];
+
+    touchStartX =
+      touch.clientX;
+
+    touchStartY =
+      touch.clientY;
+  },
+  {
+    passive: true
+  }
+);
+
+slot.addEventListener(
+  'touchend',
+  (event) => {
+    const touch =
+      event.changedTouches[0];
+
+    const movedX =
+      Math.abs(
+        touch.clientX -
+        touchStartX
+      );
+
+    const movedY =
+      Math.abs(
+        touch.clientY -
+        touchStartY
+      );
+
+    /*
+      הייתה תנועה של האצבע:
+      המשתמש גלל את הלוח/העמוד.
+    */
+    if (
+      movedX > 10 ||
+      movedY > 10
+    ) {
+      return;
+    }
+
+    /*
+      Tap אמיתי על המשבצת.
+    */
+    finishCalendarRange(
+      currentDateKey,
+      minutes,
+      minutes
+    );
+  },
+  {
+    passive: true
+  }
+);
           /* =========================
              MOUSE DOWN
           ========================= */
