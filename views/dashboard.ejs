@@ -959,6 +959,15 @@ main > section:first-child .quota-warning {
 main > section:first-child .tenant-summary {
   margin-top: 0;
 }
+.booking-admin-label {
+  display: inline-block;
+  margin-top: 4px;
+
+  font-size: .67rem;
+  font-weight: 700;
+
+  color: #6657d9;
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -1270,7 +1279,13 @@ main > section:first-child .tenant-summary {
                                       –
                                       <%= String(booking.end_time).slice(0, 5) %>
                                   </span>
+<% if (booking.booking_source === 'admin') { %>
+  <br>
 
+  <span class="small booking-admin-label">
+    נוצר על ידי מנהל
+  </span>
+<% } %>
                                   <% if (booking.note) { %>
                                     <br>
                                     <span class="small">
@@ -1706,12 +1721,24 @@ main > section:first-child .tenant-summary {
                         `calc(${slotCount * 42}px - 6px)`;
 
                       if (booking.is_mine) {
-                        bookingElement.innerHTML = `
-                          <strong>השריון שלי</strong>
-                          ${normalizeTime(booking.start_time)}
-                          –
-                          ${normalizeTime(booking.end_time)}
-                        `;
+  const createdByAdmin =
+    booking.booking_source === 'admin';
+
+  bookingElement.innerHTML = `
+    <strong>
+      השריון שלי
+    </strong>
+
+    ${normalizeTime(booking.start_time)}
+    –
+    ${normalizeTime(booking.end_time)}
+
+    ${
+      createdByAdmin
+        ? '<br><span class="booking-admin-label">נוצר על ידי מנהל</span>'
+        : ''
+    }
+  `;
 
                         bookingElement.title =
                           `השריון שלי\n` +

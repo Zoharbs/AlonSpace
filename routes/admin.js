@@ -1494,91 +1494,41 @@ router.post('/meeting-bookings/create',
         );
       }
 
-      const usedHoursResult = await client.query(
-        `
-          SELECT
-            COALESCE(
-              SUM(
-                EXTRACT(
-                  EPOCH FROM (end_time - start_time)
-                ) / 3600
-              ),
-              0
-            )::NUMERIC AS used_hours
-          FROM meeting_bookings
-          WHERE
-            user_id = $1
-            AND TO_CHAR(
-              booking_date,
-              'YYYY-MM'
-            ) = TO_CHAR(
-              $2::DATE,
-              'YYYY-MM'
-            )
-        `,
-        [tenant.id, booking_date]
-      );
-
-      const usedHours = Number(
-        usedHoursResult.rows[0].used_hours || 0
-      );
-
-      const requestedHours =
-        (endMinutes - startMinutes) / 60;
-
-      const monthlyLimit = Number(
-        tenant.monthly_meeting_hours || 6
-      );
-
-const monthKey =
-  booking_date.slice(0, 7);
-
-const newTotalHours =
-  usedHours + requestedHours;
-
-let billingStatus = 'included';
-
-if (newTotalHours > monthlyLimit) {
-
-  const warningResult = await client.query(
-    `
-      SELECT meeting_quota_warning_month
-      FROM users
-      WHERE id = $1
-      FOR UPDATE
-    `,
-    [tenant.id]
-  );
-
-  const warningMonth =
-    warningResult.rows[0]
-      ?.meeting_quota_warning_month;
-
-  if (warningMonth !== monthKey) {
-
-    billingStatus = 'warning';
-
     await client.query(
-      `
-        UPDATE users
-        SET
-          meeting_quota_warning_month = $1,
-          updated_at = NOW()
-        WHERE id = $2
-      `,
-      [
-        monthKey,
-        tenant.id
-      ]
-    );
-
-  } else {
-
-    billingStatus = 'chargeable';
-
-  }
-}
-
+  `
+    INSERT INTO meeting_bookings (
+      user_id,
+      meeting_room_id,
+      booking_date,
+      start_time,
+      end_time,
+      note,
+      billing_status,
+      created_by_user_id,
+      booking_source
+    )
+    VALUES (
+      $1,
+      $2,
+      $3,
+      $4,
+      $5,
+      $6,
+      'included',
+      $7,
+      'admin'
+    )
+  `,
+  [
+    tenant.id,
+    room.id,
+    booking_date,
+    start_time,
+    end_time,
+    String(note || '').trim() || null,
+    req.session.userId
+  ]
+);
 await client.query(
   `
     INSERT INTO meeting_bookings (
