@@ -1529,41 +1529,7 @@ router.post('/meeting-bookings/create',
     req.session.userId
   ]
 );
-await client.query(
-  `
-    INSERT INTO meeting_bookings (
-      user_id,
-      meeting_room_id,
-      booking_date,
-      start_time,
-      end_time,
-      note,
-      billing_status,
-      created_by_user_id,
-      booking_source
-    )
-    VALUES (
-      $1,
-      $2,
-      $3,
-      $4,
-      $5,
-      $6,
-      'included',
-      $7,
-      'admin'
-    )
-  `,
-  [
-    tenant.id,
-    room.id,
-    booking_date,
-    start_time,
-    end_time,
-    String(note || '').trim() || null,
-    req.session.userId
-  ]
-);
+
 
 // רישום מפורש שהשריון נוצר על ידי אדמין
 await client.query(
