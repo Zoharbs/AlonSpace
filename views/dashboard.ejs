@@ -1374,7 +1374,7 @@
             </script>
             <script>
               const meetingBookings =
-    <% - JSON.stringify(meetingBookings || [])
+    <%- JSON.stringify(meetingBookings || [])
                   .replace(/</g, '\\u003c') %>;
 
 
@@ -1416,14 +1416,7 @@
               const bookingPopupDate =
                 document.getElementById('bookingPopupDate');
 
-              const bookingPopupTime =
-                document.getElementById('bookingPopupTime');
-
-              const bookingMobileStart =
-                document.getElementById('bookingMobileStart');
-
-              const bookingMobileEnd =
-                document.getElementById('bookingMobileEnd');
+    
               /* =====================================
                  SETTINGS
               ===================================== */
@@ -1734,96 +1727,6 @@
                   'change',
                   updateBookingTimesFromPopup
                 );
-
-              function updateBookingFromMobileTimes() {
-                if (
-                  !bookingMobileStart ||
-                  !bookingMobileEnd
-                ) {
-                  return;
-                }
-
-                const startMinutes =
-                  timeToMinutes(
-                    bookingMobileStart.value
-                  );
-
-                const endMinutes =
-                  timeToMinutes(
-                    bookingMobileEnd.value
-                  );
-
-                if (
-                  startMinutes === null ||
-                  endMinutes === null
-                ) {
-                  return;
-                }
-
-                if (endMinutes <= startMinutes) {
-                  alert(
-                    'שעת הסיום חייבת להיות אחרי שעת ההתחלה.'
-                  );
-
-                  bookingMobileStart.value =
-                    startTimeInput.value;
-
-                  bookingMobileEnd.value =
-                    endTimeInput.value;
-
-                  return;
-                }
-
-                const date =
-                  bookingDateInput.value;
-
-                if (
-                  rangeHasBooking(
-                    date,
-                    startMinutes,
-                    endMinutes
-                  )
-                ) {
-                  alert(
-                    'חלק מהטווח שבחרת כבר תפוס.'
-                  );
-
-                  bookingMobileStart.value =
-                    startTimeInput.value;
-
-                  bookingMobileEnd.value =
-                    endTimeInput.value;
-
-                  return;
-                }
-
-                startTimeInput.value =
-                  minutesToTime(startMinutes);
-
-                endTimeInput.value =
-                  minutesToTime(endMinutes);
-
-                bookingPopupTime.textContent =
-                  `${minutesToTime(startMinutes)}–` +
-                  `${minutesToTime(endMinutes)}`;
-
-                paintCalendarRange(
-                  date,
-                  startMinutes,
-                  endMinutes - slotMinutes
-                );
-              }
-
-
-              bookingMobileStart?.addEventListener(
-                'change',
-                updateBookingFromMobileTimes
-              );
-
-              bookingMobileEnd?.addEventListener(
-                'change',
-                updateBookingFromMobileTimes
-              );
 
               /* =====================================
                  SELECTION
@@ -2317,7 +2220,7 @@
                           finishCalendarRange(
                             currentDateKey,
                             minutes,
-                            minutes
+                            minutes+slotMinutes
                           );
                         },
                         {
