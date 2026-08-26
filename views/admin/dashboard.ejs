@@ -826,6 +826,46 @@
   z-index: 31;
   pointer-events: auto;
 }
+.booking-popup-time-editor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  margin-top: 12px;
+}
+
+.booking-popup-time-editor select {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: auto;
+
+  padding: 3px 6px;
+
+  border: 0;
+  border-bottom: 1px dashed rgba(30, 30, 45, .3);
+
+  background: transparent;
+
+  color: inherit;
+
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.booking-popup-time-editor select:focus {
+  outline: none;
+  border-bottom-color: #7865f6;
+}
+
+.booking-time-separator {
+  opacity: .55;
+  font-size: 1.2rem;
+}
   </style>
 </head>
 
@@ -1560,13 +1600,32 @@
                       </div>
 
 
-                      <div class="booking-popup-time">
+<div class="booking-popup-time">
 
-                        <strong id="adminBookingPopupDate"></strong>
+  <strong id="adminBookingPopupDate"></strong>
 
-                        <span id="adminBookingPopupTime"></span>
+  <div class="booking-popup-time-editor">
 
-                      </div>
+    <select
+      id="adminPopupStartTime"
+      aria-label="שעת התחלה">
+    </select>
+
+    <span class="booking-time-separator">
+      –
+    </span>
+
+    <select
+      id="admin_end_time"
+      name="end_time"
+      form="adminMeetingBookingForm"
+      required
+      aria-label="שעת סיום">
+    </select>
+
+  </div>
+
+</div>
 
 
                       <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
@@ -1619,17 +1678,6 @@
                         <input type="hidden" id="admin_start_time" name="start_time">
 
 
-                        <!-- סיום -->
-
-                        <div class="field">
-
-                          <label for="admin_end_time">
-                            שעת סיום
-                          </label>
-
-                          <select id="admin_end_time" name="end_time" required></select>
-
-                        </div>
 
 
                         <!-- הערה -->
@@ -1831,7 +1879,10 @@ openAdminTab(
 
     const adminEndTimeInput =
       document.getElementById('admin_end_time');
-
+const adminPopupStartTime =
+  document.getElementById(
+    'adminPopupStartTime'
+  );
     const adminBookingPopupOverlay =
       document.getElementById(
         'adminBookingPopupOverlay'
@@ -2176,6 +2227,42 @@ function syncAdminRoomSelect(roomFloor) {
       }
     }
 
+    function fillAdminStartTimeOptions(
+  date,
+  selectedStartMinutes
+) {
+  if (!adminPopupStartTime) {
+    return;
+  }
+
+  adminPopupStartTime.innerHTML = '';
+
+  for (
+    let minutes =
+      adminCalendarStartHour * 60;
+
+    minutes <
+      adminCalendarEndHour * 60;
+
+    minutes += adminSlotMinutes
+  ) {
+    const option =
+      document.createElement('option');
+
+    option.value =
+      adminMinutesToTime(minutes);
+
+    option.textContent =
+      adminMinutesToTime(minutes);
+
+    option.selected =
+      minutes === selectedStartMinutes;
+
+    adminPopupStartTime.appendChild(
+      option
+    );
+  }
+}
 
     function openAdminBookingPopup(
       date,
@@ -2185,14 +2272,18 @@ function syncAdminRoomSelect(roomFloor) {
       adminBookingDateInput.value =
         date;
 
-      adminStartTimeInput.value =
-        adminMinutesToTime(startMinutes);
+adminStartTimeInput.value =
+  adminMinutesToTime(startMinutes);
 
+fillAdminStartTimeOptions(
+  date,
+  startMinutes
+);
 
-      fillAdminEndTimeOptions(
-        date,
-        startMinutes
-      );
+fillAdminEndTimeOptions(
+  date,
+  startMinutes
+);
 
 
       /*
@@ -2245,7 +2336,80 @@ function syncAdminRoomSelect(roomFloor) {
         clearAdminCalendarSelection();
       }
     }
+adminPopupStartTime
+  ?.addEventListener(
+    'change',
+    () => {
 
+      const date =
+        adminBookingDateInput.value;
+
+      const newStartMinutes =
+        adminTimeToMinutes(
+          adminPopupStartTime.value
+        );
+
+      if (
+        !date ||
+        newStartMinutes === null
+      ) {
+        return;
+      }
+
+      adminStartTimeInput.value =
+        adminMinutesToTime(
+          newStartMinutes
+        );
+
+      fillAdminEndTimeOptions(
+        date,
+        newStartMinutes
+      );
+
+      /*
+        ברירת מחדל:
+        שעה אחת אחרי שעת ההתחלה.
+      */
+      const preferredEnd =
+        newStartMinutes + 60;
+
+      const preferredEndValue =
+        adminMinutesToTime(
+          preferredEnd
+        );
+
+      const preferredExists =
+        Array
+          .from(
+            adminEndTimeInput.options
+          )
+          .some(
+            option =>
+              option.value ===
+              preferredEndValue
+          );
+
+      if (preferredExists) {
+        adminEndTimeInput.value =
+          preferredEndValue;
+      }
+
+      const endMinutes =
+        adminTimeToMinutes(
+          adminEndTimeInput.value
+        );
+
+      clearAdminCalendarSelection();
+
+      if (endMinutes !== null) {
+        highlightAdminRange(
+          date,
+          newStartMinutes,
+          endMinutes
+        );
+      }
+    }
+  );
     adminEndTimeInput
       ?.addEventListener(
         'change',
@@ -2347,12 +2511,16 @@ function syncAdminRoomSelect(roomFloor) {
           lastMinutes
         );
 
-      const endMinutes =
-        Math.max(
-          firstMinutes,
-          lastMinutes
-        ) + adminSlotMinutes;
+const isSingleSlot =
+  firstMinutes === lastMinutes;
 
+const endMinutes =
+  isSingleSlot
+    ? startMinutes + 60
+    : Math.max(
+        firstMinutes,
+        lastMinutes
+      ) + adminSlotMinutes;
 
       if (
         adminRangeHasBooking(
@@ -2389,6 +2557,7 @@ function syncAdminRoomSelect(roomFloor) {
         endMinutes
       );
     }
+    
     /* =========================
            סינון טבלת השריונים
         ========================= */
