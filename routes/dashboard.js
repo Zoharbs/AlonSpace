@@ -66,10 +66,16 @@ async function getUsedHours(
           0
         )::NUMERIC AS used_hours
       FROM meeting_bookings
-      AND COALESCE(booking_source, 'tenant') <> 'admin'
       WHERE
         user_id = $1
-        AND TO_CHAR(booking_date, 'YYYY-MM') = $2
+        AND COALESCE(
+          booking_source,
+          'tenant'
+        ) <> 'admin'
+        AND TO_CHAR(
+          booking_date,
+          'YYYY-MM'
+        ) = $2
     `,
     [userId, monthKey]
   );
