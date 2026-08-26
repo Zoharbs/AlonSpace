@@ -1494,10 +1494,15 @@
     let adminDisplayedWeekStart =
       getAdminStartOfWeek(new Date());
 
-    let adminSelectedStartSlot = null;
+let adminSelectedStartSlot = null;
 
-    let selectedAdminRoomFloor =
-      localStorage.getItem('adminMeetingRoomFloor') || '4';
+let isAdminCalendarDragging = false;
+let adminDragStartSlot = null;
+let adminDragCurrentSlot = null;
+let adminDragMoved = false;
+
+let selectedAdminRoomFloor =
+  localStorage.getItem('adminMeetingRoomFloor') || '4';
 
 
     /* =========================
@@ -1662,8 +1667,119 @@
         });
     }
 
+    function adminRangeHasBooking(
+      date,
+      startMinutes,
+      endMinutes
+    ) {
+      return adminMeetingBookings.some((booking) => {
+        if (
+          getBookingRoomFloor(booking) !==
+          Number(selectedAdminRoomFloor)
+        ) {
+          return false;
+        }
 
-    /* =========================
+        if (
+          normalizeAdminBookingDate(
+            booking.booking_date
+          ) !== date
+        ) {
+          return false;
+        }
+
+        const bookingStart =
+          adminTimeToMinutes(booking.start_time);
+
+        const bookingEnd =
+          adminTimeToMinutes(booking.end_time);
+
+        if (
+          bookingStart === null ||
+          bookingEnd === null
+        ) {
+          return false;
+        }
+
+        return (
+          startMinutes < bookingEnd &&
+          endMinutes > bookingStart
+        );
+      });
+    }
+
+
+    function finishAdminCalendarRange(
+  date,
+  firstMinutes,
+  lastMinutes
+) {
+  const startMinutes = Math.min(
+    firstMinutes,
+    lastMinutes
+  );
+
+  const endMinutes =
+    Math.max(firstMinutes, lastMinutes) +
+    adminSlotMinutes;
+
+  if (
+    adminRangeHasBooking(
+      date,
+      startMinutes,
+      endMinutes
+    )
+  ) {
+    clearAdminCalendarSelection();
+
+    if (adminSelectedBookingRange) {
+      adminSelectedBookingRange.classList.remove(
+        'show',
+        'ok'
+      );
+
+      adminSelectedBookingRange.textContent = '';
+    }
+
+    alert(
+      'חלק מהטווח שבחרת כבר תפוס.'
+    );
+
+    return;
+  }
+
+  adminBookingDateInput.value = date;
+
+  adminStartTimeInput.value =
+    adminMinutesToTime(startMinutes);
+
+  adminEndTimeInput.value =
+    adminMinutesToTime(endMinutes);
+
+  clearAdminCalendarSelection();
+
+  highlightAdminRange(
+    date,
+    startMinutes,
+    endMinutes
+  );
+
+  if (adminSelectedBookingRange) {
+    adminSelectedBookingRange.classList.add(
+      'show',
+      'ok'
+    );
+
+    adminSelectedBookingRange.textContent =
+      `נבחר: ${date}, ` +
+      `${adminMinutesToTime(startMinutes)}–` +
+      `${adminMinutesToTime(endMinutes)}`;
+  }
+
+  adminSelectedStartSlot = null;
+}
+    
+/* =========================
        סינון טבלת השריונים
     ========================= */
 
@@ -1795,17 +1911,88 @@
           const past =
             isAdminPastSlot(day, minutes);
 
-          if (past) {
-            slot.classList.add('past');
-          } else {
-            slot.addEventListener('click', () => {
-              handleAdminSlotClick(
-                slot,
-                currentDateKey,
-                minutes
-              );
-            });
-          }
+if (past) {
+  slot.classList.add('past');
+} else {
+
+  slot.addEventListener(
+    'mousedown',
+    (event) => {
+      event.preventDefault();
+
+      isAdminCalendarDragging = true;
+      adminDragMoved = false;
+
+      adminDragStartSlot = {
+        date: currentDateKey,
+        minutes,
+        element: slot,
+      };
+
+      adminDragCurrentSlot =
+        adminDragStartSlot;
+
+      clearAdminCalendarSelection();
+
+      slot.classList.add(
+        'selected-start'
+      );
+    }
+  );
+
+
+  slot.addEventListener(
+    'mouseenter',
+    () => {
+      if (
+        !isAdminCalendarDragging ||
+        !adminDragStartSlot
+      ) {
+        return;
+      }
+
+      // לא מאפשרים לגרור בין ימים
+      if (
+        adminDragStartSlot.date !==
+        currentDateKey
+      ) {
+        return;
+      }
+
+      if (
+        minutes !==
+        adminDragStartSlot.minutes
+      ) {
+        adminDragMoved = true;
+      }
+
+      adminDragCurrentSlot = {
+        date: currentDateKey,
+        minutes,
+        element: slot,
+      };
+
+      const rangeStart = Math.min(
+        adminDragStartSlot.minutes,
+        minutes
+      );
+
+      const rangeEnd =
+        Math.max(
+          adminDragStartSlot.minutes,
+          minutes
+        ) + adminSlotMinutes;
+
+      clearAdminCalendarSelection();
+
+      highlightAdminRange(
+        currentDateKey,
+        rangeStart,
+        rangeEnd
+      );
+    }
+  );
+}
 
           const booking =
             adminMeetingBookings.find((item) => {
@@ -1896,9 +2083,50 @@
     }
 
 
+    document.addEventListener(
+  'mouseup',
+  () => {
+    if (
+      !isAdminCalendarDragging ||
+      !adminDragStartSlot
+    ) {
+      return;
+    }
+
+    isAdminCalendarDragging = false;
+
+    const start =
+      adminDragStartSlot;
+
+    const end =
+      adminDragCurrentSlot ||
+      adminDragStartSlot;
+
+    if (start.date !== end.date) {
+      clearAdminCalendarSelection();
+
+      adminDragStartSlot = null;
+      adminDragCurrentSlot = null;
+      adminDragMoved = false;
+
+      return;
+    }
+
+    finishAdminCalendarRange(
+      start.date,
+      start.minutes,
+      end.minutes
+    );
+
+    adminDragStartSlot = null;
+    adminDragCurrentSlot = null;
+    adminDragMoved = false;
+  }
+);
+
     /* =========================
        בחירת טווח בלוח
-    ========================= */
+    
 
     function handleAdminSlotClick(
       slot,
@@ -2016,7 +2244,7 @@
       });
     }
 
-
+========================= */
     /* =========================
        החלפת חדר
     ========================= */
