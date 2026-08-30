@@ -276,7 +276,20 @@ const averageMeetingRoomUsage = usageValues.length
 
     // ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
     delete req.session.newClientInvite;
-return res.render('admin/dashboard', {
+
+const floor4Tenants = clientsResult.rows
+  .filter(client =>
+    client.is_active === true &&
+    String(client.floor || '').trim() === '4'
+  )
+  .sort((a, b) => {
+    const officeA = Number(a.office_number) || 9999;
+    const officeB = Number(b.office_number) || 9999;
+
+    return officeA - officeB;
+  });
+
+    return res.render('admin/dashboard', {
   title: 'פאנל ניהול - AlonSpace',
   layout: false,
   adminName: req.session.userName,
@@ -285,7 +298,7 @@ return res.render('admin/dashboard', {
   admins: adminsResult.rows,
   messages: messagesResult.rows,
   testimonials: testimonialsResult.rows,
-
+floor4Tenants,
   meetingBookings: meetingBookingsResult.rows,
   meetingRooms: meetingRoomsResult.rows,
 

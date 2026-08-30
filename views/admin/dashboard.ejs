@@ -1513,7 +1513,35 @@
 
                   </section>
                   <!-- סוף ניהול אדמינים -->
+<section class="admin-card">
 
+  <h2>מפות קומות</h2>
+
+  <p class="small">
+    יצירת תמונה מעודכנת לטלוויזיה
+    לפי הדיירים הפעילים במערכת.
+  </p>
+
+  <div
+    style="
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    "
+  >
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="exportFloor4MapBtn"
+    >
+      ייצוא תמונה עדכנית – קומה 4
+    </button>
+
+  </div>
+
+</section>
                 </section>
                 <!-- סוף tab-clients -->
 
@@ -3269,7 +3297,433 @@ function syncAdminRoomSelect(roomFloor) {
     );
     
   </script>
+<script>
+  /* =====================================
+     FLOOR 4 MAP EXPORT
+  ===================================== */
 
+  const floor4TenantsForMap =
+    <%- JSON
+      .stringify(floor4Tenants || [])
+      .replace(/</g, '\\u003c') %>;
+
+  const exportFloor4MapBtn =
+    document.getElementById(
+      'exportFloor4MapBtn'
+    );
+
+
+  function loadMapImage(src) {
+    return new Promise((resolve, reject) => {
+
+      const image = new Image();
+
+      image.onload = () => {
+        resolve(image);
+      };
+
+      image.onerror = () => {
+        reject(
+          new Error(
+            `לא ניתן לטעון את התמונה: ${src}`
+          )
+        );
+      };
+
+      image.src = src;
+    });
+  }
+
+
+  function drawRoundedRect(
+    context,
+    x,
+    y,
+    width,
+    height,
+    radius
+  ) {
+    context.beginPath();
+
+    context.roundRect(
+      x,
+      y,
+      width,
+      height,
+      radius
+    );
+
+    context.fill();
+  }
+
+
+  async function exportFloor4Map() {
+
+    const originalText =
+      exportFloor4MapBtn.textContent;
+
+    exportFloor4MapBtn.disabled = true;
+
+    exportFloor4MapBtn.textContent =
+      'מייצר תמונה...';
+
+
+    try {
+
+      /*
+        =====================================
+        CANVAS
+        =====================================
+      */
+
+      const canvas =
+        document.createElement('canvas');
+
+      canvas.width = 1920;
+      canvas.height = 1080;
+
+      const ctx =
+        canvas.getContext('2d');
+
+
+      /*
+        =====================================
+        רקע חיצוני
+        =====================================
+      */
+
+      ctx.fillStyle = '#ddd8ea';
+
+      ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+
+      /*
+        =====================================
+        משטח לבן מרכזי אחד
+        בלי חלוקה לכרטיסים
+        =====================================
+      */
+
+      ctx.fillStyle = '#ffffff';
+
+      drawRoundedRect(
+        ctx,
+        55,
+        55,
+        1810,
+        970,
+        28
+      );
+
+
+      /*
+        =====================================
+        טעינת מפה
+        =====================================
+      */
+
+      const mapImage =
+        await loadMapImage(
+          '/images/floor4-map.png'
+        );
+
+
+      /*
+        אזור המפה:
+        צד שמאל + מרכז
+      */
+
+      const mapAreaX = 90;
+      const mapAreaY = 120;
+
+      const mapAreaWidth = 1320;
+      const mapAreaHeight = 850;
+
+
+      /*
+        שומרים על יחס המפה המקורי
+      */
+
+      const scale = Math.min(
+        mapAreaWidth / mapImage.width,
+        mapAreaHeight / mapImage.height
+      );
+
+      const mapWidth =
+        mapImage.width * scale;
+
+      const mapHeight =
+        mapImage.height * scale;
+
+      const mapX =
+        mapAreaX +
+        (mapAreaWidth - mapWidth) / 2;
+
+      const mapY =
+        mapAreaY +
+        (mapAreaHeight - mapHeight) / 2;
+
+
+      ctx.drawImage(
+        mapImage,
+        mapX,
+        mapY,
+        mapWidth,
+        mapHeight
+      );
+
+
+      /*
+        =====================================
+        לוגו
+        =====================================
+      */
+
+      try {
+
+        const logo =
+          await loadMapImage(
+            '/images/alonspace-map-logo.png'
+          );
+
+        const logoMaxWidth = 180;
+        const logoMaxHeight = 130;
+
+        const logoScale = Math.min(
+          logoMaxWidth / logo.width,
+          logoMaxHeight / logo.height
+        );
+
+        const logoWidth =
+          logo.width * logoScale;
+
+        const logoHeight =
+          logo.height * logoScale;
+
+        ctx.drawImage(
+          logo,
+          1640 - logoWidth / 2,
+          95,
+          logoWidth,
+          logoHeight
+        );
+
+      } catch (logoError) {
+
+        console.warn(
+          'Map logo could not be loaded:',
+          logoError
+        );
+      }
+
+
+      /*
+        =====================================
+        רשימת דיירים
+        =====================================
+      */
+
+      const listRight = 1785;
+
+      let listY = 285;
+
+
+      ctx.direction = 'rtl';
+
+      ctx.textBaseline = 'middle';
+
+
+      /*
+        כותרת קטנה
+      */
+
+      ctx.fillStyle = '#171622';
+
+      ctx.font =
+        '700 29px Arial';
+
+      ctx.textAlign = 'right';
+
+      ctx.fillText(
+        'דיירי הקומה',
+        listRight,
+        230
+      );
+
+
+      /*
+        קו קטן מתחת לכותרת
+      */
+
+      ctx.fillStyle = '#7865f6';
+
+      ctx.fillRect(
+        1640,
+        255,
+        145,
+        4
+      );
+
+
+      /*
+        הדיירים
+      */
+
+      floor4TenantsForMap
+        .filter(
+          tenant =>
+            tenant.office_number
+        )
+        .forEach((tenant) => {
+
+          const officeNumber =
+            String(
+              tenant.office_number || ''
+            );
+
+          const tenantName =
+            String(
+              tenant.business_name ||
+              tenant.display_name ||
+              ''
+            ).trim();
+
+
+          /*
+            מספר משרד
+            בצד ימין
+          */
+
+          ctx.fillStyle = '#6d60de';
+
+          ctx.font =
+            '700 25px Arial';
+
+          ctx.textAlign = 'right';
+
+          ctx.fillText(
+            officeNumber,
+            listRight,
+            listY
+          );
+
+
+          /*
+            שם העסק / הדייר
+          */
+
+          ctx.fillStyle = '#20202a';
+
+          ctx.font =
+            '500 23px Arial';
+
+          ctx.textAlign = 'right';
+
+          ctx.fillText(
+            tenantName,
+            listRight - 72,
+            listY
+          );
+
+
+          /*
+            divider עדין
+          */
+
+          ctx.fillStyle =
+            'rgba(25,25,40,.08)';
+
+          ctx.fillRect(
+            1450,
+            listY + 27,
+            335,
+            1
+          );
+
+
+          listY += 58;
+        });
+
+
+      /*
+        =====================================
+        פרטי קשר בתחתית
+        אפשר לשנות בהמשך
+        =====================================
+      */
+
+      ctx.fillStyle = '#777584';
+
+      ctx.font =
+        '400 18px Arial';
+
+      ctx.textAlign = 'right';
+
+      ctx.fillText(
+        'AlonSpace',
+        1785,
+        965
+      );
+
+
+      /*
+        =====================================
+        DOWNLOAD
+        =====================================
+      */
+
+      const imageUrl =
+        canvas.toDataURL(
+          'image/png',
+          1
+        );
+
+      const link =
+        document.createElement('a');
+
+      link.href = imageUrl;
+
+      link.download =
+        'AlonSpace-Floor-4.png';
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+    } catch (error) {
+
+      console.error(
+        'FLOOR MAP EXPORT ERROR:',
+        error
+      );
+
+      alert(
+        'לא הצלחנו ליצור את תמונת המפה. בדוק שקובץ המפה נמצא ב-public/images/floor4-map.png'
+      );
+
+    } finally {
+
+      exportFloor4MapBtn.disabled = false;
+
+      exportFloor4MapBtn.textContent =
+        originalText;
+    }
+  }
+
+
+  exportFloor4MapBtn
+    ?.addEventListener(
+      'click',
+      exportFloor4Map
+    );
+</script>
 
   <% if (newClientInvite) { %>
     <script>
