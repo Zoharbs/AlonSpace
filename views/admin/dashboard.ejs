@@ -866,6 +866,133 @@
   opacity: .55;
   font-size: 1.2rem;
 }
+/* =====================================
+   CLIENT DETAILS
+===================================== */
+
+.client-details-card {
+  margin-top: 14px;
+  padding: 22px;
+}
+
+.client-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.client-details-header h3 {
+  margin: 0 0 5px;
+}
+
+.client-details-meta {
+  color: var(--ink-soft);
+  font-size: .85rem;
+}
+
+.client-usage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.client-usage-box {
+  background: var(--stone);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.client-usage-box span {
+  display: block;
+  color: var(--ink-soft);
+  font-size: .78rem;
+  margin-bottom: 5px;
+}
+
+.client-usage-box strong {
+  display: block;
+  font-size: 1.35rem;
+}
+
+.client-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 28px;
+  margin-bottom: 20px;
+}
+
+.client-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding: 11px 0;
+
+  border-bottom:
+    1px solid var(--stone-dark);
+}
+
+.client-info-label {
+  color: var(--ink-soft);
+  font-size: .85rem;
+}
+
+.client-info-value {
+  font-weight: 600;
+  text-align: left;
+}
+
+.client-edit-section {
+  margin-top: 18px;
+  border-top: 1px solid var(--stone-dark);
+  padding-top: 18px;
+}
+
+.client-edit-section > summary {
+  cursor: pointer;
+  list-style: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  font-weight: 700;
+}
+
+.client-edit-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.client-edit-section > summary::before {
+  content: "✎";
+}
+
+.client-edit-form {
+  margin-top: 18px;
+  max-width: 650px;
+}
+
+.client-danger-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  margin-top: 22px;
+  padding-top: 18px;
+
+  border-top: 1px solid var(--stone-dark);
+}
+
+@media (max-width: 700px) {
+  .client-usage-grid,
+  .client-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
   </style>
 </head>
 
@@ -1212,142 +1339,458 @@
 
                                 </summary>
 
-                                <div class="admin-card">
+<div class="admin-card client-details-card">
 
-                                  <div class="form-row-2">
+  <div class="client-details-header">
 
-                                    <div>
+    <div>
+      <h3>
+        <%= client.display_name %>
+      </h3>
 
-                                      <h4>פרטי הלקוח</h4>
+      <div class="client-details-meta">
+        <% if (client.business_name) { %>
+          <%= client.business_name %> ·
+        <% } %>
 
-                                      <p><strong>טלפון:</strong>
-                                        <%= client.phone || "-" %>
-                                      </p>
+        משרד <%= client.office_number || '-' %>
+        ·
+        קומה <%= client.floor || '-' %>
+      </div>
+    </div>
 
-                                      <p><strong>אימייל:</strong>
-                                        <%= client.email || "-" %>
-                                      </p>
+    <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
+      <%= client.is_active ? 'חשבון פעיל' : 'חשבון מושבת' %>
+    </span>
 
-                                      <p><strong>תקופת שכירות:</strong></p>
+  </div>
 
-                                      <p>
-                                        <%= formatDate(client.rental_start_date) %>
-                                          -
-                                          <%= formatDate(client.rental_end_date) || "-" %>
-                                      </p>
 
-                                    </div>
+  <!-- נתוני חדר הישיבות -->
 
-                                    <div>
+  <div class="client-usage-grid">
 
-                                      <h4>עריכת לקוח</h4>
+    <div class="client-usage-box">
+      <span>ניצול כולל</span>
 
-                                      <form method="POST" action="/admin/clients/<%= client.id %>/update"
-                                        class="inline-form">
+      <strong>
+        <%= Number(client.total_meeting_hours || 0).toFixed(1) %>
+        שעות
+      </strong>
+    </div>
 
-                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                        <input name="display_name" value="<%= client.display_name %>" required>
+    <div class="client-usage-box">
+      <span>נוצלו החודש</span>
 
-                                        <input name="business_name" value="<%= client.business_name || '' %>"
-                                          placeholder="שם העסק">
+      <strong>
+        <%= Number(client.month_meeting_hours || 0).toFixed(1) %>
+        שעות
+      </strong>
+    </div>
 
-                                        <input type="email" name="email" value="<%= client.email || '' %>"
-                                          placeholder="אימייל">
 
-                                        <input name="phone" value="<%= client.phone || '' %>" placeholder="טלפון">
+    <div class="client-usage-box">
+      <span>נותרו החודש</span>
 
-                                        <input name="office_number" value="<%= client.office_number || '' %>"
-                                          placeholder="משרד">
+      <strong>
+        <%
+          const monthlyLimit =
+            Number(client.monthly_meeting_hours || 6);
 
-                                        <select name="floor">
+          const monthUsed =
+            Number(client.month_meeting_hours || 0);
 
-                                          <option value="">קומה</option>
+          const remainingHours =
+            Math.max(
+              0,
+              monthlyLimit - monthUsed
+            );
+        %>
 
-                                          <option value="4" <%=Number(client.floor)===4 ? 'selected' : '' %>>
-                                            4
-                                          </option>
+        <%= remainingHours.toFixed(1) %>
+        שעות
+      </strong>
+    </div>
 
-                                          <option value="6" <%=Number(client.floor)===6 ? 'selected' : '' %>>
-                                            6
-                                          </option>
+  </div>
 
-                                        </select>
 
-                                        <input type="date" name="rental_start_date" value="<%= client.rental_start_date
-    ? new Date(client.rental_start_date).toISOString().slice(0, 10)
-    : '' %>">
+  <!-- מידע על הלקוח -->
 
-                                        <input type="date" name="rental_end_date" value="<%= client.rental_end_date
-    ? new Date(client.rental_end_date).toISOString().slice(0, 10)
-    : '' %>">
-                                        <input type="number" min="0.5" step="0.5" name="monthly_meeting_hours"
-                                          value="<%= client.monthly_meeting_hours %>">
+  <div class="client-info-grid">
 
-                                        <label style="display:flex;gap:8px;align-items:center;">
-                                          <input type="checkbox" name="is_active" value="1" <%=client.is_active
-                                            ? 'checked' : '' %>
-                                          style="width:auto;"
-                                          >
+    <div class="client-info-row">
+      <span class="client-info-label">
+        שם משתמש
+      </span>
 
-                                          חשבון פעיל
-                                        </label>
+      <span class="client-info-value">
+        @<%= client.username %>
+      </span>
+    </div>
 
-                                        <button type="submit" class="mini-btn primary">
-                                          שמור שינויים
-                                        </button>
 
-                                      </form>
+    <div class="client-info-row">
+      <span class="client-info-label">
+        מכסה חודשית
+      </span>
 
-                                    </div>
+      <span class="client-info-value">
+        <%= Number(client.monthly_meeting_hours || 6).toFixed(1) %>
+        שעות
+      </span>
+    </div>
 
-                                  </div>
 
-                                  <hr style="margin:25px 0;">
+    <div class="client-info-row">
+      <span class="client-info-label">
+        טלפון
+      </span>
 
-                                  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <span class="client-info-value">
+        <%= client.phone || '-' %>
+      </span>
+    </div>
 
-                                    <form method="POST" action="/admin/clients/<%= client.id %>/reset-password">
 
-                                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="client-info-row">
+      <span class="client-info-label">
+        אימייל
+      </span>
 
-                                      <button class="mini-btn">
-                                        איפוס סיסמה
-                                      </button>
+      <span class="client-info-value">
+        <%= client.email || '-' %>
+      </span>
+    </div>
 
-                                    </form>
 
-                                    <% if(client.is_active){ %>
+    <div class="client-info-row">
+      <span class="client-info-label">
+        תחילת שכירות
+      </span>
 
-                                      <form method="POST" action="/admin/clients/<%= client.id %>/delete"
-                                        onsubmit="return confirm('להשבית את החשבון?')">
+      <span class="client-info-value">
+        <%= formatDate(client.rental_start_date) || '-' %>
+      </span>
+    </div>
 
-                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                        <button class="mini-btn danger">
-                                          השבת חשבון
-                                        </button>
+    <div class="client-info-row">
+      <span class="client-info-label">
+        סיום שכירות
+      </span>
 
-                                      </form>
+      <span class="client-info-value">
+        <%= formatDate(client.rental_end_date) || '-' %>
+      </span>
+    </div>
 
-                                      <form method="POST" action="/admin/clients/<%= client.id %>/permanent-delete"
-                                        onsubmit="return confirm('למחוק לצמיתות?')">
 
-                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="client-info-row">
+      <span class="client-info-label">
+        סקר כניסה
+      </span>
 
-                                        <button class="mini-btn danger" style="background:#c62828;color:#fff;">
+      <span class="client-info-value">
 
-                                          מחק לצמיתות
+        <% if (client.survey_completed) { %>
 
-                                        </button>
+          <span class="pill ok">
+            הושלם
+          </span>
 
-                                      </form>
+        <% } else { %>
 
-                                      <% } %>
+          <span class="pill warn">
+            טרם הושלם
+          </span>
 
-                                  </div>
+        <% } %>
 
-                                </div>
+      </span>
+    </div>
+
+
+    <div class="client-info-row">
+      <span class="client-info-label">
+        סטטוס
+      </span>
+
+      <span class="client-info-value">
+        <%= client.is_active ? 'פעיל' : 'מושבת' %>
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- עריכת הלקוח -->
+
+  <details class="client-edit-section">
+
+    <summary>
+      עריכת פרטים
+    </summary>
+
+
+    <form
+      method="POST"
+      action="/admin/clients/<%= client.id %>/update"
+      class="form-grid client-edit-form"
+    >
+
+      <input
+        type="hidden"
+        name="_csrf"
+        value="<%= csrfToken %>"
+      >
+
+
+      <div class="form-row-2">
+
+        <div class="field">
+          <label>שם לתצוגה</label>
+
+          <input
+            name="display_name"
+            value="<%= client.display_name %>"
+            required
+          >
+        </div>
+
+
+        <div class="field">
+          <label>שם העסק</label>
+
+          <input
+            name="business_name"
+            value="<%= client.business_name || '' %>"
+          >
+        </div>
+
+      </div>
+
+
+      <div class="form-row-2">
+
+        <div class="field">
+          <label>אימייל</label>
+
+          <input
+            type="email"
+            name="email"
+            value="<%= client.email || '' %>"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>טלפון</label>
+
+          <input
+            name="phone"
+            value="<%= client.phone || '' %>"
+          >
+        </div>
+
+      </div>
+
+
+      <div class="form-row-2">
+
+        <div class="field">
+          <label>מספר משרד</label>
+
+          <input
+            name="office_number"
+            value="<%= client.office_number || '' %>"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>קומה</label>
+
+          <select name="floor">
+
+            <option value="">
+              לא הוגדרה
+            </option>
+
+            <option
+              value="4"
+              <%= Number(client.floor) === 4 ? 'selected' : '' %>
+            >
+              קומה 4
+            </option>
+
+            <option
+              value="6"
+              <%= Number(client.floor) === 6 ? 'selected' : '' %>
+            >
+              קומה 6
+            </option>
+
+          </select>
+        </div>
+
+      </div>
+
+
+      <div class="form-row-2">
+
+        <div class="field">
+          <label>תחילת שכירות</label>
+
+          <input
+            type="date"
+            name="rental_start_date"
+            value="<%= client.rental_start_date
+              ? new Date(client.rental_start_date)
+                  .toISOString()
+                  .slice(0, 10)
+              : ''
+            %>"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>סיום שכירות</label>
+
+          <input
+            type="date"
+            name="rental_end_date"
+            value="<%= client.rental_end_date
+              ? new Date(client.rental_end_date)
+                  .toISOString()
+                  .slice(0, 10)
+              : ''
+            %>"
+          >
+        </div>
+
+      </div>
+
+
+      <div class="field">
+        <label>
+          מכסת חדר ישיבות חודשית
+        </label>
+
+        <input
+          type="number"
+          min="0.5"
+          step="0.5"
+          name="monthly_meeting_hours"
+          value="<%= client.monthly_meeting_hours || 6 %>"
+        >
+      </div>
+
+
+      <label
+        style="
+          display:flex;
+          gap:8px;
+          align-items:center;
+        "
+      >
+
+        <input
+          type="checkbox"
+          name="is_active"
+          value="1"
+          <%= client.is_active ? 'checked' : '' %>
+          style="width:auto;"
+        >
+
+        חשבון פעיל
+
+      </label>
+
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+      >
+        שמור שינויים
+      </button>
+
+    </form>
+
+  </details>
+
+
+  <!-- פעולות חשבון -->
+
+  <div class="client-danger-actions">
+
+    <form
+      method="POST"
+      action="/admin/clients/<%= client.id %>/reset-password"
+    >
+
+      <input
+        type="hidden"
+        name="_csrf"
+        value="<%= csrfToken %>"
+      >
+
+      <button class="mini-btn">
+        איפוס סיסמה
+      </button>
+
+    </form>
+
+
+    <% if (client.is_active) { %>
+
+      <form
+        method="POST"
+        action="/admin/clients/<%= client.id %>/delete"
+        onsubmit="return confirm('להשבית את החשבון?')"
+      >
+
+        <input
+          type="hidden"
+          name="_csrf"
+          value="<%= csrfToken %>"
+        >
+
+        <button class="mini-btn danger">
+          השבת חשבון
+        </button>
+
+      </form>
+
+
+      <form
+        method="POST"
+        action="/admin/clients/<%= client.id %>/permanent-delete"
+        onsubmit="return confirm('למחוק את הלקוח לצמיתות?')"
+      >
+
+        <input
+          type="hidden"
+          name="_csrf"
+          value="<%= csrfToken %>"
+        >
+
+        <button
+          class="mini-btn danger"
+          style="background:#c62828;color:#fff;"
+        >
+          מחק לצמיתות
+        </button>
+
+      </form>
+
+    <% } %>
+
+  </div>
+
+</div>
 
                               </details>
 
