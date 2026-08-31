@@ -1394,22 +1394,8 @@
       <span>נותרו החודש</span>
 
       <strong>
-        <%
-          const monthlyLimit =
-            Number(client.monthly_meeting_hours || 6);
-
-          const monthUsed =
-            Number(client.month_meeting_hours || 0);
-
-          const remainingHours =
-            Math.max(
-              0,
-              monthlyLimit - monthUsed
-            );
-        %>
-
-        <%= remainingHours.toFixed(1) %>
-        שעות
+       <%= Number(client.remaining_meeting_hours || 0).toFixed(1) %>
+שעות
       </strong>
     </div>
 

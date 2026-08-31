@@ -133,19 +133,215 @@ router.get('/', async (req, res, next) => {
       `),
       db.query(`
   SELECT
-    id,
-    username,
-    email,
-    display_name,
-    phone,
-    is_active,
-    created_at
-  FROM users
-  WHERE role = 'admin'
+    u.id,
+    u.username,
+    u.email,
+    u.display_name,
+    u.phone,
+    u.business_name,
+    u.office_number,
+    u.floor,
+    u.rental_start_date,
+    u.rental_end_date,
+    u.monthly_meeting_hours,
+    u.is_active,
+    u.must_change_password,
+    u.created_at,
+
+    /* =========================
+       סה"כ שעות חדר ישיבות
+    ========================= */
+
+    COALESCE(
+      SUM(
+        EXTRACT(
+          EPOCH FROM (
+            mb.end_time - mb.start_time
+          )
+        ) / 3600
+      ),
+      0
+    )::NUMERIC AS total_meeting_hours,
+
+
+    /* =========================
+       שעות בחודש הנוכחי
+    ========================= */
+
+    COALESCE(
+      SUM(
+        CASE
+          WHEN
+            mb.booking_date >=
+              DATE_TRUNC(
+                'month',
+                CURRENT_DATE
+              )::DATE
+
+            AND mb.booking_date <
+              (
+                DATE_TRUNC(
+                  'month',
+                  CURRENT_DATE
+                )
+                + INTERVAL '1 month'
+              )::DATE
+
+          THEN
+            EXTRACT(
+              EPOCH FROM (
+                mb.end_time - mb.start_time
+              )
+            ) / 3600
+
+          ELSE 0
+        END
+      ),
+      0
+    )::NUMERIC AS month_meeting_hours,
+
+
+    /* =========================
+       כמה שעות נשארו החודש
+    ========================= */
+
+    GREATEST(
+      0,
+
+      COALESCE(
+        u.monthly_meeting_hours,
+        6
+      )
+
+      -
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN
+              mb.booking_date >=
+                DATE_TRUNC(
+                  'month',
+                  CURRENT_DATE
+                )::DATE
+
+              AND mb.booking_date <
+                (
+                  DATE_TRUNC(
+                    'month',
+                    CURRENT_DATE
+                  )
+                  + INTERVAL '1 month'
+                )::DATE
+
+            THEN
+              EXTRACT(
+                EPOCH FROM (
+                  mb.end_time - mb.start_time
+                )
+              ) / 3600
+
+            ELSE 0
+          END
+        ),
+        0
+      )
+    )::NUMERIC AS remaining_meeting_hours,
+
+
+    /* =========================
+       חריגה מהמכסה
+    ========================= */
+
+    GREATEST(
+      0,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN
+              mb.booking_date >=
+                DATE_TRUNC(
+                  'month',
+                  CURRENT_DATE
+                )::DATE
+
+              AND mb.booking_date <
+                (
+                  DATE_TRUNC(
+                    'month',
+                    CURRENT_DATE
+                  )
+                  + INTERVAL '1 month'
+                )::DATE
+
+            THEN
+              EXTRACT(
+                EPOCH FROM (
+                  mb.end_time - mb.start_time
+                )
+              ) / 3600
+
+            ELSE 0
+          END
+        ),
+        0
+      )
+
+      -
+
+      COALESCE(
+        u.monthly_meeting_hours,
+        6
+      )
+    )::NUMERIC AS exceeded_meeting_hours,
+
+
+    /* =========================
+       האם השלים שאלון
+    ========================= */
+
+    (
+      COUNT(s.id) > 0
+    ) AS survey_completed
+
+
+  FROM users u
+
+
+  LEFT JOIN meeting_bookings mb
+    ON mb.user_id = u.id
+
+
+  LEFT JOIN onboarding_surveys s
+    ON s.user_id = u.id
+
+
+  WHERE
+    u.role = 'tenant'
+
+
+  GROUP BY
+    u.id,
+    u.username,
+    u.email,
+    u.display_name,
+    u.phone,
+    u.business_name,
+    u.office_number,
+    u.floor,
+    u.rental_start_date,
+    u.rental_end_date,
+    u.monthly_meeting_hours,
+    u.is_active,
+    u.must_change_password,
+    u.created_at
+
+
   ORDER BY
-    is_active DESC,
-    LOWER(display_name) ASC
-      `),
+    u.is_active DESC,
+    LOWER(u.display_name) ASC
+`),
       db.query(`
         SELECT *
         FROM messages
