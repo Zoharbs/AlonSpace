@@ -3829,8 +3829,14 @@ function syncAdminRoomSelect(roomFloor) {
 
 bookingElement.style.cursor =
   'pointer';
-
+bookingElement.addEventListener(
+  'mousedown',
+  (event) => {
+    event.stopPropagation();
+  }
+);
   bookingElement.addEventListener(
+
   'click',
   (event) => {
     event.stopPropagation();
