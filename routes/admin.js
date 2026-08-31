@@ -109,28 +109,6 @@ router.get('/', async (req, res, next) => {
       pendingTestimonialsResult,
       meetingRoomsResult,
     ] = await Promise.all([
-      db.query(`
-        SELECT
-          id,
-          username,
-          email,
-          display_name,
-          phone,
-          business_name,
-          office_number,
-          floor,
-          rental_start_date,
-          rental_end_date,
-          monthly_meeting_hours,
-          is_active,
-          must_change_password,
-          created_at
-        FROM users
-        WHERE role = 'tenant'
-        ORDER BY
-          is_active DESC,
-          LOWER(display_name) ASC
-      `),
 db.query(`
   SELECT
     u.id,
@@ -148,7 +126,6 @@ db.query(`
     u.must_change_password,
     u.created_at,
 
-    /* סה"כ כל השעות */
     COALESCE(
       (
         SELECT SUM(
@@ -164,7 +141,6 @@ db.query(`
       0
     )::NUMERIC AS total_meeting_hours,
 
-    /* שעות בחודש הנוכחי */
     COALESCE(
       (
         SELECT SUM(
@@ -194,7 +170,6 @@ db.query(`
       0
     )::NUMERIC AS month_meeting_hours,
 
-    /* כמה נשאר */
     GREATEST(
       0,
 
@@ -235,7 +210,6 @@ db.query(`
       )
     )::NUMERIC AS remaining_meeting_hours,
 
-    /* האם ענה על הסקר */
     EXISTS (
       SELECT 1
       FROM onboarding_surveys s
@@ -249,6 +223,22 @@ db.query(`
   ORDER BY
     u.is_active DESC,
     LOWER(u.display_name) ASC
+`),
+
+db.query(`
+  SELECT
+    id,
+    username,
+    email,
+    display_name,
+    phone,
+    is_active,
+    created_at
+  FROM users
+  WHERE role = 'admin'
+  ORDER BY
+    is_active DESC,
+    LOWER(display_name) ASC
 `),
       db.query(`
         SELECT *
