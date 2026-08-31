@@ -131,7 +131,7 @@ router.get('/', async (req, res, next) => {
           is_active DESC,
           LOWER(display_name) ASC
       `),
-      db.query(`
+db.query(`
   SELECT
     u.id,
     u.username,
@@ -148,36 +148,80 @@ router.get('/', async (req, res, next) => {
     u.must_change_password,
     u.created_at,
 
-    /* =========================
-       סה"כ שעות חדר ישיבות
-    ========================= */
-
+    /* סה"כ כל השעות */
     COALESCE(
-      SUM(
-        EXTRACT(
-          EPOCH FROM (
-            mb.end_time - mb.start_time
-          )
-        ) / 3600
+      (
+        SELECT SUM(
+          EXTRACT(
+            EPOCH FROM (
+              mb.end_time - mb.start_time
+            )
+          ) / 3600
+        )
+        FROM meeting_bookings mb
+        WHERE mb.user_id = u.id
       ),
       0
     )::NUMERIC AS total_meeting_hours,
 
-
-    /* =========================
-       שעות בחודש הנוכחי
-    ========================= */
-
+    /* שעות בחודש הנוכחי */
     COALESCE(
-      SUM(
-        CASE
-          WHEN
-            mb.booking_date >=
+      (
+        SELECT SUM(
+          EXTRACT(
+            EPOCH FROM (
+              mb.end_time - mb.start_time
+            )
+          ) / 3600
+        )
+        FROM meeting_bookings mb
+        WHERE
+          mb.user_id = u.id
+          AND mb.booking_date >=
+            DATE_TRUNC(
+              'month',
+              CURRENT_DATE
+            )::DATE
+          AND mb.booking_date <
+            (
+              DATE_TRUNC(
+                'month',
+                CURRENT_DATE
+              )
+              + INTERVAL '1 month'
+            )::DATE
+      ),
+      0
+    )::NUMERIC AS month_meeting_hours,
+
+    /* כמה נשאר */
+    GREATEST(
+      0,
+
+      COALESCE(
+        u.monthly_meeting_hours,
+        6
+      )
+
+      -
+
+      COALESCE(
+        (
+          SELECT SUM(
+            EXTRACT(
+              EPOCH FROM (
+                mb.end_time - mb.start_time
+              )
+            ) / 3600
+          )
+          FROM meeting_bookings mb
+          WHERE
+            mb.user_id = u.id
+            AND mb.booking_date >=
               DATE_TRUNC(
                 'month',
                 CURRENT_DATE
               )::DATE
-
             AND mb.booking_date <
               (
                 DATE_TRUNC(
@@ -186,157 +230,21 @@ router.get('/', async (req, res, next) => {
                 )
                 + INTERVAL '1 month'
               )::DATE
-
-          THEN
-            EXTRACT(
-              EPOCH FROM (
-                mb.end_time - mb.start_time
-              )
-            ) / 3600
-
-          ELSE 0
-        END
-      ),
-      0
-    )::NUMERIC AS month_meeting_hours,
-
-
-    /* =========================
-       כמה שעות נשארו החודש
-    ========================= */
-
-    GREATEST(
-      0,
-
-      COALESCE(
-        u.monthly_meeting_hours,
-        6
-      )
-
-      -
-
-      COALESCE(
-        SUM(
-          CASE
-            WHEN
-              mb.booking_date >=
-                DATE_TRUNC(
-                  'month',
-                  CURRENT_DATE
-                )::DATE
-
-              AND mb.booking_date <
-                (
-                  DATE_TRUNC(
-                    'month',
-                    CURRENT_DATE
-                  )
-                  + INTERVAL '1 month'
-                )::DATE
-
-            THEN
-              EXTRACT(
-                EPOCH FROM (
-                  mb.end_time - mb.start_time
-                )
-              ) / 3600
-
-            ELSE 0
-          END
         ),
         0
       )
     )::NUMERIC AS remaining_meeting_hours,
 
-
-    /* =========================
-       חריגה מהמכסה
-    ========================= */
-
-    GREATEST(
-      0,
-
-      COALESCE(
-        SUM(
-          CASE
-            WHEN
-              mb.booking_date >=
-                DATE_TRUNC(
-                  'month',
-                  CURRENT_DATE
-                )::DATE
-
-              AND mb.booking_date <
-                (
-                  DATE_TRUNC(
-                    'month',
-                    CURRENT_DATE
-                  )
-                  + INTERVAL '1 month'
-                )::DATE
-
-            THEN
-              EXTRACT(
-                EPOCH FROM (
-                  mb.end_time - mb.start_time
-                )
-              ) / 3600
-
-            ELSE 0
-          END
-        ),
-        0
-      )
-
-      -
-
-      COALESCE(
-        u.monthly_meeting_hours,
-        6
-      )
-    )::NUMERIC AS exceeded_meeting_hours,
-
-
-    /* =========================
-       האם השלים שאלון
-    ========================= */
-
-    (
-      COUNT(s.id) > 0
+    /* האם ענה על הסקר */
+    EXISTS (
+      SELECT 1
+      FROM onboarding_surveys s
+      WHERE s.user_id = u.id
     ) AS survey_completed
-
 
   FROM users u
 
-
-  LEFT JOIN meeting_bookings mb
-    ON mb.user_id = u.id
-
-
-  LEFT JOIN onboarding_surveys s
-    ON s.user_id = u.id
-
-
-  WHERE
-    u.role = 'tenant'
-
-
-  GROUP BY
-    u.id,
-    u.username,
-    u.email,
-    u.display_name,
-    u.phone,
-    u.business_name,
-    u.office_number,
-    u.floor,
-    u.rental_start_date,
-    u.rental_end_date,
-    u.monthly_meeting_hours,
-    u.is_active,
-    u.must_change_password,
-    u.created_at
-
+  WHERE u.role = 'tenant'
 
   ORDER BY
     u.is_active DESC,
