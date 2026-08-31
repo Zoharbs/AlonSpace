@@ -34,13 +34,13 @@ router.post('/login', async (req, res, next) => {
     const username = String(req.body.username || '').trim();
     const password = String(req.body.password || '');
 
-    if (!username || !password) {
-      return renderLogin(
-        res,
-        400,
-        'נא למלא שם משתמש וסיסמה'
-      );
-    }
+if (!username || !password) {
+  return renderLogin(
+    res,
+    200,
+    'נא למלא שם משתמש וסיסמה'
+  );
+}
 
     const result = await db.query(
       `
@@ -65,18 +65,18 @@ router.post('/login', async (req, res, next) => {
       user &&
       await bcrypt.compare(password, user.password_hash);
 
-    if (!user || !validPassword) {
-      return renderLogin(
-        res,
-        401,
-        'שם משתמש או סיסמה שגויים'
-      );
-    }
+if (!user || !validPassword) {
+  return renderLogin(
+    res,
+    200,
+    'שם המשתמש או הסיסמה אינם נכונים'
+  );
+}
 
     if (!user.is_active) {
       return renderLogin(
         res,
-        403,
+        200,
         'החשבון אינו פעיל. יש לפנות להנהלת AlonSpace.'
       );
     }
