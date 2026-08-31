@@ -993,6 +993,67 @@
     grid-template-columns: 1fr;
   }
 }
+.client-details-popup {
+  width: min(620px, 100%);
+}
+
+.client-bookings-section {
+  margin-top: 24px;
+}
+
+.client-bookings-section h4 {
+  margin: 0 0 10px;
+}
+
+.client-bookings-list {
+  display: grid;
+  gap: 8px;
+}
+
+.client-booking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 11px 13px;
+
+  border-radius: 9px;
+
+  background: var(--stone);
+}
+
+.client-booking-main {
+  display: grid;
+  gap: 3px;
+}
+
+.client-booking-date {
+  font-weight: 700;
+}
+
+.client-booking-time {
+  font-size: .82rem;
+  color: var(--ink-soft);
+}
+
+.client-booking-room {
+  font-size: .78rem;
+  color: var(--ink-soft);
+}
+
+.client-bookings-empty {
+  padding: 14px;
+
+  border-radius: 9px;
+
+  background: var(--stone);
+
+  color: var(--ink-soft);
+
+  font-size: .85rem;
+}
   </style>
 </head>
 
@@ -2222,6 +2283,98 @@
                       </tbody>
                     </table>
                   </div>
+                  <div
+  class="booking-popup-overlay"
+  id="adminClientDetailsOverlay"
+>
+  <div
+    class="booking-popup client-details-popup"
+    role="dialog"
+    aria-modal="true"
+  >
+
+    <div class="booking-popup-head">
+
+      <div>
+        <span class="eyebrow">
+          פרטי לקוח
+        </span>
+
+        <h3 id="adminClientDetailsName">
+          לקוח
+        </h3>
+
+        <div
+          class="small"
+          id="adminClientDetailsMeta"
+        ></div>
+      </div>
+
+      <button
+        type="button"
+        class="booking-popup-close"
+        id="adminClientDetailsClose"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="client-usage-grid">
+
+      <div class="client-usage-box">
+        <span>סה"כ שימוש</span>
+
+        <strong id="adminClientTotalHours">
+          0.0 שעות
+        </strong>
+      </div>
+
+      <div class="client-usage-box">
+        <span>החודש</span>
+
+        <strong id="adminClientMonthHours">
+          0.0 שעות
+        </strong>
+      </div>
+
+      <div class="client-usage-box">
+        <span>נותרו החודש</span>
+
+        <strong id="adminClientRemainingHours">
+          0.0 שעות
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="client-bookings-section">
+
+      <h4>שריונים עתידיים</h4>
+
+      <div
+        id="adminClientFutureBookings"
+        class="client-bookings-list"
+      ></div>
+
+    </div>
+
+
+    <div class="client-bookings-section">
+
+      <h4>שריונים קודמים</h4>
+
+      <div
+        id="adminClientPastBookings"
+        class="client-bookings-list"
+      ></div>
+
+    </div>
+
+  </div>
+</div>
                 </section>
 
   </main>
@@ -2312,7 +2465,8 @@ openAdminTab(
 
     const adminMeetingBookings =
   <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
-
+const adminClients =
+  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
 
@@ -2321,7 +2475,313 @@ openAdminTab(
 
     const adminBookingForm =
       document.getElementById('adminMeetingBookingForm');
+const adminClientDetailsOverlay =
+  document.getElementById(
+    'adminClientDetailsOverlay'
+  );
 
+const adminClientDetailsClose =
+  document.getElementById(
+    'adminClientDetailsClose'
+  );
+
+const adminClientDetailsName =
+  document.getElementById(
+    'adminClientDetailsName'
+  );
+
+const adminClientDetailsMeta =
+  document.getElementById(
+    'adminClientDetailsMeta'
+  );
+
+const adminClientTotalHours =
+  document.getElementById(
+    'adminClientTotalHours'
+  );
+
+const adminClientMonthHours =
+  document.getElementById(
+    'adminClientMonthHours'
+  );
+
+const adminClientRemainingHours =
+  document.getElementById(
+    'adminClientRemainingHours'
+  );
+
+const adminClientFutureBookings =
+  document.getElementById(
+    'adminClientFutureBookings'
+  );
+
+const adminClientPastBookings =
+  document.getElementById(
+    'adminClientPastBookings'
+  );
+  function formatClientBookingDate(value) {
+  const normalized =
+    normalizeAdminBookingDate(value);
+
+  if (!normalized) {
+    return '';
+  }
+
+  const [year, month, day] =
+    normalized.split('-').map(Number);
+
+  return new Date(
+    year,
+    month - 1,
+    day
+  ).toLocaleDateString(
+    'he-IL',
+    {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }
+  );
+}
+
+
+function clientBookingTimestamp(booking) {
+  const date =
+    normalizeAdminBookingDate(
+      booking.booking_date
+    );
+
+  const time =
+    normalizeAdminTime(
+      booking.start_time
+    );
+
+  if (!date || !time) {
+    return 0;
+  }
+
+  return new Date(
+    `${date}T${time}:00`
+  ).getTime();
+}
+
+
+function renderClientBookingList(
+  container,
+  bookings
+) {
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = '';
+
+  if (!bookings.length) {
+    container.innerHTML = `
+      <div class="client-bookings-empty">
+        אין שריונים להצגה
+      </div>
+    `;
+
+    return;
+  }
+
+  bookings.forEach((booking) => {
+
+    const item =
+      document.createElement('div');
+
+    item.className =
+      'client-booking-item';
+
+    item.innerHTML = `
+      <div class="client-booking-main">
+
+        <span class="client-booking-date">
+          ${formatClientBookingDate(
+            booking.booking_date
+          )}
+        </span>
+
+        <span class="client-booking-time">
+          ${normalizeAdminTime(
+            booking.start_time
+          )}
+          –
+          ${normalizeAdminTime(
+            booking.end_time
+          )}
+        </span>
+
+      </div>
+
+      <span class="client-booking-room">
+        ${booking.meeting_room_name || ''}
+      </span>
+    `;
+
+    container.appendChild(item);
+  });
+}
+
+
+function openAdminClientDetails(userId) {
+
+  const client =
+    adminClients.find(
+      item =>
+        Number(item.id) ===
+        Number(userId)
+    );
+
+  if (!client) {
+    return;
+  }
+
+
+  if (adminClientDetailsName) {
+    adminClientDetailsName.textContent =
+      client.display_name || 'לקוח';
+  }
+
+
+  if (adminClientDetailsMeta) {
+    const parts = [];
+
+    if (client.business_name) {
+      parts.push(client.business_name);
+    }
+
+    if (client.office_number) {
+      parts.push(
+        `משרד ${client.office_number}`
+      );
+    }
+
+    if (client.floor) {
+      parts.push(
+        `קומה ${client.floor}`
+      );
+    }
+
+    adminClientDetailsMeta.textContent =
+      parts.join(' · ');
+  }
+
+
+  if (adminClientTotalHours) {
+    adminClientTotalHours.textContent =
+      `${Number(
+        client.total_meeting_hours || 0
+      ).toFixed(1)} שעות`;
+  }
+
+
+  if (adminClientMonthHours) {
+    adminClientMonthHours.textContent =
+      `${Number(
+        client.month_meeting_hours || 0
+      ).toFixed(1)} שעות`;
+  }
+
+
+  if (adminClientRemainingHours) {
+    adminClientRemainingHours.textContent =
+      `${Number(
+        client.remaining_meeting_hours || 0
+      ).toFixed(1)} שעות`;
+  }
+
+
+  const clientBookings =
+    adminMeetingBookings.filter(
+      booking =>
+        Number(booking.user_id) ===
+        Number(userId)
+    );
+
+
+  const now = Date.now();
+
+
+  const futureBookings =
+    clientBookings
+      .filter(
+        booking =>
+          clientBookingTimestamp(
+            booking
+          ) >= now
+      )
+      .sort(
+        (a, b) =>
+          clientBookingTimestamp(a) -
+          clientBookingTimestamp(b)
+      );
+
+
+  const pastBookings =
+    clientBookings
+      .filter(
+        booking =>
+          clientBookingTimestamp(
+            booking
+          ) < now
+      )
+      .sort(
+        (a, b) =>
+          clientBookingTimestamp(b) -
+          clientBookingTimestamp(a)
+      );
+
+
+  renderClientBookingList(
+    adminClientFutureBookings,
+    futureBookings
+  );
+
+  renderClientBookingList(
+    adminClientPastBookings,
+    pastBookings
+  );
+
+
+  adminClientDetailsOverlay
+    ?.classList.add('open');
+
+  document.body.style.overflow =
+    'hidden';
+}
+
+
+function closeAdminClientDetails() {
+
+  adminClientDetailsOverlay
+    ?.classList.remove('open');
+
+  document.body.style.overflow = '';
+}
+
+
+adminClientDetailsClose
+  ?.addEventListener(
+    'click',
+    closeAdminClientDetails
+  );
+
+
+adminClientDetailsOverlay
+  ?.addEventListener(
+    'click',
+    (event) => {
+
+      if (
+        event.target ===
+        adminClientDetailsOverlay
+      ) {
+        closeAdminClientDetails();
+      }
+    }
+  );
     const adminRoomSelect =
       document.getElementById('booking-room');
 
@@ -3363,6 +3823,23 @@ function syncAdminRoomSelect(roomFloor) {
 
             bookingElement.className =
               'calendar-booking';
+
+            bookingElement.dataset.userId =
+  String(booking.user_id);
+
+bookingElement.style.cursor =
+  'pointer';
+
+  bookingElement.addEventListener(
+  'click',
+  (event) => {
+    event.stopPropagation();
+
+    openAdminClientDetails(
+      booking.user_id
+    );
+  }
+);
 
             const durationMinutes =
               adminTimeToMinutes(
