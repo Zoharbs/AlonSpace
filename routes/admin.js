@@ -97,6 +97,32 @@ router.get('/', async (req, res, next) => {
     ORDER BY used_hours DESC
   `
     );
+    const rentalAlertsResult = await db.query(`
+  SELECT
+    id,
+    display_name,
+    is_active,
+    business_name,
+    office_number,
+    floor,
+    phone,
+    email,
+    rental_end_date,
+
+    (rental_end_date - CURRENT_DATE)::INTEGER
+      AS days_remaining
+
+  FROM users
+
+  WHERE
+    role = 'tenant'
+    AND is_active = TRUE
+    AND rental_end_date IS NOT NULL
+    AND rental_end_date <= CURRENT_DATE + INTERVAL '30 days'
+
+  ORDER BY
+    rental_end_date ASC
+`);
     const [
       clientsResult,
       adminsResult,
@@ -407,6 +433,7 @@ floor4Tenants,
   success: req.query.success || null,
 
   quotaAlerts: quotaAlertsResult.rows,
+  rentalAlerts: rentalAlertsResult.rows,
   newClientInvite,
 });
   } catch (error) {

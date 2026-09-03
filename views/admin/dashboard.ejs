@@ -1237,9 +1237,245 @@
 
               </section>
 
-              <% } %>
+            <% } %>
+
+<% if (rentalAlerts && rentalAlerts.length) { %>
+
+  <section class="quota-alerts-section">
+
+    <div class="quota-alerts-heading">
+      <div>
+        <span class="quota-alert-label">
+          דורש מעקב
+        </span>
+
+        <h2>
+          תקופות שכירות שמסתיימות בקרוב
+        </h2>
+      </div>
+
+      <span class="quota-alert-count">
+        <%= rentalAlerts.length %>
+      </span>
+    </div>
 
 
+    <div class="quota-alerts-list">
+
+      <% rentalAlerts.forEach(alert => { %>
+
+        <%
+          const daysRemaining =
+            Number(alert.days_remaining);
+
+          const rentalEnded =
+            daysRemaining < 0;
+
+          let whatsappPhone =
+            String(alert.phone || '')
+              .replace(/\D/g, '');
+
+          if (
+            whatsappPhone.startsWith('0')
+          ) {
+            whatsappPhone =
+              '972' +
+              whatsappPhone.slice(1);
+          }
+
+          const whatsappText =
+            encodeURIComponent(
+              `שלום ${alert.display_name}, רצינו ליצור איתך קשר בנוגע לתקופת השכירות שלך ב-AlonSpace.`
+            );
+        %>
+
+
+        <article
+          class="quota-admin-alert <%= rentalEnded ? 'chargeable' : '' %>"
+        >
+
+          <div class="quota-admin-alert-main">
+
+            <div class="quota-admin-alert-icon">
+              <%= rentalEnded ? '!' : '⌛' %>
+            </div>
+
+
+            <div>
+
+              <div class="quota-admin-alert-title">
+
+                <% if (rentalEnded) { %>
+
+                  תקופת השכירות הסתיימה
+
+                <% } else if (daysRemaining === 0) { %>
+
+                  תקופת השכירות מסתיימת היום
+
+                <% } else { %>
+
+                  תקופת השכירות מסתיימת בקרוב
+
+                <% } %>
+
+              </div>
+
+
+              <h3>
+                <%= alert.display_name %>
+              </h3>
+
+
+              <p class="small">
+
+                <% if (alert.business_name) { %>
+                  <%= alert.business_name %> ·
+                <% } %>
+
+                משרד <%= alert.office_number || '-' %>
+
+                ·
+
+                קומה <%= alert.floor || '-' %>
+
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="quota-admin-numbers">
+
+            <div>
+              <span>תאריך סיום</span>
+
+              <strong>
+                <%= formatDate(alert.rental_end_date) %>
+              </strong>
+            </div>
+
+
+            <div>
+              <span>מצב</span>
+
+              <strong>
+
+                <% if (daysRemaining < 0) { %>
+
+                  הסתיימה לפני
+                  <%= Math.abs(daysRemaining) %>
+                  ימים
+
+                <% } else if (daysRemaining === 0) { %>
+
+                  מסתיימת היום
+
+                <% } else { %>
+
+                  נותרו
+                  <%= daysRemaining %>
+                  ימים
+
+                <% } %>
+
+              </strong>
+            </div>
+
+
+            <div>
+              <span>לקוח</span>
+
+              <strong>
+                <%= alert.is_active === false
+                  ? 'מושבת'
+                  : 'פעיל'
+                %>
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="quota-admin-status">
+
+            <% if (rentalEnded) { %>
+
+              <strong>
+                תאריך סיום השכירות כבר עבר.
+              </strong>
+
+              <span>
+                יש לבדוק האם להאריך את התקופה
+                או לעדכן את סטטוס הלקוח.
+              </span>
+
+            <% } else if (daysRemaining <= 7) { %>
+
+              <strong>
+                נותר פחות משבוע לסיום השכירות.
+              </strong>
+
+              <span>
+                מומלץ ליצור קשר עם הלקוח
+                ולבדוק המשך שכירות.
+              </span>
+
+            <% } else { %>
+
+              <strong>
+                תקופת השכירות מתקרבת לסיום.
+              </strong>
+
+              <span>
+                מומלץ לעקוב וליצור קשר
+                לפני מועד הסיום.
+              </span>
+
+            <% } %>
+
+          </div>
+
+
+          <div class="quota-admin-actions">
+
+            <% if (whatsappPhone) { %>
+
+              <a
+                href="https://wa.me/<%= whatsappPhone %>?text=<%= whatsappText %>"
+                target="_blank"
+                rel="noopener"
+                class="mini-btn primary"
+              >
+                יצירת קשר ב־WhatsApp
+              </a>
+
+            <% } %>
+
+
+            <% if (alert.phone) { %>
+
+              <a
+                href="tel:<%= alert.phone %>"
+                class="mini-btn"
+              >
+                התקשר
+              </a>
+
+            <% } %>
+
+          </div>
+
+        </article>
+
+      <% }) %>
+
+    </div>
+
+  </section>
+
+<% } %>
                 <div class="stat-cards">
                   <div class="stat-card">
                     <div class="n">
