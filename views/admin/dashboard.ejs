@@ -1241,24 +1241,35 @@
 
 <% if (rentalAlerts && rentalAlerts.length) { %>
 
-  <section class="quota-alerts-section">
+  <% if (rentalAlerts && rentalAlerts.length) { %>
 
-    <div class="quota-alerts-heading">
+  <details class="admin-collapse rental-alerts-collapse">
+
+    <summary class="rental-alerts-summary">
+
       <div>
-        <span class="quota-alert-label">
-          דורש מעקב
+
+        <span class="rental-alert-label">
+
+          דורש תשומת לב
+
         </span>
 
-        <h2>
-          תקופות שכירות שמסתיימות בקרוב
-        </h2>
+        <strong>
+
+          סיום תקופות שכירות
+
+        </strong>
+
       </div>
 
-      <span class="quota-alert-count">
-        <%= rentalAlerts.length %>
-      </span>
-    </div>
+      <span class="rental-alert-count">
 
+        <%= rentalAlerts.length %>
+
+      </span>
+
+    </summary>
 
     <div class="quota-alerts-list">
 
@@ -1473,7 +1484,7 @@
 
     </div>
 
-  </section>
+    </details>
 
 <% } %>
                 <div class="stat-cards">
