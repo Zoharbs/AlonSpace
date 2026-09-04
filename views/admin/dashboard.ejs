@@ -1054,6 +1054,77 @@
 
   font-size: .85rem;
 }
+/* =====================================
+   RENTAL ALERTS COLLAPSE
+===================================== */
+
+.rental-alerts-collapse {
+  margin-bottom: 28px;
+}
+
+.rental-alerts-collapse > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 16px 20px;
+
+  background: var(--cream);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow);
+
+  cursor: pointer;
+  list-style: none;
+}
+
+.rental-alerts-collapse > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rental-alerts-summary > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rental-alert-label {
+  font-size: .75rem;
+  font-weight: 800;
+
+  color: #8a6a1f;
+
+  background: #f3e3c4;
+
+  padding: 4px 9px;
+  border-radius: 20px;
+}
+
+.rental-alert-count {
+  min-width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #8a6a1f;
+  color: white;
+
+  border-radius: 50%;
+
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.rental-alerts-content {
+  display: grid;
+  gap: 12px;
+
+  margin-top: 12px;
+}
   </style>
 </head>
 
@@ -1239,7 +1310,7 @@
 
             <% } %>
 
-<% if (rentalAlerts && rentalAlerts.length) { %>
+
 
   <% if (rentalAlerts && rentalAlerts.length) { %>
 
