@@ -4854,90 +4854,173 @@ async function exportFloorDirectoryImage() {
     */
 
     const offices =
-      floorOfficeNumbers[selectedDirectoryFloor] || [];
+  floorOfficeNumbers[selectedDirectoryFloor] || [];
 
 
-    /*
-      אזור רשימת הדיירים בתמונה.
+/*
+  =====================================
+  DIRECTORY LAYOUT
+  מותאם לעיצוב הקיים של התמונה
+  =====================================
+*/
 
-      כרגע הערכים יחסיים כדי שיעבדו
-      גם אם התמונה היא 1920x1080
-      וגם אם היא ברזולוציה אחרת.
-    */
+const directoryLayout = {
 
-    const textX =
-      canvas.width * 0.925;
+  4: {
+    textRightX: 0.934,
 
-    const startY =
-      canvas.height * 0.137;
+    firstRowY: 0.121,
+    lastRowY: 0.951,
 
-    const endY =
-      canvas.height * 0.925;
+    maxTextWidth: 0.175,
 
-    const rowHeight =
-      (endY - startY) /
-      Math.max(offices.length - 1, 1);
+    fontSize: 18,
+    minFontSize: 12
+  },
 
+  6: {
+    textRightX: 0.934,
 
-    /*
-      עיצוב הטקסט
-    */
+    firstRowY: 0.121,
+    lastRowY: 0.951,
 
-    const fontSize =
-      Math.max(
-        14,
-        Math.round(
-          canvas.height * 0.018
-        )
-      );
+    maxTextWidth: 0.175,
 
-    ctx.font =
-      `500 ${fontSize}px Arial`;
+    fontSize: 18,
+    minFontSize: 12
+  }
 
-    ctx.fillStyle =
-      '#1f1f1f';
-
-    ctx.textAlign =
-      'right';
-
-    ctx.textBaseline =
-      'middle';
-
-    ctx.direction =
-      'rtl';
+};
 
 
-    /*
-      הכנסת שמות החברות
-    */
-
-    offices.forEach(
-      (officeNumber, index) => {
-
-        const name =
-          getDirectoryNameForOffice(
-            selectedDirectoryFloor,
-            officeNumber
-          );
-
-        if (!name) return;
+const layout =
+  directoryLayout[selectedDirectoryFloor];
 
 
-        const y =
-          startY +
-          index * rowHeight;
+const textX =
+  canvas.width *
+  layout.textRightX;
 
 
-        ctx.fillText(
-          name,
-          textX,
-          y
-        );
+const firstY =
+  canvas.height *
+  layout.firstRowY;
 
-      }
+
+const lastY =
+  canvas.height *
+  layout.lastRowY;
+
+
+const maxTextWidth =
+  canvas.width *
+  layout.maxTextWidth;
+
+
+const rowGap =
+  offices.length > 1
+    ? (lastY - firstY) /
+      (offices.length - 1)
+    : 0;
+
+
+/*
+  =====================================
+  AUTO FONT SIZE
+  =====================================
+*/
+
+function setDirectoryFont(text) {
+
+  let fontSize =
+    Math.round(
+      canvas.height *
+      (layout.fontSize / 1024)
     );
 
 
+  const minFontSize =
+    Math.round(
+      canvas.height *
+      (layout.minFontSize / 1024)
+    );
+
+
+  while (fontSize > minFontSize) {
+
+    ctx.font =
+      `600 ${fontSize}px Arial`;
+
+    const width =
+      ctx.measureText(text).width;
+
+
+    if (width <= maxTextWidth) {
+      break;
+    }
+
+
+    fontSize--;
+  }
+
+
+  ctx.font =
+    `600 ${fontSize}px Arial`;
+
+}
+
+
+/*
+  =====================================
+  DRAW DIRECTORY
+  =====================================
+*/
+
+ctx.fillStyle =
+  '#24202b';
+
+ctx.textAlign =
+  'right';
+
+ctx.textBaseline =
+  'middle';
+
+ctx.direction =
+  'rtl';
+
+
+offices.forEach(
+  (officeNumber, index) => {
+
+    const name =
+      getDirectoryNameForOffice(
+        selectedDirectoryFloor,
+        officeNumber
+      );
+
+
+    if (!name) {
+      return;
+    }
+
+
+    const y =
+      firstY +
+      index * rowGap;
+
+
+    setDirectoryFont(name);
+
+
+    ctx.fillText(
+      name,
+      textX,
+      y,
+      maxTextWidth
+    );
+
+  }
+);
     /*
       הורדת PNG
     */
