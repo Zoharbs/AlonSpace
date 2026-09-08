@@ -4608,7 +4608,10 @@ bookingElement.addEventListener(
   4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
   6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
-
+const savedFloorDirectoryOverrides =
+  <%- JSON.stringify(
+    floorDirectoryOverrides || {}
+  ).replace(/</g, '\\u003c') %>;
 
 // המספרים שבאמת קיימים בכל קומה
 
@@ -4674,9 +4677,22 @@ function renderFloorDirectoryEditor() {
     const automaticName =
       directory[officeNumber]?.name || '';
 
-    const currentName =
-      floorDirectoryEdits[selectedDirectoryFloor][officeNumber]
-      ?? automaticName;
+const savedName =
+  savedFloorDirectoryOverrides?.[
+    selectedDirectoryFloor
+  ]?.[
+    officeNumber
+  ];
+
+
+const currentName =
+  floorDirectoryEdits[
+    selectedDirectoryFloor
+  ][officeNumber]
+
+  ?? savedName
+
+  ?? automaticName;
 
 
     const row =
@@ -4774,106 +4790,53 @@ document
 
 renderFloorDirectoryEditor();
 
-function getDirectoryNameForOffice(floor, officeNumber) {
-  const automaticName =
-    floorDirectories[floor]?.[officeNumber]?.name || '';
+function getDirectoryNameForOffice(
+  floor,
+  officeNumber
+) {
 
   const editedName =
-    floorDirectoryEdits[floor]?.[officeNumber];
+    floorDirectoryEdits[floor]?.[
+      officeNumber
+    ];
 
-  return editedName !== undefined
-    ? editedName.trim()
-    : automaticName.trim();
+  if (editedName !== undefined) {
+    return String(editedName).trim();
+  }
+
+
+  const savedName =
+    savedFloorDirectoryOverrides?.[
+      floor
+    ]?.[
+      officeNumber
+    ];
+
+  if (
+    savedName !== undefined &&
+    String(savedName).trim()
+  ) {
+    return String(savedName).trim();
+  }
+
+
+  return String(
+    floorDirectories?.[
+      floor
+    ]?.[
+      officeNumber
+    ]?.name || ''
+  ).trim();
 }
 
 
-async function exportFloorDirectoryImage() {
-
-  const button =
-    document.getElementById('saveFloorImage');
-
-  const preview =
-    document.getElementById('floorDirectoryPreview');
-
-  if (!button || !preview) return;
-
-
-  const originalText =
-    button.textContent;
-
-  button.disabled = true;
-  button.textContent = 'יוצר תמונה...';
-
-
-  try {
-
-    /*
-      נטען את תמונת הבסיס של הקומה הנבחרת
-    */
-
-    const image = new Image();
-
-    image.src = preview.src;
-
-    await image.decode();
-
-
-    /*
-      Canvas באותה רזולוציה בדיוק
-      כמו תמונת המקור
-    */
-
-    const canvas =
-      document.createElement('canvas');
-
-    canvas.width =
-      image.naturalWidth;
-
-    canvas.height =
-      image.naturalHeight;
-
-
-    const ctx =
-      canvas.getContext('2d');
-
-
-    /*
-      מציירים קודם את תמונת הבסיס
-    */
-
-    ctx.drawImage(
-      image,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-
-    /*
-      רשימת המשרדים של הקומה
-    */
-
-    /*
-  =====================================
-  FIXED DIRECTORY POSITIONS
-  לכל מספר משרד יש מקום קבוע בתמונה
-  =====================================
-*/
-/*
-  =====================================
-  FIXED DIRECTORY POSITIONS
-  לפי התמונות המעודכנות 1536x1024
-  =====================================
-*/
+/* =====================================
+   FIXED DIRECTORY POSITIONS
+===================================== */
 
 const floorDirectoryPositions = {
 
-  /*
-    =========================
-    קומה 4
-    =========================
-  */
+  /* קומה 4 */
 
   4: {
     1:  { x: 1455, y: 126, maxWidth: 270 },
@@ -4893,12 +4856,16 @@ const floorDirectoryPositions = {
     15: { x: 1455, y: 582, maxWidth: 270 },
     16: { x: 1455, y: 614, maxWidth: 270 },
 
+    // אין 17
+
     18: { x: 1455, y: 646, maxWidth: 270 },
     19: { x: 1455, y: 678, maxWidth: 270 },
     20: { x: 1455, y: 710, maxWidth: 270 },
     21: { x: 1455, y: 742, maxWidth: 270 },
     22: { x: 1455, y: 774, maxWidth: 270 },
     23: { x: 1455, y: 806, maxWidth: 270 },
+
+    // אין 24
 
     25: { x: 1455, y: 838, maxWidth: 270 },
     26: { x: 1455, y: 870, maxWidth: 270 },
@@ -4908,11 +4875,7 @@ const floorDirectoryPositions = {
   },
 
 
-  /*
-    =========================
-    קומה 6
-    =========================
-  */
+  /* קומה 6 */
 
   6: {
     1:  { x: 1425, y: 130, maxWidth: 260 },
@@ -4942,158 +4905,358 @@ const floorDirectoryPositions = {
 };
 
 
-/*
-  =====================================
-  FONT SIZE
-  מקטין רק שם שלא נכנס בשורה
-  =====================================
-*/
+/* =====================================
+   EXPORT PNG
+===================================== */
 
-function setFloorDirectoryFont(
-  text,
-  maxWidth
-) {
+async function exportFloorDirectoryImage() {
 
-  let fontSize = 24;
+  const preview =
+    document.getElementById(
+      'floorDirectoryPreview'
+    );
 
-  const minFontSize = 15;
-
-
-  while (fontSize > minFontSize) {
-
-    ctx.font =
-      `600 ${fontSize}px Arial, sans-serif`;
-
-
-    if (
-      ctx.measureText(text).width <=
-      maxWidth
-    ) {
-      break;
-    }
-
-
-    fontSize -= 1;
+  if (!preview) {
+    throw new Error(
+      'Floor preview not found'
+    );
   }
 
 
-  ctx.font =
-    `600 ${fontSize}px Arial, sans-serif`;
-}
+  const image =
+    new Image();
+
+  image.src =
+    preview.src;
+
+  await image.decode();
 
 
-/*
-  =====================================
-  DRAW
-  =====================================
-*/
+  const canvas =
+    document.createElement('canvas');
 
-const positions =
-  floorDirectoryPositions[
-    selectedDirectoryFloor
-  ] || {};
+  canvas.width =
+    image.naturalWidth;
+
+  canvas.height =
+    image.naturalHeight;
 
 
-ctx.fillStyle =
-  '#24202b';
-
-ctx.textAlign =
-  'right';
-
-ctx.textBaseline =
-  'middle';
-
-ctx.direction =
-  'rtl';
+  const ctx =
+    canvas.getContext('2d');
 
 
-Object.entries(positions)
-  .forEach(
-    ([officeNumber, position]) => {
-
-      const name =
-        getDirectoryNameForOffice(
-          selectedDirectoryFloor,
-          Number(officeNumber)
-        );
+  ctx.drawImage(
+    image,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
 
-      if (!name) {
-        return;
+  const positions =
+    floorDirectoryPositions[
+      selectedDirectoryFloor
+    ] || {};
+
+
+  ctx.fillStyle =
+    '#24202b';
+
+  ctx.textAlign =
+    'right';
+
+  ctx.textBaseline =
+    'middle';
+
+  ctx.direction =
+    'rtl';
+
+
+  function setFloorDirectoryFont(
+    text,
+    maxWidth
+  ) {
+
+    let fontSize = 24;
+
+    const minFontSize = 15;
+
+
+    while (
+      fontSize > minFontSize
+    ) {
+
+      ctx.font =
+        `600 ${fontSize}px Arial, sans-serif`;
+
+
+      if (
+        ctx.measureText(text).width <=
+        maxWidth
+      ) {
+        break;
       }
 
 
-      setFloorDirectoryFont(
-        name,
-        position.maxWidth
-      );
-
-
-      ctx.fillText(
-        name,
-        position.x,
-        position.y,
-        position.maxWidth
-      );
-
+      fontSize--;
     }
-  );    /*
-      הורדת PNG
-    */
-
-    const imageUrl =
-      canvas.toDataURL(
-        'image/png',
-        1
-      );
 
 
-    const link =
-      document.createElement('a');
-
-    link.href =
-      imageUrl;
-
-    link.download =
-      `AlonSpace-Floor-${selectedDirectoryFloor}.png`;
-
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    link.remove();
-
-
-  } catch (error) {
-
-    console.error(
-      'FLOOR DIRECTORY EXPORT ERROR:',
-      error
-    );
-
-    alert(
-      'לא הצלחנו ליצור את תמונת הקומה.'
-    );
-
-  } finally {
-
-    button.disabled = false;
-
-    button.textContent =
-      originalText;
-
+    ctx.font =
+      `600 ${fontSize}px Arial, sans-serif`;
   }
+
+
+  Object.entries(positions)
+    .forEach(
+      ([officeNumber, position]) => {
+
+        const name =
+          getDirectoryNameForOffice(
+            selectedDirectoryFloor,
+            Number(officeNumber)
+          );
+
+
+        if (!name) {
+          return;
+        }
+
+
+        setFloorDirectoryFont(
+          name,
+          position.maxWidth
+        );
+
+
+        ctx.fillText(
+          name,
+          position.x,
+          position.y,
+          position.maxWidth
+        );
+
+      }
+    );
+
+
+  const imageUrl =
+    canvas.toDataURL(
+      'image/png'
+    );
+
+
+  const link =
+    document.createElement('a');
+
+  link.href =
+    imageUrl;
+
+  link.download =
+    `AlonSpace-Floor-${selectedDirectoryFloor}.png`;
+
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
 }
 
+
+/* =====================================
+   SAVE TO DB + EXPORT
+===================================== */
 
 document
   .getElementById('saveFloorImage')
   ?.addEventListener(
     'click',
-    exportFloorDirectoryImage
+    async () => {
+
+      const button =
+        document.getElementById(
+          'saveFloorImage'
+        );
+
+      const originalText =
+        button.textContent;
+
+
+      button.disabled = true;
+
+      button.textContent =
+        'שומר ומייצא...';
+
+
+      try {
+
+        /*
+          בונים את הרשימה הנוכחית
+        */
+
+        const entries = {};
+
+
+        (
+          floorOfficeNumbers[
+            selectedDirectoryFloor
+          ] || []
+        ).forEach(
+          officeNumber => {
+
+            entries[officeNumber] =
+              getDirectoryNameForOffice(
+                selectedDirectoryFloor,
+                officeNumber
+              );
+
+          }
+        );
+
+
+        /*
+          שומרים ב-DB
+        */
+
+        const formData =
+          new URLSearchParams();
+
+
+        formData.set(
+          '_csrf',
+          '<%= csrfToken %>'
+        );
+
+
+        formData.set(
+          'floor',
+          String(
+            selectedDirectoryFloor
+          )
+        );
+
+
+        formData.set(
+          'entries',
+          JSON.stringify(entries)
+        );
+
+
+        const response =
+          await fetch(
+            '/admin/floor-directory/save',
+            {
+              method: 'POST',
+
+              headers: {
+                'Content-Type':
+                  'application/x-www-form-urlencoded'
+              },
+
+              body:
+                formData.toString()
+            }
+          );
+
+
+        if (!response.ok) {
+
+          const errorText =
+            await response.text();
+
+          console.error(
+            'Directory save response:',
+            errorText
+          );
+
+          throw new Error(
+            'Directory save failed'
+          );
+        }
+
+
+        /*
+          מעדכנים את הערכים השמורים
+          גם בעמוד הנוכחי
+        */
+
+        if (
+          !savedFloorDirectoryOverrides[
+            selectedDirectoryFloor
+          ]
+        ) {
+
+          savedFloorDirectoryOverrides[
+            selectedDirectoryFloor
+          ] = {};
+        }
+
+
+        Object.assign(
+          savedFloorDirectoryOverrides[
+            selectedDirectoryFloor
+          ],
+          entries
+        );
+
+
+        floorDirectoryEdits[
+          selectedDirectoryFloor
+        ] = {};
+
+
+        /*
+          רק אחרי שהשמירה הצליחה
+          מייצאים PNG
+        */
+
+        await exportFloorDirectoryImage();
+
+
+        button.textContent =
+          '✓ נשמר ויוצא';
+
+
+        setTimeout(
+          () => {
+
+            button.textContent =
+              originalText;
+
+          },
+          1500
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          'FLOOR SAVE / EXPORT ERROR:',
+          error
+        );
+
+
+        alert(
+          'לא הצלחנו לשמור ולייצא את תמונת הקומה.'
+        );
+
+
+        button.textContent =
+          originalText;
+
+
+      } finally {
+
+        button.disabled = false;
+
+      }
+
+    }
   );
-</script>
+  </script>
 
   <% if (newClientInvite) { %>
     <script>

@@ -451,11 +451,41 @@ const averageMeetingRoomUsage = usageValues.length
     // ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
     delete req.session.newClientInvite;
 
+
+
 const floor4Directory =
   buildFloorDirectory(clientsResult.rows, 4);
 
 const floor6Directory =
   buildFloorDirectory(clientsResult.rows, 6);
+
+
+const floorDirectoryOverridesResult =
+  await db.query(`
+    SELECT
+      floor,
+      office_number,
+      display_name
+    FROM floor_directory_overrides
+    ORDER BY floor, office_number
+  `);
+
+const floorDirectoryOverrides = {
+  4: {},
+  6: {}
+};
+
+floorDirectoryOverridesResult.rows.forEach(row => {
+  const floor = Number(row.floor);
+  const office = Number(row.office_number);
+
+  if (!floorDirectoryOverrides[floor]) {
+    floorDirectoryOverrides[floor] = {};
+  }
+
+  floorDirectoryOverrides[floor][office] =
+    row.display_name || '';
+});
 
     return res.render('admin/dashboard', {
   title: 'פאנל ניהול - AlonSpace',
@@ -470,7 +500,7 @@ const floor6Directory =
   floor6Directory,
   meetingBookings: meetingBookingsResult.rows,
   meetingRooms: meetingRoomsResult.rows,
-
+floorDirectoryOverrides,
   // שאלון
   surveys,
   meetingRoomUsagePercent,
@@ -845,6 +875,130 @@ averageMeetingRoomUsage,
     return next(error);
   }
 });
+
+router.post('/floor-directory/save',
+  async (req, res, next) => {
+
+    try {
+
+      const floor =
+        Number(req.body.floor);
+
+      const entries =
+        JSON.parse(
+          req.body.entries || '{}'
+        );
+
+
+      if (![4, 6].includes(floor)) {
+        return res.status(400).send(
+          'Invalid floor'
+        );
+      }
+
+
+      await db.query('BEGIN');
+
+
+      try {
+
+        for (
+          const [officeNumber, name]
+          of Object.entries(entries)
+        ) {
+
+          const office =
+            Number(officeNumber);
+
+          if (!Number.isFinite(office)) {
+            continue;
+          }
+
+
+          const cleanName =
+            String(name || '').trim();
+
+
+          /*
+            אם השדה ריק:
+            מוחקים override וחוזרים לשם
+            האוטומטי מהלקוח.
+          */
+
+          if (!cleanName) {
+
+            await db.query(
+              `
+                DELETE FROM
+                  floor_directory_overrides
+                WHERE
+                  floor = $1
+                  AND office_number = $2
+              `,
+              [
+                floor,
+                office
+              ]
+            );
+
+            continue;
+          }
+
+
+          await db.query(
+            `
+              INSERT INTO
+                floor_directory_overrides
+              (
+                floor,
+                office_number,
+                display_name
+              )
+              VALUES ($1, $2, $3)
+
+              ON CONFLICT
+                (floor, office_number)
+
+              DO UPDATE SET
+                display_name =
+                  EXCLUDED.display_name,
+
+                updated_at =
+                  NOW()
+            `,
+            [
+              floor,
+              office,
+              cleanName
+            ]
+          );
+
+        }
+
+
+        await db.query('COMMIT');
+
+
+      } catch (error) {
+
+        await db.query('ROLLBACK');
+
+        throw error;
+      }
+
+
+      return res.redirect(
+        '/admin#clients'
+      );
+
+
+    } catch (error) {
+
+      return next(error);
+    }
+
+  }
+);
 
 router.post('/clients/create', async (req, res, next) => {
   try {
