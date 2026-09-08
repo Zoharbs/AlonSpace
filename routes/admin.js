@@ -246,9 +246,16 @@ db.query(`
 
   WHERE u.role = 'tenant'
 
-  ORDER BY
-    u.is_active DESC,
-    LOWER(u.display_name) ASC
+ORDER BY
+  CASE WHEN u.floor IS NULL THEN 1 ELSE 0 END,
+  u.floor ASC,
+  CASE
+    WHEN u.office_number ~ '^[0-9]+$'
+    THEN u.office_number::INTEGER
+    ELSE 999999
+  END ASC,
+  u.office_number ASC,
+  LOWER(u.display_name) ASC
 `),
 
 db.query(`
