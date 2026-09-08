@@ -37,6 +37,53 @@ function adminRedirect(type, message, hash = 'clients') {
     `#${hash}`
   );
 }
+function getOfficeNumbers(officeNumber) {
+  if (!officeNumber) return [];
+
+  return String(officeNumber)
+    .split('-')
+    .map(value => value.trim())
+    .filter(value => /^\d+$/.test(value))
+    .map(Number);
+}
+
+
+function getDirectoryName(client) {
+  return String(
+    client.directory_name ||
+    client.business_name ||
+    client.display_name ||
+    ''
+  ).trim();
+}
+
+
+function buildFloorDirectory(clients, floor) {
+  const directory = {};
+
+  clients
+    .filter(client =>
+      client.is_active === true &&
+      Number(client.floor) === Number(floor)
+    )
+    .forEach(client => {
+      const officeNumbers =
+        getOfficeNumbers(client.office_number);
+
+      const name =
+        getDirectoryName(client);
+
+      officeNumbers.forEach(officeNumber => {
+        directory[officeNumber] = {
+          officeNumber,
+          name,
+          userId: client.id
+        };
+      });
+    });
+
+  return directory;
+}
 
 router.use(requireAdmin);
 
@@ -404,17 +451,11 @@ const averageMeetingRoomUsage = usageValues.length
     // ההודעה והסיסמה זמינות להצגה פעם אחת בלבד
     delete req.session.newClientInvite;
 
-const floor4Tenants = clientsResult.rows
-  .filter(client =>
-    client.is_active === true &&
-    String(client.floor || '').trim() === '4'
-  )
-  .sort((a, b) => {
-    const officeA = Number(a.office_number) || 9999;
-    const officeB = Number(b.office_number) || 9999;
+const floor4Directory =
+  buildFloorDirectory(clientsResult.rows, 4);
 
-    return officeA - officeB;
-  });
+const floor6Directory =
+  buildFloorDirectory(clientsResult.rows, 6);
 
     return res.render('admin/dashboard', {
   title: 'פאנל ניהול - AlonSpace',
@@ -425,7 +466,8 @@ const floor4Tenants = clientsResult.rows
   admins: adminsResult.rows,
   messages: messagesResult.rows,
   testimonials: testimonialsResult.rows,
-floor4Tenants,
+  floor4Directory,
+  floor6Directory,
   meetingBookings: meetingBookingsResult.rows,
   meetingRooms: meetingRoomsResult.rows,
 

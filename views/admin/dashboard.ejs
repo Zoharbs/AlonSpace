@@ -2354,7 +2354,77 @@
 
 </section>
 <!-- סוף tab-clients -->
+<section class="admin-card floor-directory-admin">
 
+  <div class="floor-directory-head">
+    <div>
+      <h2>מפות קומות</h2>
+      <p class="small">
+        יצירת רשימת דיירים מעודכנת למסכי המתחם.
+      </p>
+    </div>
+
+    <div class="floor-directory-switch">
+      <button
+        type="button"
+        class="mini-btn primary floor-directory-btn"
+        data-floor="4"
+      >
+        קומה 4
+      </button>
+
+      <button
+        type="button"
+        class="mini-btn floor-directory-btn"
+        data-floor="6"
+      >
+        קומה 6
+      </button>
+    </div>
+  </div>
+
+
+  <div class="floor-directory-preview">
+
+    <img
+      id="floorDirectoryPreview"
+      src="/images/floor4-map.png"
+      alt="מפת קומה"
+    >
+
+  </div>
+
+
+  <button
+    type="button"
+    class="btn btn-primary"
+    id="saveFloorImage"
+  >
+    שמירת תמונת הקומה
+  </button>
+
+
+  <div class="floor-directory-editor">
+
+    <div class="floor-directory-editor-head">
+      <h3 id="floorDirectoryTitle">
+        רשימת דיירים — קומה 4
+      </h3>
+
+      <span class="small">
+        ניתן לערוך את השם שיופיע בתמונה
+      </span>
+    </div>
+
+
+    <div
+      class="floor-directory-list"
+      id="floorDirectoryList"
+    ></div>
+
+  </div>
+
+</section>
 
 <section class="tab-panel" id="tab-meeting-room">
 
@@ -4955,6 +5025,175 @@ bookingElement.addEventListener(
       'click',
       exportFloor4Map
     );
+
+    const floorDirectories = {
+  4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+  6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+};
+
+
+// המספרים שבאמת קיימים בכל קומה
+
+const floorOfficeNumbers = {
+
+  4: [
+    1, 2, 3, 4,
+    6, 7, 8, 9, 10, 11,
+    12, 13, 14, 15, 16,
+    18, 19, 20, 21, 22,
+    23, 25, 26, 27, 28, 29
+  ],
+
+  6: [
+    1, 2, 3, 4, 5, 6,
+    7, 8, 9, 10, 11, 12,
+    13, 14, 15, 16, 17, 18,
+    19, 20, 21, 22
+  ]
+
+};
+
+
+let selectedDirectoryFloor = 4;
+
+
+// שינויים ידניים זמניים
+
+const floorDirectoryEdits = {
+  4: {},
+  6: {}
+};
+
+
+function renderFloorDirectoryEditor() {
+
+  const list =
+    document.getElementById('floorDirectoryList');
+
+  const title =
+    document.getElementById('floorDirectoryTitle');
+
+  if (!list || !title) return;
+
+
+  title.textContent =
+    `רשימת דיירים — קומה ${selectedDirectoryFloor}`;
+
+
+  const directory =
+    floorDirectories[selectedDirectoryFloor] || {};
+
+  const offices =
+    floorOfficeNumbers[selectedDirectoryFloor] || [];
+
+
+  list.innerHTML = '';
+
+
+  offices.forEach(officeNumber => {
+
+    const automaticName =
+      directory[officeNumber]?.name || '';
+
+    const currentName =
+      floorDirectoryEdits[selectedDirectoryFloor][officeNumber]
+      ?? automaticName;
+
+
+    const row =
+      document.createElement('div');
+
+    row.className =
+      'floor-directory-row';
+
+
+    const number =
+      document.createElement('div');
+
+    number.className =
+      'floor-directory-number';
+
+    number.textContent =
+      String(officeNumber).padStart(2, '0');
+
+
+    const input =
+      document.createElement('input');
+
+    input.type = 'text';
+
+    input.className =
+      'floor-directory-name';
+
+    input.value =
+      currentName;
+
+    input.placeholder =
+      'משרד פנוי';
+
+
+    input.addEventListener('input', () => {
+
+      floorDirectoryEdits[selectedDirectoryFloor][officeNumber] =
+        input.value;
+
+    });
+
+
+    row.appendChild(number);
+    row.appendChild(input);
+
+    list.appendChild(row);
+
+  });
+
+}
+
+
+document
+  .querySelectorAll('.floor-directory-btn')
+  .forEach(button => {
+
+    button.addEventListener('click', () => {
+
+      selectedDirectoryFloor =
+        Number(button.dataset.floor);
+
+
+      document
+        .querySelectorAll('.floor-directory-btn')
+        .forEach(btn =>
+          btn.classList.remove('primary')
+        );
+
+
+      button.classList.add('primary');
+
+
+      const preview =
+        document.getElementById(
+          'floorDirectoryPreview'
+        );
+
+
+      if (preview) {
+
+        preview.src =
+          selectedDirectoryFloor === 4
+            ? '/images/floor4-map.png'
+            : '/images/floor6-map.png';
+
+      }
+
+
+      renderFloorDirectoryEditor();
+
+    });
+
+  });
+
+
+renderFloorDirectoryEditor();
 </script>
 
   <% if (newClientInvite) { %>

@@ -3375,3 +3375,72 @@ body.accessibility-high-contrast .accessibility-menu a {
   }
 
 }
+.floor-directory-admin {
+  margin-top: 24px;
+}
+
+.floor-directory-head,
+.floor-directory-editor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.floor-directory-switch {
+  display: flex;
+  gap: 8px;
+}
+
+.floor-directory-preview {
+  margin: 22px 0;
+  padding: 16px;
+  background: #eeeaf5;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.floor-directory-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.floor-directory-editor {
+  margin-top: 28px;
+}
+
+.floor-directory-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.floor-directory-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.floor-directory-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 42px;
+
+  background: #6f4aa8;
+  color: white;
+
+  border-radius: 8px;
+
+  font-weight: 800;
+}
+
+.floor-directory-name {
+  height: 42px;
+  margin: 0;
+}
