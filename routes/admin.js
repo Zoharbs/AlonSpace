@@ -460,15 +460,13 @@ const floor6Directory =
   buildFloorDirectory(clientsResult.rows, 6);
 
 
-const floorDirectoryOverridesResult =
-  await db.query(`
-    SELECT
-      floor,
-      office_number,
-      display_name
-    FROM floor_directory_overrides
-    ORDER BY floor, office_number
-  `);
+const floorDirectoryOverridesResult = await db.query(`
+  SELECT
+    floor,
+    office_number,
+    directory_name
+  FROM floor_directory_overrides
+`);
 
 const floorDirectoryOverrides = {
   4: {},
@@ -484,7 +482,7 @@ floorDirectoryOverridesResult.rows.forEach(row => {
   }
 
   floorDirectoryOverrides[floor][office] =
-    row.display_name || '';
+    row.directory_name || '';
 });
 
     return res.render('admin/dashboard', {
