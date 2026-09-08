@@ -4864,35 +4864,74 @@ async function exportFloorDirectoryImage() {
   =====================================
 */
 
-const directoryLayout = {
+const floorDirectoryPositions = {
 
   4: {
-    // איפה הצד הימני של הטקסט נגמר
-    textRightX: 0.925,
+    1:  { x: 1435, y: 123, maxWidth: 245 },
+    2:  { x: 1435, y: 156, maxWidth: 245 },
+    3:  { x: 1435, y: 189, maxWidth: 245 },
+    4:  { x: 1435, y: 220, maxWidth: 245 },
 
-    // מרכז שורה 01
-    firstRowY: 0.121,
+    6:  { x: 1435, y: 284, maxWidth: 245 },
+    7:  { x: 1435, y: 316, maxWidth: 245 },
+    8:  { x: 1435, y: 348, maxWidth: 245 },
+    9:  { x: 1435, y: 379, maxWidth: 245 },
+    10: { x: 1435, y: 410, maxWidth: 245 },
 
-    // מרכז שורה 29
-    lastRowY: 0.951,
+    11: { x: 1435, y: 441, maxWidth: 245 },
+    12: { x: 1435, y: 473, maxWidth: 245 },
+    13: { x: 1435, y: 504, maxWidth: 245 },
+    14: { x: 1435, y: 535, maxWidth: 245 },
+    15: { x: 1435, y: 566, maxWidth: 245 },
+    16: { x: 1435, y: 597, maxWidth: 245 },
 
-    // כמה רחב מותר לשם להיות
-    maxTextWidth: 0.205,
+    18: { x: 1435, y: 628, maxWidth: 245 },
+    19: { x: 1435, y: 660, maxWidth: 245 },
+    20: { x: 1435, y: 691, maxWidth: 245 },
+    21: { x: 1435, y: 722, maxWidth: 245 },
+    22: { x: 1435, y: 753, maxWidth: 245 },
+    23: { x: 1435, y: 784, maxWidth: 245 },
 
-    // פונט רגיל
-    fontSize: 24,
+    24: { x: 1435, y: 815, maxWidth: 245 },
 
-    // מינימום לשמות ארוכים
-    minFontSize: 17
+    26: { x: 1435, y: 847, maxWidth: 245 },
+    27: { x: 1435, y: 878, maxWidth: 245 },
+    28: { x: 1435, y: 909, maxWidth: 245 },
+    29: { x: 1435, y: 941, maxWidth: 245 }
   },
 
   6: {
-    textRightX: 0.925,
-    firstRowY: 0.121,
-    lastRowY: 0.951,
-    maxTextWidth: 0.205,
-    fontSize: 24,
-    minFontSize: 17
+    1:  { x: 1435, y: 123, maxWidth: 245 },
+    2:  { x: 1435, y: 156, maxWidth: 245 },
+    3:  { x: 1435, y: 189, maxWidth: 245 },
+    4:  { x: 1435, y: 220, maxWidth: 245 },
+
+    6:  { x: 1435, y: 284, maxWidth: 245 },
+    7:  { x: 1435, y: 316, maxWidth: 245 },
+    8:  { x: 1435, y: 348, maxWidth: 245 },
+    9:  { x: 1435, y: 379, maxWidth: 245 },
+    10: { x: 1435, y: 410, maxWidth: 245 },
+
+    11: { x: 1435, y: 441, maxWidth: 245 },
+    12: { x: 1435, y: 473, maxWidth: 245 },
+    13: { x: 1435, y: 504, maxWidth: 245 },
+    14: { x: 1435, y: 535, maxWidth: 245 },
+    15: { x: 1435, y: 566, maxWidth: 245 },
+    16: { x: 1435, y: 597, maxWidth: 245 },
+
+    18: { x: 1435, y: 628, maxWidth: 245 },
+    19: { x: 1435, y: 660, maxWidth: 245 },
+    20: { x: 1435, y: 691, maxWidth: 245 },
+    21: { x: 1435, y: 722, maxWidth: 245 },
+    22: { x: 1435, y: 753, maxWidth: 245 },
+    23: { x: 1435, y: 784, maxWidth: 245 },
+
+    24: { x: 1435, y: 815, maxWidth: 245 },
+
+    26: { x: 1435, y: 847, maxWidth: 245 },
+    27: { x: 1435, y: 878, maxWidth: 245 },
+    28: { x: 1435, y: 909, maxWidth: 245 },
+    29: { x: 1435, y: 941, maxWidth: 245 }
   }
 
 };
@@ -4931,23 +4970,23 @@ const rowGap =
   =====================================
 */
 
-function setDirectoryFont(text) {
+function setFloorDirectoryFont(
+  ctx,
+  text,
+  maxWidth
+) {
 
-  let fontSize =
-    layout.fontSize;
-
-  const minFontSize =
-    layout.minFontSize;
-
+  let fontSize = 22;
+  const minFontSize = 15;
 
   while (fontSize > minFontSize) {
 
     ctx.font =
-      `600 ${fontSize}px Arial, Helvetica, sans-serif`;
+      `500 ${fontSize}px Arial, sans-serif`;
 
     if (
-      ctx.measureText(text).width
-      <= maxTextWidth
+      ctx.measureText(text).width <=
+      maxWidth
     ) {
       break;
     }
@@ -4955,19 +4994,22 @@ function setDirectoryFont(text) {
     fontSize--;
   }
 
-
   ctx.font =
-    `600 ${fontSize}px Arial, Helvetica, sans-serif`;
+    `500 ${fontSize}px Arial, sans-serif`;
 }
-
 /*
   =====================================
   DRAW DIRECTORY
   =====================================
 */
+const positions =
+  floorDirectoryPositions[
+    selectedDirectoryFloor
+  ] || {};
+
 
 ctx.fillStyle =
-  '#25212b';
+  '#24202b';
 
 ctx.textAlign =
   'right';
@@ -4979,6 +5021,33 @@ ctx.direction =
   'rtl';
 
 
+Object.entries(positions)
+  .forEach(([officeNumber, position]) => {
+
+    const name =
+      getDirectoryNameForOffice(
+        selectedDirectoryFloor,
+        Number(officeNumber)
+      );
+
+    if (!name) return;
+
+
+    setFloorDirectoryFont(
+      ctx,
+      name,
+      position.maxWidth
+    );
+
+
+    ctx.fillText(
+      name,
+      position.x,
+      position.y,
+      position.maxWidth
+    );
+
+  });
 offices.forEach(
   (officeNumber, index) => {
 
