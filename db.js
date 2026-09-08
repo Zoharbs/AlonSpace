@@ -121,7 +121,7 @@ await query(`
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 `);
-await db.query(`
+await query(`
   CREATE TABLE IF NOT EXISTS floor_directory_overrides (
     id BIGSERIAL PRIMARY KEY,
     floor INTEGER NOT NULL,
