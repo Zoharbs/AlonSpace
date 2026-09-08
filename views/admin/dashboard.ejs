@@ -4853,14 +4853,10 @@ async function exportFloorDirectoryImage() {
       רשימת המשרדים של הקומה
     */
 
-    const offices =
-  floorOfficeNumbers[selectedDirectoryFloor] || [];
-
-
-/*
+    /*
   =====================================
-  DIRECTORY LAYOUT
-  מותאם לעיצוב הקיים של התמונה
+  FIXED DIRECTORY POSITIONS
+  לכל מספר משרד יש מקום קבוע בתמונה
   =====================================
 */
 
@@ -4871,118 +4867,79 @@ const floorDirectoryPositions = {
     2:  { x: 1435, y: 156, maxWidth: 245 },
     3:  { x: 1435, y: 189, maxWidth: 245 },
     4:  { x: 1435, y: 220, maxWidth: 245 },
-
     6:  { x: 1435, y: 284, maxWidth: 245 },
     7:  { x: 1435, y: 316, maxWidth: 245 },
     8:  { x: 1435, y: 348, maxWidth: 245 },
     9:  { x: 1435, y: 379, maxWidth: 245 },
     10: { x: 1435, y: 410, maxWidth: 245 },
-
     11: { x: 1435, y: 441, maxWidth: 245 },
     12: { x: 1435, y: 473, maxWidth: 245 },
     13: { x: 1435, y: 504, maxWidth: 245 },
     14: { x: 1435, y: 535, maxWidth: 245 },
     15: { x: 1435, y: 566, maxWidth: 245 },
     16: { x: 1435, y: 597, maxWidth: 245 },
-
     18: { x: 1435, y: 628, maxWidth: 245 },
     19: { x: 1435, y: 660, maxWidth: 245 },
     20: { x: 1435, y: 691, maxWidth: 245 },
     21: { x: 1435, y: 722, maxWidth: 245 },
     22: { x: 1435, y: 753, maxWidth: 245 },
     23: { x: 1435, y: 784, maxWidth: 245 },
-
-    24: { x: 1435, y: 815, maxWidth: 245 },
-
+    25: { x: 1435, y: 815, maxWidth: 245 },
     26: { x: 1435, y: 847, maxWidth: 245 },
     27: { x: 1435, y: 878, maxWidth: 245 },
     28: { x: 1435, y: 909, maxWidth: 245 },
     29: { x: 1435, y: 941, maxWidth: 245 }
   },
 
+
   6: {
     1:  { x: 1435, y: 123, maxWidth: 245 },
     2:  { x: 1435, y: 156, maxWidth: 245 },
     3:  { x: 1435, y: 189, maxWidth: 245 },
     4:  { x: 1435, y: 220, maxWidth: 245 },
-
+    5:  { x: 1435, y: 252, maxWidth: 245 },
     6:  { x: 1435, y: 284, maxWidth: 245 },
     7:  { x: 1435, y: 316, maxWidth: 245 },
     8:  { x: 1435, y: 348, maxWidth: 245 },
     9:  { x: 1435, y: 379, maxWidth: 245 },
     10: { x: 1435, y: 410, maxWidth: 245 },
-
     11: { x: 1435, y: 441, maxWidth: 245 },
     12: { x: 1435, y: 473, maxWidth: 245 },
     13: { x: 1435, y: 504, maxWidth: 245 },
     14: { x: 1435, y: 535, maxWidth: 245 },
     15: { x: 1435, y: 566, maxWidth: 245 },
     16: { x: 1435, y: 597, maxWidth: 245 },
-
-    18: { x: 1435, y: 628, maxWidth: 245 },
-    19: { x: 1435, y: 660, maxWidth: 245 },
-    20: { x: 1435, y: 691, maxWidth: 245 },
-    21: { x: 1435, y: 722, maxWidth: 245 },
-    22: { x: 1435, y: 753, maxWidth: 245 },
-    23: { x: 1435, y: 784, maxWidth: 245 },
-
-    24: { x: 1435, y: 815, maxWidth: 245 },
-
-    26: { x: 1435, y: 847, maxWidth: 245 },
-    27: { x: 1435, y: 878, maxWidth: 245 },
-    28: { x: 1435, y: 909, maxWidth: 245 },
-    29: { x: 1435, y: 941, maxWidth: 245 }
+    17: { x: 1435, y: 628, maxWidth: 245 },
+    18: { x: 1435, y: 660, maxWidth: 245 },
+    19: { x: 1435, y: 691, maxWidth: 245 },
+    20: { x: 1435, y: 722, maxWidth: 245 },
+    21: { x: 1435, y: 753, maxWidth: 245 },
+    22: { x: 1435, y: 784, maxWidth: 245 }
   }
 
 };
 
 
-const layout =
-  directoryLayout[selectedDirectoryFloor];
-
-
-const textX =
-  canvas.width *
-  layout.textRightX;
-
-
-const firstY =
-  canvas.height *
-  layout.firstRowY;
-
-
-const lastY =
-  canvas.height *
-  layout.lastRowY;
-
-
-const maxTextWidth =
-  canvas.width *
-  layout.maxTextWidth;
-
-
-const rowGap =
-  canvas.height * 0.0332;
-
 /*
   =====================================
-  AUTO FONT SIZE
+  FONT
   =====================================
 */
 
 function setFloorDirectoryFont(
-  ctx,
   text,
   maxWidth
 ) {
 
-  let fontSize = 22;
-  const minFontSize = 15;
+  // מתחילים מפונט גדול יותר
+  let fontSize = 25;
+
+  const minFontSize = 16;
 
   while (fontSize > minFontSize) {
 
     ctx.font =
-      `500 ${fontSize}px Arial, sans-serif`;
+      `600 ${fontSize}px Arial, sans-serif`;
 
     if (
       ctx.measureText(text).width <=
@@ -4991,96 +4948,67 @@ function setFloorDirectoryFont(
       break;
     }
 
-    fontSize--;
+    fontSize -= 1;
   }
 
   ctx.font =
-    `500 ${fontSize}px Arial, sans-serif`;
+    `600 ${fontSize}px Arial, sans-serif`;
 }
+
+
 /*
   =====================================
   DRAW DIRECTORY
   =====================================
 */
+
 const positions =
   floorDirectoryPositions[
     selectedDirectoryFloor
   ] || {};
 
 
-ctx.fillStyle =
-  '#24202b';
+ctx.fillStyle = '#24202b';
 
-ctx.textAlign =
-  'right';
+ctx.textAlign = 'right';
 
-ctx.textBaseline =
-  'middle';
+ctx.textBaseline = 'middle';
 
-ctx.direction =
-  'rtl';
+ctx.direction = 'rtl';
 
 
 Object.entries(positions)
-  .forEach(([officeNumber, position]) => {
+  .forEach(
+    ([officeNumber, position]) => {
 
-    const name =
-      getDirectoryNameForOffice(
-        selectedDirectoryFloor,
-        Number(officeNumber)
-      );
-
-    if (!name) return;
-
-
-    setFloorDirectoryFont(
-      ctx,
-      name,
-      position.maxWidth
-    );
+      const name =
+        getDirectoryNameForOffice(
+          selectedDirectoryFloor,
+          Number(officeNumber)
+        );
 
 
-    ctx.fillText(
-      name,
-      position.x,
-      position.y,
-      position.maxWidth
-    );
+      // משרד ריק נשאר פשוט ריק
+      if (!name) {
+        return;
+      }
 
-  });
-offices.forEach(
-  (officeNumber, index) => {
 
-    const name =
-      getDirectoryNameForOffice(
-        selectedDirectoryFloor,
-        officeNumber
+      setFloorDirectoryFont(
+        name,
+        position.maxWidth
       );
 
 
-    if (!name) {
-      return;
+      ctx.fillText(
+        name,
+        position.x,
+        position.y,
+        position.maxWidth
+      );
+
     }
-
-
-const y =
-  firstY +
-  index * rowGap -
-  1;
-
-
-    setDirectoryFont(name);
-
-
-    ctx.fillText(
-      name,
-      textX,
-      y,
-      maxTextWidth
-    );
-
-  }
-);
+  );
     /*
       הורדת PNG
     */
