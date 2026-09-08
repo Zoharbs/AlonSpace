@@ -4772,6 +4772,228 @@ document
 
 
 renderFloorDirectoryEditor();
+
+function getDirectoryNameForOffice(floor, officeNumber) {
+  const automaticName =
+    floorDirectories[floor]?.[officeNumber]?.name || '';
+
+  const editedName =
+    floorDirectoryEdits[floor]?.[officeNumber];
+
+  return editedName !== undefined
+    ? editedName.trim()
+    : automaticName.trim();
+}
+
+
+async function exportFloorDirectoryImage() {
+
+  const button =
+    document.getElementById('saveFloorImage');
+
+  const preview =
+    document.getElementById('floorDirectoryPreview');
+
+  if (!button || !preview) return;
+
+
+  const originalText =
+    button.textContent;
+
+  button.disabled = true;
+  button.textContent = 'יוצר תמונה...';
+
+
+  try {
+
+    /*
+      נטען את תמונת הבסיס של הקומה הנבחרת
+    */
+
+    const image = new Image();
+
+    image.src = preview.src;
+
+    await image.decode();
+
+
+    /*
+      Canvas באותה רזולוציה בדיוק
+      כמו תמונת המקור
+    */
+
+    const canvas =
+      document.createElement('canvas');
+
+    canvas.width =
+      image.naturalWidth;
+
+    canvas.height =
+      image.naturalHeight;
+
+
+    const ctx =
+      canvas.getContext('2d');
+
+
+    /*
+      מציירים קודם את תמונת הבסיס
+    */
+
+    ctx.drawImage(
+      image,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+
+    /*
+      רשימת המשרדים של הקומה
+    */
+
+    const offices =
+      floorOfficeNumbers[selectedDirectoryFloor] || [];
+
+
+    /*
+      אזור רשימת הדיירים בתמונה.
+
+      כרגע הערכים יחסיים כדי שיעבדו
+      גם אם התמונה היא 1920x1080
+      וגם אם היא ברזולוציה אחרת.
+    */
+
+    const textX =
+      canvas.width * 0.925;
+
+    const startY =
+      canvas.height * 0.137;
+
+    const endY =
+      canvas.height * 0.925;
+
+    const rowHeight =
+      (endY - startY) /
+      Math.max(offices.length - 1, 1);
+
+
+    /*
+      עיצוב הטקסט
+    */
+
+    const fontSize =
+      Math.max(
+        14,
+        Math.round(
+          canvas.height * 0.018
+        )
+      );
+
+    ctx.font =
+      `500 ${fontSize}px Arial`;
+
+    ctx.fillStyle =
+      '#1f1f1f';
+
+    ctx.textAlign =
+      'right';
+
+    ctx.textBaseline =
+      'middle';
+
+    ctx.direction =
+      'rtl';
+
+
+    /*
+      הכנסת שמות החברות
+    */
+
+    offices.forEach(
+      (officeNumber, index) => {
+
+        const name =
+          getDirectoryNameForOffice(
+            selectedDirectoryFloor,
+            officeNumber
+          );
+
+        if (!name) return;
+
+
+        const y =
+          startY +
+          index * rowHeight;
+
+
+        ctx.fillText(
+          name,
+          textX,
+          y
+        );
+
+      }
+    );
+
+
+    /*
+      הורדת PNG
+    */
+
+    const imageUrl =
+      canvas.toDataURL(
+        'image/png',
+        1
+      );
+
+
+    const link =
+      document.createElement('a');
+
+    link.href =
+      imageUrl;
+
+    link.download =
+      `AlonSpace-Floor-${selectedDirectoryFloor}.png`;
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+
+  } catch (error) {
+
+    console.error(
+      'FLOOR DIRECTORY EXPORT ERROR:',
+      error
+    );
+
+    alert(
+      'לא הצלחנו ליצור את תמונת הקומה.'
+    );
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      originalText;
+
+  }
+}
+
+
+document
+  .getElementById('saveFloorImage')
+  ?.addEventListener(
+    'click',
+    exportFloorDirectoryImage
+  );
 </script>
 
   <% if (newClientInvite) { %>
