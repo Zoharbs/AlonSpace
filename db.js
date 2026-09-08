@@ -202,7 +202,17 @@ await query(`
   ALTER TABLE meeting_bookings
   ADD COLUMN IF NOT EXISTS booking_source VARCHAR(20);
 `);
+await db.query(`
+  CREATE TABLE IF NOT EXISTS floor_directory_overrides (
+    id BIGSERIAL PRIMARY KEY,
+    floor INTEGER NOT NULL,
+    office_number INTEGER NOT NULL,
+    directory_name TEXT NOT NULL DEFAULT '',
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
+    UNIQUE (floor, office_number)
+  )
+`);
 // שריונים ישנים נחשבים כאילו נוצרו על ידי הלקוח עצמו.
 // כך אנחנו לא משאירים נתונים ישנים ללא מקור.
 await query(`
