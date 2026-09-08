@@ -876,7 +876,9 @@ averageMeetingRoomUsage,
   }
 });
 
-router.post('/floor-directory/save',
+router.post(
+  '/floor-directory/save',
+  requireAdmin,
   async (req, res, next) => {
 
     try {
@@ -891,110 +893,55 @@ router.post('/floor-directory/save',
 
 
       if (![4, 6].includes(floor)) {
-        return res.status(400).send(
-          'Invalid floor'
-        );
+        return res.status(400).json({
+          error: 'Invalid floor'
+        });
       }
 
 
-      await db.query('BEGIN');
+      for (
+        const [officeNumber, name]
+        of Object.entries(entries)
+      ) {
 
-
-      try {
-
-        for (
-          const [officeNumber, name]
-          of Object.entries(entries)
-        ) {
-
-          const office =
-            Number(officeNumber);
-
-          if (!Number.isFinite(office)) {
-            continue;
-          }
-
-
-          const cleanName =
-            String(name || '').trim();
-
-
-          /*
-            אם השדה ריק:
-            מוחקים override וחוזרים לשם
-            האוטומטי מהלקוח.
-          */
-
-          if (!cleanName) {
-
-            await db.query(
-              `
-                DELETE FROM
-                  floor_directory_overrides
-                WHERE
-                  floor = $1
-                  AND office_number = $2
-              `,
-              [
-                floor,
-                office
-              ]
-            );
-
-            continue;
-          }
-
-
-          await db.query(
-            `
-              INSERT INTO
-                floor_directory_overrides
-              (
-                floor,
-                office_number,
-                display_name
-              )
-              VALUES ($1, $2, $3)
-
-              ON CONFLICT
-                (floor, office_number)
-
-              DO UPDATE SET
-                display_name =
-                  EXCLUDED.display_name,
-
-                updated_at =
-                  NOW()
-            `,
-            [
+        await db.query(
+          `
+            INSERT INTO floor_directory_overrides (
               floor,
-              office,
-              cleanName
-            ]
-          );
+              office_number,
+              directory_name,
+              updated_at
+            )
+            VALUES ($1, $2, $3, NOW())
 
-        }
+            ON CONFLICT (
+              floor,
+              office_number
+            )
 
+            DO UPDATE SET
+              directory_name = EXCLUDED.directory_name,
+              updated_at = NOW()
+          `,
+          [
+            floor,
+            Number(officeNumber),
+            String(name || '').trim()
+          ]
+        );
 
-        await db.query('COMMIT');
-
-
-      } catch (error) {
-
-        await db.query('ROLLBACK');
-
-        throw error;
       }
 
 
-      return res.redirect(
-        '/admin#clients'
-      );
+      return res.json({
+        success: true
+      });
 
 
     } catch (error) {
 
-      return next(error);
+      next(error);
+
     }
 
   }
