@@ -4867,27 +4867,32 @@ async function exportFloorDirectoryImage() {
 const directoryLayout = {
 
   4: {
-    textRightX: 0.934,
+    // איפה הצד הימני של הטקסט נגמר
+    textRightX: 0.925,
 
+    // מרכז שורה 01
     firstRowY: 0.121,
+
+    // מרכז שורה 29
     lastRowY: 0.951,
 
-    maxTextWidth: 0.175,
+    // כמה רחב מותר לשם להיות
+    maxTextWidth: 0.205,
 
-    fontSize: 18,
-    minFontSize: 12
+    // פונט רגיל
+    fontSize: 24,
+
+    // מינימום לשמות ארוכים
+    minFontSize: 17
   },
 
   6: {
-    textRightX: 0.934,
-
+    textRightX: 0.925,
     firstRowY: 0.121,
     lastRowY: 0.951,
-
-    maxTextWidth: 0.175,
-
-    fontSize: 18,
-    minFontSize: 12
+    maxTextWidth: 0.205,
+    fontSize: 24,
+    minFontSize: 17
   }
 
 };
@@ -4918,11 +4923,7 @@ const maxTextWidth =
 
 
 const rowGap =
-  offices.length > 1
-    ? (lastY - firstY) /
-      (offices.length - 1)
-    : 0;
-
+  canvas.height * 0.0332;
 
 /*
   =====================================
@@ -4933,42 +4934,31 @@ const rowGap =
 function setDirectoryFont(text) {
 
   let fontSize =
-    Math.round(
-      canvas.height *
-      (layout.fontSize / 1024)
-    );
-
+    layout.fontSize;
 
   const minFontSize =
-    Math.round(
-      canvas.height *
-      (layout.minFontSize / 1024)
-    );
+    layout.minFontSize;
 
 
   while (fontSize > minFontSize) {
 
     ctx.font =
-      `600 ${fontSize}px Arial`;
+      `600 ${fontSize}px Arial, Helvetica, sans-serif`;
 
-    const width =
-      ctx.measureText(text).width;
-
-
-    if (width <= maxTextWidth) {
+    if (
+      ctx.measureText(text).width
+      <= maxTextWidth
+    ) {
       break;
     }
-
 
     fontSize--;
   }
 
 
   ctx.font =
-    `600 ${fontSize}px Arial`;
-
+    `600 ${fontSize}px Arial, Helvetica, sans-serif`;
 }
-
 
 /*
   =====================================
@@ -4977,7 +4967,7 @@ function setDirectoryFont(text) {
 */
 
 ctx.fillStyle =
-  '#24202b';
+  '#25212b';
 
 ctx.textAlign =
   'right';
@@ -5004,9 +4994,10 @@ offices.forEach(
     }
 
 
-    const y =
-      firstY +
-      index * rowGap;
+const y =
+  firstY +
+  index * rowGap -
+  1;
 
 
     setDirectoryFont(name);
