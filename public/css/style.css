@@ -3581,25 +3581,22 @@ body.accessibility-high-contrast .accessibility-menu a {
 }
 .floor-directory-section {
   margin-top: 24px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  background: #fff;
+  border-radius: 16px;
   overflow: hidden;
+  background: #f1eefc;
+  border: none;
 }
 
 .floor-directory-section summary {
   cursor: pointer;
-  padding: 16px 20px;
+  padding: 20px 24px;
   font-weight: 700;
   font-size: 18px;
+  background: #f1eefc;
   user-select: none;
-  background: #f7f7f7;
-}
-
-.floor-directory-section summary:hover {
-  background: #f0f0f0;
 }
 
 .floor-directory-content {
   padding: 20px;
+  background: #f1eefc;
 }
