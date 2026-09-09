@@ -3579,3 +3579,27 @@ body.accessibility-high-contrast .accessibility-menu a {
   margin-left: auto;
   margin-right: auto;
 }
+.floor-directory-section {
+  margin-top: 24px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.floor-directory-section summary {
+  cursor: pointer;
+  padding: 16px 20px;
+  font-weight: 700;
+  font-size: 18px;
+  user-select: none;
+  background: #f7f7f7;
+}
+
+.floor-directory-section summary:hover {
+  background: #f0f0f0;
+}
+
+.floor-directory-content {
+  padding: 20px;
+}
