@@ -4614,11 +4614,13 @@ const savedFloorDirectoryOverrides =
   ).replace(/</g, '\\u003c') %>;
 
 // המספרים שבאמת קיימים בכל קומה
-
+if (savedFloorDirectoryOverrides?.[4]) {
+  delete savedFloorDirectoryOverrides[4][5];
+}
 const floorOfficeNumbers = {
 
   4: [
-    1, 2, 3, 4, 5, 6, 7, 8,
+    1, 2, 3, 4, 6, 7, 8,
     9, 10, 11, 12, 13, 14, 15, 16,
 
     // אין 17
@@ -4838,43 +4840,43 @@ const floorDirectoryPositions = {
 
   /* קומה 4 */
 
-  4: {
-    1:  { x: 1455, y: 126, maxWidth: 270 },
-    2:  { x: 1455, y: 160, maxWidth: 270 },
-    3:  { x: 1455, y: 194, maxWidth: 270 },
-    4:  { x: 1455, y: 227, maxWidth: 270 },
-    5:  { x: 1455, y: 260, maxWidth: 270 },
-    6:  { x: 1455, y: 292, maxWidth: 270 },
-    7:  { x: 1455, y: 325, maxWidth: 270 },
-    8:  { x: 1455, y: 357, maxWidth: 270 },
-    9:  { x: 1455, y: 390, maxWidth: 270 },
-    10: { x: 1455, y: 422, maxWidth: 270 },
-    11: { x: 1455, y: 454, maxWidth: 270 },
-    12: { x: 1455, y: 486, maxWidth: 270 },
-    13: { x: 1455, y: 518, maxWidth: 270 },
-    14: { x: 1455, y: 550, maxWidth: 270 },
-    15: { x: 1455, y: 582, maxWidth: 270 },
-    16: { x: 1455, y: 614, maxWidth: 270 },
+4: {
+  1:  { x: 1455, y: 126, maxWidth: 270 },
+  2:  { x: 1455, y: 160, maxWidth: 270 },
+  3:  { x: 1455, y: 194, maxWidth: 270 },
+  4:  { x: 1455, y: 227, maxWidth: 270 },
 
-    // אין 17
+  // אין 5
 
-    18: { x: 1455, y: 646, maxWidth: 270 },
-    19: { x: 1455, y: 678, maxWidth: 270 },
-    20: { x: 1455, y: 710, maxWidth: 270 },
-    21: { x: 1455, y: 742, maxWidth: 270 },
-    22: { x: 1455, y: 774, maxWidth: 270 },
-    23: { x: 1455, y: 806, maxWidth: 270 },
+  6:  { x: 1455, y: 260, maxWidth: 270 },
+  7:  { x: 1455, y: 292, maxWidth: 270 },
+  8:  { x: 1455, y: 325, maxWidth: 270 },
+  9:  { x: 1455, y: 357, maxWidth: 270 },
+  10: { x: 1455, y: 390, maxWidth: 270 },
+  11: { x: 1455, y: 422, maxWidth: 270 },
+  12: { x: 1455, y: 454, maxWidth: 270 },
+  13: { x: 1455, y: 486, maxWidth: 270 },
+  14: { x: 1455, y: 518, maxWidth: 270 },
+  15: { x: 1455, y: 550, maxWidth: 270 },
+  16: { x: 1455, y: 582, maxWidth: 270 },
 
-    // אין 24
+  // אין 17
 
-    25: { x: 1455, y: 838, maxWidth: 270 },
-    26: { x: 1455, y: 870, maxWidth: 270 },
-    27: { x: 1455, y: 903, maxWidth: 270 },
-    28: { x: 1455, y: 935, maxWidth: 270 },
-    29: { x: 1455, y: 967, maxWidth: 270 }
-  },
+  18: { x: 1455, y: 614, maxWidth: 270 },
+  19: { x: 1455, y: 646, maxWidth: 270 },
+  20: { x: 1455, y: 678, maxWidth: 270 },
+  21: { x: 1455, y: 710, maxWidth: 270 },
+  22: { x: 1455, y: 742, maxWidth: 270 },
+  23: { x: 1455, y: 774, maxWidth: 270 },
 
+  // אין 24
 
+  25: { x: 1455, y: 806, maxWidth: 270 },
+  26: { x: 1455, y: 838, maxWidth: 270 },
+  27: { x: 1455, y: 870, maxWidth: 270 },
+  28: { x: 1455, y: 903, maxWidth: 270 },
+  29: { x: 1455, y: 935, maxWidth: 270 }
+},
   /* קומה 6 */
 
   6: {
