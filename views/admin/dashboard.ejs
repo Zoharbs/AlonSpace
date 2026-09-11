@@ -8,7 +8,13 @@
     <%= title %>
   </title>
   <link rel="stylesheet" href="/css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+<link
+  href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+>
   <style>
     body {
       background: var(--stone);
@@ -4734,7 +4740,7 @@ const currentName =
 
       floorDirectoryEdits[selectedDirectoryFloor][officeNumber] =
         input.value;
-
+refreshFloorDirectoryPreview();
     });
 
 
@@ -4744,7 +4750,7 @@ const currentName =
     list.appendChild(row);
 
   });
-
+refreshFloorDirectoryPreview();
 }
 
 
@@ -4772,16 +4778,6 @@ document
         document.getElementById(
           'floorDirectoryPreview'
         );
-
-
-      if (preview) {
-
-        preview.src =
-          selectedDirectoryFloor === 4
-            ? '/images/floor4-map.png'
-            : '/images/floor6-map.png';
-
-      }
 
 
       renderFloorDirectoryEditor();
@@ -4912,7 +4908,7 @@ const floorDirectoryPositions = {
    EXPORT PNG
 ===================================== */
 
-async function exportFloorDirectoryImage() {
+async function buildFloorDirectoryImage() {
 
   const preview =
     document.getElementById(
@@ -4925,57 +4921,45 @@ async function exportFloorDirectoryImage() {
     );
   }
 
-
-  const image =
+  const baseImage =
     new Image();
 
-  image.src =
-    preview.src;
+  baseImage.src =
+    selectedDirectoryFloor === 4
+      ? '/images/floor4-map.png'
+      : '/images/floor6-map.png';
 
-  await image.decode();
-
+  await baseImage.decode();
 
   const canvas =
     document.createElement('canvas');
 
   canvas.width =
-    image.naturalWidth;
+    baseImage.naturalWidth;
 
   canvas.height =
-    image.naturalHeight;
-
+    baseImage.naturalHeight;
 
   const ctx =
     canvas.getContext('2d');
 
-
   ctx.drawImage(
-    image,
+    baseImage,
     0,
     0,
     canvas.width,
     canvas.height
   );
-
-
+await document.fonts.load('700 24px Assistant');
   const positions =
     floorDirectoryPositions[
       selectedDirectoryFloor
     ] || {};
 
-
-  ctx.fillStyle =
-    '#24202b';
-
-  ctx.textAlign =
-    'right';
-
-  ctx.textBaseline =
-    'middle';
-
-  ctx.direction =
-    'rtl';
-
+  ctx.fillStyle = '#24202b';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  ctx.direction = 'rtl';
 
   function setFloorDirectoryFont(
     text,
@@ -4983,34 +4967,25 @@ async function exportFloorDirectoryImage() {
   ) {
 
     let fontSize = 24;
-
     const minFontSize = 15;
-
 
     while (
       fontSize > minFontSize
     ) {
-
-      ctx.font =
-        `600 ${fontSize}px Arial, sans-serif`;
-
-
+ctx.font =
+  `700 ${fontSize}px Assistant, Arial, sans-serif`;
       if (
-        ctx.measureText(text).width <=
-        maxWidth
+        ctx.measureText(text).width <= maxWidth
       ) {
         break;
       }
 
-
       fontSize--;
     }
 
-
     ctx.font =
-      `600 ${fontSize}px Arial, sans-serif`;
+      `700 ${fontSize}px Assistant, Arial, sans-serif`;
   }
-
 
   Object.entries(positions)
     .forEach(
@@ -5022,17 +4997,14 @@ async function exportFloorDirectoryImage() {
             Number(officeNumber)
           );
 
-
         if (!name) {
           return;
         }
-
 
         setFloorDirectoryFont(
           name,
           position.maxWidth
         );
-
 
         ctx.fillText(
           name,
@@ -5044,12 +5016,29 @@ async function exportFloorDirectoryImage() {
       }
     );
 
+  return canvas.toDataURL('image/png');
+}
 
-  const imageUrl =
-    canvas.toDataURL(
-      'image/png'
+async function refreshFloorDirectoryPreview() {
+
+  const preview =
+    document.getElementById(
+      'floorDirectoryPreview'
     );
 
+  if (!preview) return;
+
+  const imageUrl =
+    await buildFloorDirectoryImage();
+
+  preview.src =
+    imageUrl;
+}
+
+async function exportFloorDirectoryImage() {
+
+  const imageUrl =
+    await buildFloorDirectoryImage();
 
   const link =
     document.createElement('a');
@@ -5060,14 +5049,12 @@ async function exportFloorDirectoryImage() {
   link.download =
     `AlonSpace-Floor-${selectedDirectoryFloor}.png`;
 
-
   document.body.appendChild(link);
 
   link.click();
 
   link.remove();
 }
-
 
 /* =====================================
    SAVE TO DB + EXPORT
