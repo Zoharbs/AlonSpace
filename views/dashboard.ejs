@@ -1341,14 +1341,39 @@
                                         <% } %>
                                 </div>
 
-                                <form method="POST" action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
-                                  onsubmit="return confirm('לבטל את השריון?')">
-                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+   <%
+  const bookingStart = new Date(
+    `${booking.booking_date}T${String(booking.start_time).slice(0, 8)}`
+  );
 
-                                  <button class="btn btn-outline" type="submit" style="padding:7px 12px;">
-                                    ביטול
-                                  </button>
-                                </form>
+  const canCancel = bookingStart > new Date();
+%>
+
+<% if (canCancel) { %>
+  <form
+    method="POST"
+    action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
+    onsubmit="return confirm('לבטל את השריון?')"
+  >
+    <input
+      type="hidden"
+      name="_csrf"
+      value="<%= csrfToken %>"
+    >
+
+    <button
+      class="btn btn-outline"
+      type="submit"
+      style="padding:7px 12px;"
+    >
+      ביטול
+    </button>
+  </form>
+<% } else { %>
+  <span class="small">
+    השריון כבר התחיל
+  </span>
+<% } %>
                               </article>
                               <% }) %>
                     </div>
