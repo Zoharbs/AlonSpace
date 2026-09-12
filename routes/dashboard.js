@@ -172,49 +172,45 @@ const shouldShowSurvey =
 
     const hasChargeableBookings =
       chargeableResult.rows[0].count > 0;
-    const bookingsResult = await db.query(
-      `
-        SELECT
-          mb.id,
-          mb.user_id,
-          mb.booking_date,
-          mb.booking_source,
-          mb.start_time,
-          mb.end_time,
-          mb.note,
-          mb.created_at,
-          u.display_name,
-          u.business_name,
-          u.office_number,
-          u.floor,
-          CASE
-            WHEN mb.user_id = $1
-            THEN TRUE
-            ELSE FALSE
-          END AS is_mine
-        
-          FROM meeting_bookings mb
-        JOIN users u ON u.id = mb.user_id
-        WHERE
-          mb.meeting_room_id = (
-            SELECT id
-            FROM meeting_rooms
-            WHERE floor = $2
-          )
-          AND (
-            mb.booking_date > CURRENT_DATE
-            OR (
-              mb.booking_date = CURRENT_DATE
-              AND mb.end_time > CURRENT_TIME
-            )
-          )
-        ORDER BY
-          mb.booking_date ASC,
-          mb.start_time ASC
-        LIMIT 200
-      `,
-      [user.id, user.floor]
-    );
+const bookingsResult = await db.query(
+  `
+    SELECT
+      mb.id,
+      mb.user_id,
+      mb.booking_date,
+      mb.booking_source,
+      mb.start_time,
+      mb.end_time,
+      mb.note,
+      mb.created_at,
+      u.display_name,
+      u.business_name,
+      u.office_number,
+      u.floor,
+      CASE
+        WHEN mb.user_id = $1
+        THEN TRUE
+        ELSE FALSE
+      END AS is_mine
+
+    FROM meeting_bookings mb
+    JOIN users u ON u.id = mb.user_id
+
+    WHERE
+      mb.meeting_room_id = (
+        SELECT id
+        FROM meeting_rooms
+        WHERE floor = $2
+      )
+
+    ORDER BY
+      mb.booking_date ASC,
+      mb.start_time ASC
+
+    LIMIT 200
+  `,
+  [user.id, user.floor]
+);
 
     return res.render('dashboard', {
       title: 'האזור האישי - AlonSpace',
