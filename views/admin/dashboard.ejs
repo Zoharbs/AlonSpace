@@ -4834,75 +4834,69 @@ function getDirectoryNameForOffice(
 ===================================== */
 
 const floorDirectoryPositions = {
+  4: {
+    1:  { x: 1572, y: 142, maxWidth: 120 },
+    2:  { x: 1572, y: 171, maxWidth: 120 },
+    3:  { x: 1572, y: 200, maxWidth: 120 },
+    4:  { x: 1572, y: 229, maxWidth: 120 },
 
-  /* קומה 4 */
+    // אין משרד 5
 
-4: {
-  1:  { x: 1455, y: 158, maxWidth: 270 },
-  2:  { x: 1455, y: 192, maxWidth: 270 },
-  3:  { x: 1455, y: 226, maxWidth: 270 },
-  4:  { x: 1455, y: 259, maxWidth: 270 },
+    6:  { x: 1572, y: 258, maxWidth: 120 },
+    7:  { x: 1572, y: 287, maxWidth: 120 },
+    8:  { x: 1572, y: 316, maxWidth: 120 },
+    9:  { x: 1572, y: 345, maxWidth: 120 },
+    10: { x: 1572, y: 374, maxWidth: 120 },
+    11: { x: 1572, y: 403, maxWidth: 120 },
+    12: { x: 1572, y: 432, maxWidth: 120 },
+    13: { x: 1572, y: 461, maxWidth: 120 },
+    14: { x: 1572, y: 490, maxWidth: 120 },
+    15: { x: 1572, y: 519, maxWidth: 120 },
+    16: { x: 1572, y: 548, maxWidth: 120 },
 
-  // אין 5
+    // אין משרד 17
 
-  6:  { x: 1455, y: 292, maxWidth: 270 },
-  7:  { x: 1455, y: 324, maxWidth: 270 },
-  8:  { x: 1455, y: 357, maxWidth: 270 },
-  9:  { x: 1455, y: 389, maxWidth: 270 },
-  10: { x: 1455, y: 422, maxWidth: 270 },
-  11: { x: 1455, y: 454, maxWidth: 270 },
-  12: { x: 1455, y: 486, maxWidth: 270 },
-  13: { x: 1455, y: 518, maxWidth: 270 },
-  14: { x: 1455, y: 550, maxWidth: 270 },
-  15: { x: 1455, y: 582, maxWidth: 270 },
-  16: { x: 1455, y: 614, maxWidth: 270 },
+    18: { x: 1572, y: 577, maxWidth: 120 },
+    19: { x: 1572, y: 606, maxWidth: 120 },
+    20: { x: 1572, y: 635, maxWidth: 120 },
+    21: { x: 1572, y: 664, maxWidth: 120 },
+    22: { x: 1572, y: 693, maxWidth: 120 },
+    23: { x: 1572, y: 722, maxWidth: 120 },
 
-  // אין 17
+    // אין משרד 24
 
-  18: { x: 1455, y: 646, maxWidth: 270 },
-  19: { x: 1455, y: 678, maxWidth: 270 },
-  20: { x: 1455, y: 710, maxWidth: 270 },
-  21: { x: 1455, y: 742, maxWidth: 270 },
-  22: { x: 1455, y: 774, maxWidth: 270 },
-  23: { x: 1455, y: 806, maxWidth: 270 },
-
-  // אין 24
-
-  25: { x: 1455, y: 838, maxWidth: 270 },
-  26: { x: 1455, y: 870, maxWidth: 270 },
-  27: { x: 1455, y: 903, maxWidth: 270 },
-  28: { x: 1455, y: 935, maxWidth: 270 },
-  29: { x: 1455, y: 967, maxWidth: 270 }
-},
-/* קומה 6 */
+    25: { x: 1572, y: 751, maxWidth: 120 },
+    26: { x: 1572, y: 780, maxWidth: 120 },
+    27: { x: 1572, y: 809, maxWidth: 120 },
+    28: { x: 1572, y: 838, maxWidth: 120 },
+    29: { x: 1572, y: 867, maxWidth: 120 }
+  },
 
   6: {
-    1:  { x: 1425, y: 130, maxWidth: 260 },
-    2:  { x: 1425, y: 171, maxWidth: 260 },
-    3:  { x: 1425, y: 210, maxWidth: 260 },
-    4:  { x: 1425, y: 249, maxWidth: 260 },
-    5:  { x: 1425, y: 288, maxWidth: 260 },
-    6:  { x: 1425, y: 326, maxWidth: 260 },
-    7:  { x: 1425, y: 365, maxWidth: 260 },
-    8:  { x: 1425, y: 404, maxWidth: 260 },
-    9:  { x: 1425, y: 442, maxWidth: 260 },
-    10: { x: 1425, y: 480, maxWidth: 260 },
-    11: { x: 1425, y: 518, maxWidth: 260 },
-    12: { x: 1425, y: 556, maxWidth: 260 },
-    13: { x: 1425, y: 594, maxWidth: 260 },
-    14: { x: 1425, y: 632, maxWidth: 260 },
-    15: { x: 1425, y: 670, maxWidth: 260 },
-    16: { x: 1425, y: 708, maxWidth: 260 },
-    17: { x: 1425, y: 746, maxWidth: 260 },
-    18: { x: 1425, y: 784, maxWidth: 260 },
-    19: { x: 1425, y: 822, maxWidth: 260 },
-    20: { x: 1425, y: 859, maxWidth: 260 },
-    21: { x: 1425, y: 897, maxWidth: 260 },
-    22: { x: 1425, y: 935, maxWidth: 260 }
+    1:  { x: 1640, y: 116, maxWidth: 120 },
+    2:  { x: 1640, y: 151, maxWidth: 120 },
+    3:  { x: 1640, y: 186, maxWidth: 120 },
+    4:  { x: 1640, y: 221, maxWidth: 120 },
+    5:  { x: 1640, y: 256, maxWidth: 120 },
+    6:  { x: 1640, y: 291, maxWidth: 120 },
+    7:  { x: 1640, y: 326, maxWidth: 120 },
+    8:  { x: 1640, y: 361, maxWidth: 120 },
+    9:  { x: 1640, y: 396, maxWidth: 120 },
+    10: { x: 1640, y: 431, maxWidth: 120 },
+    11: { x: 1640, y: 466, maxWidth: 120 },
+    12: { x: 1640, y: 501, maxWidth: 120 },
+    13: { x: 1640, y: 536, maxWidth: 120 },
+    14: { x: 1640, y: 571, maxWidth: 120 },
+    15: { x: 1640, y: 606, maxWidth: 120 },
+    16: { x: 1640, y: 641, maxWidth: 120 },
+    17: { x: 1640, y: 676, maxWidth: 120 },
+    18: { x: 1640, y: 711, maxWidth: 120 },
+    19: { x: 1640, y: 746, maxWidth: 120 },
+    20: { x: 1640, y: 781, maxWidth: 120 },
+    21: { x: 1640, y: 816, maxWidth: 120 },
+    22: { x: 1640, y: 851, maxWidth: 120 }
   }
-
 };
-
 
 /* =====================================
    EXPORT PNG
