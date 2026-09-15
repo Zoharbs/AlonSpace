@@ -4519,18 +4519,18 @@ bookingElement.addEventListener(
        מעבר בין שבועות
     ========================= */
 
-    document
-      .getElementById('adminPreviousWeek')
-      ?.addEventListener('click', () => {
-        adminDisplayedWeekStart =
-          addAdminDays(
-            adminDisplayedWeekStart,
-            ֿ+4
-          );
+   document
+  .getElementById('adminPreviousWeek')
+  ?.addEventListener('click', () => {
+    adminDisplayedWeekStart =
+      addAdminDays(
+        adminDisplayedWeekStart,
+        -7
+      );
 
-        renderAdminCalendar();
-      });
-
+    renderAdminCalendar();
+  });
+  
     document
       .getElementById('adminNextWeek')
       ?.addEventListener('click', () => {
