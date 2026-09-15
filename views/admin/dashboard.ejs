@@ -1131,6 +1131,46 @@
 
   margin-top: 12px;
 }
+.admin-booking-time {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.admin-bookings-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.admin-bookings-table th {
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.admin-bookings-table td {
+  padding: 14px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.admin-bookings-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.admin-bookings-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.admin-bookings-table tbody tr:last-child td {
+  border-bottom: 0;
+}
   </style>
 </head>
 
@@ -2626,7 +2666,7 @@
                     </div>
                   </div>
                   <div class="table-wrap">
-                    <table>
+                    <table class="admin-bookings-table">
                       <thead>
                         <tr>
                           <th>תאריך</th>
@@ -2649,18 +2689,31 @@
 
                             <% meetingBookings.forEach(booking=> { %>
                               <tr class="meeting-booking-row" data-room-floor="<%= booking.meeting_room_floor %>">
-                                <td>
-                                  <%= booking.booking_date %>
-                                </td>
-                                <td>
-                                  <%= booking.start_time %>–<%= booking.end_time %>
-                                </td>
-                                <td>
-                                  <%= booking.display_name %>
-                                    <br><span class="small">
-                                      <%= booking.business_name || '' %>
-                                    </span>
-                                </td>
+<td>
+  <strong>
+    <%= new Date(booking.booking_date).toLocaleDateString('he-IL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }) %>
+  </strong>
+</td>
+<td>
+  <span class="admin-booking-time">
+    <%= String(booking.start_time).slice(0, 5) %>–<%= String(booking.end_time).slice(0, 5) %>
+  </span>
+</td>
+                  <td>
+  <div style="font-weight:700;">
+    <%= booking.display_name %>
+  </div>
+
+  <% if (booking.business_name) { %>
+    <div class="small" style="margin-top:3px;">
+      <%= booking.business_name %>
+    </div>
+  <% } %>
+</td>
                                 <td>
                                   <%= booking.office_number ? `משרד ${booking.office_number}` : '-' %>
                                     <%= booking.floor ? `, קומה ${booking.floor}` : '' %>
@@ -4530,7 +4583,7 @@ bookingElement.addEventListener(
 
     renderAdminCalendar();
   });
-  
+
     document
       .getElementById('adminNextWeek')
       ?.addEventListener('click', () => {
