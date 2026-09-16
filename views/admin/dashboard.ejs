@@ -4643,8 +4643,13 @@
 
           floorDirectoryEdits[selectedDirectoryFloor][officeNumber] =
             input.value;
-          refreshFloorDirectoryPreview();
-        });
+refreshFloorDirectoryPreview()
+  .catch((error) => {
+    console.error(
+      'FLOOR DIRECTORY PREVIEW ERROR:',
+      error
+    );
+  });        });
 
 
         row.appendChild(number);
@@ -4801,7 +4806,6 @@
         22: { x: 1600, y: 851 + 4, maxWidth: 300 }
       }
     };
-renderFloorDirectoryEditor();
     /* =====================================
        EXPORT PNG
     ===================================== */
@@ -5144,7 +5148,14 @@ renderFloorDirectoryEditor();
 
         }
       );
-  </script>
+  
+  
+  /* =====================================
+   FLOOR DIRECTORY INIT
+===================================== */
+
+renderFloorDirectoryEditor();
+      </script>
 
   <% if (newClientInvite) { %>
     <script>
