@@ -1263,21 +1263,39 @@
   }
 
 }
-    .pwa-guide-step-image {
+
+.pwa-guide-step-image {
   display: block;
 
-  width: auto;
-  max-width: 100%;
-  max-height: 280px;
+  width: 100%;
+  height: 210px;
 
-  margin: 18px auto 0;
+  margin: 16px auto 0;
 
   border-radius: 14px;
 
-  object-fit: contain;
+  object-fit: cover;
 
   box-shadow:
     0 6px 20px rgba(20, 18, 40, .12);
+}
+
+
+/* Safari */
+.pwa-image-safari {
+  object-position: center 52%;
+}
+
+
+/* Share */
+.pwa-image-share {
+  object-position: center 25%;
+}
+
+
+/* Add to Home Screen */
+.pwa-image-home {
+  object-position: center 72%;
 }
     </style>
 
@@ -3234,42 +3252,47 @@
     );
 
 
-  const iosPwaSteps = [
-    {
-      icon: '🌐',
-      title: 'פתחו ב-Safari',
-      text:
-        'כדי לפתוח את האתר דרך Safari, ' +
-        'לחצו על כפתור השיתוף ומצאו את הכפתור.'
-,
-image:
+const iosPwaSteps = [
+  {
+    icon: '🌐',
+    title: 'פתחו ב-Safari',
+    text:
+      'כדי לפתוח את האתר דרך Safari, ' +
+      'לחצו על כפתור השיתוף ומצאו את הכפתור.',
 
-    '/images/pwa/open-in-safari.png'
-    },
+    image:
+      '/images/pwa/open-in-safari.png',
 
-    {
-      icon: '↗',
-      title: 'לחצו על כפתור השיתוף',
-      text:
-        'לחצו על כפתור השיתוף של Safari.'
-        , 
-        image:
+    imageClass:
+      'pwa-image-safari'
+  },
 
-      '/images/pwa/ios-share.png'
-    },
+  {
+    icon: '↗',
+    title: 'פתחו את תפריט השיתוף',
+    text:
+      'לחצו על כפתור השיתוף של Safari.',
 
-    {
-      icon: '＋',
-      title: 'הוסיפו למסך הבית',
-      text:
-        'בחרו „הוספה למסך הבית” ולאחר מכן לחצו על „הוסף”.'
-        ,
-        image:
+    image:
+      '/images/pwa/ios-share.png',
 
-      '/images/pwa/ios-add-home-screen.PNG'
-    }
-  ];
+    imageClass:
+      'pwa-image-share'
+  },
 
+  {
+    icon: '＋',
+    title: 'הוסיפו למסך הבית',
+    text:
+      'גללו מטה ובחרו „Add to Home Screen”.',
+
+    image:
+      '/images/pwa/ios-add-home-screen.png',
+
+    imageClass:
+      'pwa-image-home'
+  }
+];
 
   const androidPwaSteps = [
     {
