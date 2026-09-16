@@ -4808,165 +4808,115 @@
 
     async function buildFloorDirectoryImage() {
 
-  const preview =
-    document.getElementById(
-      'floorDirectoryPreview'
-    );
+      const preview =
+        document.getElementById(
+          'floorDirectoryPreview'
+        );
 
-  if (!preview) {
-    throw new Error(
-      'Floor preview not found'
-    );
-  }
-
-  const baseImage =
-    new Image();
-
-  baseImage.src =
-    selectedDirectoryFloor === 4
-      ? '/images/floor4-map.png'
-      : '/images/floor6-map.png';
-
-  await baseImage.decode();
-
-  /*
-   * CANVAS 1
-   * מציירים את המפה והשמות בגודל המקורי.
-   * ככה כל ה-x/y שכבר כיוונו נשארים נכונים.
-   */
-  const sourceCanvas =
-    document.createElement('canvas');
-
-  sourceCanvas.width =
-    baseImage.naturalWidth;
-
-  sourceCanvas.height =
-    baseImage.naturalHeight;
-
-  const ctx =
-    sourceCanvas.getContext('2d');
-
-  ctx.drawImage(
-    baseImage,
-    0,
-    0,
-    sourceCanvas.width,
-    sourceCanvas.height
-  );
-
-  await document.fonts.load(
-    '700 24px Assistant'
-  );
-
-  const positions =
-    floorDirectoryPositions[
-      selectedDirectoryFloor
-    ] || {};
-
-  ctx.fillStyle = '#24202b';
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'middle';
-  ctx.direction = 'rtl';
-
-  function setFloorDirectoryFont(
-    text,
-    maxWidth
-  ) {
-
-    let fontSize = 24;
-    const minFontSize = 15;
-
-    while (fontSize > minFontSize) {
-
-      ctx.font =
-        `700 ${fontSize}px Assistant, Arial, sans-serif`;
-
-      if (
-        ctx.measureText(text).width <= maxWidth
-      ) {
-        break;
+      if (!preview) {
+        throw new Error(
+          'Floor preview not found'
+        );
       }
 
-      fontSize--;
-    }
+      const baseImage =
+        new Image();
 
-    ctx.font =
-      `700 ${fontSize}px Assistant, Arial, sans-serif`;
-  }
+      baseImage.src =
+        selectedDirectoryFloor === 4
+          ? '/images/floor4-map.png'
+          : '/images/floor6-map.png';
 
-  Object.entries(positions)
-    .forEach(
-      ([officeNumber, position]) => {
+      await baseImage.decode();
 
-        const name =
-          getDirectoryNameForOffice(
-            selectedDirectoryFloor,
-            Number(officeNumber)
-          );
+      const canvas =
+        document.createElement('canvas');
 
-        if (!name) {
-          return;
+      canvas.width =
+        baseImage.naturalWidth;
+
+      canvas.height =
+        baseImage.naturalHeight;
+
+      const ctx =
+        canvas.getContext('2d');
+
+      ctx.drawImage(
+        baseImage,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      await document.fonts.load('700 24px Assistant');
+      const positions =
+        floorDirectoryPositions[
+        selectedDirectoryFloor
+        ] || {};
+
+      ctx.fillStyle = '#24202b';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.direction = 'rtl';
+
+      function setFloorDirectoryFont(
+        text,
+        maxWidth
+      ) {
+
+        let fontSize = 24;
+        const minFontSize = 15;
+
+        while (
+          fontSize > minFontSize
+        ) {
+          ctx.font =
+            `700 ${fontSize}px Assistant, Arial, sans-serif`;
+          if (
+            ctx.measureText(text).width <= maxWidth
+          ) {
+            break;
+          }
+
+          fontSize--;
         }
 
-        setFloorDirectoryFont(
-          name,
-          position.maxWidth
-        );
-
-        ctx.fillText(
-          name,
-          position.x,
-          position.y,
-          position.maxWidth
-        );
+        ctx.font =
+          `700 ${fontSize}px Assistant, Arial, sans-serif`;
       }
-    );
 
+      Object.entries(positions)
+        .forEach(
+          ([officeNumber, position]) => {
 
-  /*
-   * CANVAS 2
-   * התמונה הסופית לטלוויזיה:
-   * Full HD 1920x1080.
-   */
-  const finalCanvas =
-    document.createElement('canvas');
+            const name =
+              getDirectoryNameForOffice(
+                selectedDirectoryFloor,
+                Number(officeNumber)
+              );
 
-  finalCanvas.width = 1920;
-  finalCanvas.height = 1080;
+            if (!name) {
+              return;
+            }
 
-  const finalCtx =
-    finalCanvas.getContext('2d');
+            setFloorDirectoryFont(
+              name,
+              position.maxWidth
+            );
 
-  // רקע לבן במקרה שיש הבדל קטן ביחס
-  finalCtx.fillStyle = '#ffffff';
+            ctx.fillText(
+              name,
+              position.x,
+              position.y,
+              position.maxWidth
+            );
 
-  finalCtx.fillRect(
-    0,
-    0,
-    1920,
-    1080
-  );
+          }
+        );
 
+      return canvas.toDataURL('image/png');
+    }
 
-  /*
-   * ממלאים את כל ה-1920x1080.
-   *
-   * מכיוון שהמפה כבר כמעט 16:9,
-   * השינוי יהיה קטן מאוד.
-   */
-  finalCtx.drawImage(
-    sourceCanvas,
-    0,
-    0,
-    1920,
-    1080
-  );
-
-  return finalCanvas.toDataURL(
-    'image/png'
-  );
-}
-    
     async function refreshFloorDirectoryPreview() {
 
       const preview =
@@ -4983,27 +4933,28 @@
         imageUrl;
     }
 
-async function exportFloorDirectoryImage() {
+    async function exportFloorDirectoryImage() {
 
-  const imageUrl =
-    await buildFloorDirectoryImage();
+      const imageUrl =
+        await buildFloorDirectoryImage();
 
-  const link =
-    document.createElement('a');
+      const link =
+        document.createElement('a');
 
-  link.href = imageUrl;
+      link.href =
+        imageUrl;
 
-  link.download =
-    `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
+      link.download =
+        `AlonSpace-Floor-${selectedDirectoryFloor}.png`;
 
-  document.body.appendChild(link);
+      document.body.appendChild(link);
 
-  link.click();
+      link.click();
 
-  link.remove();
-}
+      link.remove();
+    }
 
-/* =====================================
+    /* =====================================
        SAVE TO DB + EXPORT
     ===================================== */
 
