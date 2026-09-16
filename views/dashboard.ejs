@@ -1432,6 +1432,14 @@ background: #fff;
 .pwa-install-banner[hidden] {
   display: none !important;
 }
+/* =====================================
+   PWA STEP 3 IMAGE FIX
+===================================== */
+
+.pwa-image-home {
+  object-position: center bottom;
+  transform: translateY(35px);
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -3570,7 +3578,7 @@ pwaGuideStep.innerHTML = `
         <img
           src="${step.image}"
           alt="${step.title}"
-          class="pwa-guide-step-image"
+          class="pwa-guide-step-image ${step.imageClass || ''}"
         >
       `
       : ''
