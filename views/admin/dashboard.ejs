@@ -8,13 +8,10 @@
     <%= title %>
   </title>
   <link rel="stylesheet" href="/css/style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link
-  href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap"
-  rel="stylesheet"
->
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       background: var(--stone);
@@ -681,496 +678,500 @@
         width: 100%;
       }
     }
+
     /* =====================================
    ADMIN CALENDAR - FINAL DESIGN
    זהה לעיצוב לוח הדייר
 ===================================== */
 
-#adminWeeklyCalendar {
-  background: #ffffff;
-}
+    #adminWeeklyCalendar {
+      background: #ffffff;
+    }
 
 
-/* כותרות ימים */
+    /* כותרות ימים */
 
-#adminWeeklyCalendar .calendar-corner,
-#adminWeeklyCalendar .calendar-day-header {
-  background: #fbfaff;
+    #adminWeeklyCalendar .calendar-corner,
+    #adminWeeklyCalendar .calendar-day-header {
+      background: #fbfaff;
 
-  border-left:
-    1px solid rgba(45, 40, 80, 0.055);
+      border-left:
+        1px solid rgba(45, 40, 80, 0.055);
 
-  border-bottom:
-    1px solid rgba(45, 40, 80, 0.07);
-}
-
-
-#adminWeeklyCalendar .calendar-day-header {
-  color: #151522;
-}
+      border-bottom:
+        1px solid rgba(45, 40, 80, 0.07);
+    }
 
 
-#adminWeeklyCalendar .calendar-day-name {
-  color: #151522;
-
-  font-size: 1rem;
-  font-weight: 800;
-}
+    #adminWeeklyCalendar .calendar-day-header {
+      color: #151522;
+    }
 
 
-#adminWeeklyCalendar .calendar-day-date {
-  color: #777659;
+    #adminWeeklyCalendar .calendar-day-name {
+      color: #151522;
 
-  font-size: .82rem;
-  font-weight: 500;
-}
-
-
-/* היום הנוכחי */
-
-#adminWeeklyCalendar .calendar-day-header.today {
-  background: #f8f6ff;
-}
+      font-size: 1rem;
+      font-weight: 800;
+    }
 
 
-#adminWeeklyCalendar
-.calendar-day-header.today::after {
-  content: "";
+    #adminWeeklyCalendar .calendar-day-date {
+      color: #777659;
 
-  position: absolute;
-
-  bottom: 0;
-  left: 22%;
-  right: 22%;
-
-  height: 3px;
-
-  border-radius: 10px 10px 0 0;
-
-  background: #7865f6;
-}
+      font-size: .82rem;
+      font-weight: 500;
+    }
 
 
-/* עמודת שעות */
+    /* היום הנוכחי */
 
-#adminWeeklyCalendar .calendar-time-label {
-  background: #fcfbff;
-
-  color: #747287;
-
-  border-left:
-    1px solid rgba(45, 40, 80, 0.055);
-
-  border-bottom:
-    1px solid rgba(45, 40, 80, 0.045);
-}
+    #adminWeeklyCalendar .calendar-day-header.today {
+      background: #f8f6ff;
+    }
 
 
-/* משבצות */
+    #adminWeeklyCalendar .calendar-day-header.today::after {
+      content: "";
 
-#adminWeeklyCalendar .calendar-slot {
-  background: #ffffff;
+      position: absolute;
 
-  border-left:
-    1px solid rgba(45, 40, 80, 0.04);
+      bottom: 0;
+      left: 22%;
+      right: 22%;
 
-  border-bottom:
-    1px solid rgba(45, 40, 80, 0.045);
-}
+      height: 3px;
 
+      border-radius: 10px 10px 0 0;
 
-#adminWeeklyCalendar
-.calendar-slot:not(.past):hover {
-  background: #faf9ff;
-}
+      background: #7865f6;
+    }
 
 
-/* עבר */
+    /* עמודת שעות */
 
-#adminWeeklyCalendar .calendar-slot.past {
-  background: #f8f8fa;
-}
+    #adminWeeklyCalendar .calendar-time-label {
+      background: #fcfbff;
 
+      color: #747287;
 
-/* בחירת טווח */
+      border-left:
+        1px solid rgba(45, 40, 80, 0.055);
 
-#adminWeeklyCalendar
-.calendar-slot.selected-start,
-#adminWeeklyCalendar
-.calendar-slot.selected-range {
-  background: #ebe8ff;
-}
+      border-bottom:
+        1px solid rgba(45, 40, 80, 0.045);
+    }
 
 
-#adminWeeklyCalendar
-.calendar-slot.selected-start {
-  box-shadow:
-    inset 3px 0 0 #7865f6;
-}
+    /* משבצות */
+
+    #adminWeeklyCalendar .calendar-slot {
+      background: #ffffff;
+
+      border-left:
+        1px solid rgba(45, 40, 80, 0.04);
+
+      border-bottom:
+        1px solid rgba(45, 40, 80, 0.045);
+    }
 
 
-/* שריונים */
+    #adminWeeklyCalendar .calendar-slot:not(.past):hover {
+      background: #faf9ff;
+    }
 
-#adminWeeklyCalendar .calendar-booking {
-  background: #e7e3ff;
 
-  color: #302a65;
+    /* עבר */
 
-  border: 0;
+    #adminWeeklyCalendar .calendar-slot.past {
+      background: #f8f8fa;
+    }
 
-  box-shadow:
-    inset 3px 0 0 #7865f6,
-    0 2px 7px rgba(30, 28, 55, 0.05);
-}
-.tabs {
-  position: relative;
-  z-index: 30;
-}
 
-.tab-btn {
-  position: relative;
-  z-index: 31;
-  pointer-events: auto;
-}
-.booking-popup-time-editor {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
+    /* בחירת טווח */
 
-  margin-top: 12px;
-}
+    #adminWeeklyCalendar .calendar-slot.selected-start,
+    #adminWeeklyCalendar .calendar-slot.selected-range {
+      background: #ebe8ff;
+    }
 
-.booking-popup-time-editor select {
-  appearance: none;
-  -webkit-appearance: none;
 
-  width: auto;
+    #adminWeeklyCalendar .calendar-slot.selected-start {
+      box-shadow:
+        inset 3px 0 0 #7865f6;
+    }
 
-  padding: 3px 6px;
 
-  border: 0;
-  border-bottom: 1px dashed rgba(30, 30, 45, .3);
+    /* שריונים */
 
-  background: transparent;
+    #adminWeeklyCalendar .calendar-booking {
+      background: #e7e3ff;
 
-  color: inherit;
+      color: #302a65;
 
-  font: inherit;
-  font-size: 1.15rem;
-  font-weight: 800;
+      border: 0;
 
-  cursor: pointer;
-}
+      box-shadow:
+        inset 3px 0 0 #7865f6,
+        0 2px 7px rgba(30, 28, 55, 0.05);
+    }
 
-.booking-popup-time-editor select:focus {
-  outline: none;
-  border-bottom-color: #7865f6;
-}
+    .tabs {
+      position: relative;
+      z-index: 30;
+    }
 
-.booking-time-separator {
-  opacity: .55;
-  font-size: 1.2rem;
-}
-/* =====================================
+    .tab-btn {
+      position: relative;
+      z-index: 31;
+      pointer-events: auto;
+    }
+
+    .booking-popup-time-editor {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+
+      margin-top: 12px;
+    }
+
+    .booking-popup-time-editor select {
+      appearance: none;
+      -webkit-appearance: none;
+
+      width: auto;
+
+      padding: 3px 6px;
+
+      border: 0;
+      border-bottom: 1px dashed rgba(30, 30, 45, .3);
+
+      background: transparent;
+
+      color: inherit;
+
+      font: inherit;
+      font-size: 1.15rem;
+      font-weight: 800;
+
+      cursor: pointer;
+    }
+
+    .booking-popup-time-editor select:focus {
+      outline: none;
+      border-bottom-color: #7865f6;
+    }
+
+    .booking-time-separator {
+      opacity: .55;
+      font-size: 1.2rem;
+    }
+
+    /* =====================================
    CLIENT DETAILS
 ===================================== */
 
-.client-details-card {
-  margin-top: 14px;
-  padding: 22px;
-}
+    .client-details-card {
+      margin-top: 14px;
+      padding: 22px;
+    }
 
-.client-details-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin-bottom: 22px;
-}
+    .client-details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
 
-.client-details-header h3 {
-  margin: 0 0 5px;
-}
+    .client-details-header h3 {
+      margin: 0 0 5px;
+    }
 
-.client-details-meta {
-  color: var(--ink-soft);
-  font-size: .85rem;
-}
+    .client-details-meta {
+      color: var(--ink-soft);
+      font-size: .85rem;
+    }
 
-.client-usage-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 22px;
-}
+    .client-usage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
 
-.client-usage-box {
-  background: var(--stone);
-  border-radius: 12px;
-  padding: 16px;
-}
+    .client-usage-box {
+      background: var(--stone);
+      border-radius: 12px;
+      padding: 16px;
+    }
 
-.client-usage-box span {
-  display: block;
-  color: var(--ink-soft);
-  font-size: .78rem;
-  margin-bottom: 5px;
-}
+    .client-usage-box span {
+      display: block;
+      color: var(--ink-soft);
+      font-size: .78rem;
+      margin-bottom: 5px;
+    }
 
-.client-usage-box strong {
-  display: block;
-  font-size: 1.35rem;
-}
+    .client-usage-box strong {
+      display: block;
+      font-size: 1.35rem;
+    }
 
-.client-info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0 28px;
-  margin-bottom: 20px;
-}
+    .client-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0 28px;
+      margin-bottom: 20px;
+    }
 
-.client-info-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
+    .client-info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
 
-  padding: 11px 0;
+      padding: 11px 0;
 
-  border-bottom:
-    1px solid var(--stone-dark);
-}
+      border-bottom:
+        1px solid var(--stone-dark);
+    }
 
-.client-info-label {
-  color: var(--ink-soft);
-  font-size: .85rem;
-}
+    .client-info-label {
+      color: var(--ink-soft);
+      font-size: .85rem;
+    }
 
-.client-info-value {
-  font-weight: 600;
-  text-align: left;
-}
+    .client-info-value {
+      font-weight: 600;
+      text-align: left;
+    }
 
-.client-edit-section {
-  margin-top: 18px;
-  border-top: 1px solid var(--stone-dark);
-  padding-top: 18px;
-}
+    .client-edit-section {
+      margin-top: 18px;
+      border-top: 1px solid var(--stone-dark);
+      padding-top: 18px;
+    }
 
-.client-edit-section > summary {
-  cursor: pointer;
-  list-style: none;
+    .client-edit-section>summary {
+      cursor: pointer;
+      list-style: none;
 
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
 
-  font-weight: 700;
-}
+      font-weight: 700;
+    }
 
-.client-edit-section > summary::-webkit-details-marker {
-  display: none;
-}
+    .client-edit-section>summary::-webkit-details-marker {
+      display: none;
+    }
 
-.client-edit-section > summary::before {
-  content: "✎";
-}
+    .client-edit-section>summary::before {
+      content: "✎";
+    }
 
-.client-edit-form {
-  margin-top: 18px;
-  max-width: 650px;
-}
+    .client-edit-form {
+      margin-top: 18px;
+      max-width: 650px;
+    }
 
-.client-danger-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+    .client-danger-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
 
-  margin-top: 22px;
-  padding-top: 18px;
+      margin-top: 22px;
+      padding-top: 18px;
 
-  border-top: 1px solid var(--stone-dark);
-}
+      border-top: 1px solid var(--stone-dark);
+    }
 
-@media (max-width: 700px) {
-  .client-usage-grid,
-  .client-info-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.client-details-popup {
-  width: min(620px, 100%);
-}
+    @media (max-width: 700px) {
 
-.client-bookings-section {
-  margin-top: 24px;
-}
+      .client-usage-grid,
+      .client-info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
-.client-bookings-section h4 {
-  margin: 0 0 10px;
-}
+    .client-details-popup {
+      width: min(620px, 100%);
+    }
 
-.client-bookings-list {
-  display: grid;
-  gap: 8px;
-}
+    .client-bookings-section {
+      margin-top: 24px;
+    }
 
-.client-booking-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    .client-bookings-section h4 {
+      margin: 0 0 10px;
+    }
 
-  gap: 14px;
+    .client-bookings-list {
+      display: grid;
+      gap: 8px;
+    }
 
-  padding: 11px 13px;
+    .client-booking-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-  border-radius: 9px;
+      gap: 14px;
 
-  background: var(--stone);
-}
+      padding: 11px 13px;
 
-.client-booking-main {
-  display: grid;
-  gap: 3px;
-}
+      border-radius: 9px;
 
-.client-booking-date {
-  font-weight: 700;
-}
+      background: var(--stone);
+    }
 
-.client-booking-time {
-  font-size: .82rem;
-  color: var(--ink-soft);
-}
+    .client-booking-main {
+      display: grid;
+      gap: 3px;
+    }
 
-.client-booking-room {
-  font-size: .78rem;
-  color: var(--ink-soft);
-}
+    .client-booking-date {
+      font-weight: 700;
+    }
 
-.client-bookings-empty {
-  padding: 14px;
+    .client-booking-time {
+      font-size: .82rem;
+      color: var(--ink-soft);
+    }
 
-  border-radius: 9px;
+    .client-booking-room {
+      font-size: .78rem;
+      color: var(--ink-soft);
+    }
 
-  background: var(--stone);
+    .client-bookings-empty {
+      padding: 14px;
 
-  color: var(--ink-soft);
+      border-radius: 9px;
 
-  font-size: .85rem;
-}
-/* =====================================
+      background: var(--stone);
+
+      color: var(--ink-soft);
+
+      font-size: .85rem;
+    }
+
+    /* =====================================
    RENTAL ALERTS COLLAPSE
 ===================================== */
 
-.rental-alerts-collapse {
-  margin-bottom: 28px;
-}
+    .rental-alerts-collapse {
+      margin-bottom: 28px;
+    }
 
-.rental-alerts-collapse > summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+    .rental-alerts-collapse>summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
 
-  padding: 16px 20px;
+      padding: 16px 20px;
 
-  background: var(--cream);
-  border-radius: var(--radius-lg);
+      background: var(--cream);
+      border-radius: var(--radius-lg);
 
-  box-shadow: var(--shadow);
+      box-shadow: var(--shadow);
 
-  cursor: pointer;
-  list-style: none;
-}
+      cursor: pointer;
+      list-style: none;
+    }
 
-.rental-alerts-collapse > summary::-webkit-details-marker {
-  display: none;
-}
+    .rental-alerts-collapse>summary::-webkit-details-marker {
+      display: none;
+    }
 
-.rental-alerts-summary > div {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+    .rental-alerts-summary>div {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-.rental-alert-label {
-  font-size: .75rem;
-  font-weight: 800;
+    .rental-alert-label {
+      font-size: .75rem;
+      font-weight: 800;
 
-  color: #8a6a1f;
+      color: #8a6a1f;
 
-  background: #f3e3c4;
+      background: #f3e3c4;
 
-  padding: 4px 9px;
-  border-radius: 20px;
-}
+      padding: 4px 9px;
+      border-radius: 20px;
+    }
 
-.rental-alert-count {
-  min-width: 32px;
-  height: 32px;
+    .rental-alert-count {
+      min-width: 32px;
+      height: 32px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-  background: #8a6a1f;
-  color: white;
+      background: #8a6a1f;
+      color: white;
 
-  border-radius: 50%;
+      border-radius: 50%;
 
-  font-size: .8rem;
-  font-weight: 800;
-}
+      font-size: .8rem;
+      font-weight: 800;
+    }
 
-.rental-alerts-content {
-  display: grid;
-  gap: 12px;
+    .rental-alerts-content {
+      display: grid;
+      gap: 12px;
 
-  margin-top: 12px;
-}
-.admin-booking-time {
-  direction: ltr;
-  unicode-bidi: isolate;
-  display: inline-block;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.admin-bookings-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-  border-radius: 16px;
-}
+      margin-top: 12px;
+    }
 
-.admin-bookings-table th {
-  padding: 14px 16px;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: right;
-  white-space: nowrap;
-}
+    .admin-booking-time {
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      font-weight: 600;
+      white-space: nowrap;
+    }
 
-.admin-bookings-table td {
-  padding: 14px 16px;
-  vertical-align: middle;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
+    .admin-bookings-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 16px;
+    }
 
-.admin-bookings-table tbody tr {
-  transition: background 0.15s ease;
-}
+    .admin-bookings-table th {
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
 
-.admin-bookings-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.35);
-}
+    .admin-bookings-table td {
+      padding: 14px 16px;
+      vertical-align: middle;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
 
-.admin-bookings-table tbody tr:last-child td {
-  border-bottom: 0;
-}
+    .admin-bookings-table tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    .admin-bookings-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .admin-bookings-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
   </style>
 </head>
 
@@ -1354,874 +1355,770 @@
 
               </section>
 
-            <% } %>
+              <% } %>
 
 
 
-  <% if (rentalAlerts && rentalAlerts.length) { %>
+                <% if (rentalAlerts && rentalAlerts.length) { %>
 
-  <details class="admin-collapse rental-alerts-collapse">
+                  <details class="admin-collapse rental-alerts-collapse">
 
-    <summary class="rental-alerts-summary">
+                    <summary class="rental-alerts-summary">
 
-      <div>
+                      <div>
 
-        <span class="rental-alert-label">
+                        <span class="rental-alert-label">
 
-          דורש תשומת לב
+                          דורש תשומת לב
 
-        </span>
+                        </span>
 
-        <strong>
+                        <strong>
 
-          סיום תקופות שכירות
+                          סיום תקופות שכירות
 
-        </strong>
+                        </strong>
 
-      </div>
+                      </div>
 
-      <span class="rental-alert-count">
+                      <span class="rental-alert-count">
 
-        <%= rentalAlerts.length %>
+                        <%= rentalAlerts.length %>
 
-      </span>
+                      </span>
 
-    </summary>
+                    </summary>
 
-    <div class="quota-alerts-list">
+                    <div class="quota-alerts-list">
 
-      <% rentalAlerts.forEach(alert => { %>
+                      <% rentalAlerts.forEach(alert=> { %>
 
-        <%
-          const daysRemaining =
-            Number(alert.days_remaining);
+                        <% const daysRemaining=Number(alert.days_remaining); const rentalEnded=daysRemaining < 0; let
+                          whatsappPhone=String(alert.phone || '' ) .replace(/\D/g, '' ); if (
+                          whatsappPhone.startsWith('0') ) { whatsappPhone='972' + whatsappPhone.slice(1); } const
+                          whatsappText=encodeURIComponent( `שלום ${alert.display_name}, רצינו ליצור איתך קשר בנוגע
+                          לתקופת השכירות שלך ב-AlonSpace.` ); %>
 
-          const rentalEnded =
-            daysRemaining < 0;
 
-          let whatsappPhone =
-            String(alert.phone || '')
-              .replace(/\D/g, '');
+                          <article class="quota-admin-alert <%= rentalEnded ? 'chargeable' : '' %>">
 
-          if (
-            whatsappPhone.startsWith('0')
-          ) {
-            whatsappPhone =
-              '972' +
-              whatsappPhone.slice(1);
-          }
+                            <div class="quota-admin-alert-main">
 
-          const whatsappText =
-            encodeURIComponent(
-              `שלום ${alert.display_name}, רצינו ליצור איתך קשר בנוגע לתקופת השכירות שלך ב-AlonSpace.`
-            );
-        %>
+                              <div class="quota-admin-alert-icon">
+                                <%= rentalEnded ? '!' : '⌛' %>
+                              </div>
 
 
-        <article
-          class="quota-admin-alert <%= rentalEnded ? 'chargeable' : '' %>"
-        >
+                              <div>
 
-          <div class="quota-admin-alert-main">
+                                <div class="quota-admin-alert-title">
 
-            <div class="quota-admin-alert-icon">
-              <%= rentalEnded ? '!' : '⌛' %>
-            </div>
+                                  <% if (rentalEnded) { %>
 
+                                    תקופת השכירות הסתיימה
 
-            <div>
+                                    <% } else if (daysRemaining===0) { %>
 
-              <div class="quota-admin-alert-title">
+                                      תקופת השכירות מסתיימת היום
 
-                <% if (rentalEnded) { %>
+                                      <% } else { %>
 
-                  תקופת השכירות הסתיימה
+                                        תקופת השכירות מסתיימת בקרוב
 
-                <% } else if (daysRemaining === 0) { %>
+                                        <% } %>
 
-                  תקופת השכירות מסתיימת היום
+                                </div>
 
-                <% } else { %>
 
-                  תקופת השכירות מסתיימת בקרוב
+                                <h3>
+                                  <%= alert.display_name %>
+                                </h3>
 
-                <% } %>
 
-              </div>
+                                <p class="small">
 
-
-              <h3>
-                <%= alert.display_name %>
-              </h3>
-
-
-              <p class="small">
-
-                <% if (alert.business_name) { %>
-                  <%= alert.business_name %> ·
-                <% } %>
-
-                משרד <%= alert.office_number || '-' %>
-
-                ·
-
-                קומה <%= alert.floor || '-' %>
-
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <div class="quota-admin-numbers">
-
-            <div>
-              <span>תאריך סיום</span>
-
-              <strong>
-                <%= formatDate(alert.rental_end_date) %>
-              </strong>
-            </div>
-
-
-            <div>
-              <span>מצב</span>
-
-              <strong>
-
-                <% if (daysRemaining < 0) { %>
-
-                  הסתיימה לפני
-                  <%= Math.abs(daysRemaining) %>
-                  ימים
-
-                <% } else if (daysRemaining === 0) { %>
-
-                  מסתיימת היום
-
-                <% } else { %>
-
-                  נותרו
-                  <%= daysRemaining %>
-                  ימים
-
-                <% } %>
-
-              </strong>
-            </div>
-
-
-            <div>
-              <span>לקוח</span>
-
-              <strong>
-                <%= alert.is_active === false
-                  ? 'מושבת'
-                  : 'פעיל'
-                %>
-              </strong>
-            </div>
-
-          </div>
-
-
-          <div class="quota-admin-status">
-
-            <% if (rentalEnded) { %>
-
-              <strong>
-                תאריך סיום השכירות כבר עבר.
-              </strong>
-
-              <span>
-                יש לבדוק האם להאריך את התקופה
-                או לעדכן את סטטוס הלקוח.
-              </span>
-
-            <% } else if (daysRemaining <= 7) { %>
-
-              <strong>
-                נותר פחות משבוע לסיום השכירות.
-              </strong>
-
-              <span>
-                מומלץ ליצור קשר עם הלקוח
-                ולבדוק המשך שכירות.
-              </span>
-
-            <% } else { %>
-
-              <strong>
-                תקופת השכירות מתקרבת לסיום.
-              </strong>
-
-              <span>
-                מומלץ לעקוב וליצור קשר
-                לפני מועד הסיום.
-              </span>
-
-            <% } %>
-
-          </div>
-
-
-          <div class="quota-admin-actions">
-
-            <% if (whatsappPhone) { %>
-
-              <a
-                href="https://wa.me/<%= whatsappPhone %>?text=<%= whatsappText %>"
-                target="_blank"
-                rel="noopener"
-                class="mini-btn primary"
-              >
-                יצירת קשר ב־WhatsApp
-              </a>
-
-            <% } %>
-
-
-            <% if (alert.phone) { %>
-
-              <a
-                href="tel:<%= alert.phone %>"
-                class="mini-btn"
-              >
-                התקשר
-              </a>
-
-            <% } %>
-
-          </div>
-
-        </article>
-
-      <% }) %>
-
-    </div>
-
-    </details>
-
-<% } %>
-                <div class="stat-cards">
-                  <div class="stat-card">
-                    <div class="n">
-                      <%= stats.activeClients %>
-                    </div>
-                    <div class="l">לקוחות פעילים</div>
-                  </div>
-
-                  <div class="stat-card">
-                    <div class="n">
-                      <%= stats.upcomingMeetings %>
-                    </div>
-                    <div class="l">שריונים עתידיים</div>
-                  </div>
-                </div>
-
-
-                <div class="tabs">
-                  <button class="tab-btn active" data-tab="clients">לקוחות</button>
-                  <button class="tab-btn" data-tab="meeting-room">חדר ישיבות</button>
-
-                </div>
-
-                <section class="tab-panel active" id="tab-clients">
-                  <details class="admin-collapse">
-                    <summary>יצירת חשבון לקוח</summary>
-
-                    <div class="admin-card">
-                      <h3>יצירת חשבון לקוח</h3>
-
-                      <form method="POST" action="/admin/clients/create" class="form-grid">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <div class="form-row-2">
-                          <div class="field">
-                            <label>שם משתמש</label>
-                            <input name="username" required autocomplete="off">
-                          </div>
-
-
-                        </div>
-
-                        <div class="form-row-2">
-                          <div class="field">
-                            <label>שם לתצוגה</label>
-                            <input name="display_name" required>
-                          </div>
-
-                          <div class="field">
-                            <label>שם העסק</label>
-                            <input name="business_name">
-                          </div>
-                        </div>
-
-                        <div class="form-row-2">
-                          <div class="field">
-                            <label>אימייל</label>
-                            <input type="email" name="email">
-                          </div>
-
-                          <div class="field">
-                            <label>טלפון</label>
-                            <input name="phone">
-                          </div>
-                        </div>
-
-                        <div class="form-row-2">
-                          <div class="field">
-                            <label>מספר משרד</label>
-                            <input name="office_number">
-                          </div>
-
-                          <div class="field">
-                            <label>קומה</label>
-                            <select name="floor">
-                              <option value="">לא הוגדר</option>
-                              <option value="4">קומה 4</option>
-                              <option value="6">קומה 6</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div class="form-row-2">
-                          <div class="field">
-                            <label>תחילת שכירות</label>
-                            <input type="date" name="rental_start_date">
-                          </div>
-
-                          <div class="field">
-                            <label>סיום שכירות</label>
-                            <input type="date" name="rental_end_date">
-                          </div>
-                        </div>
-
-                        <div class="field">
-                          <label>מכסת חדר ישיבות חודשית</label>
-                          <input type="number" name="monthly_meeting_hours" min="0.5" step="0.5" value="6">
-                        </div>
-
-                        <button class="btn btn-primary" type="submit">
-                          צור חשבון לקוח
-                        </button>
-                      </form>
-                    </div>
-                  </details>
-                  <details class="admin-collapse">
-                    <summary>ניהול לקוחות</summary>
-
-                    <div class="table-wrap">
-                      <div class="clients-list">
-
-                        <% if (!clients.length) { %>
-
-                          <div class="admin-card" style="text-align:center;">
-                            עדיין אין לקוחות.
-                          </div>
-
-                          <% } %>
-
-                            <% clients.forEach(client=> { %>
-
-                              <details class="admin-collapse client-card">
-
-                                <summary>
-
-                                  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-
-                                    <strong>
-                                      <%= client.display_name %>
-                                    </strong>
-
-                                    <span class="small">
-                                      @<%= client.username %>
-                                    </span>
-
-                                    <% if(client.business_name){ %>
-                                      <span class="small">
-                                        • <%= client.business_name %>
-                                      </span>
+                                  <% if (alert.business_name) { %>
+                                    <%= alert.business_name %> ·
                                       <% } %>
 
-                                  </div>
+                                        משרד <%= alert.office_number || '-' %>
 
-                                  <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+                                          ·
+
+                                          קומה <%= alert.floor || '-' %>
+
+                                </p>
+
+                              </div>
+
+                            </div>
+
+
+                            <div class="quota-admin-numbers">
+
+                              <div>
+                                <span>תאריך סיום</span>
+
+                                <strong>
+                                  <%= formatDate(alert.rental_end_date) %>
+                                </strong>
+                              </div>
+
+
+                              <div>
+                                <span>מצב</span>
+
+                                <strong>
+
+                                  <% if (daysRemaining < 0) { %>
+
+                                    הסתיימה לפני
+                                    <%= Math.abs(daysRemaining) %>
+                                      ימים
+
+                                      <% } else if (daysRemaining===0) { %>
+
+                                        מסתיימת היום
+
+                                        <% } else { %>
+
+                                          נותרו
+                                          <%= daysRemaining %>
+                                            ימים
+
+                                            <% } %>
+
+                                </strong>
+                              </div>
+
+
+                              <div>
+                                <span>לקוח</span>
+
+                                <strong>
+                                  <%= alert.is_active===false ? 'מושבת' : 'פעיל' %>
+                                </strong>
+                              </div>
+
+                            </div>
+
+
+                            <div class="quota-admin-status">
+
+                              <% if (rentalEnded) { %>
+
+                                <strong>
+                                  תאריך סיום השכירות כבר עבר.
+                                </strong>
+
+                                <span>
+                                  יש לבדוק האם להאריך את התקופה
+                                  או לעדכן את סטטוס הלקוח.
+                                </span>
+
+                                <% } else if (daysRemaining <=7) { %>
+
+                                  <strong>
+                                    נותר פחות משבוע לסיום השכירות.
+                                  </strong>
+
+                                  <span>
+                                    מומלץ ליצור קשר עם הלקוח
+                                    ולבדוק המשך שכירות.
+                                  </span>
+
+                                  <% } else { %>
+
+                                    <strong>
+                                      תקופת השכירות מתקרבת לסיום.
+                                    </strong>
 
                                     <span>
-                                      משרד <%= client.office_number || "-" %>
+                                      מומלץ לעקוב וליצור קשר
+                                      לפני מועד הסיום.
                                     </span>
 
-                                    <span>
-                                      קומה <%= client.floor || "-" %>
-                                    </span>
+                                    <% } %>
 
-                                    <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
-                                      <%= client.is_active ? 'פעיל' : 'מושבת' %>
-                                    </span>
+                            </div>
 
-                                  </div>
 
-                                </summary>
+                            <div class="quota-admin-actions">
 
-<div class="admin-card client-details-card">
+                              <% if (whatsappPhone) { %>
 
-  <div class="client-details-header">
+                                <a href="https://wa.me/<%= whatsappPhone %>?text=<%= whatsappText %>" target="_blank"
+                                  rel="noopener" class="mini-btn primary">
+                                  יצירת קשר ב־WhatsApp
+                                </a>
 
-    <div>
-      <h3>
-        <%= client.display_name %>
-      </h3>
+                                <% } %>
 
-      <div class="client-details-meta">
-        <% if (client.business_name) { %>
-          <%= client.business_name %> ·
-        <% } %>
 
-        משרד <%= client.office_number || '-' %>
-        ·
-        קומה <%= client.floor || '-' %>
-      </div>
-    </div>
+                                  <% if (alert.phone) { %>
 
-    <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
-      <%= client.is_active ? 'חשבון פעיל' : 'חשבון מושבת' %>
-    </span>
+                                    <a href="tel:<%= alert.phone %>" class="mini-btn">
+                                      התקשר
+                                    </a>
 
-  </div>
+                                    <% } %>
 
+                            </div>
 
-  <!-- נתוני חדר הישיבות -->
+                          </article>
 
-  <div class="client-usage-grid">
+                          <% }) %>
 
-    <div class="client-usage-box">
-      <span>ניצול כולל</span>
+                    </div>
 
-      <strong>
-        <%= Number(client.total_meeting_hours || 0).toFixed(1) %>
-        שעות
-      </strong>
-    </div>
+                  </details>
 
+                  <% } %>
+                    <div class="stat-cards">
+                      <div class="stat-card">
+                        <div class="n">
+                          <%= stats.activeClients %>
+                        </div>
+                        <div class="l">לקוחות פעילים</div>
+                      </div>
 
-    <div class="client-usage-box">
-      <span>נוצלו החודש</span>
+                      <div class="stat-card">
+                        <div class="n">
+                          <%= stats.upcomingMeetings %>
+                        </div>
+                        <div class="l">שריונים עתידיים</div>
+                      </div>
+                    </div>
 
-      <strong>
-        <%= Number(client.month_meeting_hours || 0).toFixed(1) %>
-        שעות
-      </strong>
-    </div>
 
+                    <div class="tabs">
+                      <button class="tab-btn active" data-tab="clients">לקוחות</button>
+                      <button class="tab-btn" data-tab="meeting-room">חדר ישיבות</button>
 
-    <div class="client-usage-box">
-      <span>נותרו החודש</span>
+                    </div>
 
-      <strong>
-       <%= Number(client.remaining_meeting_hours || 0).toFixed(1) %>
-שעות
-      </strong>
-    </div>
+                    <section class="tab-panel active" id="tab-clients">
+                      <details class="admin-collapse">
+                        <summary>יצירת חשבון לקוח</summary>
 
-  </div>
+                        <div class="admin-card">
+                          <h3>יצירת חשבון לקוח</h3>
 
+                          <form method="POST" action="/admin/clients/create" class="form-grid">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <div class="form-row-2">
+                              <div class="field">
+                                <label>שם משתמש</label>
+                                <input name="username" required autocomplete="off">
+                              </div>
 
-  <!-- מידע על הלקוח -->
 
-  <div class="client-info-grid">
+                            </div>
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        שם משתמש
-      </span>
+                            <div class="form-row-2">
+                              <div class="field">
+                                <label>שם לתצוגה</label>
+                                <input name="display_name" required>
+                              </div>
 
-      <span class="client-info-value">
-        @<%= client.username %>
-      </span>
-    </div>
+                              <div class="field">
+                                <label>שם העסק</label>
+                                <input name="business_name">
+                              </div>
+                            </div>
 
+                            <div class="form-row-2">
+                              <div class="field">
+                                <label>אימייל</label>
+                                <input type="email" name="email">
+                              </div>
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        מכסה חודשית
-      </span>
+                              <div class="field">
+                                <label>טלפון</label>
+                                <input name="phone">
+                              </div>
+                            </div>
 
-      <span class="client-info-value">
-        <%= Number(client.monthly_meeting_hours || 6).toFixed(1) %>
-        שעות
-      </span>
-    </div>
+                            <div class="form-row-2">
+                              <div class="field">
+                                <label>מספר משרד</label>
+                                <input name="office_number">
+                              </div>
 
+                              <div class="field">
+                                <label>קומה</label>
+                                <select name="floor">
+                                  <option value="">לא הוגדר</option>
+                                  <option value="4">קומה 4</option>
+                                  <option value="6">קומה 6</option>
+                                </select>
+                              </div>
+                            </div>
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        טלפון
-      </span>
+                            <div class="form-row-2">
+                              <div class="field">
+                                <label>תחילת שכירות</label>
+                                <input type="date" name="rental_start_date">
+                              </div>
 
-      <span class="client-info-value">
-        <%= client.phone || '-' %>
-      </span>
-    </div>
+                              <div class="field">
+                                <label>סיום שכירות</label>
+                                <input type="date" name="rental_end_date">
+                              </div>
+                            </div>
 
+                            <div class="field">
+                              <label>מכסת חדר ישיבות חודשית</label>
+                              <input type="number" name="monthly_meeting_hours" min="0.5" step="0.5" value="6">
+                            </div>
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        אימייל
-      </span>
+                            <button class="btn btn-primary" type="submit">
+                              צור חשבון לקוח
+                            </button>
+                          </form>
+                        </div>
+                      </details>
+                      <details class="admin-collapse">
+                        <summary>ניהול לקוחות</summary>
 
-      <span class="client-info-value">
-        <%= client.email || '-' %>
-      </span>
-    </div>
+                        <div class="table-wrap">
+                          <div class="clients-list">
 
+                            <% if (!clients.length) { %>
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        תחילת שכירות
-      </span>
+                              <div class="admin-card" style="text-align:center;">
+                                עדיין אין לקוחות.
+                              </div>
 
-      <span class="client-info-value">
-        <%= formatDate(client.rental_start_date) || '-' %>
-      </span>
-    </div>
+                              <% } %>
 
+                                <% clients.forEach(client=> { %>
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        סיום שכירות
-      </span>
+                                  <details class="admin-collapse client-card">
 
-      <span class="client-info-value">
-        <%= formatDate(client.rental_end_date) || '-' %>
-      </span>
-    </div>
+                                    <summary>
 
+                                      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        סקר כניסה
-      </span>
+                                        <strong>
+                                          <%= client.display_name %>
+                                        </strong>
 
-      <span class="client-info-value">
+                                        <span class="small">
+                                          @<%= client.username %>
+                                        </span>
 
-        <% if (client.survey_completed) { %>
+                                        <% if(client.business_name){ %>
+                                          <span class="small">
+                                            • <%= client.business_name %>
+                                          </span>
+                                          <% } %>
 
-          <span class="pill ok">
-            הושלם
-          </span>
+                                      </div>
 
-        <% } else { %>
+                                      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
 
-          <span class="pill warn">
-            טרם הושלם
-          </span>
+                                        <span>
+                                          משרד <%= client.office_number || "-" %>
+                                        </span>
 
-        <% } %>
+                                        <span>
+                                          קומה <%= client.floor || "-" %>
+                                        </span>
 
-      </span>
-    </div>
+                                        <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
+                                          <%= client.is_active ? 'פעיל' : 'מושבת' %>
+                                        </span>
 
+                                      </div>
 
-    <div class="client-info-row">
-      <span class="client-info-label">
-        סטטוס
-      </span>
+                                    </summary>
 
-      <span class="client-info-value">
-        <%= client.is_active ? 'פעיל' : 'מושבת' %>
-      </span>
-    </div>
+                                    <div class="admin-card client-details-card">
 
-  </div>
+                                      <div class="client-details-header">
 
+                                        <div>
+                                          <h3>
+                                            <%= client.display_name %>
+                                          </h3>
 
-  <!-- עריכת הלקוח -->
+                                          <div class="client-details-meta">
+                                            <% if (client.business_name) { %>
+                                              <%= client.business_name %> ·
+                                                <% } %>
 
-  <details class="client-edit-section">
+                                                  משרד <%= client.office_number || '-' %>
+                                                    ·
+                                                    קומה <%= client.floor || '-' %>
+                                          </div>
+                                        </div>
 
-    <summary>
-      עריכת פרטים
-    </summary>
+                                        <span class="pill <%= client.is_active ? 'ok' : 'bad' %>">
+                                          <%= client.is_active ? 'חשבון פעיל' : 'חשבון מושבת' %>
+                                        </span>
 
+                                      </div>
 
-    <form
-      method="POST"
-      action="/admin/clients/<%= client.id %>/update"
-      class="form-grid client-edit-form"
-    >
 
-      <input
-        type="hidden"
-        name="_csrf"
-        value="<%= csrfToken %>"
-      >
+                                      <!-- נתוני חדר הישיבות -->
 
+                                      <div class="client-usage-grid">
 
-      <div class="form-row-2">
+                                        <div class="client-usage-box">
+                                          <span>ניצול כולל</span>
 
-        <div class="field">
-          <label>שם לתצוגה</label>
+                                          <strong>
+                                            <%= Number(client.total_meeting_hours || 0).toFixed(1) %>
+                                              שעות
+                                          </strong>
+                                        </div>
 
-          <input
-            name="display_name"
-            value="<%= client.display_name %>"
-            required
-          >
-        </div>
 
+                                        <div class="client-usage-box">
+                                          <span>נוצלו החודש</span>
 
-        <div class="field">
-          <label>שם העסק</label>
+                                          <strong>
+                                            <%= Number(client.month_meeting_hours || 0).toFixed(1) %>
+                                              שעות
+                                          </strong>
+                                        </div>
 
-          <input
-            name="business_name"
-            value="<%= client.business_name || '' %>"
-          >
-        </div>
 
-      </div>
+                                        <div class="client-usage-box">
+                                          <span>נותרו החודש</span>
 
+                                          <strong>
+                                            <%= Number(client.remaining_meeting_hours || 0).toFixed(1) %>
+                                              שעות
+                                          </strong>
+                                        </div>
 
-      <div class="form-row-2">
+                                      </div>
 
-        <div class="field">
-          <label>אימייל</label>
 
-          <input
-            type="email"
-            name="email"
-            value="<%= client.email || '' %>"
-          >
-        </div>
+                                      <!-- מידע על הלקוח -->
 
+                                      <div class="client-info-grid">
 
-        <div class="field">
-          <label>טלפון</label>
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            שם משתמש
+                                          </span>
 
-          <input
-            name="phone"
-            value="<%= client.phone || '' %>"
-          >
-        </div>
+                                          <span class="client-info-value">
+                                            @<%= client.username %>
+                                          </span>
+                                        </div>
 
-      </div>
 
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            מכסה חודשית
+                                          </span>
 
-      <div class="form-row-2">
+                                          <span class="client-info-value">
+                                            <%= Number(client.monthly_meeting_hours || 6).toFixed(1) %>
+                                              שעות
+                                          </span>
+                                        </div>
 
-        <div class="field">
-          <label>מספר משרד</label>
 
-          <input
-            name="office_number"
-            value="<%= client.office_number || '' %>"
-          >
-        </div>
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            טלפון
+                                          </span>
 
+                                          <span class="client-info-value">
+                                            <%= client.phone || '-' %>
+                                          </span>
+                                        </div>
 
-        <div class="field">
-          <label>קומה</label>
 
-          <select name="floor">
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            אימייל
+                                          </span>
 
-            <option value="">
-              לא הוגדרה
-            </option>
+                                          <span class="client-info-value">
+                                            <%= client.email || '-' %>
+                                          </span>
+                                        </div>
 
-            <option
-              value="4"
-              <%= Number(client.floor) === 4 ? 'selected' : '' %>
-            >
-              קומה 4
-            </option>
 
-            <option
-              value="6"
-              <%= Number(client.floor) === 6 ? 'selected' : '' %>
-            >
-              קומה 6
-            </option>
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            תחילת שכירות
+                                          </span>
 
-          </select>
-        </div>
+                                          <span class="client-info-value">
+                                            <%= formatDate(client.rental_start_date) || '-' %>
+                                          </span>
+                                        </div>
 
-      </div>
 
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            סיום שכירות
+                                          </span>
 
-      <div class="form-row-2">
+                                          <span class="client-info-value">
+                                            <%= formatDate(client.rental_end_date) || '-' %>
+                                          </span>
+                                        </div>
 
-        <div class="field">
-          <label>תחילת שכירות</label>
 
-          <input
-            type="date"
-            name="rental_start_date"
-            value="<%= client.rental_start_date
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            סקר כניסה
+                                          </span>
+
+                                          <span class="client-info-value">
+
+                                            <% if (client.survey_completed) { %>
+
+                                              <span class="pill ok">
+                                                הושלם
+                                              </span>
+
+                                              <% } else { %>
+
+                                                <span class="pill warn">
+                                                  טרם הושלם
+                                                </span>
+
+                                                <% } %>
+
+                                          </span>
+                                        </div>
+
+
+                                        <div class="client-info-row">
+                                          <span class="client-info-label">
+                                            סטטוס
+                                          </span>
+
+                                          <span class="client-info-value">
+                                            <%= client.is_active ? 'פעיל' : 'מושבת' %>
+                                          </span>
+                                        </div>
+
+                                      </div>
+
+
+                                      <!-- עריכת הלקוח -->
+
+                                      <details class="client-edit-section">
+
+                                        <summary>
+                                          עריכת פרטים
+                                        </summary>
+
+
+                                        <form method="POST" action="/admin/clients/<%= client.id %>/update"
+                                          class="form-grid client-edit-form">
+
+                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+
+                                          <div class="form-row-2">
+
+                                            <div class="field">
+                                              <label>שם לתצוגה</label>
+
+                                              <input name="display_name" value="<%= client.display_name %>" required>
+                                            </div>
+
+
+                                            <div class="field">
+                                              <label>שם העסק</label>
+
+                                              <input name="business_name" value="<%= client.business_name || '' %>">
+                                            </div>
+
+                                          </div>
+
+
+                                          <div class="form-row-2">
+
+                                            <div class="field">
+                                              <label>אימייל</label>
+
+                                              <input type="email" name="email" value="<%= client.email || '' %>">
+                                            </div>
+
+
+                                            <div class="field">
+                                              <label>טלפון</label>
+
+                                              <input name="phone" value="<%= client.phone || '' %>">
+                                            </div>
+
+                                          </div>
+
+
+                                          <div class="form-row-2">
+
+                                            <div class="field">
+                                              <label>מספר משרד</label>
+
+                                              <input name="office_number" value="<%= client.office_number || '' %>">
+                                            </div>
+
+
+                                            <div class="field">
+                                              <label>קומה</label>
+
+                                              <select name="floor">
+
+                                                <option value="">
+                                                  לא הוגדרה
+                                                </option>
+
+                                                <option value="4" <%=Number(client.floor)===4 ? 'selected' : '' %>
+                                                  >
+                                                  קומה 4
+                                                </option>
+
+                                                <option value="6" <%=Number(client.floor)===6 ? 'selected' : '' %>
+                                                  >
+                                                  קומה 6
+                                                </option>
+
+                                              </select>
+                                            </div>
+
+                                          </div>
+
+
+                                          <div class="form-row-2">
+
+                                            <div class="field">
+                                              <label>תחילת שכירות</label>
+
+                                              <input type="date" name="rental_start_date" value="<%= client.rental_start_date
               ? new Date(client.rental_start_date)
                   .toISOString()
                   .slice(0, 10)
               : ''
-            %>"
-          >
-        </div>
+            %>">
+                                            </div>
 
 
-        <div class="field">
-          <label>סיום שכירות</label>
+                                            <div class="field">
+                                              <label>סיום שכירות</label>
 
-          <input
-            type="date"
-            name="rental_end_date"
-            value="<%= client.rental_end_date
+                                              <input type="date" name="rental_end_date" value="<%= client.rental_end_date
               ? new Date(client.rental_end_date)
                   .toISOString()
                   .slice(0, 10)
               : ''
-            %>"
-          >
-        </div>
+            %>">
+                                            </div>
 
-      </div>
-
-
-      <div class="field">
-        <label>
-          מכסת חדר ישיבות חודשית
-        </label>
-
-        <input
-          type="number"
-          min="0.5"
-          step="0.5"
-          name="monthly_meeting_hours"
-          value="<%= client.monthly_meeting_hours || 6 %>"
-        >
-      </div>
+                                          </div>
 
 
-      <label
-        style="
+                                          <div class="field">
+                                            <label>
+                                              מכסת חדר ישיבות חודשית
+                                            </label>
+
+                                            <input type="number" min="0.5" step="0.5" name="monthly_meeting_hours"
+                                              value="<%= client.monthly_meeting_hours || 6 %>">
+                                          </div>
+
+
+                                          <label style="
           display:flex;
           gap:8px;
           align-items:center;
-        "
-      >
+        ">
 
-        <input
-          type="checkbox"
-          name="is_active"
-          value="1"
-          <%= client.is_active ? 'checked' : '' %>
-          style="width:auto;"
-        >
+                                            <input type="checkbox" name="is_active" value="1" <%=client.is_active
+                                              ? 'checked' : '' %>
+                                            style="width:auto;"
+                                            >
 
-        חשבון פעיל
+                                            חשבון פעיל
 
-      </label>
+                                          </label>
 
 
-      <button
-        type="submit"
-        class="btn btn-primary"
-      >
-        שמור שינויים
-      </button>
+                                          <button type="submit" class="btn btn-primary">
+                                            שמור שינויים
+                                          </button>
 
-    </form>
+                                        </form>
 
-  </details>
+                                      </details>
 
 
-  <!-- פעולות חשבון -->
+                                      <!-- פעולות חשבון -->
 
-  <div class="client-danger-actions">
+                                      <div class="client-danger-actions">
 
-    <form
-      method="POST"
-      action="/admin/clients/<%= client.id %>/reset-password"
-    >
+                                        <form method="POST" action="/admin/clients/<%= client.id %>/reset-password">
 
-      <input
-        type="hidden"
-        name="_csrf"
-        value="<%= csrfToken %>"
-      >
+                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-      <button class="mini-btn">
-        איפוס סיסמה
-      </button>
+                                          <button class="mini-btn">
+                                            איפוס סיסמה
+                                          </button>
 
-    </form>
+                                        </form>
 
 
-    <% if (client.is_active) { %>
+                                        <% if (client.is_active) { %>
 
-      <form
-        method="POST"
-        action="/admin/clients/<%= client.id %>/delete"
-        onsubmit="return confirm('להשבית את החשבון?')"
-      >
+                                          <form method="POST" action="/admin/clients/<%= client.id %>/delete"
+                                            onsubmit="return confirm('להשבית את החשבון?')">
 
-        <input
-          type="hidden"
-          name="_csrf"
-          value="<%= csrfToken %>"
-        >
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-        <button class="mini-btn danger">
-          השבת חשבון
-        </button>
+                                            <button class="mini-btn danger">
+                                              השבת חשבון
+                                            </button>
 
-      </form>
+                                          </form>
 
 
-      <form
-        method="POST"
-        action="/admin/clients/<%= client.id %>/permanent-delete"
-        onsubmit="return confirm('למחוק את הלקוח לצמיתות?')"
-      >
+                                          <form method="POST" action="/admin/clients/<%= client.id %>/permanent-delete"
+                                            onsubmit="return confirm('למחוק את הלקוח לצמיתות?')">
 
-        <input
-          type="hidden"
-          name="_csrf"
-          value="<%= csrfToken %>"
-        >
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-        <button
-          class="mini-btn danger"
-          style="background:#c62828;color:#fff;"
-        >
-          מחק לצמיתות
-        </button>
+                                            <button class="mini-btn danger" style="background:#c62828;color:#fff;">
+                                              מחק לצמיתות
+                                            </button>
 
-      </form>
+                                          </form>
 
-    <% } %>
+                                          <% } %>
 
-  </div>
+                                      </div>
 
-</div>
+                                    </div>
 
-                              </details>
+                                  </details>
 
-                              <% }) %>
+                                  <% }) %>
 
-                      </div>
-                    </div>
-                  </details>
+                          </div>
+                        </div>
+                      </details>
 
 
 
-                  <section class="admin-card">
+                      <section class="admin-card">
 
-                    <h2>בחירת מנהלים </h2>
+                        <h2>בחירת מנהלים </h2>
 
-                    <p class="small">
-                      בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
-                    </p>
+                        <p class="small">
+                          בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
+                        </p>
 
-                    <form method="POST" action="/admin/make-admin" style="
+                        <form method="POST" action="/admin/make-admin" style="
       display:flex;
       gap:12px;
       align-items:end;
@@ -2229,144 +2126,144 @@
       margin-top:18px;
     ">
 
-                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                      <div class="field" style="flex:1;min-width:220px;">
+                          <div class="field" style="flex:1;min-width:220px;">
 
-                        <label for="adminUser">
-                          משתמש
-                        </label>
+                            <label for="adminUser">
+                              משתמש
+                            </label>
 
-                        <select id="adminUser" name="user_id" required>
+                            <select id="adminUser" name="user_id" required>
 
-                          <option value="">
-                            בחר משתמש
-                          </option>
+                              <option value="">
+                                בחר משתמש
+                              </option>
 
-                          <% clients.forEach(client=> { %>
+                              <% clients.forEach(client=> { %>
 
-                            <option value="<%= client.id %>">
-                              <%= client.display_name %>
-                                (@<%= client.username %>)
-                                  <% if (client.business_name) { %>
-                                    - <%= client.business_name %>
-                                      <% } %>
-                            </option>
+                                <option value="<%= client.id %>">
+                                  <%= client.display_name %>
+                                    (@<%= client.username %>)
+                                      <% if (client.business_name) { %>
+                                        - <%= client.business_name %>
+                                          <% } %>
+                                </option>
 
-                            <% }) %>
+                                <% }) %>
 
-                        </select>
+                            </select>
 
-                      </div>
+                          </div>
 
-                      <button type="submit" class="btn btn-primary"
-                        onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
-                        הפוך לאדמין
-                      </button>
+                          <button type="submit" class="btn btn-primary"
+                            onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
+                            הפוך לאדמין
+                          </button>
 
-                    </form>
+                        </form>
 
-                  </section>
-                  <section class="admin-card">
+                      </section>
+                      <section class="admin-card">
 
-                    <h2>ניהול אדמינים</h2>
+                        <h2>ניהול אדמינים</h2>
 
-                    <p class="small">
-                      ניהול המשתמשים בעלי הרשאת מנהל במערכת.
-                    </p>
+                        <p class="small">
+                          ניהול המשתמשים בעלי הרשאת מנהל במערכת.
+                        </p>
 
-                    <% if (!admins.length) { %>
-                      <p>אין אדמינים במערכת.</p>
-                      <% } %>
+                        <% if (!admins.length) { %>
+                          <p>אין אדמינים במערכת.</p>
+                          <% } %>
 
-                        <% admins.forEach(admin=> { %>
+                            <% admins.forEach(admin=> { %>
 
-                          <details class="admin-collapse client-card">
+                              <details class="admin-collapse client-card">
 
-                            <summary>
+                                <summary>
 
-                              <div>
-                                <strong>
-                                  <%= admin.display_name %>
-                                </strong>
+                                  <div>
+                                    <strong>
+                                      <%= admin.display_name %>
+                                    </strong>
 
-                                <span class="small">
-                                  @<%= admin.username %>
-                                </span>
-                              </div>
-
-                              <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
-                                <%= admin.is_active ? 'פעיל' : 'מושבת' %>
-                              </span>
-
-                            </summary>
-
-                            <div class="admin-card">
-
-                              <form method="POST" action="/admin/admins/<%= admin.id %>/update" class="form-grid">
-
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                <div class="form-row-2">
-
-                                  <div class="field">
-                                    <label>שם</label>
-
-                                    <input type="text" name="display_name" value="<%= admin.display_name || '' %>"
-                                      required>
+                                    <span class="small">
+                                      @<%= admin.username %>
+                                    </span>
                                   </div>
 
-                                  <div class="field">
-                                    <label>שם משתמש</label>
+                                  <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
+                                    <%= admin.is_active ? 'פעיל' : 'מושבת' %>
+                                  </span>
 
-                                    <input type="text" name="username" value="<%= admin.username || '' %>" required>
-                                  </div>
+                                </summary>
 
-                                  <div class="field">
-                                    <label>אימייל</label>
+                                <div class="admin-card">
 
-                                    <input type="email" name="email" value="<%= admin.email || '' %>">
-                                  </div>
+                                  <form method="POST" action="/admin/admins/<%= admin.id %>/update" class="form-grid">
 
-                                  <div class="field">
-                                    <label>טלפון</label>
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                    <input type="text" name="phone" value="<%= admin.phone || '' %>">
-                                  </div>
+                                    <div class="form-row-2">
+
+                                      <div class="field">
+                                        <label>שם</label>
+
+                                        <input type="text" name="display_name" value="<%= admin.display_name || '' %>"
+                                          required>
+                                      </div>
+
+                                      <div class="field">
+                                        <label>שם משתמש</label>
+
+                                        <input type="text" name="username" value="<%= admin.username || '' %>" required>
+                                      </div>
+
+                                      <div class="field">
+                                        <label>אימייל</label>
+
+                                        <input type="email" name="email" value="<%= admin.email || '' %>">
+                                      </div>
+
+                                      <div class="field">
+                                        <label>טלפון</label>
+
+                                        <input type="text" name="phone" value="<%= admin.phone || '' %>">
+                                      </div>
+
+                                    </div>
+
+                                    <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
+
+                                      <label class="terms-check">
+                                        <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked' : '' %>
+                                        >
+
+                                        אדמין פעיל
+                                      </label>
+
+                                      <% } else { %>
+
+                                        <p class="small">
+                                          זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
+                                        </p>
+
+                                        <% } %>
+
+                                          <button type="submit" class="btn btn-primary">
+                                            שמור שינויים
+                                          </button>
+
+                                  </form>
 
                                 </div>
 
-                                <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
+                              </details>
 
-                                  <label class="terms-check">
-                                    <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked' : '' %>
-                                    >
+                              <% }) %>
 
-                                    אדמין פעיל
-                                  </label>
-
-                                  <% } else { %>
-
-                                    <p class="small">
-                                      זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
-                                    </p>
-
-                                    <% } %>
-
-                                      <button type="submit" class="btn btn-primary">
-                                        שמור שינויים
-                                      </button>
-
-                              </form>
-
-                            </div>
-
-                          </details>
-
-                          <% }) %>
-
-                  </section>
-  <!--
+                      </section>
+                      <!--
 <section class="admin-card">
 
   <h2>מפות קומות</h2>
@@ -2397,435 +2294,388 @@
 
 </section>
 -->
-<details class="floor-directory-section">
+                      <details class="floor-directory-section">
 
-  <summary>ניהול מפת הקומה / דיירים</summary>
-  <div class="floor-directory-head">
-    <div>
-      <h2>מפות קומות</h2>
-      <p class="small">
-        יצירת רשימת דיירים מעודכנת למסכי המתחם.
-      </p>
-    </div>
+                        <summary>ניהול מפת הקומה / דיירים</summary>
+                        <div class="floor-directory-head">
+                          <div>
+                            <h2>מפות קומות</h2>
+                            <p class="small">
+                              יצירת רשימת דיירים מעודכנת למסכי המתחם.
+                            </p>
+                          </div>
 
-    <div class="floor-directory-switch">
-      <button
-        type="button"
-        class="mini-btn primary floor-directory-btn"
-        data-floor="4"
-      >
-        קומה 4
-      </button>
+                          <div class="floor-directory-switch">
+                            <button type="button" class="mini-btn primary floor-directory-btn" data-floor="4">
+                              קומה 4
+                            </button>
 
-      <button
-        type="button"
-        class="mini-btn floor-directory-btn"
-        data-floor="6"
-      >
-        קומה 6
-      </button>
-    </div>
-  </div>
+                            <button type="button" class="mini-btn floor-directory-btn" data-floor="6">
+                              קומה 6
+                            </button>
+                          </div>
+                        </div>
 
 
-  <div class="floor-directory-preview">
+                        <div class="floor-directory-preview">
 
-    <img
-      id="floorDirectoryPreview"
-      src="/images/floor4-map.png"
-      alt="מפת קומה"
-    >
+                          <img id="floorDirectoryPreview" src="/images/floor4-map.png" alt="מפת קומה">
 
-  </div>
+                        </div>
 
 
-  <button
-    type="button"
-    class="btn btn-primary"
-    id="saveFloorImage"
-  >
-    שמירת תמונת הקומה
-  </button>
+                        <button type="button" class="btn btn-primary" id="saveFloorImage">
+                          שמירת תמונת הקומה
+                        </button>
 
 
-  <div class="floor-directory-editor">
+                        <div class="floor-directory-editor">
 
-    <div class="floor-directory-editor-head">
-      <h3 id="floorDirectoryTitle">
-        רשימת דיירים — קומה 4
-      </h3>
+                          <div class="floor-directory-editor-head">
+                            <h3 id="floorDirectoryTitle">
+                              רשימת דיירים — קומה 4
+                            </h3>
 
-      <span class="small">
-        ניתן לערוך את השם שיופיע בתמונה
-      </span>
-    </div>
-
-
-    <div
-      class="floor-directory-list"
-      id="floorDirectoryList"
-    ></div>
-
-  </div>
-
-</details>
-</section>
-<!-- סוף tab-clients -->
+                            <span class="small">
+                              ניתן לערוך את השם שיופיע בתמונה
+                            </span>
+                          </div>
 
 
-<section class="tab-panel" id="tab-meeting-room">
+                          <div class="floor-directory-list" id="floorDirectoryList"></div>
 
-                  <div class="admin-card" style="
+                        </div>
+
+                      </details>
+                    </section>
+                    <!-- סוף tab-clients -->
+
+
+                    <section class="tab-panel" id="tab-meeting-room">
+
+                      <div class="admin-card" style="
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:14px;
     flex-wrap:wrap;
   ">
-                    <div>
-                      <h3 style="margin:0 0 5px;">
-                        יומן חדרי הישיבות
-                      </h3>
+                        <div>
+                          <h3 style="margin:0 0 5px;">
+                            יומן חדרי הישיבות
+                          </h3>
 
-                      <span class="small">
-                        בחר חדר כדי להציג את השריונים הרלוונטיים.
-                      </span>
-                    </div>
+                          <span class="small">
+                            בחר חדר כדי להציג את השריונים הרלוונטיים.
+                          </span>
+                        </div>
 
-                    <div id="meeting-room-switcher" style="
+                        <div id="meeting-room-switcher" style="
       display:flex;
       gap:8px;
       flex-wrap:wrap;
     ">
-                      <button type="button" class="mini-btn primary room-filter-btn active" data-room-floor="4">
-                        חדר קומה 4
-                      </button>
+                          <button type="button" class="mini-btn primary room-filter-btn active" data-room-floor="4">
+                            חדר קומה 4
+                          </button>
 
-                      <button type="button" class="mini-btn room-filter-btn" data-room-floor="6">
-                        חדר קומה 6
-                      </button>
+                          <button type="button" class="mini-btn room-filter-btn" data-room-floor="6">
+                            חדר קומה 6
+                          </button>
 
 
-                    </div>
-                  </div>
-
-                  <div class="meeting-calendar-toolbar">
-                    <div class="calendar-navigation">
-                      <button type="button" class="mini-btn" id="adminPreviousWeek">
-                        השבוע הקודם
-                      </button>
-
-                      <button type="button" class="mini-btn primary" id="adminCurrentWeek">
-                        השבוע הנוכחי
-                      </button>
-
-                      <button type="button" class="mini-btn" id="adminNextWeek">
-                        השבוע הבא
-                      </button>
-                    </div>
-
-                    <strong id="adminCalendarWeekTitle"></strong>
-                  </div>
-
-                  <div class="weekly-calendar-wrap">
-                    <div class="weekly-calendar" id="adminWeeklyCalendar"></div>
-                  </div>
-                  <!-- חלון יצירת שריון אדמין -->
-                  <div class="booking-popup-overlay" id="adminBookingPopupOverlay">
-                    <div class="booking-popup" id="adminBookingPopup" role="dialog" aria-modal="true"
-                      aria-labelledby="adminBookingPopupTitle">
-
-                      <div class="booking-popup-head">
-
-                        <div>
-                          <span class="eyebrow">
-                            חדר ישיבות
-                          </span>
-
-                          <h3 id="adminBookingPopupTitle">
-                            יצירת שריון
-                          </h3>
                         </div>
-
-                        <button type="button" class="booking-popup-close" id="adminBookingPopupClose"
-                          aria-label="סגירת החלון">
-                          ×
-                        </button>
- 
                       </div>
 
-
-<div class="booking-popup-time">
-
-  <strong id="adminBookingPopupDate"></strong>
-
-  <div class="booking-popup-time-editor">
-
-    <select
-      id="adminPopupStartTime"
-      aria-label="שעת התחלה">
-    </select>
-
-    <span class="booking-time-separator">
-      –
-    </span>
-
-    <select
-      id="admin_end_time"
-      name="end_time"
-      form="adminMeetingBookingForm"
-      required
-      aria-label="שעת סיום">
-    </select>
-
-  </div>
-
-</div>
-
-
-                      <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
-                        id="adminMeetingBookingForm">
-
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-
-                        <!-- לקוח -->
-
-                        <div class="field">
-
-                          <label for="booking-user">
-                            לקוח
-                          </label>
-
-                          <select id="booking-user" name="user_id" required>
-
-                            <option value="">
-                              בחירת לקוח
-                            </option>
-
-                            <% clients .filter(client=> client.is_active)
-                              .forEach(client => { %>
-
-                              <option value="<%= client.id %>" data-floor="<%= client.floor || '' %>">
-                                <%= client.display_name %>
-                                  - קומה <%= client.floor || 'לא הוגדרה' %>
-                              </option>
-
-                              <% }) %>
-
-                          </select>
-
-                        </div>
-
-
-                        <!-- החדר נשמר אוטומטית -->
-
-                        <input type="hidden" id="booking-room" name="meeting_room_id">
-
-
-                        <!-- תאריך -->
-
-                        <input type="hidden" id="admin_booking_date" name="booking_date">
-
-
-                        <!-- התחלה -->
-
-                        <input type="hidden" id="admin_start_time" name="start_time">
-
-
-
-
-                        <!-- הערה -->
-
-                        <div class="field">
-
-                          <label for="admin_booking_note">
-                            הערה
-                          </label>
-
-                          <input id="admin_booking_note" type="text" name="note" maxlength="200"
-                            placeholder="אופציונלי">
-
-                        </div>
-
-
-                        <div class="booking-popup-actions">
-
-                          <button type="button" class="btn btn-outline" id="adminBookingPopupCancel">
-                            ביטול
+                      <div class="meeting-calendar-toolbar">
+                        <div class="calendar-navigation">
+                          <button type="button" class="mini-btn" id="adminPreviousWeek">
+                            השבוע הקודם
                           </button>
 
-                          <button type="submit" class="btn btn-primary">
-                            יצירת שריון
+                          <button type="button" class="mini-btn primary" id="adminCurrentWeek">
+                            השבוע הנוכחי
                           </button>
 
+                          <button type="button" class="mini-btn" id="adminNextWeek">
+                            השבוע הבא
+                          </button>
                         </div>
 
-                      </form>
+                        <strong id="adminCalendarWeekTitle"></strong>
+                      </div>
 
-                    </div>
-                  </div>
-                  <div class="table-wrap">
-                    <table class="admin-bookings-table">
-                      <thead>
-                        <tr>
-                          <th>תאריך</th>
-                          <th>שעות</th>
-                          <th>לקוח</th>
-                          <th>משרד</th>
-                          <th>הערה</th>
-                          <th>פעולות</th>
-                        </tr>
-                      </thead>
+                      <div class="weekly-calendar-wrap">
+                        <div class="weekly-calendar" id="adminWeeklyCalendar"></div>
+                      </div>
+                      <!-- חלון יצירת שריון אדמין -->
+                      <div class="booking-popup-overlay" id="adminBookingPopupOverlay">
+                        <div class="booking-popup" id="adminBookingPopup" role="dialog" aria-modal="true"
+                          aria-labelledby="adminBookingPopupTitle">
 
-                      <tbody>
-                        <% if (!meetingBookings.length) { %>
-                          <tr>
-                            <td colspan="6" style="text-align:center; padding:30px;">
-                              אין שריונים.
-                            </td>
-                          </tr>
-                          <% } %>
+                          <div class="booking-popup-head">
 
-                            <% meetingBookings.forEach(booking=> { %>
-                              <tr class="meeting-booking-row" data-room-floor="<%= booking.meeting_room_floor %>">
-<td>
-  <strong>
-    <%= new Date(booking.booking_date).toLocaleDateString('he-IL', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }) %>
-  </strong>
-</td>
-<td>
-  <span class="admin-booking-time">
-    <%= String(booking.start_time).slice(0, 5) %>–<%= String(booking.end_time).slice(0, 5) %>
-  </span>
-</td>
-                  <td>
-  <div style="font-weight:700;">
-    <%= booking.display_name %>
-  </div>
+                            <div>
+                              <span class="eyebrow">
+                                חדר ישיבות
+                              </span>
 
-  <% if (booking.business_name) { %>
-    <div class="small" style="margin-top:3px;">
-      <%= booking.business_name %>
-    </div>
-  <% } %>
-</td>
-                                <td>
-                                  <%= booking.office_number ? `משרד ${booking.office_number}` : '-' %>
-                                    <%= booking.floor ? `, קומה ${booking.floor}` : '' %>
-                                </td>
-                                <td>
-                                  <%= booking.note || '-' %>
-                                </td>
-                                <td>
-                                  <form method="POST" action="/admin/meeting-bookings/<%= booking.id %>/delete"
-                                    onsubmit="return confirm('למחוק את השריון?')">
-                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                    <button class="mini-btn danger">מחיקה</button>
-                                  </form>
+                              <h3 id="adminBookingPopupTitle">
+                                יצירת שריון
+                              </h3>
+                            </div>
+
+                            <button type="button" class="booking-popup-close" id="adminBookingPopupClose"
+                              aria-label="סגירת החלון">
+                              ×
+                            </button>
+
+                          </div>
+
+
+                          <div class="booking-popup-time">
+
+                            <strong id="adminBookingPopupDate"></strong>
+
+                            <div class="booking-popup-time-editor">
+
+                              <select id="adminPopupStartTime" aria-label="שעת התחלה">
+                              </select>
+
+                              <span class="booking-time-separator">
+                                –
+                              </span>
+
+                              <select id="admin_end_time" name="end_time" form="adminMeetingBookingForm" required
+                                aria-label="שעת סיום">
+                              </select>
+
+                            </div>
+
+                          </div>
+
+
+                          <form method="POST" action="/admin/meeting-bookings/create" class="form-grid"
+                            id="adminMeetingBookingForm">
+
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+
+                            <!-- לקוח -->
+
+                            <div class="field">
+
+                              <label for="booking-user">
+                                לקוח
+                              </label>
+
+                              <select id="booking-user" name="user_id" required>
+
+                                <option value="">
+                                  בחירת לקוח
+                                </option>
+
+                                <% clients .filter(client=> client.is_active)
+                                  .forEach(client => { %>
+
+                                  <option value="<%= client.id %>" data-floor="<%= client.floor || '' %>">
+                                    <%= client.display_name %>
+                                      - קומה <%= client.floor || 'לא הוגדרה' %>
+                                  </option>
+
+                                  <% }) %>
+
+                              </select>
+
+                            </div>
+
+
+                            <!-- החדר נשמר אוטומטית -->
+
+                            <input type="hidden" id="booking-room" name="meeting_room_id">
+
+
+                            <!-- תאריך -->
+
+                            <input type="hidden" id="admin_booking_date" name="booking_date">
+
+
+                            <!-- התחלה -->
+
+                            <input type="hidden" id="admin_start_time" name="start_time">
+
+
+
+
+                            <!-- הערה -->
+
+                            <div class="field">
+
+                              <label for="admin_booking_note">
+                                הערה
+                              </label>
+
+                              <input id="admin_booking_note" type="text" name="note" maxlength="200"
+                                placeholder="אופציונלי">
+
+                            </div>
+
+
+                            <div class="booking-popup-actions">
+
+                              <button type="button" class="btn btn-outline" id="adminBookingPopupCancel">
+                                ביטול
+                              </button>
+
+                              <button type="submit" class="btn btn-primary">
+                                יצירת שריון
+                              </button>
+
+                            </div>
+
+                          </form>
+
+                        </div>
+                      </div>
+                      <div class="table-wrap">
+                        <table class="admin-bookings-table">
+                          <thead>
+                            <tr>
+                              <th>תאריך</th>
+                              <th>שעות</th>
+                              <th>לקוח</th>
+                              <th>משרד</th>
+                              <th>הערה</th>
+                              <th>פעולות</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <% if (!meetingBookings.length) { %>
+                              <tr>
+                                <td colspan="6" style="text-align:center; padding:30px;">
+                                  אין שריונים.
                                 </td>
                               </tr>
-                              <% }) %>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div
-  class="booking-popup-overlay"
-  id="adminClientDetailsOverlay"
->
-  <div
-    class="booking-popup client-details-popup"
-    role="dialog"
-    aria-modal="true"
-  >
+                              <% } %>
 
-    <div class="booking-popup-head">
+                                <% meetingBookings.forEach(booking=> { %>
+                                  <tr class="meeting-booking-row" data-room-floor="<%= booking.meeting_room_floor %>">
+                                    <td>
+                                      <strong>
+                                        <%= new Date(booking.booking_date).toLocaleDateString('he-IL', { day: '2-digit'
+                                          , month: '2-digit' , year: 'numeric' }) %>
+                                      </strong>
+                                    </td>
+                                    <td>
+                                      <span class="admin-booking-time">
+                                        <%= String(booking.start_time).slice(0, 5) %>–<%=
+                                            String(booking.end_time).slice(0, 5) %>
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <div style="font-weight:700;">
+                                        <%= booking.display_name %>
+                                      </div>
 
-      <div>
-        <span class="eyebrow">
-          פרטי לקוח
-        </span>
+                                      <% if (booking.business_name) { %>
+                                        <div class="small" style="margin-top:3px;">
+                                          <%= booking.business_name %>
+                                        </div>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                      <%= booking.office_number ? `משרד ${booking.office_number}` : '-' %>
+                                        <%= booking.floor ? `, קומה ${booking.floor}` : '' %>
+                                    </td>
+                                    <td>
+                                      <%= booking.note || '-' %>
+                                    </td>
+                                    <td>
+                                      <form method="POST" action="/admin/meeting-bookings/<%= booking.id %>/delete"
+                                        onsubmit="return confirm('למחוק את השריון?')">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <button class="mini-btn danger">מחיקה</button>
+                                      </form>
+                                    </td>
+                                  </tr>
+                                  <% }) %>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="booking-popup-overlay" id="adminClientDetailsOverlay">
+                        <div class="booking-popup client-details-popup" role="dialog" aria-modal="true">
 
-        <h3 id="adminClientDetailsName">
-          לקוח
-        </h3>
+                          <div class="booking-popup-head">
 
-        <div
-          class="small"
-          id="adminClientDetailsMeta"
-        ></div>
-      </div>
+                            <div>
+                              <span class="eyebrow">
+                                פרטי לקוח
+                              </span>
 
-      <button
-        type="button"
-        class="booking-popup-close"
-        id="adminClientDetailsClose"
-      >
-        ×
-      </button>
+                              <h3 id="adminClientDetailsName">
+                                לקוח
+                              </h3>
 
-    </div>
+                              <div class="small" id="adminClientDetailsMeta"></div>
+                            </div>
 
+                            <button type="button" class="booking-popup-close" id="adminClientDetailsClose">
+                              ×
+                            </button>
 
-    <div class="client-usage-grid">
-
-      <div class="client-usage-box">
-        <span>סה"כ שימוש</span>
-
-        <strong id="adminClientTotalHours">
-          0.0 שעות
-        </strong>
-      </div>
-
-      <div class="client-usage-box">
-        <span>החודש</span>
-
-        <strong id="adminClientMonthHours">
-          0.0 שעות
-        </strong>
-      </div>
-
-      <div class="client-usage-box">
-        <span>נותרו החודש</span>
-
-        <strong id="adminClientRemainingHours">
-          0.0 שעות
-        </strong>
-      </div>
-
-    </div>
-
-
-    <div class="client-bookings-section">
-
-      <h4>שריונים עתידיים</h4>
-
-      <div
-        id="adminClientFutureBookings"
-        class="client-bookings-list"
-      ></div>
-
-    </div>
+                          </div>
 
 
-    <div class="client-bookings-section">
+                          <div class="client-usage-grid">
 
-      <h4>שריונים קודמים</h4>
+                            <div class="client-usage-box">
+                              <span>סה"כ שימוש</span>
 
-      <div
-        id="adminClientPastBookings"
-        class="client-bookings-list"
-      ></div>
+                              <strong id="adminClientTotalHours">
+                                0.0 שעות
+                              </strong>
+                            </div>
 
-    </div>
+                            <div class="client-usage-box">
+                              <span>החודש</span>
 
-  </div>
-</div>
-                </section>
+                              <strong id="adminClientMonthHours">
+                                0.0 שעות
+                              </strong>
+                            </div>
+
+                            <div class="client-usage-box">
+                              <span>נותרו החודש</span>
+
+                              <strong id="adminClientRemainingHours">
+                                0.0 שעות
+                              </strong>
+                            </div>
+
+                          </div>
+
+
+                          <div class="client-bookings-section">
+
+                            <h4>שריונים עתידיים</h4>
+
+                            <div id="adminClientFutureBookings" class="client-bookings-list"></div>
+
+                          </div>
+
+
+                          <div class="client-bookings-section">
+
+                            <h4>שריונים קודמים</h4>
+
+                            <div id="adminClientPastBookings" class="client-bookings-list"></div>
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </section>
 
   </main>
 
@@ -2836,87 +2686,87 @@
    ADMIN TABS
 ========================= */
 
-function openAdminTab(tabName, updateHash = true) {
+    function openAdminTab(tabName, updateHash = true) {
 
-  const buttons =
-    document.querySelectorAll('.tab-btn');
+      const buttons =
+        document.querySelectorAll('.tab-btn');
 
-  const panels =
-    document.querySelectorAll('.tab-panel');
+      const panels =
+        document.querySelectorAll('.tab-panel');
 
-  const targetButton =
-    document.querySelector(
-      `.tab-btn[data-tab="${tabName}"]`
-    );
+      const targetButton =
+        document.querySelector(
+          `.tab-btn[data-tab="${tabName}"]`
+        );
 
-  const targetPanel =
-    document.getElementById(
-      `tab-${tabName}`
-    );
+      const targetPanel =
+        document.getElementById(
+          `tab-${tabName}`
+        );
 
-  if (!targetButton || !targetPanel) {
-    return;
-  }
+      if (!targetButton || !targetPanel) {
+        return;
+      }
 
-  buttons.forEach((button) => {
-    button.classList.remove('active');
-  });
+      buttons.forEach((button) => {
+        button.classList.remove('active');
+      });
 
-  panels.forEach((panel) => {
-    panel.classList.remove('active');
-  });
+      panels.forEach((panel) => {
+        panel.classList.remove('active');
+      });
 
-  targetButton.classList.add('active');
-  targetPanel.classList.add('active');
+      targetButton.classList.add('active');
+      targetPanel.classList.add('active');
 
-  if (updateHash) {
-    history.replaceState(
-      null,
-      '',
-      `#${tabName}`
-    );
-  }
-}
-
-
-document
-  .querySelectorAll('.tab-btn')
-  .forEach((button) => {
-
-    button.addEventListener(
-      'click',
-      (event) => {
-
-        event.preventDefault();
-
-        openAdminTab(
-          button.dataset.tab
+      if (updateHash) {
+        history.replaceState(
+          null,
+          '',
+          `#${tabName}`
         );
       }
+    }
+
+
+    document
+      .querySelectorAll('.tab-btn')
+      .forEach((button) => {
+
+        button.addEventListener(
+          'click',
+          (event) => {
+
+            event.preventDefault();
+
+            openAdminTab(
+              button.dataset.tab
+            );
+          }
+        );
+      });
+
+
+    /* פתיחת הטאב הנכון בטעינת העמוד */
+
+    const initialAdminTab =
+      window.location.hash === '#meeting-room'
+        ? 'meeting-room'
+        : 'clients';
+
+    openAdminTab(
+      initialAdminTab,
+      false
     );
-  });
-
-
-/* פתיחת הטאב הנכון בטעינת העמוד */
-
-const initialAdminTab =
-  window.location.hash === '#meeting-room'
-    ? 'meeting-room'
-    : 'clients';
-
-openAdminTab(
-  initialAdminTab,
-  false
-);
 
     /* =========================
        נתוני השריונים
     ========================= */
 
     const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
-const adminClients =
-  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+    const adminClients =
+  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
 
@@ -2925,142 +2775,142 @@ const adminClients =
 
     const adminBookingForm =
       document.getElementById('adminMeetingBookingForm');
-const adminClientDetailsOverlay =
-  document.getElementById(
-    'adminClientDetailsOverlay'
-  );
+    const adminClientDetailsOverlay =
+      document.getElementById(
+        'adminClientDetailsOverlay'
+      );
 
-const adminClientDetailsClose =
-  document.getElementById(
-    'adminClientDetailsClose'
-  );
+    const adminClientDetailsClose =
+      document.getElementById(
+        'adminClientDetailsClose'
+      );
 
-const adminClientDetailsName =
-  document.getElementById(
-    'adminClientDetailsName'
-  );
+    const adminClientDetailsName =
+      document.getElementById(
+        'adminClientDetailsName'
+      );
 
-const adminClientDetailsMeta =
-  document.getElementById(
-    'adminClientDetailsMeta'
-  );
+    const adminClientDetailsMeta =
+      document.getElementById(
+        'adminClientDetailsMeta'
+      );
 
-const adminClientTotalHours =
-  document.getElementById(
-    'adminClientTotalHours'
-  );
+    const adminClientTotalHours =
+      document.getElementById(
+        'adminClientTotalHours'
+      );
 
-const adminClientMonthHours =
-  document.getElementById(
-    'adminClientMonthHours'
-  );
+    const adminClientMonthHours =
+      document.getElementById(
+        'adminClientMonthHours'
+      );
 
-const adminClientRemainingHours =
-  document.getElementById(
-    'adminClientRemainingHours'
-  );
+    const adminClientRemainingHours =
+      document.getElementById(
+        'adminClientRemainingHours'
+      );
 
-const adminClientFutureBookings =
-  document.getElementById(
-    'adminClientFutureBookings'
-  );
+    const adminClientFutureBookings =
+      document.getElementById(
+        'adminClientFutureBookings'
+      );
 
-const adminClientPastBookings =
-  document.getElementById(
-    'adminClientPastBookings'
-  );
-  function formatClientBookingDate(value) {
-  const normalized =
-    normalizeAdminBookingDate(value);
+    const adminClientPastBookings =
+      document.getElementById(
+        'adminClientPastBookings'
+      );
+    function formatClientBookingDate(value) {
+      const normalized =
+        normalizeAdminBookingDate(value);
 
-  if (!normalized) {
-    return '';
-  }
+      if (!normalized) {
+        return '';
+      }
 
-  const [year, month, day] =
-    normalized.split('-').map(Number);
+      const [year, month, day] =
+        normalized.split('-').map(Number);
 
-  return new Date(
-    year,
-    month - 1,
-    day
-  ).toLocaleDateString(
-    'he-IL',
-    {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+      return new Date(
+        year,
+        month - 1,
+        day
+      ).toLocaleDateString(
+        'he-IL',
+        {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }
+      );
     }
-  );
-}
 
 
-function clientBookingTimestamp(booking) {
-  const date =
-    normalizeAdminBookingDate(
-      booking.booking_date
-    );
+    function clientBookingTimestamp(booking) {
+      const date =
+        normalizeAdminBookingDate(
+          booking.booking_date
+        );
 
-  const time =
-    normalizeAdminTime(
-      booking.start_time
-    );
+      const time =
+        normalizeAdminTime(
+          booking.start_time
+        );
 
-  if (!date || !time) {
-    return 0;
-  }
+      if (!date || !time) {
+        return 0;
+      }
 
-  return new Date(
-    `${date}T${time}:00`
-  ).getTime();
-}
+      return new Date(
+        `${date}T${time}:00`
+      ).getTime();
+    }
 
 
-function renderClientBookingList(
-  container,
-  bookings
-) {
-  if (!container) {
-    return;
-  }
+    function renderClientBookingList(
+      container,
+      bookings
+    ) {
+      if (!container) {
+        return;
+      }
 
-  container.innerHTML = '';
+      container.innerHTML = '';
 
-  if (!bookings.length) {
-    container.innerHTML = `
+      if (!bookings.length) {
+        container.innerHTML = `
       <div class="client-bookings-empty">
         אין שריונים להצגה
       </div>
     `;
 
-    return;
-  }
+        return;
+      }
 
-  bookings.forEach((booking) => {
+      bookings.forEach((booking) => {
 
-    const item =
-      document.createElement('div');
+        const item =
+          document.createElement('div');
 
-    item.className =
-      'client-booking-item';
+        item.className =
+          'client-booking-item';
 
-    item.innerHTML = `
+        item.innerHTML = `
       <div class="client-booking-main">
 
         <span class="client-booking-date">
           ${formatClientBookingDate(
-            booking.booking_date
-          )}
+          booking.booking_date
+        )}
         </span>
 
         <span class="client-booking-time">
           ${normalizeAdminTime(
-            booking.start_time
-          )}
+          booking.start_time
+        )}
           –
           ${normalizeAdminTime(
-            booking.end_time
-          )}
+          booking.end_time
+        )}
         </span>
 
       </div>
@@ -3070,168 +2920,168 @@ function renderClientBookingList(
       </span>
     `;
 
-    container.appendChild(item);
-  });
-}
-
-
-function openAdminClientDetails(userId) {
-
-  const client =
-    adminClients.find(
-      item =>
-        Number(item.id) ===
-        Number(userId)
-    );
-
-  if (!client) {
-    return;
-  }
-
-
-  if (adminClientDetailsName) {
-    adminClientDetailsName.textContent =
-      client.display_name || 'לקוח';
-  }
-
-
-  if (adminClientDetailsMeta) {
-    const parts = [];
-
-    if (client.business_name) {
-      parts.push(client.business_name);
+        container.appendChild(item);
+      });
     }
 
-    if (client.office_number) {
-      parts.push(
-        `משרד ${client.office_number}`
-      );
-    }
 
-    if (client.floor) {
-      parts.push(
-        `קומה ${client.floor}`
-      );
-    }
+    function openAdminClientDetails(userId) {
 
-    adminClientDetailsMeta.textContent =
-      parts.join(' · ');
-  }
+      const client =
+        adminClients.find(
+          item =>
+            Number(item.id) ===
+            Number(userId)
+        );
 
-
-  if (adminClientTotalHours) {
-    adminClientTotalHours.textContent =
-      `${Number(
-        client.total_meeting_hours || 0
-      ).toFixed(1)} שעות`;
-  }
-
-
-  if (adminClientMonthHours) {
-    adminClientMonthHours.textContent =
-      `${Number(
-        client.month_meeting_hours || 0
-      ).toFixed(1)} שעות`;
-  }
-
-
-  if (adminClientRemainingHours) {
-    adminClientRemainingHours.textContent =
-      `${Number(
-        client.remaining_meeting_hours || 0
-      ).toFixed(1)} שעות`;
-  }
-
-
-  const clientBookings =
-    adminMeetingBookings.filter(
-      booking =>
-        Number(booking.user_id) ===
-        Number(userId)
-    );
-
-
-  const now = Date.now();
-
-
-  const futureBookings =
-    clientBookings
-      .filter(
-        booking =>
-          clientBookingTimestamp(
-            booking
-          ) >= now
-      )
-      .sort(
-        (a, b) =>
-          clientBookingTimestamp(a) -
-          clientBookingTimestamp(b)
-      );
-
-
-  const pastBookings =
-    clientBookings
-      .filter(
-        booking =>
-          clientBookingTimestamp(
-            booking
-          ) < now
-      )
-      .sort(
-        (a, b) =>
-          clientBookingTimestamp(b) -
-          clientBookingTimestamp(a)
-      );
-
-
-  renderClientBookingList(
-    adminClientFutureBookings,
-    futureBookings
-  );
-
-  renderClientBookingList(
-    adminClientPastBookings,
-    pastBookings
-  );
-
-
-  adminClientDetailsOverlay
-    ?.classList.add('open');
-
-  document.body.style.overflow =
-    'hidden';
-}
-
-
-function closeAdminClientDetails() {
-
-  adminClientDetailsOverlay
-    ?.classList.remove('open');
-
-  document.body.style.overflow = '';
-}
-
-
-adminClientDetailsClose
-  ?.addEventListener(
-    'click',
-    closeAdminClientDetails
-  );
-
-
-adminClientDetailsOverlay
-  ?.addEventListener(
-    'click',
-    (event) => {
-
-      if (
-        event.target ===
-        adminClientDetailsOverlay
-      ) {
-        closeAdminClientDetails();
+      if (!client) {
+        return;
       }
+
+
+      if (adminClientDetailsName) {
+        adminClientDetailsName.textContent =
+          client.display_name || 'לקוח';
+      }
+
+
+      if (adminClientDetailsMeta) {
+        const parts = [];
+
+        if (client.business_name) {
+          parts.push(client.business_name);
+        }
+
+        if (client.office_number) {
+          parts.push(
+            `משרד ${client.office_number}`
+          );
+        }
+
+        if (client.floor) {
+          parts.push(
+            `קומה ${client.floor}`
+          );
+        }
+
+        adminClientDetailsMeta.textContent =
+          parts.join(' · ');
+      }
+
+
+      if (adminClientTotalHours) {
+        adminClientTotalHours.textContent =
+          `${Number(
+            client.total_meeting_hours || 0
+          ).toFixed(1)} שעות`;
+      }
+
+
+      if (adminClientMonthHours) {
+        adminClientMonthHours.textContent =
+          `${Number(
+            client.month_meeting_hours || 0
+          ).toFixed(1)} שעות`;
+      }
+
+
+      if (adminClientRemainingHours) {
+        adminClientRemainingHours.textContent =
+          `${Number(
+            client.remaining_meeting_hours || 0
+          ).toFixed(1)} שעות`;
+      }
+
+
+      const clientBookings =
+        adminMeetingBookings.filter(
+          booking =>
+            Number(booking.user_id) ===
+            Number(userId)
+        );
+
+
+      const now = Date.now();
+
+
+      const futureBookings =
+        clientBookings
+          .filter(
+            booking =>
+              clientBookingTimestamp(
+                booking
+              ) >= now
+          )
+          .sort(
+            (a, b) =>
+              clientBookingTimestamp(a) -
+              clientBookingTimestamp(b)
+          );
+
+
+      const pastBookings =
+        clientBookings
+          .filter(
+            booking =>
+              clientBookingTimestamp(
+                booking
+              ) < now
+          )
+          .sort(
+            (a, b) =>
+              clientBookingTimestamp(b) -
+              clientBookingTimestamp(a)
+          );
+
+
+      renderClientBookingList(
+        adminClientFutureBookings,
+        futureBookings
+      );
+
+      renderClientBookingList(
+        adminClientPastBookings,
+        pastBookings
+      );
+
+
+      adminClientDetailsOverlay
+        ?.classList.add('open');
+
+      document.body.style.overflow =
+        'hidden';
     }
-  );
+
+
+    function closeAdminClientDetails() {
+
+      adminClientDetailsOverlay
+        ?.classList.remove('open');
+
+      document.body.style.overflow = '';
+    }
+
+
+    adminClientDetailsClose
+      ?.addEventListener(
+        'click',
+        closeAdminClientDetails
+      );
+
+
+    adminClientDetailsOverlay
+      ?.addEventListener(
+        'click',
+        (event) => {
+
+          if (
+            event.target ===
+            adminClientDetailsOverlay
+          ) {
+            closeAdminClientDetails();
+          }
+        }
+      );
     const adminRoomSelect =
       document.getElementById('booking-room');
 
@@ -3247,10 +3097,10 @@ adminClientDetailsOverlay
     const adminEndTimeInput =
       document.getElementById('admin_end_time');
 
-      const adminPopupStartTime =
-    document.getElementById(
-    'adminPopupStartTime'
-  );
+    const adminPopupStartTime =
+      document.getElementById(
+        'adminPopupStartTime'
+      );
     const adminBookingPopupOverlay =
       document.getElementById(
         'adminBookingPopupOverlay'
@@ -3425,23 +3275,23 @@ adminClientDetailsOverlay
       );
     }
 
-function syncAdminRoomSelect(roomFloor) {
-  if (!adminRoomSelect) {
-    return;
-  }
+    function syncAdminRoomSelect(roomFloor) {
+      if (!adminRoomSelect) {
+        return;
+      }
 
-  const adminMeetingRooms =
-    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+      const adminMeetingRooms =
+    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
-  const room = adminMeetingRooms.find(
-    (item) =>
-      String(item.floor) === String(roomFloor)
-  );
+      const room = adminMeetingRooms.find(
+        (item) =>
+          String(item.floor) === String(roomFloor)
+      );
 
-  if (room) {
-    adminRoomSelect.value = room.id;
-  }
-}
+      if (room) {
+        adminRoomSelect.value = room.id;
+      }
+    }
 
     function clearAdminCalendarSelection() {
       adminSelectedStartSlot = null;
@@ -3596,115 +3446,115 @@ function syncAdminRoomSelect(roomFloor) {
     }
 
     function fillAdminStartTimeOptions(
-  date,
-  selectedStartMinutes
-) {
-  if (!adminPopupStartTime) {
-    return;
-  }
-
-  adminPopupStartTime.innerHTML = '';
-
-  for (
-    let minutes =
-      adminCalendarStartHour * 60;
-
-    minutes <
-      adminCalendarEndHour * 60;
-
-    minutes += adminSlotMinutes
-  ) {
-    const option =
-      document.createElement('option');
-
-    option.value =
-      adminMinutesToTime(minutes);
-
-    option.textContent =
-      adminMinutesToTime(minutes);
-
-    option.selected =
-      minutes === selectedStartMinutes;
-
-    adminPopupStartTime.appendChild(
-      option
-    );
-  }
-}
-
-  function openAdminBookingPopup(
-  date,
-  startMinutes,
-  endMinutes
-) {
-  if (
-    !adminBookingPopupOverlay ||
-    !adminBookingDateInput ||
-    !adminStartTimeInput ||
-    !adminEndTimeInput
-  ) {
-    console.error(
-      'Admin booking popup elements are missing'
-    );
-
-    return;
-  }
-
-  adminBookingDateInput.value = date;
-
-  adminStartTimeInput.value =
-    adminMinutesToTime(startMinutes);
-
-  // ממלא את בחירת שעת ההתחלה
-  if (adminPopupStartTime) {
-    fillAdminStartTimeOptions(
       date,
-      startMinutes
-    );
+      selectedStartMinutes
+    ) {
+      if (!adminPopupStartTime) {
+        return;
+      }
 
-    adminPopupStartTime.value =
-      adminMinutesToTime(startMinutes);
-  }
+      adminPopupStartTime.innerHTML = '';
 
-  // ממלא שעות סיום אפשריות
-  fillAdminEndTimeOptions(
-    date,
-    startMinutes
-  );
+      for (
+        let minutes =
+          adminCalendarStartHour * 60;
 
-  const wantedEnd =
-    adminMinutesToTime(endMinutes);
+        minutes <
+        adminCalendarEndHour * 60;
 
-  const endExists =
-    Array.from(
-      adminEndTimeInput.options
-    ).some(
-      option =>
-        option.value === wantedEnd
-    );
+        minutes += adminSlotMinutes
+      ) {
+        const option =
+          document.createElement('option');
 
-  if (endExists) {
-    adminEndTimeInput.value =
-      wantedEnd;
-  }
+        option.value =
+          adminMinutesToTime(minutes);
 
-  if (adminBookingPopupDate) {
-    adminBookingPopupDate.textContent =
-      formatAdminSelectedDate(date);
-  }
+        option.textContent =
+          adminMinutesToTime(minutes);
 
-  if (adminBookingPopupTime) {
-    adminBookingPopupTime.textContent =
-      `${adminMinutesToTime(startMinutes)}–` +
-      `${adminEndTimeInput.value}`;
-  }
+        option.selected =
+          minutes === selectedStartMinutes;
 
-  adminBookingPopupOverlay
-    .classList.add('open');
+        adminPopupStartTime.appendChild(
+          option
+        );
+      }
+    }
 
-  document.body.style.overflow =
-    'hidden';
-}
+    function openAdminBookingPopup(
+      date,
+      startMinutes,
+      endMinutes
+    ) {
+      if (
+        !adminBookingPopupOverlay ||
+        !adminBookingDateInput ||
+        !adminStartTimeInput ||
+        !adminEndTimeInput
+      ) {
+        console.error(
+          'Admin booking popup elements are missing'
+        );
+
+        return;
+      }
+
+      adminBookingDateInput.value = date;
+
+      adminStartTimeInput.value =
+        adminMinutesToTime(startMinutes);
+
+      // ממלא את בחירת שעת ההתחלה
+      if (adminPopupStartTime) {
+        fillAdminStartTimeOptions(
+          date,
+          startMinutes
+        );
+
+        adminPopupStartTime.value =
+          adminMinutesToTime(startMinutes);
+      }
+
+      // ממלא שעות סיום אפשריות
+      fillAdminEndTimeOptions(
+        date,
+        startMinutes
+      );
+
+      const wantedEnd =
+        adminMinutesToTime(endMinutes);
+
+      const endExists =
+        Array.from(
+          adminEndTimeInput.options
+        ).some(
+          option =>
+            option.value === wantedEnd
+        );
+
+      if (endExists) {
+        adminEndTimeInput.value =
+          wantedEnd;
+      }
+
+      if (adminBookingPopupDate) {
+        adminBookingPopupDate.textContent =
+          formatAdminSelectedDate(date);
+      }
+
+      if (adminBookingPopupTime) {
+        adminBookingPopupTime.textContent =
+          `${adminMinutesToTime(startMinutes)}–` +
+          `${adminEndTimeInput.value}`;
+      }
+
+      adminBookingPopupOverlay
+        .classList.add('open');
+
+      document.body.style.overflow =
+        'hidden';
+    }
 
     function closeAdminBookingPopup(
       clearSelection = true
@@ -3721,79 +3571,79 @@ function syncAdminRoomSelect(roomFloor) {
 
 
     adminPopupStartTime
-  ?.addEventListener(
-    'change',
-    () => {
+      ?.addEventListener(
+        'change',
+        () => {
 
-      const date =
-        adminBookingDateInput.value;
+          const date =
+            adminBookingDateInput.value;
 
-      const newStartMinutes =
-        adminTimeToMinutes(
-          adminPopupStartTime.value
-        );
+          const newStartMinutes =
+            adminTimeToMinutes(
+              adminPopupStartTime.value
+            );
 
-      if (
-        !date ||
-        newStartMinutes === null
-      ) {
-        return;
-      }
+          if (
+            !date ||
+            newStartMinutes === null
+          ) {
+            return;
+          }
 
-      adminStartTimeInput.value =
-        adminMinutesToTime(
-          newStartMinutes
-        );
+          adminStartTimeInput.value =
+            adminMinutesToTime(
+              newStartMinutes
+            );
 
-      fillAdminEndTimeOptions(
-        date,
-        newStartMinutes
-      );
-
-      /*
-        ברירת מחדל:
-        שעה אחת אחרי שעת ההתחלה.
-      */
-      const preferredEnd =
-        newStartMinutes + 60;
-
-      const preferredEndValue =
-        adminMinutesToTime(
-          preferredEnd
-        );
-
-      const preferredExists =
-        Array
-          .from(
-            adminEndTimeInput.options
-          )
-          .some(
-            option =>
-              option.value ===
-              preferredEndValue
+          fillAdminEndTimeOptions(
+            date,
+            newStartMinutes
           );
 
-      if (preferredExists) {
-        adminEndTimeInput.value =
-          preferredEndValue;
-      }
+          /*
+            ברירת מחדל:
+            שעה אחת אחרי שעת ההתחלה.
+          */
+          const preferredEnd =
+            newStartMinutes + 60;
 
-      const endMinutes =
-        adminTimeToMinutes(
-          adminEndTimeInput.value
-        );
+          const preferredEndValue =
+            adminMinutesToTime(
+              preferredEnd
+            );
 
-      clearAdminCalendarSelection();
+          const preferredExists =
+            Array
+              .from(
+                adminEndTimeInput.options
+              )
+              .some(
+                option =>
+                  option.value ===
+                  preferredEndValue
+              );
 
-      if (endMinutes !== null) {
-        highlightAdminRange(
-          date,
-          newStartMinutes,
-          endMinutes
-        );
-      }
-    }
-  );
+          if (preferredExists) {
+            adminEndTimeInput.value =
+              preferredEndValue;
+          }
+
+          const endMinutes =
+            adminTimeToMinutes(
+              adminEndTimeInput.value
+            );
+
+          clearAdminCalendarSelection();
+
+          if (endMinutes !== null) {
+            highlightAdminRange(
+              date,
+              newStartMinutes,
+              endMinutes
+            );
+          }
+        }
+      );
     adminEndTimeInput
       ?.addEventListener(
         'change',
@@ -3884,76 +3734,76 @@ function syncAdminRoomSelect(roomFloor) {
       }
     );
 
-  function finishAdminCalendarRange(
-  date,
-  firstMinutes,
-  lastMinutes
-) {
-  const startMinutes =
-    Math.min(firstMinutes, lastMinutes);
-
-  // לחיצה בודדת = שעה כברירת מחדל
-  let endMinutes;
-
-  if (firstMinutes === lastMinutes) {
-    endMinutes = startMinutes + 60;
-  } else {
-    endMinutes =
-      Math.max(firstMinutes, lastMinutes) +
-      adminSlotMinutes;
-  }
-
-  // לא לעבור את סוף היום
-  endMinutes = Math.min(
-    endMinutes,
-    adminCalendarEndHour * 60
-  );
-
-  // אם השעה המלאה נתקלת בשריון,
-  // ננסה לפחות חצי שעה
-  if (
-    adminRangeHasBooking(
+    function finishAdminCalendarRange(
       date,
-      startMinutes,
-      endMinutes
-    )
-  ) {
-    const halfHourEnd =
-      startMinutes + adminSlotMinutes;
-
-    if (
-      !adminRangeHasBooking(
-        date,
-        startMinutes,
-        halfHourEnd
-      )
+      firstMinutes,
+      lastMinutes
     ) {
-      endMinutes = halfHourEnd;
-    } else {
+      const startMinutes =
+        Math.min(firstMinutes, lastMinutes);
+
+      // לחיצה בודדת = שעה כברירת מחדל
+      let endMinutes;
+
+      if (firstMinutes === lastMinutes) {
+        endMinutes = startMinutes + 60;
+      } else {
+        endMinutes =
+          Math.max(firstMinutes, lastMinutes) +
+          adminSlotMinutes;
+      }
+
+      // לא לעבור את סוף היום
+      endMinutes = Math.min(
+        endMinutes,
+        adminCalendarEndHour * 60
+      );
+
+      // אם השעה המלאה נתקלת בשריון,
+      // ננסה לפחות חצי שעה
+      if (
+        adminRangeHasBooking(
+          date,
+          startMinutes,
+          endMinutes
+        )
+      ) {
+        const halfHourEnd =
+          startMinutes + adminSlotMinutes;
+
+        if (
+          !adminRangeHasBooking(
+            date,
+            startMinutes,
+            halfHourEnd
+          )
+        ) {
+          endMinutes = halfHourEnd;
+        } else {
+          clearAdminCalendarSelection();
+
+          alert('השעה שבחרת כבר תפוסה.');
+
+          return;
+        }
+      }
+
       clearAdminCalendarSelection();
 
-      alert('השעה שבחרת כבר תפוסה.');
+      highlightAdminRange(
+        date,
+        startMinutes,
+        endMinutes
+      );
 
-      return;
+      adminSelectedStartSlot = null;
+
+      openAdminBookingPopup(
+        date,
+        startMinutes,
+        endMinutes
+      );
     }
-  }
-
-  clearAdminCalendarSelection();
-
-  highlightAdminRange(
-    date,
-    startMinutes,
-    endMinutes
-  );
-
-  adminSelectedStartSlot = null;
-
-  openAdminBookingPopup(
-    date,
-    startMinutes,
-    endMinutes
-  );
-}
     /* =========================
            סינון טבלת השריונים
         ========================= */
@@ -4275,27 +4125,27 @@ function syncAdminRoomSelect(roomFloor) {
               'calendar-booking';
 
             bookingElement.dataset.userId =
-  String(booking.user_id);
+              String(booking.user_id);
 
-bookingElement.style.cursor =
-  'pointer';
-bookingElement.addEventListener(
-  'mousedown',
-  (event) => {
-    event.stopPropagation();
-  }
-);
-  bookingElement.addEventListener(
+            bookingElement.style.cursor =
+              'pointer';
+            bookingElement.addEventListener(
+              'mousedown',
+              (event) => {
+                event.stopPropagation();
+              }
+            );
+            bookingElement.addEventListener(
 
-  'click',
-  (event) => {
-    event.stopPropagation();
+              'click',
+              (event) => {
+                event.stopPropagation();
 
-    openAdminClientDetails(
-      booking.user_id
-    );
-  }
-);
+                openAdminClientDetails(
+                  booking.user_id
+                );
+              }
+            );
 
             const durationMinutes =
               adminTimeToMinutes(
@@ -4572,17 +4422,17 @@ bookingElement.addEventListener(
        מעבר בין שבועות
     ========================= */
 
-   document
-  .getElementById('adminPreviousWeek')
-  ?.addEventListener('click', () => {
-    adminDisplayedWeekStart =
-      addAdminDays(
-        adminDisplayedWeekStart,
-        -7
-      );
+    document
+      .getElementById('adminPreviousWeek')
+      ?.addEventListener('click', () => {
+        adminDisplayedWeekStart =
+          addAdminDays(
+            adminDisplayedWeekStart,
+            -7
+          );
 
-    renderAdminCalendar();
-  });
+        renderAdminCalendar();
+      });
 
     document
       .getElementById('adminNextWeek')
@@ -4657,306 +4507,306 @@ bookingElement.addEventListener(
     selectAdminRoom(
       selectedAdminRoomFloor
     );
-    
+
   </script>
-<script>
-  /* =====================================
-     FLOOR 4 MAP EXPORT
-  ===================================== */
+  <script>
+    /* =====================================
+       FLOOR 4 MAP EXPORT
+    ===================================== */
 
     const floorDirectories = {
-  4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-  6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
-const savedFloorDirectoryOverrides =
-  <%- JSON.stringify(
-    floorDirectoryOverrides || {}
-  ).replace(/</g, '\\u003c') %>;
+    const savedFloorDirectoryOverrides =
+  <% - JSON.stringify(
+      floorDirectoryOverrides || {}
+    ).replace(/</g, '\\u003c') %>;
 
-// המספרים שבאמת קיימים בכל קומה
-if (savedFloorDirectoryOverrides?.[4]) {
-  delete savedFloorDirectoryOverrides[4][5];
-}
-const floorOfficeNumbers = {
+    // המספרים שבאמת קיימים בכל קומה
+    if (savedFloorDirectoryOverrides?.[4]) {
+      delete savedFloorDirectoryOverrides[4][5];
+    }
+    const floorOfficeNumbers = {
 
-  4: [
-    1, 2, 3, 4, 6, 7, 8,
-    9, 10, 11, 12, 13, 14, 15, 16,
+      4: [
+        1, 2, 3, 4, 6, 7, 8,
+        9, 10, 11, 12, 13, 14, 15, 16,
 
-    // אין 17
-    18, 19, 20, 21, 22, 23,
+        // אין 17
+        18, 19, 20, 21, 22, 23,
 
-    // אין 24
-    25, 26, 27, 28, 29
-  ],
+        // אין 24
+        25, 26, 27, 28, 29
+      ],
 
-  6: [
-    1, 2, 3, 4, 5, 6, 7, 8,
-    9, 10, 11, 12, 13, 14, 15, 16,
-    17, 18, 19, 20, 21, 22
-  ]
+      6: [
+        1, 2, 3, 4, 5, 6, 7, 8,
+        9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21, 22
+      ]
 
-};
+    };
 
-let selectedDirectoryFloor = 4;
+    let selectedDirectoryFloor = 4;
 
 
-// שינויים ידניים זמניים
+    // שינויים ידניים זמניים
 
-const floorDirectoryEdits = {
-  4: {},
-  6: {}
-};
+    const floorDirectoryEdits = {
+      4: {},
+      6: {}
+    };
 
 
-function renderFloorDirectoryEditor() {
+    function renderFloorDirectoryEditor() {
 
-  const list =
-    document.getElementById('floorDirectoryList');
+      const list =
+        document.getElementById('floorDirectoryList');
 
-  const title =
-    document.getElementById('floorDirectoryTitle');
+      const title =
+        document.getElementById('floorDirectoryTitle');
 
-  if (!list || !title) return;
+      if (!list || !title) return;
 
 
-  title.textContent =
-    `רשימת דיירים — קומה ${selectedDirectoryFloor}`;
+      title.textContent =
+        `רשימת דיירים — קומה ${selectedDirectoryFloor}`;
 
 
-  const directory =
-    floorDirectories[selectedDirectoryFloor] || {};
+      const directory =
+        floorDirectories[selectedDirectoryFloor] || {};
 
-  const offices =
-    floorOfficeNumbers[selectedDirectoryFloor] || [];
+      const offices =
+        floorOfficeNumbers[selectedDirectoryFloor] || [];
 
 
-  list.innerHTML = '';
+      list.innerHTML = '';
 
 
-  offices.forEach(officeNumber => {
+      offices.forEach(officeNumber => {
 
-    const automaticName =
-      directory[officeNumber]?.name || '';
+        const automaticName =
+          directory[officeNumber]?.name || '';
 
-const savedName =
-  savedFloorDirectoryOverrides?.[
-    selectedDirectoryFloor
-  ]?.[
-    officeNumber
-  ];
+        const savedName =
+          savedFloorDirectoryOverrides?.[
+          selectedDirectoryFloor
+          ]?.[
+          officeNumber
+          ];
 
 
-const currentName =
-  floorDirectoryEdits[
-    selectedDirectoryFloor
-  ][officeNumber]
+        const currentName =
+          floorDirectoryEdits[
+          selectedDirectoryFloor
+          ][officeNumber]
 
-  ?? savedName
+          ?? savedName
 
-  ?? automaticName;
+          ?? automaticName;
 
 
-    const row =
-      document.createElement('div');
+        const row =
+          document.createElement('div');
 
-    row.className =
-      'floor-directory-row';
+        row.className =
+          'floor-directory-row';
 
 
-    const number =
-      document.createElement('div');
+        const number =
+          document.createElement('div');
 
-    number.className =
-      'floor-directory-number';
+        number.className =
+          'floor-directory-number';
 
-    number.textContent =
-      String(officeNumber).padStart(2, '0');
+        number.textContent =
+          String(officeNumber).padStart(2, '0');
 
 
-    const input =
-      document.createElement('input');
+        const input =
+          document.createElement('input');
 
-    input.type = 'text';
+        input.type = 'text';
 
-    input.className =
-      'floor-directory-name';
+        input.className =
+          'floor-directory-name';
 
-    input.value =
-      currentName;
+        input.value =
+          currentName;
 
-    input.placeholder =
-      'משרד פנוי';
+        input.placeholder =
+          'משרד פנוי';
 
 
-    input.addEventListener('input', () => {
+        input.addEventListener('input', () => {
 
-      floorDirectoryEdits[selectedDirectoryFloor][officeNumber] =
-        input.value;
-refreshFloorDirectoryPreview();
-    });
+          floorDirectoryEdits[selectedDirectoryFloor][officeNumber] =
+            input.value;
+          refreshFloorDirectoryPreview();
+        });
 
 
-    row.appendChild(number);
-    row.appendChild(input);
+        row.appendChild(number);
+        row.appendChild(input);
 
-    list.appendChild(row);
+        list.appendChild(row);
 
-  });
-refreshFloorDirectoryPreview();
-}
+      });
+      refreshFloorDirectoryPreview();
+    }
 
 
-document
-  .querySelectorAll('.floor-directory-btn')
-  .forEach(button => {
+    document
+      .querySelectorAll('.floor-directory-btn')
+      .forEach(button => {
 
-    button.addEventListener('click', () => {
+        button.addEventListener('click', () => {
 
-      selectedDirectoryFloor =
-        Number(button.dataset.floor);
+          selectedDirectoryFloor =
+            Number(button.dataset.floor);
 
 
-      document
-        .querySelectorAll('.floor-directory-btn')
-        .forEach(btn =>
-          btn.classList.remove('primary')
-        );
+          document
+            .querySelectorAll('.floor-directory-btn')
+            .forEach(btn =>
+              btn.classList.remove('primary')
+            );
 
 
-      button.classList.add('primary');
+          button.classList.add('primary');
 
 
-      const preview =
-        document.getElementById(
-          'floorDirectoryPreview'
-        );
+          const preview =
+            document.getElementById(
+              'floorDirectoryPreview'
+            );
 
 
-      renderFloorDirectoryEditor();
+          renderFloorDirectoryEditor();
 
-    });
+        });
 
-  });
+      });
 
 
-renderFloorDirectoryEditor();
+    renderFloorDirectoryEditor();
 
-function getDirectoryNameForOffice(
-  floor,
-  officeNumber
-) {
-
-  const editedName =
-    floorDirectoryEdits[floor]?.[
+    function getDirectoryNameForOffice(
+      floor,
       officeNumber
-    ];
+    ) {
 
-  if (editedName !== undefined) {
-    return String(editedName).trim();
-  }
+      const editedName =
+        floorDirectoryEdits[floor]?.[
+        officeNumber
+        ];
 
-
-  const savedName =
-    savedFloorDirectoryOverrides?.[
-      floor
-    ]?.[
-      officeNumber
-    ];
-
-  if (
-    savedName !== undefined &&
-    String(savedName).trim()
-  ) {
-    return String(savedName).trim();
-  }
+      if (editedName !== undefined) {
+        return String(editedName).trim();
+      }
 
 
-  return String(
-    floorDirectories?.[
-      floor
-    ]?.[
-      officeNumber
-    ]?.name || ''
-  ).trim();
-}
+      const savedName =
+        savedFloorDirectoryOverrides?.[
+        floor
+        ]?.[
+        officeNumber
+        ];
+
+      if (
+        savedName !== undefined &&
+        String(savedName).trim()
+      ) {
+        return String(savedName).trim();
+      }
 
 
-/* =====================================
-   FIXED DIRECTORY POSITIONS
-===================================== */
+      return String(
+        floorDirectories?.[
+          floor
+        ]?.[
+          officeNumber
+        ]?.name || ''
+      ).trim();
+    }
 
-const floorDirectoryPositions = {
-4: {
-  1:  { x: 1545, y: 202-59, maxWidth: 310 },
-  2:  { x: 1545, y: 232-59, maxWidth: 310 },
-  3:  { x: 1545, y: 264-59, maxWidth: 310 },
-  4:  { x: 1545, y: 293-59, maxWidth: 310 },
 
-  // אין 5
+    /* =====================================
+       FIXED DIRECTORY POSITIONS
+    ===================================== */
 
-  6:  { x: 1545, y: 323-59, maxWidth: 310 },
-  7:  { x: 1545, y: 352-59, maxWidth: 310 },
-  8:  { x: 1545, y: 381-59, maxWidth: 310 },
-  9:  { x: 1545, y: 410-59, maxWidth: 310 },
-  10: { x: 1545, y: 439-59, maxWidth: 310 },
-  11: { x: 1545, y: 468-59, maxWidth: 310 },
-  12: { x: 1545, y: 497-59, maxWidth: 310 },
-  13: { x: 1545, y: 526-59, maxWidth: 310 },
-  14: { x: 1545, y: 555-59, maxWidth: 310 },
-  15: { x: 1545, y: 584-59, maxWidth: 310 },
-  16: { x: 1545, y: 614-59, maxWidth: 310 },
+    const floorDirectoryPositions = {
+      4: {
+        1: { x: 1545, y: 202 - 59, maxWidth: 310 },
+        2: { x: 1545, y: 232 - 59, maxWidth: 310 },
+        3: { x: 1545, y: 264 - 59, maxWidth: 310 },
+        4: { x: 1545, y: 293 - 59, maxWidth: 310 },
 
-  // אין 17
+        // אין 5
 
-  18: { x: 1545, y: 643-59, maxWidth: 310 },
-  19: { x: 1545, y: 672-59, maxWidth: 310 },
-  20: { x: 1545, y: 701-59, maxWidth: 310 },
-  21: { x: 1545, y: 730-59, maxWidth: 310 },
-  22: { x: 1545, y: 759-59, maxWidth: 310 },
-  23: { x: 1545, y: 788-59, maxWidth: 310 },
+        6: { x: 1545, y: 323 - 59, maxWidth: 310 },
+        7: { x: 1545, y: 352 - 59, maxWidth: 310 },
+        8: { x: 1545, y: 381 - 59, maxWidth: 310 },
+        9: { x: 1545, y: 410 - 59, maxWidth: 310 },
+        10: { x: 1545, y: 439 - 59, maxWidth: 310 },
+        11: { x: 1545, y: 468 - 59, maxWidth: 310 },
+        12: { x: 1545, y: 497 - 59, maxWidth: 310 },
+        13: { x: 1545, y: 526 - 59, maxWidth: 310 },
+        14: { x: 1545, y: 555 - 59, maxWidth: 310 },
+        15: { x: 1545, y: 584 - 59, maxWidth: 310 },
+        16: { x: 1545, y: 614 - 59, maxWidth: 310 },
 
-  // אין 24
+        // אין 17
 
-  25: { x: 1545, y: 817-59, maxWidth: 310 },
-  26: { x: 1545, y: 846-59, maxWidth: 310 },
-  27: { x: 1545, y: 875-59, maxWidth: 310 },
-  28: { x: 1545, y: 904-59, maxWidth: 310 },
-  29: { x: 1545, y: 933-59, maxWidth: 310 }
-},
-  
+        18: { x: 1545, y: 643 - 59, maxWidth: 310 },
+        19: { x: 1545, y: 672 - 59, maxWidth: 310 },
+        20: { x: 1545, y: 701 - 59, maxWidth: 310 },
+        21: { x: 1545, y: 730 - 59, maxWidth: 310 },
+        22: { x: 1545, y: 759 - 59, maxWidth: 310 },
+        23: { x: 1545, y: 788 - 59, maxWidth: 310 },
 
-6: {
-  1:  { x: 1600, y: 116 + 4, maxWidth: 300 },
-  2:  { x: 1600, y: 151 + 4, maxWidth: 300 },
-  3:  { x: 1600, y: 186 + 4, maxWidth: 300 },
-  4:  { x: 1600, y: 221 + 4, maxWidth: 300 },
-  5:  { x: 1600, y: 256 + 4, maxWidth: 300 },
-  6:  { x: 1600, y: 291 + 4, maxWidth: 300 },
-  7:  { x: 1600, y: 326 + 4, maxWidth: 300 },
-  8:  { x: 1600, y: 359 + 4, maxWidth: 300 },
-  9:  { x: 1600, y: 396 + 4, maxWidth: 300 },
-  10: { x: 1600, y: 431 + 4, maxWidth: 300 },
-  11: { x: 1600, y: 466 + 4, maxWidth: 300 },
-  12: { x: 1600, y: 501 + 4, maxWidth: 300 },
-  13: { x: 1600, y: 536 + 4, maxWidth: 300 },
-  14: { x: 1600, y: 571 + 4, maxWidth: 300 },
-  15: { x: 1600, y: 606 + 4, maxWidth: 300 },
-  16: { x: 1600, y: 641 + 4, maxWidth: 300 },
-  17: { x: 1600, y: 676 + 4, maxWidth: 300 },
-  18: { x: 1600, y: 711 + 4, maxWidth: 300 },
-  19: { x: 1600, y: 746 + 4, maxWidth: 300 },
-  20: { x: 1600, y: 781 + 4, maxWidth: 300 },
-  21: { x: 1600, y: 816 + 4, maxWidth: 300 },
-  22: { x: 1600, y: 851 + 4, maxWidth: 300 }
-}
-};
+        // אין 24
 
-/* =====================================
-   EXPORT PNG
-===================================== */
+        25: { x: 1545, y: 817 - 59, maxWidth: 310 },
+        26: { x: 1545, y: 846 - 59, maxWidth: 310 },
+        27: { x: 1545, y: 875 - 59, maxWidth: 310 },
+        28: { x: 1545, y: 904 - 59, maxWidth: 310 },
+        29: { x: 1545, y: 933 - 59, maxWidth: 310 }
+      },
 
-async function buildFloorDirectoryImage() {
+
+      6: {
+        1: { x: 1600, y: 116 + 4, maxWidth: 300 },
+        2: { x: 1600, y: 151 + 4, maxWidth: 300 },
+        3: { x: 1600, y: 186 + 4, maxWidth: 300 },
+        4: { x: 1600, y: 221 + 4, maxWidth: 300 },
+        5: { x: 1600, y: 256 + 4, maxWidth: 300 },
+        6: { x: 1600, y: 291 + 4, maxWidth: 300 },
+        7: { x: 1600, y: 326 + 4, maxWidth: 300 },
+        8: { x: 1600, y: 359 + 4, maxWidth: 300 },
+        9: { x: 1600, y: 396 + 4, maxWidth: 300 },
+        10: { x: 1600, y: 431 + 4, maxWidth: 300 },
+        11: { x: 1600, y: 466 + 4, maxWidth: 300 },
+        12: { x: 1600, y: 501 + 4, maxWidth: 300 },
+        13: { x: 1600, y: 536 + 4, maxWidth: 300 },
+        14: { x: 1600, y: 571 + 4, maxWidth: 300 },
+        15: { x: 1600, y: 606 + 4, maxWidth: 300 },
+        16: { x: 1600, y: 641 + 4, maxWidth: 300 },
+        17: { x: 1600, y: 676 + 4, maxWidth: 300 },
+        18: { x: 1600, y: 711 + 4, maxWidth: 300 },
+        19: { x: 1600, y: 746 + 4, maxWidth: 300 },
+        20: { x: 1600, y: 781 + 4, maxWidth: 300 },
+        21: { x: 1600, y: 816 + 4, maxWidth: 300 },
+        22: { x: 1600, y: 851 + 4, maxWidth: 300 }
+      }
+    };
+
+    /* =====================================
+       EXPORT PNG
+    ===================================== */
+
+    async function buildFloorDirectoryImage() {
 
   const preview =
     document.getElementById(
@@ -4979,26 +4829,35 @@ async function buildFloorDirectoryImage() {
 
   await baseImage.decode();
 
-  const canvas =
+  /*
+   * CANVAS 1
+   * מציירים את המפה והשמות בגודל המקורי.
+   * ככה כל ה-x/y שכבר כיוונו נשארים נכונים.
+   */
+  const sourceCanvas =
     document.createElement('canvas');
 
-  canvas.width =
+  sourceCanvas.width =
     baseImage.naturalWidth;
 
-  canvas.height =
+  sourceCanvas.height =
     baseImage.naturalHeight;
 
   const ctx =
-    canvas.getContext('2d');
+    sourceCanvas.getContext('2d');
 
   ctx.drawImage(
     baseImage,
     0,
     0,
-    canvas.width,
-    canvas.height
+    sourceCanvas.width,
+    sourceCanvas.height
   );
-await document.fonts.load('700 24px Assistant');
+
+  await document.fonts.load(
+    '700 24px Assistant'
+  );
+
   const positions =
     floorDirectoryPositions[
       selectedDirectoryFloor
@@ -5017,11 +4876,11 @@ await document.fonts.load('700 24px Assistant');
     let fontSize = 24;
     const minFontSize = 15;
 
-    while (
-      fontSize > minFontSize
-    ) {
-ctx.font =
-  `700 ${fontSize}px Assistant, Arial, sans-serif`;
+    while (fontSize > minFontSize) {
+
+      ctx.font =
+        `700 ${fontSize}px Assistant, Arial, sans-serif`;
+
       if (
         ctx.measureText(text).width <= maxWidth
       ) {
@@ -5060,240 +4919,340 @@ ctx.font =
           position.y,
           position.maxWidth
         );
-
       }
     );
 
-  return canvas.toDataURL('image/png');
+
+  /*
+   * CANVAS 2
+   * התמונה הסופית לטלוויזיה:
+   * Full HD 1920x1080.
+   */
+  const finalCanvas =
+    document.createElement('canvas');
+
+  finalCanvas.width = 1920;
+  finalCanvas.height = 1080;
+
+  const finalCtx =
+    finalCanvas.getContext('2d');
+
+  // רקע לבן במקרה שיש הבדל קטן ביחס
+  finalCtx.fillStyle = '#ffffff';
+
+  finalCtx.fillRect(
+    0,
+    0,
+    1920,
+    1080
+  );
+
+
+  /*
+   * ממלאים את כל ה-1920x1080.
+   *
+   * מכיוון שהמפה כבר כמעט 16:9,
+   * השינוי יהיה קטן מאוד.
+   */
+  finalCtx.drawImage(
+    sourceCanvas,
+    0,
+    0,
+    1920,
+    1080
+  );
+
+  return finalCanvas.toDataURL(
+    'image/png'
+  );
 }
+    
+    async function refreshFloorDirectoryPreview() {
 
-async function refreshFloorDirectoryPreview() {
+      const preview =
+        document.getElementById(
+          'floorDirectoryPreview'
+        );
 
-  const preview =
-    document.getElementById(
-      'floorDirectoryPreview'
+      if (!preview) return;
+
+      const imageUrl =
+        await buildFloorDirectoryImage();
+
+      preview.src =
+        imageUrl;
+    }
+
+    async function exportFloorDirectoryImage() {
+
+  const imageUrl =
+    await buildFloorDirectoryImage();
+
+  const image = new Image();
+
+  image.onload = () => {
+
+    const exportCanvas =
+      document.createElement('canvas');
+
+    exportCanvas.width = 1920;
+    exportCanvas.height = 1080;
+
+    const exportCtx =
+      exportCanvas.getContext('2d');
+
+    // רקע לבן
+    exportCtx.fillStyle = '#ffffff';
+    exportCtx.fillRect(
+      0,
+      0,
+      exportCanvas.width,
+      exportCanvas.height
     );
 
-  if (!preview) return;
+    // התאמה ל-1920x1080 בלי לעוות את התמונה
+    const scale = Math.min(
+      exportCanvas.width / image.width,
+      exportCanvas.height / image.height
+    );
 
-  const imageUrl =
-    await buildFloorDirectoryImage();
+    const width =
+      image.width * scale;
 
-  preview.src =
-    imageUrl;
+    const height =
+      image.height * scale;
+
+    const x =
+      (exportCanvas.width - width) / 2;
+
+    const y =
+      (exportCanvas.height - height) / 2;
+
+    exportCtx.drawImage(
+      image,
+      x,
+      y,
+      width,
+      height
+    );
+
+    const finalImage =
+      exportCanvas.toDataURL(
+        'image/png',
+        1
+      );
+
+    const link =
+      document.createElement('a');
+
+    link.href =
+      finalImage;
+
+    link.download =
+      `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+  };
+
+  image.src = imageUrl;
 }
+   
 
-async function exportFloorDirectoryImage() {
-
-  const imageUrl =
-    await buildFloorDirectoryImage();
-
-  const link =
-    document.createElement('a');
-
-  link.href =
-    imageUrl;
-
-  link.download =
-    `AlonSpace-Floor-${selectedDirectoryFloor}.png`;
-
-  document.body.appendChild(link);
-
-  link.click();
-
-  link.remove();
-}
 
 /* =====================================
-   SAVE TO DB + EXPORT
-===================================== */
+       SAVE TO DB + EXPORT
+    ===================================== */
 
-document
-  .getElementById('saveFloorImage')
-  ?.addEventListener(
-    'click',
-    async () => {
+    document
+      .getElementById('saveFloorImage')
+      ?.addEventListener(
+        'click',
+        async () => {
 
-      const button =
-        document.getElementById(
-          'saveFloorImage'
-        );
+          const button =
+            document.getElementById(
+              'saveFloorImage'
+            );
 
-      const originalText =
-        button.textContent;
-
-
-      button.disabled = true;
-
-      button.textContent =
-        'שומר ומייצא...';
+          const originalText =
+            button.textContent;
 
 
-      try {
+          button.disabled = true;
 
-        /*
-          בונים את הרשימה הנוכחית
-        */
-
-        const entries = {};
+          button.textContent =
+            'שומר ומייצא...';
 
 
-        (
-          floorOfficeNumbers[
-            selectedDirectoryFloor
-          ] || []
-        ).forEach(
-          officeNumber => {
+          try {
 
-            entries[officeNumber] =
-              getDirectoryNameForOffice(
-                selectedDirectoryFloor,
-                officeNumber
+            /*
+              בונים את הרשימה הנוכחית
+            */
+
+            const entries = {};
+
+
+            (
+              floorOfficeNumbers[
+              selectedDirectoryFloor
+              ] || []
+            ).forEach(
+              officeNumber => {
+
+                entries[officeNumber] =
+                  getDirectoryNameForOffice(
+                    selectedDirectoryFloor,
+                    officeNumber
+                  );
+
+              }
+            );
+
+
+            /*
+              שומרים ב-DB
+            */
+
+            const formData =
+              new URLSearchParams();
+
+
+            formData.set(
+              '_csrf',
+              '<%= csrfToken %>'
+            );
+
+
+            formData.set(
+              'floor',
+              String(
+                selectedDirectoryFloor
+              )
+            );
+
+
+            formData.set(
+              'entries',
+              JSON.stringify(entries)
+            );
+
+
+            const response =
+              await fetch(
+                '/admin/floor-directory/save',
+                {
+                  method: 'POST',
+
+                  headers: {
+                    'Content-Type':
+                      'application/x-www-form-urlencoded'
+                  },
+
+                  body:
+                    formData.toString()
+                }
               );
 
-          }
-        );
 
+            if (!response.ok) {
 
-        /*
-          שומרים ב-DB
-        */
+              const errorText =
+                await response.text();
 
-        const formData =
-          new URLSearchParams();
+              console.error(
+                'Directory save response:',
+                errorText
+              );
 
-
-        formData.set(
-          '_csrf',
-          '<%= csrfToken %>'
-        );
-
-
-        formData.set(
-          'floor',
-          String(
-            selectedDirectoryFloor
-          )
-        );
-
-
-        formData.set(
-          'entries',
-          JSON.stringify(entries)
-        );
-
-
-        const response =
-          await fetch(
-            '/admin/floor-directory/save',
-            {
-              method: 'POST',
-
-              headers: {
-                'Content-Type':
-                  'application/x-www-form-urlencoded'
-              },
-
-              body:
-                formData.toString()
+              throw new Error(
+                'Directory save failed'
+              );
             }
-          );
 
 
-        if (!response.ok) {
+            /*
+              מעדכנים את הערכים השמורים
+              גם בעמוד הנוכחי
+            */
 
-          const errorText =
-            await response.text();
+            if (
+              !savedFloorDirectoryOverrides[
+              selectedDirectoryFloor
+              ]
+            ) {
 
-          console.error(
-            'Directory save response:',
-            errorText
-          );
-
-          throw new Error(
-            'Directory save failed'
-          );
-        }
-
-
-        /*
-          מעדכנים את הערכים השמורים
-          גם בעמוד הנוכחי
-        */
-
-        if (
-          !savedFloorDirectoryOverrides[
-            selectedDirectoryFloor
-          ]
-        ) {
-
-          savedFloorDirectoryOverrides[
-            selectedDirectoryFloor
-          ] = {};
-        }
+              savedFloorDirectoryOverrides[
+                selectedDirectoryFloor
+              ] = {};
+            }
 
 
-        Object.assign(
-          savedFloorDirectoryOverrides[
-            selectedDirectoryFloor
-          ],
-          entries
-        );
+            Object.assign(
+              savedFloorDirectoryOverrides[
+              selectedDirectoryFloor
+              ],
+              entries
+            );
 
 
-        floorDirectoryEdits[
-          selectedDirectoryFloor
-        ] = {};
+            floorDirectoryEdits[
+              selectedDirectoryFloor
+            ] = {};
 
 
-        /*
-          רק אחרי שהשמירה הצליחה
-          מייצאים PNG
-        */
+            /*
+              רק אחרי שהשמירה הצליחה
+              מייצאים PNG
+            */
 
-        await exportFloorDirectoryImage();
-
-
-        button.textContent =
-          '✓ נשמר ויוצא';
+            await exportFloorDirectoryImage();
 
 
-        setTimeout(
-          () => {
+            button.textContent =
+              '✓ נשמר ויוצא';
+
+
+            setTimeout(
+              () => {
+
+                button.textContent =
+                  originalText;
+
+              },
+              1500
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              'FLOOR SAVE / EXPORT ERROR:',
+              error
+            );
+
+
+            alert(
+              'לא הצלחנו לשמור ולייצא את תמונת הקומה.'
+            );
+
 
             button.textContent =
               originalText;
 
-          },
-          1500
-        );
 
+          } finally {
 
-      } catch (error) {
+            button.disabled = false;
 
-        console.error(
-          'FLOOR SAVE / EXPORT ERROR:',
-          error
-        );
+          }
 
-
-        alert(
-          'לא הצלחנו לשמור ולייצא את תמונת הקומה.'
-        );
-
-
-        button.textContent =
-          originalText;
-
-
-      } finally {
-
-        button.disabled = false;
-
-      }
-
-    }
-  );
+        }
+      );
   </script>
 
   <% if (newClientInvite) { %>
