@@ -4983,85 +4983,25 @@
         imageUrl;
     }
 
-    async function exportFloorDirectoryImage() {
+async function exportFloorDirectoryImage() {
 
   const imageUrl =
     await buildFloorDirectoryImage();
 
-  const image = new Image();
+  const link =
+    document.createElement('a');
 
-  image.onload = () => {
+  link.href = imageUrl;
 
-    const exportCanvas =
-      document.createElement('canvas');
+  link.download =
+    `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
 
-    exportCanvas.width = 1920;
-    exportCanvas.height = 1080;
+  document.body.appendChild(link);
 
-    const exportCtx =
-      exportCanvas.getContext('2d');
+  link.click();
 
-    // רקע לבן
-    exportCtx.fillStyle = '#ffffff';
-    exportCtx.fillRect(
-      0,
-      0,
-      exportCanvas.width,
-      exportCanvas.height
-    );
-
-    // התאמה ל-1920x1080 בלי לעוות את התמונה
-    const scale = Math.min(
-      exportCanvas.width / image.width,
-      exportCanvas.height / image.height
-    );
-
-    const width =
-      image.width * scale;
-
-    const height =
-      image.height * scale;
-
-    const x =
-      (exportCanvas.width - width) / 2;
-
-    const y =
-      (exportCanvas.height - height) / 2;
-
-    exportCtx.drawImage(
-      image,
-      x,
-      y,
-      width,
-      height
-    );
-
-    const finalImage =
-      exportCanvas.toDataURL(
-        'image/png',
-        1
-      );
-
-    const link =
-      document.createElement('a');
-
-    link.href =
-      finalImage;
-
-    link.download =
-      `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    link.remove();
-  };
-
-  image.src = imageUrl;
+  link.remove();
 }
-   
-
 
 /* =====================================
        SAVE TO DB + EXPORT
