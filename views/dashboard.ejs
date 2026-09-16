@@ -1452,14 +1452,14 @@ background: #fff;
 
 
 /* תמונה 3 */
-.pwa-image-home {
-  object-position: center bottom;
+/* =====================================
+   PWA GUIDE IMAGE 3
+===================================== */
 
-  /*
-    מספר שלילי = התמונה עולה
-    מספר חיובי = התמונה יורדת
-  */
-  transform: translateY(-20px);
+.pwa-image-home {
+  object-fit: cover;
+  object-position: center 70%;
+  transform: none;
 }
 
 
@@ -1470,19 +1470,6 @@ background: #fff;
     margin-top: 9px;
   }
 
-}
-/* =====================================
-   FORCE PWA STEP 3 POSITION
-===================================== */
-
-#pwaGuideStep .pwa-image-home {
-  object-fit: cover !important;
-  object-position: center bottom !important;
-
-  transform: translateY(70px) !important;
-
-  position: relative !important;
-  top: 0 !important;
 }
     </style>
 
