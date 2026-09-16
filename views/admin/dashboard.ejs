@@ -2764,9 +2764,9 @@
     ========================= */
 
     const adminMeetingBookings =
-  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
     const adminClients =
-  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
 
@@ -3281,7 +3281,7 @@
       }
 
       const adminMeetingRooms =
-    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -4515,11 +4515,11 @@
     ===================================== */
 
     const floorDirectories = {
-      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <% - JSON.stringify(
+  <%- JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 
@@ -4658,42 +4658,46 @@ refreshFloorDirectoryPreview()
         list.appendChild(row);
 
       });
-      refreshFloorDirectoryPreview();
-    }
+refreshFloorDirectoryPreview()
+  .catch((error) => {
+    console.error(
+      'FLOOR DIRECTORY PREVIEW ERROR:',
+      error
+    );
+  });    }
 
 
     document
-      .querySelectorAll('.floor-directory-btn')
-      .forEach(button => {
+  .querySelectorAll('.floor-directory-btn')
+  .forEach((button) => {
 
-        button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
 
-          selectedDirectoryFloor =
-            Number(button.dataset.floor);
+      selectedDirectoryFloor =
+        Number(button.dataset.floor);
 
-
-          document
-            .querySelectorAll('.floor-directory-btn')
-            .forEach(btn =>
-              btn.classList.remove('primary')
-            );
-
-
-          button.classList.add('primary');
-
-
-          const preview =
-            document.getElementById(
-              'floorDirectoryPreview'
-            );
-
-
-          renderFloorDirectoryEditor();
-
+      document
+        .querySelectorAll('.floor-directory-btn')
+        .forEach((btn) => {
+          btn.classList.toggle(
+            'primary',
+            Number(btn.dataset.floor) ===
+              selectedDirectoryFloor
+          );
         });
 
-      });
+      try {
+        renderFloorDirectoryEditor();
+      } catch (error) {
+        console.error(
+          'FLOOR SWITCH ERROR:',
+          error
+        );
+      }
 
+    });
+
+  });
 
     
 
