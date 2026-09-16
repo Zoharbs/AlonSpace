@@ -1125,7 +1125,8 @@
 
   border-radius: 17px;
 
-  object-fit: cover;
+ object-fit: contain;
+background: #fff;
 
   box-shadow:
     0 8px 24px rgba(20, 18, 40, .12);
@@ -1434,11 +1435,16 @@
   class="pwa-install-banner"
   hidden
 >
-<div
-  id="pwaInstallBanner"
-  class="pwa-install-banner"
-  hidden
->
+  <button
+    type="button"
+    class="pwa-banner-close"
+    id="dismissPwaBanner"
+    aria-label="הסתרת הצעת ההתקנה"
+    title="סגירה"
+  >
+    ×
+  </button>
+
   <div class="pwa-install-banner-content">
     <div class="pwa-install-icon">
       📱
@@ -1455,13 +1461,13 @@
     </div>
   </div>
 
-<button
-  type="button"
-  class="btn btn-primary"
-  id="openPwaGuide"
->
-  שמירה כאפליקציה
-</button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    id="openPwaGuide"
+  >
+    שמירה כאפליקציה
+  </button>
 </div>
         <main>
           <section style="padding-top:0;">
@@ -3214,6 +3220,16 @@
 
   let deferredPwaInstallPrompt = null;
 
+  const pwaInstallBanner =
+    document.getElementById(
+      'pwaInstallBanner'
+    );
+
+  const dismissPwaBanner =
+    document.getElementById(
+      'dismissPwaBanner'
+    );
+
 
   function isAlonSpaceInstalled() {
 
@@ -3229,15 +3245,38 @@
   }
 
 
-  const pwaInstallBanner =
-    document.getElementById(
-      'pwaInstallBanner'
+  function hasDismissedPwaBanner() {
+
+    return (
+      localStorage.getItem(
+        'alonspace-pwa-banner-dismissed'
+      ) === 'true'
     );
+  }
+
+
+  function shouldShowPwaBanner() {
+
+    return (
+      !isAlonSpaceInstalled() &&
+      !hasDismissedPwaBanner()
+    );
+  }
+
+
+  function updatePwaBannerVisibility() {
+
+    if (!pwaInstallBanner) {
+      return;
+    }
+
+    pwaInstallBanner.hidden =
+      !shouldShowPwaBanner();
+  }
 
 
   /*
-    שומרים את אירוע ההתקנה של הדפדפן
-    כדי שנוכל לפתוח אותו רק כשהמשתמש לוחץ.
+    Chrome / Edge / Android
   */
 
   window.addEventListener(
@@ -3249,35 +3288,42 @@
       deferredPwaInstallPrompt =
         event;
 
-      if (
-        pwaInstallBanner &&
-        !isAlonSpaceInstalled()
-        !hasDismissedPwaBanner()
-      ) {
-        pwaInstallBanner.hidden =
-          false;
-      }
-
+      updatePwaBannerVisibility();
     }
   );
 
 
   /*
-    iPhone לא שולח beforeinstallprompt,
-    ולכן עדיין נציג לו את הבאנר והמדריך.
+    Safari / iPhone וגם טעינה רגילה
   */
 
-  if (
-  pwaInstallBanner &&
-  !isAlonSpaceInstalled() &&
-  !hasDismissedPwaBanner()
-) {
-  pwaInstallBanner.hidden = false;
-}
+  updatePwaBannerVisibility();
+
 
   /*
-    אחרי התקנה מוצלחת:
-    מעלימים את הבאנר.
+    המשתמש לא רוצה לראות את הבאנר.
+  */
+
+  dismissPwaBanner
+    ?.addEventListener(
+      'click',
+      () => {
+
+        localStorage.setItem(
+          'alonspace-pwa-banner-dismissed',
+          'true'
+        );
+
+        if (pwaInstallBanner) {
+          pwaInstallBanner.hidden =
+            true;
+        }
+      }
+    );
+
+
+  /*
+    התקנה הושלמה
   */
 
   window.addEventListener(
@@ -3291,10 +3337,12 @@
         pwaInstallBanner.hidden =
           true;
       }
-
     }
   );
 </script>
+
+
+
 <script>
   /* =====================================
      PWA INSTALL GUIDE
