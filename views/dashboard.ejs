@@ -3215,51 +3215,46 @@ background: #fff;
             </script>
 <script>
   /* =====================================
-     PWA INSTALL
+     PWA INSTALL BANNER
   ===================================== */
 
   let deferredPwaInstallPrompt = null;
 
   const pwaInstallBanner =
-    document.getElementById(
-      'pwaInstallBanner'
-    );
+    document.getElementById('pwaInstallBanner');
 
   const dismissPwaBanner =
-    document.getElementById(
-      'dismissPwaBanner'
-    );
+    document.getElementById('dismissPwaBanner');
 
 
   function isAlonSpaceInstalled() {
-
-    const standalone =
+    return (
       window.matchMedia(
         '(display-mode: standalone)'
-      ).matches;
+      ).matches ||
+      window.navigator.standalone === true
+    );
+  }
 
-    const iosStandalone =
-      window.navigator.standalone === true;
 
-    return standalone || iosStandalone;
+  function isMobileDevice() {
+    return (
+      /Android|iPhone|iPad|iPod/i.test(
+        navigator.userAgent
+      ) ||
+      (
+        navigator.platform === 'MacIntel' &&
+        navigator.maxTouchPoints > 1
+      )
+    );
   }
 
 
   function hasDismissedPwaBanner() {
-
     return (
       localStorage.getItem(
         'alonspace-pwa-banner-dismissed'
       ) === 'true'
-    );
-  }
-
-
-  function shouldShowPwaBanner() {
-
-    return (
-      !isAlonSpaceInstalled() &&
-      !hasDismissedPwaBanner()
     );
   }
 
@@ -3270,14 +3265,17 @@ background: #fff;
       return;
     }
 
+    const shouldShow =
+      isMobileDevice() &&
+      !isAlonSpaceInstalled() &&
+      !hasDismissedPwaBanner();
+
     pwaInstallBanner.hidden =
-      !shouldShowPwaBanner();
+      !shouldShow;
   }
 
 
-  /*
-    Chrome / Edge / Android
-  */
+  /* Chrome / Android */
 
   window.addEventListener(
     'beforeinstallprompt',
@@ -3293,52 +3291,44 @@ background: #fff;
   );
 
 
-  /*
-    Safari / iPhone וגם טעינה רגילה
-  */
-
-  updatePwaBannerVisibility();
-
-
-  /*
-    המשתמש לא רוצה לראות את הבאנר.
-  */
+  /* X - סגירת הבאנר */
 
   dismissPwaBanner
     ?.addEventListener(
       'click',
-      () => {
+      (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
 
         localStorage.setItem(
           'alonspace-pwa-banner-dismissed',
           'true'
         );
 
-        if (pwaInstallBanner) {
-          pwaInstallBanner.hidden =
-            true;
-        }
+        pwaInstallBanner.hidden = true;
       }
     );
 
 
-  /*
-    התקנה הושלמה
-  */
+  /* לאחר התקנה */
 
   window.addEventListener(
     'appinstalled',
     () => {
 
-      deferredPwaInstallPrompt =
-        null;
+      deferredPwaInstallPrompt = null;
 
       if (pwaInstallBanner) {
-        pwaInstallBanner.hidden =
-          true;
+        pwaInstallBanner.hidden = true;
       }
     }
   );
+
+
+  /* טעינת הדף */
+
+  updatePwaBannerVisibility();
 </script>
 
 
@@ -3382,10 +3372,14 @@ background: #fff;
   let pwaGuideCurrentStep = 0;
 
 
-  const pwaIsIOS =
-    /iphone|ipad|ipod/i.test(
-      navigator.userAgent
-    );
+const pwaIsIOS =
+  /iphone|ipad|ipod/i.test(
+    navigator.userAgent
+  ) ||
+  (
+    navigator.platform === 'MacIntel' &&
+    navigator.maxTouchPoints > 1
+  );
 
   const pwaIsAndroid =
     /android/i.test(
