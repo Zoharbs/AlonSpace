@@ -1004,6 +1004,265 @@
       .booking-time-separator {
         opacity: .65;
       }
+    .pwa-install-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  padding: 18px 20px;
+  margin-bottom: 24px;
+
+  background: #f8f6ff;
+  border: 1px solid #e4dfff;
+  border-radius: 16px;
+}
+
+.pwa-install-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.pwa-install-banner-content strong {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.pwa-install-banner-content span {
+  display: block;
+  font-size: .85rem;
+  color: var(--ink-soft);
+}
+
+.pwa-install-icon {
+  font-size: 1.6rem;
+}
+
+@media (max-width: 600px) {
+  .pwa-install-banner {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pwa-install-banner .btn {
+    width: 100%;
+  }
+}
+/* =====================================
+   PWA INSTALL GUIDE
+===================================== */
+
+.pwa-guide-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(20, 18, 35, .55);
+  backdrop-filter: blur(5px);
+
+  z-index: 99999;
+}
+
+.pwa-guide-overlay.open {
+  display: flex;
+}
+
+.pwa-guide-modal {
+  position: relative;
+
+  width: min(440px, 100%);
+  padding: 30px;
+
+  background: var(--cream);
+  border-radius: 24px;
+
+  box-shadow:
+    0 24px 70px rgba(20, 18, 40, .22);
+}
+
+.pwa-guide-close {
+  position: absolute;
+
+  top: 14px;
+  left: 14px;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: var(--stone);
+
+  color: var(--ink);
+
+  font-size: 1.5rem;
+
+  cursor: pointer;
+}
+
+.pwa-guide-header {
+  text-align: center;
+}
+
+.pwa-guide-logo {
+  display: block;
+
+  width: 72px;
+  height: 72px;
+
+  margin: 0 auto 14px;
+
+  border-radius: 17px;
+
+  object-fit: cover;
+
+  box-shadow:
+    0 8px 24px rgba(20, 18, 40, .12);
+}
+
+.pwa-guide-header h2 {
+  margin: 5px 0 7px;
+
+  font-size: 1.4rem;
+}
+
+.pwa-guide-header p {
+  margin: 0 0 22px;
+
+  color: var(--ink-soft);
+
+  font-size: .9rem;
+}
+
+.pwa-guide-step {
+  min-height: 160px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: var(--stone);
+
+  border-radius: 17px;
+
+  text-align: center;
+}
+
+.pwa-guide-step-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 10px;
+
+  border-radius: 50%;
+
+  background: #ebe8ff;
+
+  font-size: 1.5rem;
+}
+
+.pwa-guide-step-number {
+  margin-bottom: 4px;
+
+  color: #7865f6;
+
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.pwa-guide-step h3 {
+  margin: 0 0 6px;
+
+  font-size: 1.05rem;
+}
+
+.pwa-guide-step p {
+  max-width: 320px;
+
+  margin: 0;
+
+  color: var(--ink-soft);
+
+  font-size: .88rem;
+  line-height: 1.55;
+}
+
+.pwa-guide-dots {
+  display: flex;
+  justify-content: center;
+
+  gap: 7px;
+
+  margin: 17px 0;
+}
+
+.pwa-guide-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 20px;
+
+  background: var(--stone-dark);
+
+  transition: .2s ease;
+}
+
+.pwa-guide-dot.active {
+  width: 22px;
+
+  background: #7865f6;
+}
+
+.pwa-guide-actions {
+  display: flex;
+
+  gap: 10px;
+}
+
+.pwa-guide-actions .btn {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+
+  .pwa-guide-overlay {
+    align-items: flex-end;
+
+    padding: 0;
+  }
+
+  .pwa-guide-modal {
+    width: 100%;
+
+    padding:
+      26px 18px
+      calc(22px + env(safe-area-inset-bottom));
+
+    border-radius:
+      24px 24px
+      0 0;
+  }
+
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -1047,6 +1306,36 @@
       </div>
 
       <% } %>
+
+      <div
+  id="pwaInstallBanner"
+  class="pwa-install-banner"
+  hidden
+>
+  <div class="pwa-install-banner-content">
+    <div class="pwa-install-icon">
+      📱
+    </div>
+
+    <div>
+      <strong>
+        שמרו את AlonSpace כאפליקציה
+      </strong>
+
+      <span>
+        גישה מהירה ישירות ממסך הבית
+      </span>
+    </div>
+  </div>
+
+<button
+  type="button"
+  class="btn btn-primary"
+  id="openPwaGuide"
+>
+  שמירה כאפליקציה
+</button>
+</div>
         <main>
           <section style="padding-top:0;">
             <div class="container">
@@ -1381,7 +1670,82 @@
                 </div>
               </section>
         </main>
+<!-- =====================================
+     PWA INSTALL GUIDE
+===================================== -->
 
+<div
+  class="pwa-guide-overlay"
+  id="pwaGuideOverlay"
+  aria-hidden="true"
+>
+  <div class="pwa-guide-modal">
+
+    <button
+      type="button"
+      class="pwa-guide-close"
+      id="pwaGuideClose"
+      aria-label="סגירה"
+    >
+      ×
+    </button>
+
+    <div class="pwa-guide-header">
+
+      <img
+        src="/images/pwa/icon-192.png"
+        alt="AlonSpace"
+        class="pwa-guide-logo"
+      >
+
+      <span class="eyebrow">
+        AlonSpace
+      </span>
+
+      <h2>
+        שמרו את AlonSpace כאפליקציה
+      </h2>
+
+      <p>
+        גישה מהירה לפורטל ישירות ממסך הבית.
+      </p>
+
+    </div>
+
+    <div
+      class="pwa-guide-step"
+      id="pwaGuideStep"
+    ></div>
+
+    <div class="pwa-guide-dots">
+      <span class="pwa-guide-dot active"></span>
+      <span class="pwa-guide-dot"></span>
+      <span class="pwa-guide-dot"></span>
+    </div>
+
+    <div class="pwa-guide-actions">
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        id="pwaGuideBack"
+        hidden
+      >
+        הקודם
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        id="pwaGuideNext"
+      >
+        הבא
+      </button>
+
+    </div>
+
+  </div>
+</div>
         <%- include('partials/footer') %>
           <%- include('partials/scripts') %>
 
@@ -2716,3 +3080,439 @@
 
               renderCalendar();
             </script>
+<script>
+  /* =====================================
+     PWA INSTALL
+  ===================================== */
+
+  let deferredPwaInstallPrompt = null;
+
+
+  function isAlonSpaceInstalled() {
+
+    const standalone =
+      window.matchMedia(
+        '(display-mode: standalone)'
+      ).matches;
+
+    const iosStandalone =
+      window.navigator.standalone === true;
+
+    return standalone || iosStandalone;
+  }
+
+
+  const pwaInstallBanner =
+    document.getElementById(
+      'pwaInstallBanner'
+    );
+
+
+  /*
+    שומרים את אירוע ההתקנה של הדפדפן
+    כדי שנוכל לפתוח אותו רק כשהמשתמש לוחץ.
+  */
+
+  window.addEventListener(
+    'beforeinstallprompt',
+    (event) => {
+
+      event.preventDefault();
+
+      deferredPwaInstallPrompt =
+        event;
+
+      if (
+        pwaInstallBanner &&
+        !isAlonSpaceInstalled()
+      ) {
+        pwaInstallBanner.hidden =
+          false;
+      }
+
+    }
+  );
+
+
+  /*
+    iPhone לא שולח beforeinstallprompt,
+    ולכן עדיין נציג לו את הבאנר והמדריך.
+  */
+
+  if (
+    pwaInstallBanner &&
+    !isAlonSpaceInstalled()
+  ) {
+    pwaInstallBanner.hidden =
+      false;
+  }
+
+
+  /*
+    אחרי התקנה מוצלחת:
+    מעלימים את הבאנר.
+  */
+
+  window.addEventListener(
+    'appinstalled',
+    () => {
+
+      deferredPwaInstallPrompt =
+        null;
+
+      if (pwaInstallBanner) {
+        pwaInstallBanner.hidden =
+          true;
+      }
+
+    }
+  );
+</script>
+<script>
+  /* =====================================
+     PWA INSTALL GUIDE
+  ===================================== */
+
+  const pwaGuideOverlay =
+    document.getElementById(
+      'pwaGuideOverlay'
+    );
+
+  const pwaGuideStep =
+    document.getElementById(
+      'pwaGuideStep'
+    );
+
+  const pwaGuideNext =
+    document.getElementById(
+      'pwaGuideNext'
+    );
+
+  const pwaGuideBack =
+    document.getElementById(
+      'pwaGuideBack'
+    );
+
+  const pwaGuideClose =
+    document.getElementById(
+      'pwaGuideClose'
+    );
+
+  const openPwaGuide =
+    document.getElementById(
+      'openPwaGuide'
+    );
+
+
+  let pwaGuideCurrentStep = 0;
+
+
+  const pwaIsIOS =
+    /iphone|ipad|ipod/i.test(
+      navigator.userAgent
+    );
+
+  const pwaIsAndroid =
+    /android/i.test(
+      navigator.userAgent
+    );
+
+
+  const iosPwaSteps = [
+    {
+      icon: '🌐',
+      title: 'פתחו ב-Safari',
+      text:
+        'כדי לשמור את AlonSpace כאפליקציה, ' +
+        'פתחו את האתר באמצעות Safari.'
+    },
+
+    {
+      icon: '↗',
+      title: 'לחצו על כפתור השיתוף',
+      text:
+        'לחצו על כפתור השיתוף של Safari.'
+    },
+
+    {
+      icon: '＋',
+      title: 'הוסיפו למסך הבית',
+      text:
+        'בחרו „הוספה למסך הבית” ולאחר מכן לחצו על „הוסף”.'
+    }
+  ];
+
+
+  const androidPwaSteps = [
+    {
+      icon: '🌐',
+      title: 'פתחו ב-Chrome',
+      text:
+        'פתחו את AlonSpace באמצעות Google Chrome.'
+    },
+
+    {
+      icon: '⋮',
+      title: 'פתחו את התפריט',
+      text:
+        'לחצו על שלוש הנקודות בפינת הדפדפן.'
+    },
+
+    {
+      icon: '＋',
+      title: 'התקינו את AlonSpace',
+      text:
+        'בחרו „התקנת אפליקציה” או „הוספה למסך הבית” ואשרו.'
+    }
+  ];
+
+
+  const desktopPwaSteps = [
+    {
+      icon: '🌐',
+      title: 'פתחו בדפדפן',
+      text:
+        'פתחו את AlonSpace באמצעות Chrome או Edge.'
+    },
+
+    {
+      icon: '⊕',
+      title: 'בחרו התקנה',
+      text:
+        'חפשו את אפשרות התקנת האפליקציה בדפדפן.'
+    },
+
+    {
+      icon: '✓',
+      title: 'אשרו',
+      text:
+        'אשרו את ההתקנה ו-AlonSpace ייפתח כאפליקציה.'
+    }
+  ];
+
+
+  function getPwaGuideSteps() {
+
+    if (pwaIsIOS) {
+      return iosPwaSteps;
+    }
+
+    if (pwaIsAndroid) {
+      return androidPwaSteps;
+    }
+
+    return desktopPwaSteps;
+  }
+
+
+  function renderPwaGuideStep() {
+
+    const steps =
+      getPwaGuideSteps();
+
+    const step =
+      steps[pwaGuideCurrentStep];
+
+
+    pwaGuideStep.innerHTML = `
+      <div class="pwa-guide-step-icon">
+        ${step.icon}
+      </div>
+
+      <span class="pwa-guide-step-number">
+        שלב ${pwaGuideCurrentStep + 1}
+        מתוך ${steps.length}
+      </span>
+
+      <h3>
+        ${step.title}
+      </h3>
+
+      <p>
+        ${step.text}
+      </p>
+    `;
+
+
+    document
+      .querySelectorAll('.pwa-guide-dot')
+      .forEach((dot, index) => {
+
+        dot.classList.toggle(
+          'active',
+          index === pwaGuideCurrentStep
+        );
+
+      });
+
+
+    pwaGuideBack.hidden =
+      pwaGuideCurrentStep === 0;
+
+
+    pwaGuideNext.textContent =
+      pwaGuideCurrentStep ===
+        steps.length - 1
+        ? 'סיימתי'
+        : 'הבא';
+  }
+
+
+  function openPwaInstallGuide() {
+
+    pwaGuideCurrentStep = 0;
+
+    renderPwaGuideStep();
+
+    pwaGuideOverlay
+      .classList.add('open');
+
+    pwaGuideOverlay
+      .setAttribute(
+        'aria-hidden',
+        'false'
+      );
+
+    document.body.style.overflow =
+      'hidden';
+  }
+
+
+  function closePwaInstallGuide() {
+
+    pwaGuideOverlay
+      .classList.remove('open');
+
+    pwaGuideOverlay
+      .setAttribute(
+        'aria-hidden',
+        'true'
+      );
+
+    document.body.style.overflow = '';
+  }
+
+
+openPwaGuide
+  ?.addEventListener(
+    'click',
+    async () => {
+
+      /*
+        הדפדפן מאפשר התקנה ישירה
+        — נשתמש בה.
+      */
+
+      if (deferredPwaInstallPrompt) {
+
+        deferredPwaInstallPrompt.prompt();
+
+        const result =
+          await deferredPwaInstallPrompt
+            .userChoice;
+
+        /*
+          אי אפשר להשתמש שוב באותו event.
+        */
+
+        deferredPwaInstallPrompt =
+          null;
+
+
+        /*
+          אם המשתמש התקין,
+          נעלים את הבאנר.
+        */
+
+        if (
+          result.outcome ===
+          'accepted'
+        ) {
+
+          if (pwaInstallBanner) {
+            pwaInstallBanner.hidden =
+              true;
+          }
+
+        }
+
+        return;
+      }
+
+
+      /*
+        אין התקנה ישירה
+        — למשל Safari באייפון.
+        פותחים את המדריך.
+      */
+
+      openPwaInstallGuide();
+    }
+  );
+
+
+  pwaGuideClose
+    ?.addEventListener(
+      'click',
+      closePwaInstallGuide
+    );
+
+
+  pwaGuideBack
+    ?.addEventListener(
+      'click',
+      () => {
+
+        if (
+          pwaGuideCurrentStep > 0
+        ) {
+          pwaGuideCurrentStep--;
+
+          renderPwaGuideStep();
+        }
+
+      }
+    );
+
+
+  pwaGuideNext
+    ?.addEventListener(
+      'click',
+      () => {
+
+        const steps =
+          getPwaGuideSteps();
+
+
+        if (
+          pwaGuideCurrentStep <
+          steps.length - 1
+        ) {
+          pwaGuideCurrentStep++;
+
+          renderPwaGuideStep();
+
+          return;
+        }
+
+
+        closePwaInstallGuide();
+      }
+    );
+
+
+  pwaGuideOverlay
+    ?.addEventListener(
+      'click',
+      (event) => {
+
+        if (
+          event.target ===
+          pwaGuideOverlay
+        ) {
+          closePwaInstallGuide();
+        }
+
+      }
+    );
+</script>
