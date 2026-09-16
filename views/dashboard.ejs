@@ -1263,6 +1263,22 @@
   }
 
 }
+    .pwa-guide-step-image {
+  display: block;
+
+  width: auto;
+  max-width: 100%;
+  max-height: 280px;
+
+  margin: 18px auto 0;
+
+  border-radius: 14px;
+
+  object-fit: contain;
+
+  box-shadow:
+    0 6px 20px rgba(20, 18, 40, .12);
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -3223,8 +3239,12 @@
       icon: '🌐',
       title: 'פתחו ב-Safari',
       text:
-        'כדי לשמור את AlonSpace כאפליקציה, ' +
-        'פתחו את האתר באמצעות Safari.'
+        'כדי לפתוח את האתר דרך Safari, ' +
+        'לחצו על כפתור השיתוף ומצאו את הכפתור.'
+,
+image:
+
+    '/images/pwa/open-in-safari.png'
     },
 
     {
@@ -3232,6 +3252,10 @@
       title: 'לחצו על כפתור השיתוף',
       text:
         'לחצו על כפתור השיתוף של Safari.'
+        , 
+        image:
+
+      '/images/pwa/ios-share.png'
     },
 
     {
@@ -3239,6 +3263,10 @@
       title: 'הוסיפו למסך הבית',
       text:
         'בחרו „הוספה למסך הבית” ולאחר מכן לחצו על „הוסף”.'
+        ,
+        image:
+
+      '/images/pwa/ios-add-home-screen.png'
     }
   ];
 
@@ -3314,25 +3342,36 @@
       steps[pwaGuideCurrentStep];
 
 
-    pwaGuideStep.innerHTML = `
-      <div class="pwa-guide-step-icon">
-        ${step.icon}
-      </div>
+pwaGuideStep.innerHTML = `
+  <div class="pwa-guide-step-icon">
+    ${step.icon}
+  </div>
 
-      <span class="pwa-guide-step-number">
-        שלב ${pwaGuideCurrentStep + 1}
-        מתוך ${steps.length}
-      </span>
+  <span class="pwa-guide-step-number">
+    שלב ${pwaGuideCurrentStep + 1}
+    מתוך ${steps.length}
+  </span>
 
-      <h3>
-        ${step.title}
-      </h3>
+  <h3>
+    ${step.title}
+  </h3>
 
-      <p>
-        ${step.text}
-      </p>
-    `;
+  <p>
+    ${step.text}
+  </p>
 
+  ${
+    step.image
+      ? `
+        <img
+          src="${step.image}"
+          alt="${step.title}"
+          class="pwa-guide-step-image"
+        >
+      `
+      : ''
+  }
+`;
 
     document
       .querySelectorAll('.pwa-guide-dot')
