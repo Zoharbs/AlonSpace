@@ -1243,21 +1243,7 @@ background: #fff;
 .pwa-guide-actions .btn {
   flex: 1;
 }
-.pwa-guide-step-image {
-  display: block;
 
-  width: 100%;
-  height: 210px;
-
-  margin: 16px auto 0;
-
-  border-radius: 14px;
-
-  object-fit: cover;
-
-  box-shadow:
-    0 6px 20px rgba(20, 18, 40, .12);
-}
 @media (max-width: 600px) {
 
   .pwa-guide-overlay {
@@ -1349,13 +1335,6 @@ background: #fff;
   }
 
 
-  .pwa-guide-step-image {
-    height: 170px;
-
-    margin-top: 9px;
-  }
-
-
   .pwa-guide-dots {
     margin: 9px 0;
   }
@@ -1387,9 +1366,7 @@ background: #fff;
 
 
 /* Add to Home Screen */
-.pwa-image-home {
-  object-position: center calc(50% - 35px);
-}
+
 
 .pwa-install-banner {
   position: relative;
@@ -1434,12 +1411,65 @@ background: #fff;
   display: none !important;
 }
 /* =====================================
-   PWA STEP 3 IMAGE FIX
+   PWA GUIDE IMAGES
 ===================================== */
 
+.pwa-guide-image-frame {
+  width: 100%;
+  height: 210px;
+
+  margin: 16px auto 0;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 6px 20px rgba(20, 18, 40, .12);
+}
+
+
+.pwa-guide-step-image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* תמונה 1 */
+.pwa-image-safari {
+  object-position: center 52%;
+}
+
+
+/* תמונה 2 */
+.pwa-image-share {
+  object-position: center 25%;
+}
+
+
+/* תמונה 3 */
 .pwa-image-home {
   object-position: center bottom;
-  transform: translateY(15px);
+
+  /*
+    מספר שלילי = התמונה עולה
+    מספר חיובי = התמונה יורדת
+  */
+  transform: translateY(-60px);
+}
+
+
+@media (max-width: 600px) {
+
+  .pwa-guide-image-frame {
+    height: 170px;
+    margin-top: 9px;
+  }
+
 }
     </style>
 
@@ -3574,16 +3604,18 @@ pwaGuideStep.innerHTML = `
   </p>
 
   ${
-    step.image
-      ? `
+  step.image
+    ? `
+      <div class="pwa-guide-image-frame">
         <img
           src="${step.image}"
           alt="${step.title}"
           class="pwa-guide-step-image ${step.imageClass || ''}"
         >
-      `
-      : ''
-  }
+      </div>
+    `
+    : ''
+}
 `;
 
     document
