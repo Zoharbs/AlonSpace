@@ -404,58 +404,50 @@ await client.query(
       );
 
       let billingStatus = 'included';
-      let quotaMessage = null;
+ 
 
       const newTotalHours =
         usedHours + requestedHours;
+if (newTotalHours > limit) {
 
-      if (newTotalHours > limit) {
-
-        const warningResult = await client.query(
-          `
+  const warningResult = await client.query(
+    `
       SELECT meeting_quota_warning_month
       FROM users
       WHERE id = $1
       FOR UPDATE
     `,
-          [user.id]
-        );
+    [user.id]
+  );
 
-        const warningMonth =
-          warningResult.rows[0]
-            ?.meeting_quota_warning_month;
+  const warningMonth =
+    warningResult.rows[0]
+      ?.meeting_quota_warning_month;
 
-        if (warningMonth !== monthKey) {
+  if (warningMonth !== monthKey) {
 
-          billingStatus = 'warning';
+    billingStatus = 'warning';
 
-          await client.query(
-            `
+    await client.query(
+      `
         UPDATE users
         SET
           meeting_quota_warning_month = $1,
           updated_at = NOW()
         WHERE id = $2
       `,
-            [
-              monthKey,
-              user.id,
-            ]
-          );
+      [
+        monthKey,
+        user.id,
+      ]
+    );
 
-          quotaMessage =
-            `לתשומת לבך: ניצלת את מכסת ${limit} שעות חדר הישיבות החודשית. ` +
-            `השריון הנוכחי אושר. הזמנות נוספות מעבר למכסה עשויות להיות כרוכות בתשלום.`;
+  } else {
 
-        } else {
+    billingStatus = 'chargeable';
 
-          billingStatus = 'chargeable';
-
-          quotaMessage =
-            `השריון אושר ונרשם מעבר למכסת ${limit} השעות החודשית. ` +
-            `שריון זה עשוי להיות כרוך בתשלום בהתאם לתנאי השכירות.`;
-        }
-      }
+  }
+}
 
 await client.query(
   `
@@ -505,15 +497,7 @@ await client.query(
       );
       await client.query('COMMIT');
 
-      if (quotaMessage) {
-        return res.redirect(
-          dashboardRedirect(
-            'warning',
-            quotaMessage,
-            'meeting-room'
-          )
-        );
-      }
+
 
       return res.redirect(
         dashboardRedirect(
