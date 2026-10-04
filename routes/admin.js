@@ -102,6 +102,48 @@ router.get('/', async (req, res, next) => {
         tp.linkedin_url,
         tp.logo_data IS NOT NULL
           AS has_logo,
+        tp.community_visible,
+tp.public_consent,
+tp.public_status,
+tp.updated_at,
+        u.display_name AS tenant_name,
+        u.business_name AS tenant_business_name,
+        u.office_number,
+        u.floor
+
+      FROM tenant_profiles tp
+
+      JOIN users u
+        ON u.id = tp.user_id
+
+      WHERE
+  tp.community_visible = TRUE
+  AND tp.public_consent = TRUE
+  AND tp.public_status = 'pending'
+  AND u.role = 'tenant'
+      ORDER BY
+        tp.updated_at ASC
+    `
+  );
+
+const pendingBusinessProfiles =
+  pendingBusinessProfilesResult.rows;
+  const businessProfilesResult =
+  await db.query(
+    `
+      SELECT
+        tp.id,
+        tp.user_id,
+        tp.display_name,
+        tp.business_field,
+        tp.bio,
+        tp.website_url,
+        tp.linkedin_url,
+
+        tp.logo_data IS NOT NULL
+          AS has_logo,
+
+        tp.community_visible,
         tp.public_consent,
         tp.public_status,
         tp.updated_at,
@@ -117,17 +159,16 @@ router.get('/', async (req, res, next) => {
         ON u.id = tp.user_id
 
       WHERE
-        tp.public_consent = TRUE
-        AND tp.public_status = 'pending'
-        AND u.role = 'tenant'
+        u.role = 'tenant'
+        AND u.is_active = TRUE
 
       ORDER BY
-        tp.updated_at ASC
+        tp.updated_at DESC
     `
   );
 
-const pendingBusinessProfiles =
-  pendingBusinessProfilesResult.rows;
+const businessProfiles =
+  businessProfilesResult.rows;
     const quotaAlertsResult = await db.query(
       `
     SELECT
@@ -551,6 +592,7 @@ floorDirectoryOverrides,
   quotaAlerts: quotaAlertsResult.rows,
   rentalAlerts: rentalAlertsResult.rows,
   pendingBusinessProfiles,
+  businessProfiles,
   newClientInvite,
 });
   } catch (error) {
