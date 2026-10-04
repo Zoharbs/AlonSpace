@@ -71,19 +71,273 @@
 
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
-
 <script>
-document.querySelectorAll('.gallery-grid figure').forEach(fig => {
-  fig.addEventListener('click', () => {
-    document.getElementById('lightboxImg').src = fig.dataset.full;
-    document.getElementById('lightboxImg').alt = fig.querySelector('img').alt;
-    document.getElementById('lightbox').classList.add('open');
-  });
-});
-document.getElementById('lightboxClose').addEventListener('click', () => {
-  document.getElementById('lightbox').classList.remove('open');
-});
-document.getElementById('lightbox').addEventListener('click', (e) => {
-  if (e.target.id === 'lightbox') e.currentTarget.classList.remove('open');
-});
+  const galleryFigures =
+    Array.from(
+      document.querySelectorAll(
+        '.gallery-grid figure'
+      )
+    );
+
+  const lightbox =
+    document.getElementById('lightbox');
+
+  const lightboxImg =
+    document.getElementById('lightboxImg');
+
+  const lightboxClose =
+    document.getElementById('lightboxClose');
+
+  const lightboxPrev =
+    document.getElementById('lightboxPrev');
+
+  const lightboxNext =
+    document.getElementById('lightboxNext');
+
+
+  let currentGalleryIndex = 0;
+
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+
+  function showGalleryImage(index) {
+
+    if (!galleryFigures.length) {
+      return;
+    }
+
+
+    /*
+      אם הגענו אחרי התמונה האחרונה,
+      חוזרים לראשונה.
+    */
+
+    if (index >= galleryFigures.length) {
+      index = 0;
+    }
+
+
+    /*
+      אם חזרנו אחורה מהראשונה,
+      עוברים לאחרונה.
+    */
+
+    if (index < 0) {
+      index =
+        galleryFigures.length - 1;
+    }
+
+
+    currentGalleryIndex = index;
+
+
+    const figure =
+      galleryFigures[
+        currentGalleryIndex
+      ];
+
+    const image =
+      figure.querySelector('img');
+
+
+    lightboxImg.src =
+      figure.dataset.full;
+
+    lightboxImg.alt =
+      image?.alt || '';
+  }
+
+
+  function openLightbox(index) {
+
+    showGalleryImage(index);
+
+    lightbox.classList.add('open');
+
+    document.body.style.overflow =
+      'hidden';
+  }
+
+
+  function closeLightbox() {
+
+    lightbox.classList.remove('open');
+
+    document.body.style.overflow = '';
+  }
+
+
+  function showNextImage() {
+    showGalleryImage(
+      currentGalleryIndex + 1
+    );
+  }
+
+
+  function showPreviousImage() {
+    showGalleryImage(
+      currentGalleryIndex - 1
+    );
+  }
+
+
+  /* פתיחת תמונה */
+
+  galleryFigures.forEach(
+    (figure, index) => {
+
+      figure.addEventListener(
+        'click',
+        () => {
+          openLightbox(index);
+        }
+      );
+
+    }
+  );
+
+
+  /* כפתור סגירה */
+
+  lightboxClose
+    ?.addEventListener(
+      'click',
+      closeLightbox
+    );
+
+
+  /* חצים */
+
+  lightboxNext
+    ?.addEventListener(
+      'click',
+      (event) => {
+
+        event.stopPropagation();
+
+        showNextImage();
+      }
+    );
+
+
+  lightboxPrev
+    ?.addEventListener(
+      'click',
+      (event) => {
+
+        event.stopPropagation();
+
+        showPreviousImage();
+      }
+    );
+
+
+  /* לחיצה על הרקע */
+
+  lightbox
+    ?.addEventListener(
+      'click',
+      (event) => {
+
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+
+      }
+    );
+
+
+  /* מקלדת */
+
+  document.addEventListener(
+    'keydown',
+    (event) => {
+
+      if (
+        !lightbox.classList.contains('open')
+      ) {
+        return;
+      }
+
+
+      if (event.key === 'Escape') {
+        closeLightbox();
+      }
+
+
+      if (event.key === 'ArrowRight') {
+        showNextImage();
+      }
+
+
+      if (event.key === 'ArrowLeft') {
+        showPreviousImage();
+      }
+
+    }
+  );
+
+
+  /* =====================================
+     MOBILE SWIPE
+  ===================================== */
+
+  lightboxImg
+    ?.addEventListener(
+      'touchstart',
+      (event) => {
+
+        touchStartX =
+          event.changedTouches[0]
+            .screenX;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+  lightboxImg
+    ?.addEventListener(
+      'touchend',
+      (event) => {
+
+        touchEndX =
+          event.changedTouches[0]
+            .screenX;
+
+
+        const difference =
+          touchEndX - touchStartX;
+
+
+        /*
+          תנועה קטנה מדי =
+          לא נחשיב אותה כ-swipe.
+        */
+
+        if (
+          Math.abs(difference) < 50
+        ) {
+          return;
+        }
+
+
+        if (difference < 0) {
+
+          showNextImage();
+
+        } else {
+
+          showPreviousImage();
+
+        }
+
+      },
+      {
+        passive: true
+      }
+    );
 </script>

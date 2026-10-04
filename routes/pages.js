@@ -117,8 +117,7 @@ router.get(
   }
 );
 
-router.get(
-  '/gallery',
+router.get('/gallery',
   async (req, res, next) => {
     try {
       const result = await db.query(`
