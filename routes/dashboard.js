@@ -143,10 +143,11 @@ router.get('/', async (req, res, next) => {
             bio,
             website_url,
             linkedin_url,
-            logo_url,
-            public_consent,
-            public_status,
-            created_at,
+         logo_url,
+community_visible,
+public_consent,
+public_status,
+created_at,
             updated_at
           FROM tenant_profiles
           WHERE user_id = $1
@@ -413,9 +414,12 @@ router.post(
         ).trim();
 
 
-      const publicConsent =
-        req.body.public_consent === '1';
+const communityVisible =
+  req.body.community_visible === '1';
 
+const publicConsent =
+  communityVisible &&
+  req.body.public_consent === '1';
 
       /* =====================================
          BASIC VALIDATION
@@ -561,12 +565,11 @@ router.post(
             logo_data,
             logo_mime_type,
 
-            logo_url,
-
-            public_consent,
-            public_status,
-
-            updated_at
+logo_url,
+community_visible,
+public_consent,
+public_status,
+updated_at
 
           )
 
@@ -583,8 +586,9 @@ router.post(
             $9,
             $10,
             $11,
+$12,
 
-            NOW()
+NOW()
 
           )
 
@@ -631,11 +635,12 @@ router.post(
                 ELSE tenant_profiles.logo_url
               END,
 
-            public_consent =
-              EXCLUDED.public_consent,
-
-            public_status =
-              EXCLUDED.public_status,
+           community_visible =
+  EXCLUDED.community_visible,
+public_consent =
+  EXCLUDED.public_consent,
+public_status =
+  EXCLUDED.public_status,
 
             updated_at =
               NOW()
@@ -653,12 +658,12 @@ router.post(
           logoData,
           logoMimeType,
 
-          req.file
-            ? `/dashboard/business-profile/logo`
-            : null,
-
-          publicConsent,
-          publicStatus
+       req.file
+  ? `/dashboard/business-profile/logo`
+  : null,
+communityVisible,
+publicConsent,
+publicStatus
         ]
       );
 
