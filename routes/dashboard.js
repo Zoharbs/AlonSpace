@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../db');
 
 const router = express.Router();
-
+const multer = require('multer');
 function requireTenant(req, res, next) {
   if (
     !req.session?.userId ||
@@ -84,7 +84,46 @@ async function getUsedHours(
     result.rows[0]?.used_hours || 0
   );
 }
+const businessLogoUpload = multer({
 
+  storage: multer.memoryStorage(),
+
+  limits: {
+    fileSize: 1024 * 1024
+  },
+
+  fileFilter: (
+    req,
+    file,
+    callback
+  ) => {
+
+    const allowedTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/webp'
+    ];
+
+
+    if (
+      !allowedTypes.includes(
+        file.mimetype
+      )
+    ) {
+
+      return callback(
+        new Error(
+          'אפשר להעלות לוגו מסוג PNG, JPG או WebP בלבד'
+        )
+      );
+
+    }
+
+
+    callback(null, true);
+  }
+
+});
 router.use(requireTenant);
 
 router.get('/', async (req, res, next) => {
@@ -333,7 +372,419 @@ router.get('/', async (req, res, next) => {
 
   }
 });
+router.post(
+  '/business-profile',
 
+  businessLogoUpload.single('logo'),
+
+  async (req, res, next) => {
+
+    try {
+
+      /* =====================================
+         VERIFY TENANT
+      ===================================== */
+
+      const userResult =
+        await db.query(
+          `
+            SELECT
+              id,
+              business_name
+            FROM users
+            WHERE
+              id = $1
+              AND role = 'tenant'
+              AND is_active = TRUE
+            LIMIT 1
+          `,
+          [req.session.userId]
+        );
+
+
+      const user =
+        userResult.rows[0];
+
+
+      if (!user) {
+
+        return res.redirect(
+          '/login'
+        );
+
+      }
+
+
+      /* =====================================
+         FORM VALUES
+      ===================================== */
+
+      const displayName =
+        String(
+          req.body.display_name || ''
+        )
+          .trim()
+          .slice(0, 120);
+
+
+      const businessField =
+        String(
+          req.body.business_field || ''
+        )
+          .trim()
+          .slice(0, 120);
+
+
+      const bio =
+        String(
+          req.body.bio || ''
+        )
+          .trim()
+          .slice(0, 300);
+
+
+      const websiteUrl =
+        String(
+          req.body.website_url || ''
+        ).trim();
+
+
+      const linkedinUrl =
+        String(
+          req.body.linkedin_url || ''
+        ).trim();
+
+
+      const publicConsent =
+        req.body.public_consent === '1';
+
+
+      /* =====================================
+         BASIC VALIDATION
+      ===================================== */
+
+      if (!displayName) {
+
+        return res.redirect(
+          '/dashboard?error=' +
+          encodeURIComponent(
+            'נא להזין שם עסק או שם לתצוגה'
+          ) +
+          '#business-profile'
+        );
+
+      }
+
+
+      function validOptionalUrl(value) {
+
+        if (!value) {
+          return true;
+        }
+
+
+        try {
+
+          const parsed =
+            new URL(value);
+
+
+          return (
+            parsed.protocol === 'http:' ||
+            parsed.protocol === 'https:'
+          );
+
+        } catch {
+
+          return false;
+
+        }
+
+      }
+
+
+      if (
+        !validOptionalUrl(websiteUrl) ||
+        !validOptionalUrl(linkedinUrl)
+      ) {
+
+        return res.redirect(
+          '/dashboard?error=' +
+          encodeURIComponent(
+            'כתובת האתר או LinkedIn אינה תקינה'
+          ) +
+          '#business-profile'
+        );
+
+      }
+
+
+      /* =====================================
+         CURRENT PROFILE
+      ===================================== */
+
+      const currentResult =
+        await db.query(
+          `
+            SELECT
+              id,
+              public_status,
+              public_consent
+            FROM tenant_profiles
+            WHERE user_id = $1
+            LIMIT 1
+          `,
+          [user.id]
+        );
+
+
+      const currentProfile =
+        currentResult.rows[0] || null;
+
+
+      /*
+        אם הדייר רוצה פרסום:
+        הפרופיל עובר לאישור.
+
+        אם הוא מבטל הסכמה:
+        יורד מיד מהאתר.
+      */
+
+      let publicStatus =
+        publicConsent
+          ? 'pending'
+          : 'private';
+
+
+      /*
+        אם הפרופיל כבר מאושר
+        והדייר רק לוחץ שוב שמירה בלי
+        לשנות דבר — בהמשך נוכל להשוות
+        שדות בצורה מלאה.
+
+        כרגע כל שמירה בפרופיל ציבורי
+        שולחת אותו לבדיקה מחדש.
+      */
+
+
+      /* =====================================
+         LOGO
+      ===================================== */
+
+      const logoData =
+        req.file
+          ? req.file.buffer
+          : null;
+
+
+      const logoMimeType =
+        req.file
+          ? req.file.mimetype
+          : null;
+
+
+      /* =====================================
+         UPSERT PROFILE
+      ===================================== */
+
+      await db.query(
+        `
+          INSERT INTO tenant_profiles (
+
+            user_id,
+
+            display_name,
+            business_field,
+            bio,
+
+            website_url,
+            linkedin_url,
+
+            logo_data,
+            logo_mime_type,
+
+            logo_url,
+
+            public_consent,
+            public_status,
+
+            updated_at
+
+          )
+
+          VALUES (
+
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6,
+            $7,
+            $8,
+            $9,
+            $10,
+            $11,
+
+            NOW()
+
+          )
+
+          ON CONFLICT (user_id)
+
+          DO UPDATE SET
+
+            display_name =
+              EXCLUDED.display_name,
+
+            business_field =
+              EXCLUDED.business_field,
+
+            bio =
+              EXCLUDED.bio,
+
+            website_url =
+              EXCLUDED.website_url,
+
+            linkedin_url =
+              EXCLUDED.linkedin_url,
+
+            logo_data =
+              CASE
+                WHEN EXCLUDED.logo_data
+                  IS NOT NULL
+                THEN EXCLUDED.logo_data
+                ELSE tenant_profiles.logo_data
+              END,
+
+            logo_mime_type =
+              CASE
+                WHEN EXCLUDED.logo_data
+                  IS NOT NULL
+                THEN EXCLUDED.logo_mime_type
+                ELSE tenant_profiles.logo_mime_type
+              END,
+
+            logo_url =
+              CASE
+                WHEN EXCLUDED.logo_data
+                  IS NOT NULL
+                THEN EXCLUDED.logo_url
+                ELSE tenant_profiles.logo_url
+              END,
+
+            public_consent =
+              EXCLUDED.public_consent,
+
+            public_status =
+              EXCLUDED.public_status,
+
+            updated_at =
+              NOW()
+        `,
+        [
+          user.id,
+
+          displayName,
+          businessField || null,
+          bio || null,
+
+          websiteUrl || null,
+          linkedinUrl || null,
+
+          logoData,
+          logoMimeType,
+
+          req.file
+            ? `/dashboard/business-profile/logo`
+            : null,
+
+          publicConsent,
+          publicStatus
+        ]
+      );
+
+
+      return res.redirect(
+        '/dashboard?success=' +
+        encodeURIComponent(
+          publicConsent
+            ? 'הפרופיל נשמר ונשלח לאישור הנהלת AlonSpace'
+            : 'הפרופיל העסקי נשמר'
+        ) +
+        '#business-profile'
+      );
+
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+
+  }
+);
+router.get(
+  '/business-profile/logo',
+
+  async (req, res, next) => {
+
+    try {
+
+      const result =
+        await db.query(
+          `
+            SELECT
+              logo_data,
+              logo_mime_type
+            FROM tenant_profiles
+            WHERE user_id = $1
+            LIMIT 1
+          `,
+          [req.session.userId]
+        );
+
+
+      const profile =
+        result.rows[0];
+
+
+      if (
+        !profile ||
+        !profile.logo_data ||
+        !profile.logo_mime_type
+      ) {
+
+        return res.status(404).end();
+
+      }
+
+
+      res.set(
+        'Content-Type',
+        profile.logo_mime_type
+      );
+
+
+      res.set(
+        'Cache-Control',
+        'private, max-age=3600'
+      );
+
+
+      return res.send(
+        profile.logo_data
+      );
+
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+
+  }
+);
 router.post('/meeting-bookings/create',
   async (req, res, next) => {
     const client = await db.pool.connect();
