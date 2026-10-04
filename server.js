@@ -9,6 +9,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
+const multer = require('multer');
 const {
   pool,
   initializeDatabase,
@@ -80,7 +81,113 @@ app.use(
     },
   })
 );
+/* =====================================
+   BUSINESS PROFILE LOGO UPLOAD
+   Must run before CSRF because this
+   form uses multipart/form-data.
+===================================== */
 
+const businessLogoUpload = multer({
+
+  storage: multer.memoryStorage(),
+
+  limits: {
+    fileSize: 1024 * 1024
+  },
+
+  fileFilter: (
+    req,
+    file,
+    callback
+  ) => {
+
+    const allowedTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/webp'
+    ];
+
+
+    if (
+      !allowedTypes.includes(
+        file.mimetype
+      )
+    ) {
+
+      return callback(
+        new Error(
+          'אפשר להעלות לוגו מסוג PNG, JPG או WebP בלבד'
+        )
+      );
+
+    }
+
+
+    return callback(
+      null,
+      true
+    );
+  }
+
+});
+
+
+app.post(
+  '/dashboard/business-profile',
+
+  (req, res, next) => {
+
+    /*
+      אין טעם לעבד קובץ אם זה
+      בכלל לא דייר מחובר.
+    */
+
+    if (
+      !req.session?.userId ||
+      req.session?.userRole !== 'tenant'
+    ) {
+
+      return res.redirect(
+        '/login'
+      );
+
+    }
+
+
+    businessLogoUpload.single('logo')(
+      req,
+      res,
+      (error) => {
+
+        if (!error) {
+          return next();
+        }
+
+
+        console.error(
+          'Business logo upload failed:',
+          error
+        );
+
+
+        const message =
+          error.code === 'LIMIT_FILE_SIZE'
+            ? 'הלוגו גדול מדי. ניתן להעלות קובץ עד 1MB.'
+            : error.message ||
+              'לא ניתן להעלות את הלוגו.';
+
+
+        return res.redirect(
+          '/dashboard?error=' +
+          encodeURIComponent(message) +
+          '#business-profile'
+        );
+
+      }
+    );
+
+  }
+);
 app.use(
   csrf({
     cookie: false

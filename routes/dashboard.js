@@ -2,7 +2,6 @@ const express = require('express');
 const db = require('../db');
 
 const router = express.Router();
-const multer = require('multer');
 function requireTenant(req, res, next) {
   if (
     !req.session?.userId ||
@@ -84,46 +83,7 @@ async function getUsedHours(
     result.rows[0]?.used_hours || 0
   );
 }
-const businessLogoUpload = multer({
 
-  storage: multer.memoryStorage(),
-
-  limits: {
-    fileSize: 1024 * 1024
-  },
-
-  fileFilter: (
-    req,
-    file,
-    callback
-  ) => {
-
-    const allowedTypes = [
-      'image/png',
-      'image/jpeg',
-      'image/webp'
-    ];
-
-
-    if (
-      !allowedTypes.includes(
-        file.mimetype
-      )
-    ) {
-
-      return callback(
-        new Error(
-          'אפשר להעלות לוגו מסוג PNG, JPG או WebP בלבד'
-        )
-      );
-
-    }
-
-
-    callback(null, true);
-  }
-
-});
 router.use(requireTenant);
 
 router.get('/', async (req, res, next) => {
@@ -374,8 +334,6 @@ router.get('/', async (req, res, next) => {
 });
 router.post(
   '/business-profile',
-
-  businessLogoUpload.single('logo'),
 
   async (req, res, next) => {
 
