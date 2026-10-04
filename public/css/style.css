@@ -3600,3 +3600,48 @@ body.accessibility-high-contrast .accessibility-menu a {
   padding: 20px;
   background: #f1eefc;
 }
+/* =====================================
+   HERO SLIDESHOW
+===================================== */
+
+.hero-slideshow {
+  position: relative;
+  overflow: hidden;
+}
+
+
+/*
+  שומר על התמונה הראשונה בתוך ה-flow,
+  כדי שהקרוסלה תשמור בדיוק על הגודל
+  שהיה ל-hero-visual המקורי.
+*/
+.hero-slideshow .hero-slide {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  opacity: 0;
+
+  transition:
+    opacity 1s ease-in-out;
+}
+
+
+/* כל התמונות מלבד הראשונה יושבות מעליה */
+
+.hero-slideshow .hero-slide:not(:first-child) {
+  position: absolute;
+
+  inset: 0;
+}
+
+
+/* התמונה שמוצגת כרגע */
+
+.hero-slideshow .hero-slide.active {
+  opacity: 1;
+  z-index: 2;
+}
