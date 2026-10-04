@@ -1424,6 +1424,183 @@
   }
 
 }
+/* =====================================
+   BUSINESS PROFILES - FINAL POLISH
+===================================== */
+
+/* REMOVE EXCESS SPACE */
+
+.business-profile-approvals {
+  margin: 8px 0 18px !important;
+  padding: 0 !important;
+}
+
+.business-profile-approvals-head {
+  margin: 0 0 10px !important;
+}
+
+.business-profile-approvals + .stat-cards {
+  margin-top: 0 !important;
+}
+
+
+/* NAME + STATUS */
+
+.business-profile-admin-name-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-bottom: 3px;
+}
+
+.business-profile-admin-name-row h3 {
+  margin: 0;
+}
+
+
+/* STATUS BADGES */
+
+.profile-admin-status {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 9px;
+
+  border-radius: 999px;
+
+  font-size: 0.7rem;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.profile-admin-status.pending {
+  background: #fff3cd;
+  color: #795b00;
+}
+
+.profile-admin-status.approved {
+  background: #dff3e5;
+  color: #176b37;
+}
+
+.profile-admin-status.rejected {
+  background: #f7dddd;
+  color: #8b2727;
+}
+
+.profile-admin-status.private {
+  background: #eceae5;
+  color: #66615a;
+}
+
+
+/* VISIBILITY */
+
+.business-profile-visibility {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin: 8px 0 10px;
+}
+
+.business-profile-visibility-label {
+  margin-left: 2px;
+
+  color: var(--ink-soft);
+
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+
+.visibility-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.visibility-chip.active {
+  background: #e8f1e9;
+  color: #315d3a;
+  border: 1px solid #c9ddcc;
+}
+
+.visibility-chip.inactive {
+  background: #f1efeb;
+  color: #88827a;
+  border: 1px solid #dedad3;
+}
+
+
+/* NO PUBLIC ACTION */
+
+.business-profile-no-action {
+  display: inline-flex;
+
+  max-width: 150px;
+
+  color: var(--ink-soft);
+
+  font-size: 0.74rem;
+  line-height: 1.4;
+
+  text-align: center;
+}
+
+
+/* KEEP CARDS COMPACT */
+
+.business-profile-approval-list {
+  gap: 10px !important;
+}
+
+.business-profile-approval-card {
+  padding: 14px 16px !important;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+
+  .business-profile-approvals {
+    margin: 4px 0 14px !important;
+  }
+
+  .business-profile-admin-name-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .business-profile-visibility {
+    align-items: flex-start;
+  }
+
+  .business-profile-visibility-label {
+    width: 100%;
+  }
+
+  .business-profile-no-action {
+    max-width: none;
+    width: 100%;
+  }
+
+}
   </style>
 </head>
 
@@ -1831,6 +2008,11 @@
   pendingBusinessProfiles.length
 ) { %>
 
+  <% if (
+  businessProfiles &&
+  businessProfiles.length
+) { %>
+
   <section
     class="business-profile-approvals"
     id="business-profiles"
@@ -1841,17 +2023,17 @@
       <div class="business-profile-approvals-title">
 
         <h2>
-          פרופילים עסקיים לאישור
+          פרופילים עסקיים
         </h2>
 
         <span class="business-profile-count">
-          <%= pendingBusinessProfiles.length %>
+          <%= businessProfiles.length %>
         </span>
 
       </div>
 
       <span class="small">
-        ממתינים לאישור לפני הצגה באתר
+        ניהול החשיפה בקהילת הדיירים ובאתר הציבורי
       </span>
 
     </div>
@@ -1859,9 +2041,12 @@
 
     <div class="business-profile-approval-list">
 
-      <% pendingBusinessProfiles.forEach(profile => { %>
+      <% businessProfiles.forEach(profile => { %>
 
         <article class="business-profile-approval-card">
+
+
+          <!-- LOGO -->
 
           <div class="business-profile-admin-logo">
 
@@ -1886,11 +2071,52 @@
           </div>
 
 
+          <!-- INFO -->
+
           <div class="business-profile-admin-info">
 
-            <h3>
-              <%= profile.display_name %>
-            </h3>
+            <div class="business-profile-admin-name-row">
+
+              <h3>
+                <%= profile.display_name %>
+              </h3>
+
+              <% if (
+                profile.public_consent &&
+                profile.public_status === 'pending'
+              ) { %>
+
+                <span class="profile-admin-status pending">
+                  ממתין לאישור
+                </span>
+
+              <% } else if (
+                profile.public_consent &&
+                profile.public_status === 'approved'
+              ) { %>
+
+                <span class="profile-admin-status approved">
+                  מוצג באתר
+                </span>
+
+              <% } else if (
+                profile.public_consent &&
+                profile.public_status === 'rejected'
+              ) { %>
+
+                <span class="profile-admin-status rejected">
+                  לא מוצג באתר
+                </span>
+
+              <% } else { %>
+
+                <span class="profile-admin-status private">
+                  ללא פרסום ציבורי
+                </span>
+
+              <% } %>
+
+            </div>
 
 
             <% if (profile.business_field) { %>
@@ -1900,6 +2126,39 @@
               </span>
 
             <% } %>
+
+
+            <!-- REQUESTED VISIBILITY -->
+
+            <div class="business-profile-visibility">
+
+              <span class="business-profile-visibility-label">
+                חשיפה:
+              </span>
+
+
+              <span
+                class="
+                  visibility-chip
+                  <%= profile.community_visible ? 'active' : 'inactive' %>
+                "
+              >
+                <%= profile.community_visible ? '✓' : '—' %>
+                קהילת הדיירים
+              </span>
+
+
+              <span
+                class="
+                  visibility-chip
+                  <%= profile.public_consent ? 'active' : 'inactive' %>
+                "
+              >
+                <%= profile.public_consent ? '✓' : '—' %>
+                האתר הציבורי
+              </span>
+
+            </div>
 
 
             <% if (profile.bio) { %>
@@ -1914,6 +2173,7 @@
             <div class="business-profile-admin-meta">
 
               נשלח על ידי
+
               <strong>
                 <%= profile.tenant_name %>
               </strong>
@@ -1968,49 +2228,122 @@
           </div>
 
 
+          <!-- ACTIONS -->
+
           <div class="business-profile-admin-actions">
 
-            <form
-              method="POST"
-              action="/admin/business-profiles/<%= profile.id %>/reject"
-              onsubmit="return confirm('לדחות את הפרופיל העסקי?')"
-            >
 
-              <input
-                type="hidden"
-                name="_csrf"
-                value="<%= csrfToken %>"
+            <% if (
+              profile.public_consent &&
+              profile.public_status === 'pending'
+            ) { %>
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/reject"
+                onsubmit="return confirm('לדחות את הפרסום באתר הציבורי?')"
               >
 
-              <button
-                type="submit"
-                class="mini-btn danger"
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
+
+                <button
+                  type="submit"
+                  class="mini-btn danger"
+                >
+                  דחייה
+                </button>
+
+              </form>
+
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/approve"
               >
-                דחייה
-              </button>
 
-            </form>
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
+
+                <button
+                  type="submit"
+                  class="mini-btn primary"
+                >
+                  ✓ אישור לאתר
+                </button>
+
+              </form>
 
 
-            <form
-              method="POST"
-              action="/admin/business-profiles/<%= profile.id %>/approve"
-            >
+            <% } else if (
+              profile.public_consent &&
+              profile.public_status === 'approved'
+            ) { %>
 
-              <input
-                type="hidden"
-                name="_csrf"
-                value="<%= csrfToken %>"
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/unpublish"
+                onsubmit="return confirm('להסיר את העסק מהאתר הציבורי?')"
               >
 
-              <button
-                type="submit"
-                class="mini-btn primary"
-              >
-                ✓ אישור והצגה באתר
-              </button>
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
 
-            </form>
+                <button
+                  type="submit"
+                  class="mini-btn danger"
+                >
+                  הסרה מהאתר
+                </button>
+
+              </form>
+
+
+            <% } else if (
+              profile.public_consent &&
+              profile.public_status === 'rejected'
+            ) { %>
+
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/approve"
+              >
+
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
+
+                <button
+                  type="submit"
+                  class="mini-btn primary"
+                >
+                  ✓ אישור מחדש
+                </button>
+
+              </form>
+
+
+            <% } else { %>
+
+              <span class="business-profile-no-action">
+                אין בקשה לפרסום באתר
+              </span>
+
+            <% } %>
+
 
           </div>
 

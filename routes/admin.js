@@ -666,8 +666,12 @@ router.post(
               updated_at = NOW()
             WHERE
               id = $1
-              AND public_consent = TRUE
-              AND public_status = 'pending'
+AND community_visible = TRUE
+AND public_consent = TRUE
+AND public_status IN (
+  'pending',
+  'rejected'
+)
             RETURNING
               id,
               display_name
@@ -698,6 +702,61 @@ router.post(
   }
 );
 
+router.post(
+  '/business-profiles/:id/unpublish',
+
+  async (req, res, next) => {
+    try {
+
+      const result =
+        await db.query(
+          `
+            UPDATE tenant_profiles
+
+            SET
+              public_status = 'rejected',
+              updated_at = NOW()
+
+            WHERE
+              id = $1
+              AND public_status = 'approved'
+
+            RETURNING
+              id,
+              display_name
+          `,
+          [req.params.id]
+        );
+
+
+      if (!result.rows.length) {
+
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הפרופיל לא נמצא או שאינו מוצג באתר',
+            'business-profiles'
+          )
+        );
+
+      }
+
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          `הפרופיל של ${result.rows[0].display_name} הוסר מהאתר הציבורי`,
+          'business-profiles'
+        )
+      );
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+  }
+);
 
 router.post(
   '/business-profiles/:id/reject',
