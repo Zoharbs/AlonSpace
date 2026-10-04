@@ -89,6 +89,11 @@ router.use(requireTenant);
 
 router.get('/', async (req, res, next) => {
   try {
+
+    /* =====================================
+       USER
+    ===================================== */
+
     const userResult = await db.query(
       `
         SELECT
@@ -116,117 +121,216 @@ router.get('/', async (req, res, next) => {
 
     const user = userResult.rows[0];
 
+
     if (!user) {
       return req.session.destroy(() => {
         res.redirect('/login');
       });
     }
-const surveyResult = await db.query(
-  `
-    SELECT id
-    FROM onboarding_surveys
-    WHERE user_id = $1
-    LIMIT 1
-  `,
-  [user.id]
-);
 
-const shouldShowSurvey =
-  surveyResult.rows.length === 0;
+
+    /* =====================================
+       BUSINESS PROFILE
+    ===================================== */
+
+    const tenantProfileResult =
+      await db.query(
+        `
+          SELECT
+            id,
+            user_id,
+            display_name,
+            business_field,
+            bio,
+            website_url,
+            linkedin_url,
+            logo_url,
+            public_consent,
+            public_status,
+            created_at,
+            updated_at
+          FROM tenant_profiles
+          WHERE user_id = $1
+          LIMIT 1
+        `,
+        [user.id]
+      );
+
+
+    const tenantProfile =
+      tenantProfileResult.rows[0] || null;
+
+
+    /* =====================================
+       ONBOARDING SURVEY
+    ===================================== */
+
+    const surveyResult = await db.query(
+      `
+        SELECT id
+        FROM onboarding_surveys
+        WHERE user_id = $1
+        LIMIT 1
+      `,
+      [user.id]
+    );
+
+
+    const shouldShowSurvey =
+      surveyResult.rows.length === 0;
+
+
+    /* =====================================
+       MEETING ROOM QUOTA
+    ===================================== */
+
     const currentMonth =
       new Date().toISOString().slice(0, 7);
 
-    const usedHours = await getUsedHours(
-      user.id,
-      currentMonth
-    );
 
-    const monthlyLimit = Number(
-      user.monthly_meeting_hours || 6
-    );
+    const usedHours =
+      await getUsedHours(
+        user.id,
+        currentMonth
+      );
 
-    const remainingHours = Math.max(
-      0,
-      monthlyLimit - usedHours
-    );
+
+    const monthlyLimit =
+      Number(
+        user.monthly_meeting_hours || 6
+      );
+
+
+    const remainingHours =
+      Math.max(
+        0,
+        monthlyLimit - usedHours
+      );
+
+
     const quotaExceeded =
       usedHours > monthlyLimit;
 
-    const chargeableResult = await db.query(
-      `
-    SELECT COUNT(*)::INTEGER AS count
-    FROM meeting_bookings
-    WHERE
-      user_id = $1
-      AND billing_status = 'chargeable'
-      AND TO_CHAR(
-        booking_date,
-        'YYYY-MM'
-      ) = $2
-  `,
-      [
-        user.id,
-        currentMonth,
-      ]
-    );
+
+    const chargeableResult =
+      await db.query(
+        `
+          SELECT
+            COUNT(*)::INTEGER AS count
+          FROM meeting_bookings
+          WHERE
+            user_id = $1
+            AND billing_status = 'chargeable'
+            AND TO_CHAR(
+              booking_date,
+              'YYYY-MM'
+            ) = $2
+        `,
+        [
+          user.id,
+          currentMonth,
+        ]
+      );
+
 
     const hasChargeableBookings =
       chargeableResult.rows[0].count > 0;
-const bookingsResult = await db.query(
-  `
-    SELECT
-      mb.id,
-      mb.user_id,
-      mb.booking_date,
-      mb.booking_source,
-      mb.start_time,
-      mb.end_time,
-      mb.note,
-      mb.created_at,
-      u.display_name,
-      u.business_name,
-      u.office_number,
-      u.floor,
-      CASE
-        WHEN mb.user_id = $1
-        THEN TRUE
-        ELSE FALSE
-      END AS is_mine
 
-    FROM meeting_bookings mb
-    JOIN users u ON u.id = mb.user_id
 
-    WHERE
-      mb.meeting_room_id = (
-        SELECT id
-        FROM meeting_rooms
-        WHERE floor = $2
-      )
+    /* =====================================
+       MEETING BOOKINGS
+    ===================================== */
 
-    ORDER BY
-      mb.booking_date ASC,
-      mb.start_time ASC
+    const bookingsResult =
+      await db.query(
+        `
+          SELECT
+            mb.id,
+            mb.user_id,
+            mb.booking_date,
+            mb.booking_source,
+            mb.start_time,
+            mb.end_time,
+            mb.note,
+            mb.created_at,
+            u.display_name,
+            u.business_name,
+            u.office_number,
+            u.floor,
 
-    LIMIT 200
-  `,
-  [user.id, user.floor]
-);
+            CASE
+              WHEN mb.user_id = $1
+              THEN TRUE
+              ELSE FALSE
+            END AS is_mine
 
-    return res.render('dashboard', {
-      title: 'האזור האישי - AlonSpace',
-      user,
-      usedHours,
-      remainingHours,
-      meetingBookings: bookingsResult.rows,
-      error: req.query.error || null,
-      success: req.query.success || null,
-      warning: req.query.warning || null,
-      quotaExceeded,
-      hasChargeableBookings,
-      shouldShowSurvey,
-    });
+          FROM meeting_bookings mb
+
+          JOIN users u
+            ON u.id = mb.user_id
+
+          WHERE
+            mb.meeting_room_id = (
+              SELECT id
+              FROM meeting_rooms
+              WHERE floor = $2
+            )
+
+          ORDER BY
+            mb.booking_date ASC,
+            mb.start_time ASC
+
+          LIMIT 200
+        `,
+        [
+          user.id,
+          user.floor
+        ]
+      );
+
+
+    /* =====================================
+       RENDER
+    ===================================== */
+
+    return res.render(
+      'dashboard',
+      {
+        title:
+          'האזור האישי - AlonSpace',
+
+        user,
+
+        tenantProfile,
+
+        usedHours,
+
+        remainingHours,
+
+        meetingBookings:
+          bookingsResult.rows,
+
+        error:
+          req.query.error || null,
+
+        success:
+          req.query.success || null,
+
+        warning:
+          req.query.warning || null,
+
+        quotaExceeded,
+
+        hasChargeableBookings,
+
+        shouldShowSurvey,
+      }
+    );
+
   } catch (error) {
+
     return next(error);
+
   }
 });
 

@@ -1471,6 +1471,249 @@ background: #fff;
   }
 
 }
+/* =====================================
+   TENANT BUSINESS PROFILE
+===================================== */
+
+.tenant-business-profile {
+  margin-top: 32px;
+}
+
+.business-profile-card {
+  overflow: hidden;
+
+  background: var(--cream);
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 24px;
+
+  box-shadow: var(--shadow);
+}
+
+.business-profile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  padding: 26px 28px;
+
+  border-bottom: 1px solid var(--stone-dark);
+}
+
+.business-profile-head h2 {
+  margin: 5px 0 6px;
+}
+
+.business-profile-head p {
+  margin: 0;
+
+  color: var(--ink-soft);
+}
+
+.business-profile-status {
+  flex-shrink: 0;
+
+  padding: 8px 13px;
+
+  border-radius: 999px;
+
+  font-size: .78rem;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.business-profile-status.private {
+  background: var(--stone);
+  color: var(--ink-soft);
+}
+
+.business-profile-status.pending {
+  background: #fff4d6;
+  color: #8a6415;
+}
+
+.business-profile-status.approved {
+  background: #e7f6ec;
+  color: #287344;
+}
+
+.business-profile-status.rejected {
+  background: #fde8e8;
+  color: #9c3535;
+}
+
+
+/* FORM */
+
+.business-profile-form {
+  padding: 28px;
+}
+
+.business-profile-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.business-profile-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.business-profile-field.full {
+  grid-column: 1 / -1;
+}
+
+.business-profile-field label {
+  font-weight: 700;
+}
+
+.business-profile-field input,
+.business-profile-field textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+.business-profile-field textarea {
+  min-height: 100px;
+
+  resize: vertical;
+}
+
+
+/* LOGO */
+
+.business-logo-area {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+.business-logo-preview {
+  width: 76px;
+  height: 76px;
+
+  flex: 0 0 76px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: #fff;
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 16px;
+}
+
+.business-logo-preview img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  padding: 7px;
+
+  box-sizing: border-box;
+}
+
+.business-logo-placeholder {
+  font-size: 1.8rem;
+}
+
+
+/* PUBLIC CONSENT */
+
+.business-public-consent {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-top: 24px;
+  padding: 18px;
+
+  background: var(--stone);
+
+  border-radius: 16px;
+
+  cursor: pointer;
+}
+
+.business-public-consent input {
+  width: 19px;
+  height: 19px;
+
+  flex: 0 0 19px;
+
+  margin-top: 2px;
+
+  accent-color: var(--oak);
+}
+
+.business-public-consent strong {
+  display: block;
+
+  margin-bottom: 4px;
+}
+
+.business-public-consent span {
+  display: block;
+
+  color: var(--ink-soft);
+
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+
+.business-profile-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-top: 22px;
+}
+
+
+@media (max-width: 700px) {
+
+  .business-profile-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .business-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .business-profile-field.full {
+    grid-column: auto;
+  }
+
+  .business-profile-form {
+    padding: 20px;
+  }
+
+  .business-profile-head {
+    padding: 22px 20px;
+  }
+
+  .business-profile-actions .btn {
+    width: 100%;
+  }
+
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -1668,9 +1911,309 @@ background: #fff;
                                 <span></span>
                               </div>
                             </article>
+                          
                           </div>
             </div>
           </section>
+          <section
+  class="tenant-business-profile"
+  id="business-profile"
+>
+  <div class="container">
+
+    <div class="business-profile-card">
+
+      <div class="business-profile-head">
+
+        <div>
+          <span class="eyebrow">
+            קהילת AlonSpace
+          </span>
+
+          <h2>
+            הפרופיל העסקי שלי
+          </h2>
+
+          <p>
+            ספרו קצת על העסק שלכם ובחרו אם
+            להופיע באתר הציבורי של AlonSpace.
+          </p>
+        </div>
+
+
+        <%
+          const profile =
+            typeof tenantProfile !== 'undefined'
+              ? tenantProfile
+              : null;
+
+          const profileStatus =
+            profile?.public_status || 'private';
+
+          const statusLabels = {
+            private: 'פרטי',
+            pending: 'ממתין לאישור',
+            approved: 'מוצג באתר',
+            rejected: 'לא אושר'
+          };
+        %>
+
+
+        <span
+          class="
+            business-profile-status
+            <%= profileStatus %>
+          "
+        >
+          <%= statusLabels[profileStatus] || 'פרטי' %>
+        </span>
+
+      </div>
+
+
+      <form
+        method="POST"
+        action="/dashboard/business-profile"
+        enctype="multipart/form-data"
+        class="business-profile-form"
+      >
+
+        <input
+          type="hidden"
+          name="_csrf"
+          value="<%= csrfToken %>"
+        >
+
+
+        <div class="business-profile-grid">
+
+
+          <!-- NAME -->
+
+          <div class="business-profile-field">
+
+            <label for="business_display_name">
+              שם העסק / שם לתצוגה
+            </label>
+
+            <input
+              id="business_display_name"
+              type="text"
+              name="display_name"
+              maxlength="120"
+              value="<%= profile?.display_name || user.business_name || '' %>"
+              placeholder="לדוגמה: XYZ Technologies"
+            >
+
+          </div>
+
+
+          <!-- FIELD -->
+
+          <div class="business-profile-field">
+
+            <label for="business_field">
+              תחום פעילות
+            </label>
+
+            <input
+              id="business_field"
+              type="text"
+              name="business_field"
+              maxlength="120"
+              value="<%= profile?.business_field || '' %>"
+              placeholder="לדוגמה: טכנולוגיה, עריכת דין, עיצוב..."
+            >
+
+          </div>
+
+
+          <!-- BIO -->
+
+          <div class="business-profile-field full">
+
+            <label for="business_bio">
+              ספרו עליכם במשפט
+            </label>
+
+            <textarea
+              id="business_bio"
+              name="bio"
+              maxlength="300"
+              placeholder="מה אתם עושים? אפשר לשמור את זה קצר ואישי."
+            ><%= profile?.bio || '' %></textarea>
+
+          </div>
+
+
+          <!-- WEBSITE -->
+
+          <div class="business-profile-field">
+
+            <label for="business_website">
+              אתר
+            </label>
+
+            <input
+              id="business_website"
+              type="url"
+              name="website_url"
+              value="<%= profile?.website_url || '' %>"
+              placeholder="https://..."
+            >
+
+          </div>
+
+
+          <!-- LINKEDIN -->
+
+          <div class="business-profile-field">
+
+            <label for="business_linkedin">
+              LinkedIn
+            </label>
+
+            <input
+              id="business_linkedin"
+              type="url"
+              name="linkedin_url"
+              value="<%= profile?.linkedin_url || '' %>"
+              placeholder="https://linkedin.com/..."
+            >
+
+          </div>
+
+
+          <!-- LOGO -->
+
+          <div class="business-profile-field full">
+
+            <label>
+              לוגו
+            </label>
+
+            <div class="business-logo-area">
+
+              <div class="business-logo-preview">
+
+                <% if (profile?.logo_url) { %>
+
+                  <img
+                    src="<%= profile.logo_url %>"
+                    alt="לוגו העסק"
+                  >
+
+                <% } else { %>
+
+                  <span
+                    class="business-logo-placeholder"
+                    aria-hidden="true"
+                  >
+                    🏢
+                  </span>
+
+                <% } %>
+
+              </div>
+
+
+              <div>
+
+                <input
+                  id="business_logo"
+                  type="file"
+                  name="logo"
+                  accept="image/png,image/jpeg,image/webp"
+                >
+
+                <p class="small">
+                  PNG, JPG או WebP.
+                  מומלץ לוגו מרובע או עם רקע שקוף.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PUBLIC CONSENT -->
+
+        <label class="business-public-consent">
+
+          <input
+            type="checkbox"
+            name="public_consent"
+            value="1"
+            <%= profile?.public_consent ? 'checked' : '' %>
+          >
+
+          <span>
+
+            <strong>
+              הצגה באתר AlonSpace
+            </strong>
+
+            <span>
+              אני מאשר/ת ל-AlonSpace להציג
+              את שם העסק, התחום, התיאור,
+              הלוגו והקישורים שמילאתי
+              באתר הציבורי של AlonSpace.
+            </span>
+
+          </span>
+
+        </label>
+
+
+        <% if (profileStatus === 'pending') { %>
+
+          <p class="small" style="margin-top:14px;">
+            הפרופיל נשלח לאישור הנהלת AlonSpace.
+          </p>
+
+        <% } %>
+
+
+        <% if (profileStatus === 'approved') { %>
+
+          <p class="small" style="margin-top:14px;">
+            ✓ הפרופיל שלכם מאושר ומוצג באתר AlonSpace.
+          </p>
+
+        <% } %>
+
+
+        <% if (profileStatus === 'rejected') { %>
+
+          <p class="small" style="margin-top:14px;">
+            הפרופיל אינו מוצג כרגע באתר.
+            ניתן לערוך אותו ולשלוח שוב לאישור.
+          </p>
+
+        <% } %>
+
+
+        <div class="business-profile-actions">
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            שמירת הפרופיל
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</section>
           <% if (user.must_change_password) { %>
 
             <div class="password-recommendation">
