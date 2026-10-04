@@ -89,6 +89,45 @@ router.use(requireAdmin);
 
 router.get('/', async (req, res, next) => {
   try {
+    const pendingBusinessProfilesResult =
+  await db.query(
+    `
+      SELECT
+        tp.id,
+        tp.user_id,
+        tp.display_name,
+        tp.business_field,
+        tp.bio,
+        tp.website_url,
+        tp.linkedin_url,
+        tp.logo_data IS NOT NULL
+          AS has_logo,
+        tp.public_consent,
+        tp.public_status,
+        tp.updated_at,
+
+        u.display_name AS tenant_name,
+        u.business_name AS tenant_business_name,
+        u.office_number,
+        u.floor
+
+      FROM tenant_profiles tp
+
+      JOIN users u
+        ON u.id = tp.user_id
+
+      WHERE
+        tp.public_consent = TRUE
+        AND tp.public_status = 'pending'
+        AND u.role = 'tenant'
+
+      ORDER BY
+        tp.updated_at ASC
+    `
+  );
+
+const pendingBusinessProfiles =
+  pendingBusinessProfilesResult.rows;
     const quotaAlertsResult = await db.query(
       `
     SELECT
@@ -511,13 +550,157 @@ floorDirectoryOverrides,
 
   quotaAlerts: quotaAlertsResult.rows,
   rentalAlerts: rentalAlertsResult.rows,
+  pendingBusinessProfiles,
   newClientInvite,
 });
   } catch (error) {
     return next(error);
   }
 });
+/* =====================================
+   TENANT BUSINESS PROFILES
+===================================== */
 
+router.get(
+  '/business-profiles/:id/logo',
+
+  async (req, res, next) => {
+    try {
+      const result =
+        await db.query(
+          `
+            SELECT
+              logo_data,
+              logo_mime_type
+            FROM tenant_profiles
+            WHERE id = $1
+            LIMIT 1
+          `,
+          [req.params.id]
+        );
+
+      const profile =
+        result.rows[0];
+
+      if (
+        !profile ||
+        !profile.logo_data ||
+        !profile.logo_mime_type
+      ) {
+        return res.status(404).end();
+      }
+
+      res.set(
+        'Content-Type',
+        profile.logo_mime_type
+      );
+
+      res.set(
+        'Cache-Control',
+        'private, max-age=3600'
+      );
+
+      return res.send(
+        profile.logo_data
+      );
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+
+router.post(
+  '/business-profiles/:id/approve',
+
+  async (req, res, next) => {
+    try {
+      const result =
+        await db.query(
+          `
+            UPDATE tenant_profiles
+            SET
+              public_status = 'approved',
+              updated_at = NOW()
+            WHERE
+              id = $1
+              AND public_consent = TRUE
+              AND public_status = 'pending'
+            RETURNING
+              id,
+              display_name
+          `,
+          [req.params.id]
+        );
+
+      if (!result.rows.length) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הפרופיל לא נמצא או שאינו ממתין לאישור',
+            'business-profiles'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          `הפרופיל של ${result.rows[0].display_name} אושר להצגה באתר`,
+          'business-profiles'
+        )
+      );
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+
+router.post(
+  '/business-profiles/:id/reject',
+
+  async (req, res, next) => {
+    try {
+      const result =
+        await db.query(
+          `
+            UPDATE tenant_profiles
+            SET
+              public_status = 'rejected',
+              updated_at = NOW()
+            WHERE
+              id = $1
+              AND public_status = 'pending'
+            RETURNING
+              id,
+              display_name
+          `,
+          [req.params.id]
+        );
+
+      if (!result.rows.length) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הפרופיל לא נמצא או שאינו ממתין לאישור',
+            'business-profiles'
+          )
+        );
+      }
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          `הפרופיל של ${result.rows[0].display_name} נדחה`,
+          'business-profiles'
+        )
+      );
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 router.get('/analytics', async (req, res, next) => {
   try {
     // =========================

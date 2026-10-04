@@ -1714,6 +1714,172 @@ background: #fff;
   }
 
 }
+/* =====================================
+   BUSINESS PROFILE APPROVALS
+===================================== */
+
+.business-profile-approvals {
+  margin-bottom: 32px;
+}
+
+.business-profile-approvals-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 14px;
+}
+
+.business-profile-approvals-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.business-profile-approvals-title h2 {
+  margin: 0;
+}
+
+.business-profile-count {
+  min-width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--oak-dark);
+  color: white;
+
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+.business-profile-approval-list {
+  display: grid;
+  gap: 14px;
+}
+
+.business-profile-approval-card {
+  display: grid;
+  grid-template-columns: 86px 1fr auto;
+  gap: 20px;
+  align-items: center;
+
+  padding: 20px;
+
+  background: var(--cream);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow);
+}
+
+.business-profile-admin-logo {
+  width: 86px;
+  height: 86px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 16px;
+
+  background: white;
+
+  border: 1px solid var(--stone-dark);
+}
+
+.business-profile-admin-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+
+  padding: 8px;
+}
+
+.business-profile-admin-logo-placeholder {
+  font-size: 1.8rem;
+}
+
+.business-profile-admin-info h3 {
+  margin: 0 0 4px;
+}
+
+.business-profile-admin-field {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--oak-dark);
+
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+.business-profile-admin-bio {
+  margin: 0 0 10px;
+
+  max-width: 650px;
+
+  color: var(--ink-soft);
+
+  line-height: 1.55;
+}
+
+.business-profile-admin-meta {
+  font-size: .78rem;
+  color: var(--ink-soft);
+
+  margin-bottom: 10px;
+}
+
+.business-profile-admin-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.business-profile-admin-links a {
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.business-profile-admin-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 800px) {
+  .business-profile-approval-card {
+    grid-template-columns: 70px 1fr;
+  }
+
+  .business-profile-admin-logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .business-profile-admin-actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+
+  .business-profile-admin-actions form {
+    flex: 1;
+  }
+
+  .business-profile-admin-actions button {
+    width: 100%;
+  }
+}
     </style>
 
     <section class="page-hero tenant-hero">

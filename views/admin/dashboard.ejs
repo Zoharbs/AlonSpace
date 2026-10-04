@@ -1574,6 +1574,203 @@
                   </details>
 
                   <% } %>
+                  <% if (
+  pendingBusinessProfiles &&
+  pendingBusinessProfiles.length
+) { %>
+
+  <section
+    class="business-profile-approvals"
+    id="business-profiles"
+  >
+
+    <div class="business-profile-approvals-head">
+
+      <div class="business-profile-approvals-title">
+
+        <h2>
+          פרופילים עסקיים לאישור
+        </h2>
+
+        <span class="business-profile-count">
+          <%= pendingBusinessProfiles.length %>
+        </span>
+
+      </div>
+
+      <span class="small">
+        ממתינים לאישור לפני הצגה באתר
+      </span>
+
+    </div>
+
+
+    <div class="business-profile-approval-list">
+
+      <% pendingBusinessProfiles.forEach(profile => { %>
+
+        <article class="business-profile-approval-card">
+
+          <div class="business-profile-admin-logo">
+
+            <% if (profile.has_logo) { %>
+
+              <img
+                src="/admin/business-profiles/<%= profile.id %>/logo"
+                alt="לוגו <%= profile.display_name %>"
+              >
+
+            <% } else { %>
+
+              <span
+                class="business-profile-admin-logo-placeholder"
+                aria-hidden="true"
+              >
+                🏢
+              </span>
+
+            <% } %>
+
+          </div>
+
+
+          <div class="business-profile-admin-info">
+
+            <h3>
+              <%= profile.display_name %>
+            </h3>
+
+
+            <% if (profile.business_field) { %>
+
+              <span class="business-profile-admin-field">
+                <%= profile.business_field %>
+              </span>
+
+            <% } %>
+
+
+            <% if (profile.bio) { %>
+
+              <p class="business-profile-admin-bio">
+                <%= profile.bio %>
+              </p>
+
+            <% } %>
+
+
+            <div class="business-profile-admin-meta">
+
+              נשלח על ידי
+              <strong>
+                <%= profile.tenant_name %>
+              </strong>
+
+              <% if (profile.office_number) { %>
+                · משרד <%= profile.office_number %>
+              <% } %>
+
+              <% if (profile.floor) { %>
+                · קומה <%= profile.floor %>
+              <% } %>
+
+            </div>
+
+
+            <% if (
+              profile.website_url ||
+              profile.linkedin_url
+            ) { %>
+
+              <div class="business-profile-admin-links">
+
+                <% if (profile.website_url) { %>
+
+                  <a
+                    href="<%= profile.website_url %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    אתר העסק ↗
+                  </a>
+
+                <% } %>
+
+
+                <% if (profile.linkedin_url) { %>
+
+                  <a
+                    href="<%= profile.linkedin_url %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    LinkedIn ↗
+                  </a>
+
+                <% } %>
+
+              </div>
+
+            <% } %>
+
+          </div>
+
+
+          <div class="business-profile-admin-actions">
+
+            <form
+              method="POST"
+              action="/admin/business-profiles/<%= profile.id %>/reject"
+              onsubmit="return confirm('לדחות את הפרופיל העסקי?')"
+            >
+
+              <input
+                type="hidden"
+                name="_csrf"
+                value="<%= csrfToken %>"
+              >
+
+              <button
+                type="submit"
+                class="mini-btn danger"
+              >
+                דחייה
+              </button>
+
+            </form>
+
+
+            <form
+              method="POST"
+              action="/admin/business-profiles/<%= profile.id %>/approve"
+            >
+
+              <input
+                type="hidden"
+                name="_csrf"
+                value="<%= csrfToken %>"
+              >
+
+              <button
+                type="submit"
+                class="mini-btn primary"
+              >
+                ✓ אישור והצגה באתר
+              </button>
+
+            </form>
+
+          </div>
+
+        </article>
+
+      <% }) %>
+
+    </div>
+
+  </section>
+
+<% } %>
                     <div class="stat-cards">
                       <div class="stat-card">
                         <div class="n">
