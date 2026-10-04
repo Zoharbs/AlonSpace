@@ -1172,6 +1172,258 @@
     .admin-bookings-table tbody tr:last-child td {
       border-bottom: 0;
     }
+    /* =====================================
+   BUSINESS PROFILE APPROVALS
+===================================== */
+
+.business-profile-approvals {
+  margin: 24px 0 32px;
+}
+
+.business-profile-approvals-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.business-profile-approvals-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.business-profile-approvals-title h2 {
+  margin: 0;
+}
+
+.business-profile-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 30px;
+  height: 30px;
+  padding: 0 9px;
+
+  border-radius: 999px;
+
+  background: var(--oak-dark);
+  color: #fff;
+
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+
+/* CARD */
+
+.business-profile-approval-list {
+  display: grid;
+  gap: 12px;
+}
+
+.business-profile-approval-card {
+  display: grid;
+  grid-template-columns:
+    76px minmax(0, 1fr) auto;
+
+  align-items: center;
+  gap: 18px;
+
+  padding: 16px 18px;
+
+  background: var(--cream);
+  border: 1px solid var(--stone-dark);
+  border-radius: 18px;
+
+  box-shadow: var(--shadow);
+}
+
+
+/* LOGO - intentionally strict */
+
+.business-profile-approval-card
+.business-profile-admin-logo {
+  width: 76px !important;
+  height: 76px !important;
+
+  min-width: 76px !important;
+  max-width: 76px !important;
+
+  min-height: 76px !important;
+  max-height: 76px !important;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: #fff;
+  border: 1px solid var(--stone-dark);
+  border-radius: 14px;
+}
+
+.business-profile-approval-card
+.business-profile-admin-logo > img {
+  display: block !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  max-width: 100% !important;
+  max-height: 100% !important;
+
+  object-fit: contain !important;
+
+  padding: 7px !important;
+  margin: 0 !important;
+}
+
+.business-profile-admin-logo-placeholder {
+  font-size: 1.6rem;
+}
+
+
+/* INFO */
+
+.business-profile-admin-info {
+  min-width: 0;
+}
+
+.business-profile-admin-info h3 {
+  margin: 0 0 3px;
+  font-size: 1.05rem;
+}
+
+.business-profile-admin-field {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--oak-dark);
+
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.business-profile-admin-bio {
+  max-width: 650px;
+
+  margin: 0 0 7px;
+
+  color: var(--ink-soft);
+
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.business-profile-admin-meta {
+  margin-bottom: 8px;
+
+  color: var(--ink-soft);
+
+  font-size: 0.75rem;
+}
+
+
+/* LINKS */
+
+.business-profile-admin-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.business-profile-admin-links a {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 9px;
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 8px;
+
+  color: var(--oak-dark);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+.business-profile-admin-links a:hover {
+  background: var(--stone);
+}
+
+
+/* ACTIONS */
+
+.business-profile-admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.business-profile-admin-actions form {
+  margin: 0;
+}
+
+.business-profile-admin-actions button {
+  white-space: nowrap;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+
+  .business-profile-approvals-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .business-profile-approval-card {
+    grid-template-columns:
+      64px minmax(0, 1fr);
+
+    gap: 13px;
+    padding: 14px;
+  }
+
+  .business-profile-approval-card
+  .business-profile-admin-logo {
+    width: 64px !important;
+    height: 64px !important;
+
+    min-width: 64px !important;
+    max-width: 64px !important;
+
+    min-height: 64px !important;
+    max-height: 64px !important;
+  }
+
+  .business-profile-admin-actions {
+    grid-column: 1 / -1;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    width: 100%;
+  }
+
+  .business-profile-admin-actions form,
+  .business-profile-admin-actions button {
+    width: 100%;
+  }
+
+}
   </style>
 </head>
 
