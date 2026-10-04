@@ -228,10 +228,11 @@
           </a>
 
 
-<a href="/dashboard#business-profile">
-
+<a
+  href="/dashboard/community"
+  class="<%= currentPath === '/dashboard/community' ? 'active' : '' %>"
+>
   קהילה
-
 </a>
           <a href="https://wa.me/<%= site.phoneHref %>?text=<%= encodeURIComponent('שלום, אני דייר/ת ב-AlonSpace ורוצה ליצור קשר עם ההנהלה.') %>"
             target="_blank" rel="noopener">

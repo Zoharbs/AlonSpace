@@ -333,6 +333,204 @@ created_at,
 
   }
 });
+/* =====================================
+   ALONSPACE COMMUNITY
+===================================== */
+
+router.get('/community',
+
+  async (req, res, next) => {
+
+    try {
+
+      /* =====================================
+         CURRENT USER
+      ===================================== */
+
+      const userResult =
+        await db.query(
+          `
+            SELECT
+              id,
+              username,
+              email,
+              display_name,
+              phone,
+              business_name,
+              office_number,
+              floor
+            FROM users
+            WHERE
+              id = $1
+              AND role = 'tenant'
+              AND is_active = TRUE
+            LIMIT 1
+          `,
+          [req.session.userId]
+        );
+
+
+      const user =
+        userResult.rows[0];
+
+
+      if (!user) {
+
+        return req.session.destroy(() => {
+          res.redirect('/login');
+        });
+
+      }
+
+
+      /* =====================================
+         COMMUNITY PROFILES
+      ===================================== */
+
+      const profilesResult =
+        await db.query(
+          `
+            SELECT
+              tp.id,
+              tp.user_id,
+              tp.display_name,
+              tp.business_field,
+              tp.bio,
+              tp.website_url,
+              tp.linkedin_url,
+
+              tp.logo_data IS NOT NULL
+                AS has_logo,
+
+              tp.community_visible,
+
+              u.office_number,
+              u.floor
+
+            FROM tenant_profiles tp
+
+            JOIN users u
+              ON u.id = tp.user_id
+
+            WHERE
+              tp.community_visible = TRUE
+              AND u.role = 'tenant'
+              AND u.is_active = TRUE
+
+            ORDER BY
+              tp.display_name ASC
+          `
+        );
+
+
+      const communityProfiles =
+        profilesResult.rows;
+
+
+      return res.render(
+        'community',
+        {
+          title:
+            'קהילת AlonSpace',
+
+          user,
+
+          communityProfiles,
+
+          error:
+            req.query.error || null,
+
+          success:
+            req.query.success || null,
+        }
+      );
+
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   COMMUNITY PROFILE LOGO
+===================================== */
+
+router.get(
+  '/community/business-profiles/:id/logo',
+
+  async (req, res, next) => {
+
+    try {
+
+      const result =
+        await db.query(
+          `
+            SELECT
+              tp.logo_data,
+              tp.logo_mime_type
+
+            FROM tenant_profiles tp
+
+            JOIN users u
+              ON u.id = tp.user_id
+
+            WHERE
+              tp.id = $1
+              AND tp.community_visible = TRUE
+              AND u.role = 'tenant'
+              AND u.is_active = TRUE
+
+            LIMIT 1
+          `,
+          [req.params.id]
+        );
+
+
+      const profile =
+        result.rows[0];
+
+
+      if (
+        !profile ||
+        !profile.logo_data ||
+        !profile.logo_mime_type
+      ) {
+
+        return res.status(404).end();
+
+      }
+
+
+      res.set(
+        'Content-Type',
+        profile.logo_mime_type
+      );
+
+
+      res.set(
+        'Cache-Control',
+        'private, max-age=3600'
+      );
+
+
+      return res.send(
+        profile.logo_data
+      );
+
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+
+  }
+);
 router.post(
   '/business-profile',
 

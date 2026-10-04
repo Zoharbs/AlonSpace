@@ -36,10 +36,17 @@ router.use((req, res, next) => {
 
 router.get('/', async (req, res, next) => {
   try {
+
     const [
       testimonialsResult,
       galleryResult,
+      publicProfilesResult,
     ] = await Promise.all([
+
+      /* =====================================
+         TESTIMONIALS
+      ===================================== */
+
       db.query(`
         SELECT *
         FROM testimonials
@@ -48,25 +55,153 @@ router.get('/', async (req, res, next) => {
         LIMIT 3
       `),
 
+
+      /* =====================================
+         GALLERY
+      ===================================== */
+
       db.query(`
         SELECT *
         FROM gallery
         ORDER BY sort_order ASC, id ASC
         LIMIT 6
       `),
+
+
+      /* =====================================
+         PUBLIC BUSINESS PROFILES
+      ===================================== */
+
+      db.query(`
+        SELECT
+          tp.id,
+          tp.display_name,
+          tp.business_field,
+          tp.bio,
+          tp.website_url,
+          tp.linkedin_url,
+
+          tp.logo_data IS NOT NULL
+            AS has_logo
+
+        FROM tenant_profiles tp
+
+        JOIN users u
+          ON u.id = tp.user_id
+
+        WHERE
+          tp.community_visible = TRUE
+          AND tp.public_consent = TRUE
+          AND tp.public_status = 'approved'
+          AND u.role = 'tenant'
+          AND u.is_active = TRUE
+
+        ORDER BY
+          tp.display_name ASC
+      `),
+
     ]);
 
+
     return res.render('home', {
+
       title:
         'AlonSpace - משרדים פרטיים בלב תל אביב',
-      testimonials: testimonialsResult.rows,
-      gallery: galleryResult.rows,
+
+      testimonials:
+        testimonialsResult.rows,
+
+      gallery:
+        galleryResult.rows,
+
+      publicProfiles:
+        publicProfilesResult.rows,
+
     });
+
   } catch (error) {
+
     return next(error);
+
   }
 });
+/* =====================================
+   PUBLIC BUSINESS PROFILE LOGO
+===================================== */
 
+router.get(
+  '/business-profiles/:id/logo',
+
+  async (req, res, next) => {
+
+    try {
+
+      const result =
+        await db.query(
+          `
+            SELECT
+              tp.logo_data,
+              tp.logo_mime_type
+
+            FROM tenant_profiles tp
+
+            JOIN users u
+              ON u.id = tp.user_id
+
+            WHERE
+              tp.id = $1
+              AND tp.community_visible = TRUE
+              AND tp.public_consent = TRUE
+              AND tp.public_status = 'approved'
+              AND u.role = 'tenant'
+              AND u.is_active = TRUE
+
+            LIMIT 1
+          `,
+          [req.params.id]
+        );
+
+
+      const profile =
+        result.rows[0];
+
+
+      if (
+        !profile ||
+        !profile.logo_data ||
+        !profile.logo_mime_type
+      ) {
+
+        return res.status(404).end();
+
+      }
+
+
+      res.set(
+        'Content-Type',
+        profile.logo_mime_type
+      );
+
+
+      res.set(
+        'Cache-Control',
+        'public, max-age=3600'
+      );
+
+
+      return res.send(
+        profile.logo_data
+      );
+
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+
+  }
+);
 router.get(
   ['/אודות', '/about'],
   (req, res) => {
