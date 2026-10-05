@@ -247,6 +247,48 @@
 
   font-size: .78rem;
 }
+/* =====================================
+   PEOPLE AUTO CAROUSEL
+===================================== */
+
+.people-business-grid.people-carousel {
+  display: flex;
+
+  justify-content: flex-start;
+
+  max-width: 760px;
+
+  overflow: hidden;
+
+  gap: 16px;
+}
+
+
+.people-carousel .people-profile-card {
+  flex: 0 0 calc(50% - 8px);
+
+  min-width: 0;
+}
+
+
+.people-carousel.is-moving {
+  transition: transform .55s ease;
+}
+
+
+@media (max-width: 700px) {
+
+  .people-business-grid.people-carousel {
+    display: flex;
+
+    gap: 14px;
+  }
+
+  .people-carousel .people-profile-card {
+    flex: 0 0 100%;
+  }
+
+}
 </style>
     <section class="hero">
       <div class="container">
@@ -403,8 +445,10 @@
       </div>
 
 
-      <div class="people-business-grid">
-
+<div
+  class="people-business-grid <%= approvedPublicProfiles.length >= 3 ? 'people-carousel' : '' %>"
+  id="peopleBusinessGrid"
+>
         <% approvedPublicProfiles.forEach(profile => { %>
 
           <article class="people-profile-card">
@@ -700,6 +744,100 @@
     ].classList.add('active');
   }
 
+  /* =====================================
+   PEOPLE CAROUSEL
+===================================== */
+
+const peopleCarousel =
+  document.getElementById(
+    'peopleBusinessGrid'
+  );
+
+
+if (
+  peopleCarousel &&
+  peopleCarousel.classList.contains(
+    'people-carousel'
+  )
+) {
+
+  let peopleCarouselBusy = false;
+
+
+  function movePeopleCarousel() {
+
+    if (peopleCarouselBusy) {
+      return;
+    }
+
+
+    const firstCard =
+      peopleCarousel.querySelector(
+        '.people-profile-card'
+      );
+
+
+    if (!firstCard) {
+      return;
+    }
+
+
+    peopleCarouselBusy = true;
+
+
+    const styles =
+      window.getComputedStyle(
+        peopleCarousel
+      );
+
+
+    const gap =
+      parseFloat(styles.gap) || 0;
+
+
+    const distance =
+      firstCard.getBoundingClientRect().width +
+      gap;
+
+
+    peopleCarousel.classList.add(
+      'is-moving'
+    );
+
+
+    peopleCarousel.style.transform =
+      `translateX(${distance}px)`;
+
+
+    setTimeout(() => {
+
+      peopleCarousel.classList.remove(
+        'is-moving'
+      );
+
+
+      peopleCarousel.style.transform =
+        'none';
+
+
+      peopleCarousel.appendChild(
+        firstCard
+      );
+
+
+      peopleCarouselBusy = false;
+
+    }, 550);
+
+  }
+
+
+  setInterval(
+    movePeopleCarousel,
+    4000
+  );
+
+}
 
   if (heroSlides.length > 1) {
 
