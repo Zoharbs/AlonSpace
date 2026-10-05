@@ -1706,6 +1706,14 @@
     #tab-clients>details.floor-directory-section>.admin-card {
       margin-top: 0;
     }
+
+    .floor-directory-card {
+      margin-bottom: 0;
+    }
+
+    .floor-directory-card .floor-directory-head {
+      margin-top: 0;
+    }
   </style>
 </head>
 
@@ -3128,55 +3136,62 @@
 
 </section>
 -->
-                          <details class="floor-directory-section">
+                          <details class="admin-collapse floor-directory-section">
 
-                            <summary>ניהול מפת הקומה / דיירים</summary>
-                            <div class="floor-directory-head">
-                              <div>
-                                <h2>מפות קומות</h2>
-                                <p class="small">
-                                  יצירת רשימת דיירים מעודכנת למסכי המתחם.
-                                </p>
-                              </div>
+                            <summary>
+                              ניהול מפת הקומה / דיירים
+                            </summary>
 
-                              <div class="floor-directory-switch">
-                                <button type="button" class="mini-btn primary floor-directory-btn" data-floor="4">
-                                  קומה 4
-                                </button>
+                            <div class="admin-card floor-directory-card">
 
-                                <button type="button" class="mini-btn floor-directory-btn" data-floor="6">
-                                  קומה 6
-                                </button>
-                              </div>
-                            </div>
+                              <div class="floor-directory-head">
+                                <div>
+                                  <h2>מפות קומות</h2>
+                                  <p class="small">
+                                    יצירת רשימת דיירים מעודכנת למסכי המתחם.
+                                  </p>
+                                </div>
 
+                                <div class="floor-directory-switch">
+                                  <button type="button" class="mini-btn primary floor-directory-btn" data-floor="4">
+                                    קומה 4
+                                  </button>
 
-                            <div class="floor-directory-preview">
-
-                              <img id="floorDirectoryPreview" src="/images/floor4-map.png" alt="מפת קומה">
-
-                            </div>
-
-
-                            <button type="button" class="btn btn-primary" id="saveFloorImage">
-                              שמירת תמונת הקומה
-                            </button>
-
-
-                            <div class="floor-directory-editor">
-
-                              <div class="floor-directory-editor-head">
-                                <h3 id="floorDirectoryTitle">
-                                  רשימת דיירים — קומה 4
-                                </h3>
-
-                                <span class="small">
-                                  ניתן לערוך את השם שיופיע בתמונה
-                                </span>
+                                  <button type="button" class="mini-btn floor-directory-btn" data-floor="6">
+                                    קומה 6
+                                  </button>
+                                </div>
                               </div>
 
 
-                              <div class="floor-directory-list" id="floorDirectoryList"></div>
+                              <div class="floor-directory-preview">
+
+                                <img id="floorDirectoryPreview" src="/images/floor4-map.png" alt="מפת קומה">
+
+                              </div>
+
+
+                              <button type="button" class="btn btn-primary" id="saveFloorImage">
+                                שמירת תמונת הקומה
+                              </button>
+
+
+                              <div class="floor-directory-editor">
+
+                                <div class="floor-directory-editor-head">
+                                  <h3 id="floorDirectoryTitle">
+                                    רשימת דיירים — קומה 4
+                                  </h3>
+
+                                  <span class="small">
+                                    ניתן לערוך את השם שיופיע בתמונה
+                                  </span>
+                                </div>
+
+
+                                <div class="floor-directory-list" id="floorDirectoryList"></div>
+
+                              </div>
 
                             </div>
 
