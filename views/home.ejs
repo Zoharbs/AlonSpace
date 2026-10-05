@@ -247,34 +247,54 @@
 
   font-size: .78rem;
 }
-
 /* =====================================
-   PEOPLE HORIZONTAL CAROUSEL
+   SMART PEOPLE CAROUSEL
 ===================================== */
 
 .people-carousel-viewport {
   width: 100%;
+  max-width: 1200px;
 
-  max-width: 760px;
   margin: 0 auto;
-}
 
-
-.people-carousel-viewport.is-carousel {
   overflow: hidden;
 }
 
 
-.people-carousel-viewport.is-carousel
+.people-carousel-viewport
 .people-business-grid {
   display: flex;
 
-  width: max-content;
-  max-width: none;
+  flex-wrap: nowrap;
 
-  justify-content: flex-start;
+  justify-content: center;
 
   gap: 16px;
+
+  max-width: none;
+  margin: 0 auto;
+}
+
+
+.people-carousel-viewport
+.people-profile-card {
+  flex: 0 0 280px;
+
+  width: 280px;
+
+  min-width: 0;
+
+  direction: rtl;
+}
+
+
+/* רק כשבאמת אין מקום */
+
+.people-carousel-viewport.is-overflowing
+.people-business-grid {
+  justify-content: flex-start;
+
+  width: max-content;
 
   margin: 0;
 
@@ -284,21 +304,19 @@
 }
 
 
-.people-carousel-viewport.is-carousel
+.people-carousel-viewport.is-overflowing
 .people-profile-card {
-  flex: 0 0 340px;
-
-  width: 340px;
-
   direction: rtl;
 }
 
 
+/* MOBILE */
+
 @media (max-width: 700px) {
 
-  .people-carousel-viewport.is-carousel
+  .people-carousel-viewport
   .people-profile-card {
-    flex-basis: min(82vw, 330px);
+    flex: 0 0 min(82vw, 330px);
 
     width: min(82vw, 330px);
   }
@@ -458,10 +476,8 @@
         </p>
 
       </div>
-
-
 <div
-  class="people-carousel-viewport <%= approvedPublicProfiles.length > 1 ? 'is-carousel' : '' %>"
+  class="people-carousel-viewport"
   id="peopleCarouselViewport"
 >
 
@@ -469,7 +485,7 @@
     class="people-business-grid"
     id="peopleBusinessGrid"
   >
-        <% approvedPublicProfiles.forEach(profile => { %>
+          <% approvedPublicProfiles.forEach(profile => { %>
 
           <article class="people-profile-card">
 
@@ -764,10 +780,8 @@
       heroSlideIndex
     ].classList.add('active');
   }
-
-  /* =====================================
-  /* =====================================
-   PEOPLE INFINITE CAROUSEL
+/* =====================================
+   SMART INFINITE PEOPLE CAROUSEL
 ===================================== */
 
 const peopleViewport =
@@ -783,50 +797,169 @@ const peopleTrack =
 
 if (
   peopleViewport &&
-  peopleTrack &&
-  peopleViewport.classList.contains(
-    'is-carousel'
-  )
+  peopleTrack
 ) {
 
   const originalCards =
     Array.from(
-      peopleTrack.children
+      peopleTrack.querySelectorAll(
+        '.people-profile-card'
+      )
     );
 
 
-  /*
-    Duplicate the cards so the movement
-    can continue seamlessly.
-  */
-
-  originalCards.forEach((card) => {
-
-    const clone =
-      card.cloneNode(true);
-
-    clone.setAttribute(
-      'aria-hidden',
-      'true'
-    );
-
-    peopleTrack.appendChild(clone);
-
-  });
-
-
-  let position = 0;
+  let animationFrame = null;
   let previousTime = null;
-
-  /*
-    Lower number = slower movement.
-    Pixels per second.
-  */
-
-  const speed = 18;
+  let position = 0;
+  let loopWidth = 0;
 
 
-  function animatePeopleCarousel(time) {
+  const speed = 14;
+
+
+  function getGap() {
+
+    const styles =
+      window.getComputedStyle(
+        peopleTrack
+      );
+
+    return (
+      parseFloat(styles.columnGap) ||
+      parseFloat(styles.gap) ||
+      0
+    );
+
+  }
+
+
+  function getOriginalWidth() {
+
+    const gap =
+      getGap();
+
+
+    const cardsWidth =
+      originalCards.reduce(
+        (total, card) => {
+
+          return (
+            total +
+            card.getBoundingClientRect().width
+          );
+
+        },
+        0
+      );
+
+
+    return (
+      cardsWidth +
+      gap *
+        Math.max(
+          0,
+          originalCards.length - 1
+        )
+    );
+
+  }
+
+
+  function removeClones() {
+
+    peopleTrack
+      .querySelectorAll(
+        '[data-people-clone="true"]'
+      )
+      .forEach((clone) => {
+        clone.remove();
+      });
+
+  }
+
+
+  function stopCarousel() {
+
+    if (animationFrame) {
+
+      cancelAnimationFrame(
+        animationFrame
+      );
+
+      animationFrame = null;
+
+    }
+
+
+    previousTime = null;
+    position = 0;
+
+
+    peopleTrack.style.transform =
+      'none';
+
+  }
+
+
+  function createClones() {
+
+    removeClones();
+
+
+    /*
+      We duplicate complete sequences
+      until there is always another set
+      waiting outside the viewport.
+    */
+
+    const requiredWidth =
+      peopleViewport.clientWidth +
+      loopWidth;
+
+
+    let currentWidth =
+      loopWidth;
+
+
+    while (
+      currentWidth <
+      requiredWidth
+    ) {
+
+      originalCards.forEach(
+        (card) => {
+
+          const clone =
+            card.cloneNode(true);
+
+
+          clone.dataset.peopleClone =
+            'true';
+
+
+          clone.setAttribute(
+            'aria-hidden',
+            'true'
+          );
+
+
+          peopleTrack.appendChild(
+            clone
+          );
+
+        }
+      );
+
+
+      currentWidth +=
+        loopWidth;
+
+    }
+
+  }
+
+
+  function animateCarousel(time) {
 
     if (previousTime === null) {
       previousTime = time;
@@ -834,7 +967,11 @@ if (
 
 
     const delta =
-      (time - previousTime) / 1000;
+      Math.min(
+        (time - previousTime) / 1000,
+        0.05
+      );
+
 
     previousTime = time;
 
@@ -843,53 +980,126 @@ if (
       speed * delta;
 
 
-    const firstOriginalCard =
-      originalCards[0];
-
-    const lastOriginalCard =
-      originalCards[
-        originalCards.length - 1
-      ];
-
-
     if (
-      firstOriginalCard &&
-      lastOriginalCard
+      position >= loopWidth
     ) {
 
-      const start =
-        firstOriginalCard.offsetLeft;
-
-      const end =
-        lastOriginalCard.offsetLeft +
-        lastOriginalCard.offsetWidth;
-
-      const originalWidth =
-        end - start + 16;
-
-
-      if (
-        position >= originalWidth
-      ) {
-        position -= originalWidth;
-      }
+      position -=
+        loopWidth;
 
     }
 
 
     peopleTrack.style.transform =
-      `translateX(-${position}px)`;
+      `translate3d(
+        -${position}px,
+        0,
+        0
+      )`;
 
 
-    requestAnimationFrame(
-      animatePeopleCarousel
-    );
+    animationFrame =
+      requestAnimationFrame(
+        animateCarousel
+      );
 
   }
 
 
-  requestAnimationFrame(
-    animatePeopleCarousel
+  function setupPeopleCarousel() {
+
+    stopCarousel();
+    removeClones();
+
+
+    peopleViewport.classList.remove(
+      'is-overflowing'
+    );
+
+
+    /*
+      Measure how much space the original
+      cards actually need.
+    */
+
+    const originalWidth =
+      getOriginalWidth();
+
+
+    const availableWidth =
+      peopleViewport.clientWidth;
+
+
+    /*
+      Everything fits:
+      keep all cards visible and static.
+    */
+
+    if (
+      originalWidth <=
+      availableWidth
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+      Not enough room:
+      turn it into the infinite conveyor.
+    */
+
+    peopleViewport.classList.add(
+      'is-overflowing'
+    );
+
+
+    const gap =
+      getGap();
+
+
+    loopWidth =
+      originalWidth + gap;
+
+
+    createClones();
+
+
+    position = 0;
+    previousTime = null;
+
+
+    animationFrame =
+      requestAnimationFrame(
+        animateCarousel
+      );
+
+  }
+
+
+  setupPeopleCarousel();
+
+
+  let peopleResizeTimer;
+
+
+  window.addEventListener(
+    'resize',
+    () => {
+
+      clearTimeout(
+        peopleResizeTimer
+      );
+
+
+      peopleResizeTimer =
+        setTimeout(
+          setupPeopleCarousel,
+          150
+        );
+
+    }
   );
 
 }
