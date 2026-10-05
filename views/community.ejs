@@ -448,21 +448,19 @@
 
                 <!-- LOGO -->
 
-                <div class="community-logo">
+               <% if (profile.has_logo) { %>
 
-                  <% if (profile.has_logo) { %>
+  <div class="community-logo">
 
-                    <img
-                      src="/dashboard/community/business-profiles/<%= profile.id %>/logo"
-                      alt="לוגו <%= profile.display_name %>"
-                      loading="lazy"
-                    >
+    <img
+      src="/dashboard/community/business-profiles/<%= profile.id %>/logo"
+      alt="לוגו <%= profile.display_name %>"
+      loading="lazy"
+    >
 
+  </div>
 
-                  <% } %>
-
-                </div>
-
+<% } %>
 
                 <!-- NAME -->
 
