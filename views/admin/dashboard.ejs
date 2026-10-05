@@ -1601,6 +1601,35 @@
   }
 
 }
+/* =====================================
+   BUSINESS PROFILES INSIDE CLIENTS
+===================================== */
+
+.business-profiles-collapse {
+  margin-bottom: 20px;
+}
+
+.business-profiles-collapse > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.business-profiles-collapse .business-profile-count {
+  flex-shrink: 0;
+}
+
+.business-profiles-collapse
+.business-profile-approvals {
+  margin-top: 12px !important;
+}
+
+.business-profiles-collapse
+.business-profile-approvals-head {
+  padding: 0 4px;
+  margin-bottom: 10px !important;
+}
   </style>
 </head>
 
@@ -2004,354 +2033,7 @@
 
                  <% } %>
 
-<% if (
-  businessProfiles &&
-  businessProfiles.length
-) { %>
 
-<section
-    class="business-profile-approvals"
-    id="business-profiles"
-  >
-
-    <div class="business-profile-approvals-head">
-
-      <div class="business-profile-approvals-title">
-
-        <h2>
-          פרופילים עסקיים
-        </h2>
-
-        <span class="business-profile-count">
-          <%= businessProfiles.length %>
-        </span>
-
-      </div>
-
-      <span class="small">
-        ניהול החשיפה בקהילת הדיירים ובאתר הציבורי
-      </span>
-
-    </div>
-
-
-    <div class="business-profile-approval-list">
-
-      <% businessProfiles.forEach(profile => { %>
-
-        <article class="business-profile-approval-card">
-
-
-          <!-- LOGO -->
-
-          <div class="business-profile-admin-logo">
-
-            <% if (profile.has_logo) { %>
-
-              <img
-                src="/admin/business-profiles/<%= profile.id %>/logo"
-                alt="לוגו <%= profile.display_name %>"
-              >
-
-            <% } else { %>
-
-              <span
-                class="business-profile-admin-logo-placeholder"
-                aria-hidden="true"
-              >
-                🏢
-              </span>
-
-            <% } %>
-
-          </div>
-
-
-          <!-- INFO -->
-
-          <div class="business-profile-admin-info">
-
-            <div class="business-profile-admin-name-row">
-
-              <h3>
-                <%= profile.display_name %>
-              </h3>
-
-              <% if (
-                profile.public_consent &&
-                profile.public_status === 'pending'
-              ) { %>
-
-                <span class="profile-admin-status pending">
-                  ממתין לאישור
-                </span>
-
-              <% } else if (
-                profile.public_consent &&
-                profile.public_status === 'approved'
-              ) { %>
-
-                <span class="profile-admin-status approved">
-                  מוצג באתר
-                </span>
-
-              <% } else if (
-                profile.public_consent &&
-                profile.public_status === 'rejected'
-              ) { %>
-
-                <span class="profile-admin-status rejected">
-                  לא מוצג באתר
-                </span>
-
-              <% } else { %>
-
-                <span class="profile-admin-status private">
-                  ללא פרסום ציבורי
-                </span>
-
-              <% } %>
-
-            </div>
-
-
-            <% if (profile.business_field) { %>
-
-              <span class="business-profile-admin-field">
-                <%= profile.business_field %>
-              </span>
-
-            <% } %>
-
-
-            <!-- REQUESTED VISIBILITY -->
-
-            <div class="business-profile-visibility">
-
-              <span class="business-profile-visibility-label">
-                חשיפה:
-              </span>
-
-
-              <span
-                class="
-                  visibility-chip
-                  <%= profile.community_visible ? 'active' : 'inactive' %>
-                "
-              >
-                <%= profile.community_visible ? '✓' : '—' %>
-                קהילת הדיירים
-              </span>
-
-
-              <span
-                class="
-                  visibility-chip
-                  <%= profile.public_consent ? 'active' : 'inactive' %>
-                "
-              >
-                <%= profile.public_consent ? '✓' : '—' %>
-                האתר הציבורי
-              </span>
-
-            </div>
-
-
-            <% if (profile.bio) { %>
-
-              <p class="business-profile-admin-bio">
-                <%= profile.bio %>
-              </p>
-
-            <% } %>
-
-
-            <div class="business-profile-admin-meta">
-
-              נשלח על ידי
-
-              <strong>
-                <%= profile.tenant_name %>
-              </strong>
-
-              <% if (profile.office_number) { %>
-                · משרד <%= profile.office_number %>
-              <% } %>
-
-              <% if (profile.floor) { %>
-                · קומה <%= profile.floor %>
-              <% } %>
-
-            </div>
-
-
-            <% if (
-              profile.website_url ||
-              profile.linkedin_url
-            ) { %>
-
-              <div class="business-profile-admin-links">
-
-                <% if (profile.website_url) { %>
-
-                  <a
-                    href="<%= profile.website_url %>"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    אתר העסק ↗
-                  </a>
-
-                <% } %>
-
-
-                <% if (profile.linkedin_url) { %>
-
-                  <a
-                    href="<%= profile.linkedin_url %>"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    LinkedIn ↗
-                  </a>
-
-                <% } %>
-
-              </div>
-
-            <% } %>
-
-          </div>
-
-
-          <!-- ACTIONS -->
-
-          <div class="business-profile-admin-actions">
-
-
-            <% if (
-              profile.public_consent &&
-              profile.public_status === 'pending'
-            ) { %>
-
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/reject"
-                onsubmit="return confirm('לדחות את הפרסום באתר הציבורי?')"
-              >
-
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
-
-                <button
-                  type="submit"
-                  class="mini-btn danger"
-                >
-                  דחייה
-                </button>
-
-              </form>
-
-
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/approve"
-              >
-
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
-
-                <button
-                  type="submit"
-                  class="mini-btn primary"
-                >
-                  ✓ אישור לאתר
-                </button>
-
-              </form>
-
-
-            <% } else if (
-              profile.public_consent &&
-              profile.public_status === 'approved'
-            ) { %>
-
-
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/unpublish"
-                onsubmit="return confirm('להסיר את העסק מהאתר הציבורי?')"
-              >
-
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
-
-                <button
-                  type="submit"
-                  class="mini-btn danger"
-                >
-                  הסרה מהאתר
-                </button>
-
-              </form>
-
-
-            <% } else if (
-              profile.public_consent &&
-              profile.public_status === 'rejected'
-            ) { %>
-
-
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/approve"
-              >
-
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
-
-                <button
-                  type="submit"
-                  class="mini-btn primary"
-                >
-                  ✓ אישור מחדש
-                </button>
-
-              </form>
-
-
-            <% } else { %>
-
-              <span class="business-profile-no-action">
-                אין בקשה לפרסום באתר
-              </span>
-
-            <% } %>
-
-
-          </div>
-
-        </article>
-
-      <% }) %>
-
-    </div>
-
-  </section>
-
-<% } %>
                     <div class="stat-cards">
                       <div class="stat-card">
                         <div class="n">
@@ -2886,7 +2568,354 @@
                         </div>
                       </details>
 
+<% if (
+  businessProfiles &&
+  businessProfiles.length
+) { %>
 
+<section
+    class="business-profile-approvals"
+    id="business-profiles"
+  >
+
+    <div class="business-profile-approvals-head">
+
+      <div class="business-profile-approvals-title">
+
+        <h2>
+          פרופילים עסקיים
+        </h2>
+
+        <span class="business-profile-count">
+          <%= businessProfiles.length %>
+        </span>
+
+      </div>
+
+      <span class="small">
+        ניהול החשיפה בקהילת הדיירים ובאתר הציבורי
+      </span>
+
+    </div>
+
+
+    <div class="business-profile-approval-list">
+
+      <% businessProfiles.forEach(profile => { %>
+
+        <article class="business-profile-approval-card">
+
+
+          <!-- LOGO -->
+
+          <div class="business-profile-admin-logo">
+
+            <% if (profile.has_logo) { %>
+
+              <img
+                src="/admin/business-profiles/<%= profile.id %>/logo"
+                alt="לוגו <%= profile.display_name %>"
+              >
+
+            <% } else { %>
+
+              <span
+                class="business-profile-admin-logo-placeholder"
+                aria-hidden="true"
+              >
+                🏢
+              </span>
+
+            <% } %>
+
+          </div>
+
+
+          <!-- INFO -->
+
+          <div class="business-profile-admin-info">
+
+            <div class="business-profile-admin-name-row">
+
+              <h3>
+                <%= profile.display_name %>
+              </h3>
+
+              <% if (
+                profile.public_consent &&
+                profile.public_status === 'pending'
+              ) { %>
+
+                <span class="profile-admin-status pending">
+                  ממתין לאישור
+                </span>
+
+              <% } else if (
+                profile.public_consent &&
+                profile.public_status === 'approved'
+              ) { %>
+
+                <span class="profile-admin-status approved">
+                  מוצג באתר
+                </span>
+
+              <% } else if (
+                profile.public_consent &&
+                profile.public_status === 'rejected'
+              ) { %>
+
+                <span class="profile-admin-status rejected">
+                  לא מוצג באתר
+                </span>
+
+              <% } else { %>
+
+                <span class="profile-admin-status private">
+                  ללא פרסום ציבורי
+                </span>
+
+              <% } %>
+
+            </div>
+
+
+            <% if (profile.business_field) { %>
+
+              <span class="business-profile-admin-field">
+                <%= profile.business_field %>
+              </span>
+
+            <% } %>
+
+
+            <!-- REQUESTED VISIBILITY -->
+
+            <div class="business-profile-visibility">
+
+              <span class="business-profile-visibility-label">
+                חשיפה:
+              </span>
+
+
+              <span
+                class="
+                  visibility-chip
+                  <%= profile.community_visible ? 'active' : 'inactive' %>
+                "
+              >
+                <%= profile.community_visible ? '✓' : '—' %>
+                קהילת הדיירים
+              </span>
+
+
+              <span
+                class="
+                  visibility-chip
+                  <%= profile.public_consent ? 'active' : 'inactive' %>
+                "
+              >
+                <%= profile.public_consent ? '✓' : '—' %>
+                האתר הציבורי
+              </span>
+
+            </div>
+
+
+            <% if (profile.bio) { %>
+
+              <p class="business-profile-admin-bio">
+                <%= profile.bio %>
+              </p>
+
+            <% } %>
+
+
+            <div class="business-profile-admin-meta">
+
+              נשלח על ידי
+
+              <strong>
+                <%= profile.tenant_name %>
+              </strong>
+
+              <% if (profile.office_number) { %>
+                · משרד <%= profile.office_number %>
+              <% } %>
+
+              <% if (profile.floor) { %>
+                · קומה <%= profile.floor %>
+              <% } %>
+
+            </div>
+
+
+            <% if (
+              profile.website_url ||
+              profile.linkedin_url
+            ) { %>
+
+              <div class="business-profile-admin-links">
+
+                <% if (profile.website_url) { %>
+
+                  <a
+                    href="<%= profile.website_url %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    אתר העסק ↗
+                  </a>
+
+                <% } %>
+
+
+                <% if (profile.linkedin_url) { %>
+
+                  <a
+                    href="<%= profile.linkedin_url %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    LinkedIn ↗
+                  </a>
+
+                <% } %>
+
+              </div>
+
+            <% } %>
+
+          </div>
+
+
+          <!-- ACTIONS -->
+
+          <div class="business-profile-admin-actions">
+
+
+            <% if (
+              profile.public_consent &&
+              profile.public_status === 'pending'
+            ) { %>
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/reject"
+                onsubmit="return confirm('לדחות את הפרסום באתר הציבורי?')"
+              >
+
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
+
+                <button
+                  type="submit"
+                  class="mini-btn danger"
+                >
+                  דחייה
+                </button>
+
+              </form>
+
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/approve"
+              >
+
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
+
+                <button
+                  type="submit"
+                  class="mini-btn primary"
+                >
+                  ✓ אישור לאתר
+                </button>
+
+              </form>
+
+
+            <% } else if (
+              profile.public_consent &&
+              profile.public_status === 'approved'
+            ) { %>
+
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/unpublish"
+                onsubmit="return confirm('להסיר את העסק מהאתר הציבורי?')"
+              >
+
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
+
+                <button
+                  type="submit"
+                  class="mini-btn danger"
+                >
+                  הסרה מהאתר
+                </button>
+
+              </form>
+
+
+            <% } else if (
+              profile.public_consent &&
+              profile.public_status === 'rejected'
+            ) { %>
+
+
+              <form
+                method="POST"
+                action="/admin/business-profiles/<%= profile.id %>/approve"
+              >
+
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                >
+
+                <button
+                  type="submit"
+                  class="mini-btn primary"
+                >
+                  ✓ אישור מחדש
+                </button>
+
+              </form>
+
+
+            <% } else { %>
+
+              <span class="business-profile-no-action">
+                אין בקשה לפרסום באתר
+              </span>
+
+            <% } %>
+
+
+          </div>
+
+        </article>
+
+      <% }) %>
+
+    </div>
+
+  </section>
+
+<% } %>
 
                       <section class="admin-card">
 
