@@ -1714,6 +1714,79 @@
     .floor-directory-card .floor-directory-head {
       margin-top: 0;
     }
+  /* =====================================
+   ADMIN DASHBOARD - COMPACT SPACING
+===================================== */
+
+/* פחות שטח ריק בתחילת הפאנל */
+.admin-wrap {
+  padding: 24px 0 32px;
+}
+
+
+/* סטטיסטיקות → טאבים */
+.stat-cards {
+  margin-bottom: 20px;
+}
+
+
+/* טאבים → תוכן */
+.tabs {
+  margin-bottom: 16px;
+}
+
+
+/* המרווח בין אזורי הניהול */
+#tab-clients > details.admin-collapse,
+#tab-clients > details.floor-directory-section {
+  margin-bottom: 10px;
+}
+
+
+/* כותרות האזורים מעט יותר קומפקטיות */
+#tab-clients > details.admin-collapse > summary,
+#tab-clients > details.floor-directory-section > summary {
+  min-height: 52px;
+  padding: 13px 18px;
+}
+
+
+/* כשהאזור פתוח - פחות רווח בין הכותרת לתוכן */
+#tab-clients > details.admin-collapse[open] > summary,
+#tab-clients > details.floor-directory-section[open] > summary {
+  margin-bottom: 8px;
+}
+
+
+/* רשימת לקוחות - פחות רווח בין לקוח ללקוח */
+.clients-list {
+  gap: 8px;
+}
+
+
+/* כותרת של כל לקוח */
+.client-card > summary {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+
+/* תוכן לקוח פתוח */
+.client-card .admin-card {
+  margin-top: 8px;
+}
+
+
+/* פרופילים עסקיים */
+.business-profiles-collapse {
+  margin-bottom: 10px;
+}
+
+
+/* כרטיסים רגילים בתוך אזור הלקוחות */
+#tab-clients > .admin-card {
+  margin-bottom: 14px;
+}
   </style>
 </head>
 
