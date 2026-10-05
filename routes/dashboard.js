@@ -636,31 +636,82 @@ const publicConsent =
       }
 
 
-      function validOptionalUrl(value) {
+   function normalizeOptionalUrl(value) {
 
-        if (!value) {
-          return true;
-        }
-
-
-        try {
-
-          const parsed =
-            new URL(value);
+  const trimmed =
+    String(value || '').trim();
 
 
-          return (
-            parsed.protocol === 'http:' ||
-            parsed.protocol === 'https:'
-          );
+  if (!trimmed) {
+    return {
+      valid: true,
+      url: null,
+    };
+  }
 
-        } catch {
 
-          return false;
+  const withProtocol =
+    /^https?:\/\//i.test(trimmed)
+      ? trimmed
+      : `https://${trimmed}`;
 
-        }
 
-      }
+  try {
+
+    const parsed =
+      new URL(withProtocol);
+
+
+    if (
+      parsed.protocol !== 'http:' &&
+      parsed.protocol !== 'https:'
+    ) {
+      return {
+        valid: false,
+        url: null,
+      };
+    }
+
+
+    return {
+      valid: true,
+      url: parsed.toString(),
+    };
+
+  } catch {
+
+    return {
+      valid: false,
+      url: null,
+    };
+
+  }
+
+}
+
+
+const normalizedWebsite =
+  normalizeOptionalUrl(websiteUrl);
+
+
+const normalizedLinkedin =
+  normalizeOptionalUrl(linkedinUrl);
+
+
+if (
+  !normalizedWebsite.valid ||
+  !normalizedLinkedin.valid
+) {
+
+  return res.redirect(
+    '/dashboard?error=' +
+    encodeURIComponent(
+      'כתובת האתר או LinkedIn אינה תקינה'
+    ) +
+    '#business-profile'
+  );
+
+}
 
 
       if (
@@ -850,8 +901,8 @@ public_status =
           businessField || null,
           bio || null,
 
-          websiteUrl || null,
-          linkedinUrl || null,
+normalizedWebsite.url,
+normalizedLinkedin.url,
 
           logoData,
           logoMimeType,
