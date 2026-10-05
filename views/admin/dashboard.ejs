@@ -1833,6 +1833,71 @@
 #tab-clients .floor-directory-card {
   margin: 0;
 }
+/* CLIENT SEARCH INSIDE SUMMARY */
+
+.clients-management-summary {
+  display: flex !important;
+  align-items: center !important;
+
+  gap: 16px;
+}
+
+.clients-management-title {
+  flex-shrink: 0;
+}
+
+.client-search-input {
+  width: min(360px, 100%);
+  height: 38px;
+
+  margin-right: auto;
+
+  box-sizing: border-box;
+
+  padding: 0 13px;
+
+  background: #fff;
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 10px;
+
+  color: var(--ink);
+
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 400;
+
+  outline: none;
+
+  transition:
+    border-color .15s ease,
+    box-shadow .15s ease;
+}
+
+.client-search-input::placeholder {
+  color: var(--ink-soft);
+}
+
+.client-search-input:focus {
+  border-color: var(--oak);
+
+  box-shadow:
+    0 0 0 3px rgba(160, 125, 80, .10);
+}
+
+
+@media (max-width: 700px) {
+
+  .clients-management-summary {
+    flex-wrap: wrap;
+  }
+
+  .client-search-input {
+    width: 100%;
+    margin-right: 0;
+  }
+
+}
   </style>
 </head>
 
@@ -2341,12 +2406,30 @@
                           </form>
                         </div>
                       </details>
-                      <details class="admin-collapse">
-                        <summary>ניהול לקוחות</summary>
+                     <details
+  class="admin-collapse"
+  id="clientsManagement"
+>
 
-                        <div class="table-wrap">
-                          <div class="clients-list">
+  <summary class="clients-management-summary">
 
+    <span class="clients-management-title">
+      ניהול לקוחות
+    </span>
+
+    <input
+      type="search"
+      id="clientSearch"
+      class="client-search-input"
+      placeholder="חיפוש לפי שם, קומה או משרד..."
+      autocomplete="off"
+      aria-label="חיפוש לקוחות"
+    >
+
+  </summary>
+
+  <div class="table-wrap">
+    <div class="clients-list">
                             <% if (!clients.length) { %>
 
                               <div class="admin-card" style="text-align:center;">
@@ -5463,6 +5546,92 @@ const adminClients =
       }
 
     });
+    /* =========================
+       חיפוש לקוחות
+    ========================= */
+
+    const clientsManagement =
+      document.getElementById(
+        'clientsManagement'
+      );
+
+    const clientSearch =
+      document.getElementById(
+        'clientSearch'
+      );
+
+    const clientCards =
+      document.querySelectorAll(
+        '#clientsManagement .clients-list > .client-card'
+      );
+
+
+    if (
+      clientsManagement &&
+      clientSearch
+    ) {
+
+      /*
+        מונע מהקלדה/לחיצה בשדה החיפוש
+        להתנהג כמו לחיצה על כותרת ה-details
+      */
+      clientSearch.addEventListener(
+        'click',
+        (event) => {
+          event.stopPropagation();
+        }
+      );
+
+      clientSearch.addEventListener(
+        'keydown',
+        (event) => {
+          event.stopPropagation();
+        }
+      );
+
+
+      /*
+        חיפוש LIVE:
+        רץ אחרי כל אות שמקלידים
+      */
+      clientSearch.addEventListener(
+        'input',
+        () => {
+
+          const query =
+            clientSearch.value
+              .trim()
+              .toLowerCase();
+
+          /*
+            ברגע שהתחילו להקליד,
+            ניהול הלקוחות נפתח אוטומטית
+          */
+          if (query) {
+            clientsManagement.open = true;
+          }
+
+
+          clientCards.forEach((card) => {
+
+            const text =
+              card.textContent
+                .toLowerCase();
+
+            const matches =
+              !query ||
+              text.includes(query);
+
+            card.style.display =
+              matches ? '' : 'none';
+
+          });
+
+        }
+      );
+
+    }
+
 
     /* =============================
            אתחול
