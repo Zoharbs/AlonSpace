@@ -714,21 +714,7 @@ if (
 }
 
 
-      if (
-        !validOptionalUrl(websiteUrl) ||
-        !validOptionalUrl(linkedinUrl)
-      ) {
-
-        return res.redirect(
-          '/dashboard?error=' +
-          encodeURIComponent(
-            'כתובת האתר או LinkedIn אינה תקינה'
-          ) +
-          '#business-profile'
-        );
-
-      }
-
+    
 
       /* =====================================
          CURRENT PROFILE
