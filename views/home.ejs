@@ -246,8 +246,7 @@
   padding: 7px 12px;
 
   font-size: .78rem;
-}
-/* =====================================
+}/* =====================================
    SMART PEOPLE CAROUSEL
 ===================================== */
 
@@ -258,8 +257,15 @@
   margin: 0 auto;
 
   overflow: hidden;
+
+  direction: ltr;
 }
 
+
+/*
+  המסילה תמיד ברוחב האמיתי של הכרטיסים.
+  אם הכול נכנס - היא פשוט ממורכזת.
+*/
 
 .people-carousel-viewport
 .people-business-grid {
@@ -267,58 +273,63 @@
 
   flex-wrap: nowrap;
 
-  justify-content: center;
+  width: max-content;
+  max-width: none;
 
   gap: 16px;
 
-  max-width: none;
   margin: 0 auto;
+
+  justify-content: flex-start;
+
+  direction: ltr;
 }
 
 
+/*
+  מחזירים את הגודל היפה שהיה קודם.
+*/
+
 .people-carousel-viewport
 .people-profile-card {
-  flex: 0 0 280px;
+  flex: 0 0 360px;
 
-  width: 280px;
+  width: 360px;
 
-  min-width: 0;
+  min-width: 360px;
 
   direction: rtl;
 }
 
 
-/* רק כשבאמת אין מקום */
+/*
+  כשצריך קרוסלה,
+  המסילה מתחילה מהקצה ולא ממורכזת.
+*/
 
 .people-carousel-viewport.is-overflowing
 .people-business-grid {
-  justify-content: flex-start;
-
-  width: max-content;
-
-  margin: 0;
-
-  direction: ltr;
+  margin-left: 0;
+  margin-right: 0;
 
   will-change: transform;
 }
 
 
-.people-carousel-viewport.is-overflowing
-.people-profile-card {
-  direction: rtl;
-}
-
-
-/* MOBILE */
+/* =====================================
+   MOBILE
+===================================== */
 
 @media (max-width: 700px) {
 
   .people-carousel-viewport
   .people-profile-card {
-    flex: 0 0 min(82vw, 330px);
+    flex: 0 0 calc(100vw - 64px);
 
-    width: min(82vw, 330px);
+    width: calc(100vw - 64px);
+    min-width: calc(100vw - 64px);
+
+    max-width: 340px;
   }
 
 }
@@ -809,67 +820,18 @@ if (
 
 
   let animationFrame = null;
-  let previousTime = null;
+  let lastTime = null;
   let position = 0;
   let loopWidth = 0;
 
-
-  const speed = 14;
-
-
-  function getGap() {
-
-    const styles =
-      window.getComputedStyle(
-        peopleTrack
-      );
-
-    return (
-      parseFloat(styles.columnGap) ||
-      parseFloat(styles.gap) ||
-      0
-    );
-
-  }
+  const speed = 12;
 
 
-  function getOriginalWidth() {
-
-    const gap =
-      getGap();
-
-
-    const cardsWidth =
-      originalCards.reduce(
-        (total, card) => {
-
-          return (
-            total +
-            card.getBoundingClientRect().width
-          );
-
-        },
-        0
-      );
-
-
-    return (
-      cardsWidth +
-      gap *
-        Math.max(
-          0,
-          originalCards.length - 1
-        )
-    );
-
-  }
-
-
-  function removeClones() {
+  function removePeopleClones() {
 
     peopleTrack
       .querySelectorAll(
-        '[data-people-clone="true"]'
+        '[data-people-clone]'
       )
       .forEach((clone) => {
         clone.remove();
@@ -878,9 +840,9 @@ if (
   }
 
 
-  function stopCarousel() {
+  function stopPeopleCarousel() {
 
-    if (animationFrame) {
+    if (animationFrame !== null) {
 
       cancelAnimationFrame(
         animationFrame
@@ -891,28 +853,74 @@ if (
     }
 
 
-    previousTime = null;
+    lastTime = null;
     position = 0;
 
-
     peopleTrack.style.transform =
-      'none';
+      'translate3d(0, 0, 0)';
 
   }
 
 
-  function createClones() {
+  function getPeopleGap() {
 
-    removeClones();
+    const styles =
+      getComputedStyle(
+        peopleTrack
+      );
+
+
+    return (
+      parseFloat(styles.gap) ||
+      parseFloat(styles.columnGap) ||
+      0
+    );
+
+  }
+
+
+  function calculateLoopWidth() {
+
+    const gap =
+      getPeopleGap();
+
+
+    let width = 0;
+
+
+    originalCards.forEach(
+      (card) => {
+
+        width +=
+          card.getBoundingClientRect()
+            .width;
+
+      }
+    );
 
 
     /*
-      We duplicate complete sequences
-      until there is always another set
-      waiting outside the viewport.
+      יש gap גם בין הכרטיס האחרון
+      לבין העותק הראשון.
     */
 
-    const requiredWidth =
+    width +=
+      gap * originalCards.length;
+
+
+    return width;
+
+  }
+
+
+  function addPeopleClones() {
+
+    /*
+      מוסיפים רצפים שלמים עד שיש
+      מספיק כרטיסים גם מחוץ למסך.
+    */
+
+    const targetWidth =
       peopleViewport.clientWidth +
       loopWidth;
 
@@ -923,7 +931,7 @@ if (
 
     while (
       currentWidth <
-      requiredWidth
+      targetWidth
     ) {
 
       originalCards.forEach(
@@ -933,8 +941,10 @@ if (
             card.cloneNode(true);
 
 
-          clone.dataset.peopleClone =
-            'true';
+          clone.setAttribute(
+            'data-people-clone',
+            'true'
+          );
 
 
           clone.setAttribute(
@@ -959,21 +969,21 @@ if (
   }
 
 
-  function animateCarousel(time) {
+  function animatePeople(time) {
 
-    if (previousTime === null) {
-      previousTime = time;
+    if (lastTime === null) {
+      lastTime = time;
     }
 
 
     const delta =
       Math.min(
-        (time - previousTime) / 1000,
+        (time - lastTime) / 1000,
         0.05
       );
 
 
-    previousTime = time;
+    lastTime = time;
 
 
     position +=
@@ -991,16 +1001,12 @@ if (
 
 
     peopleTrack.style.transform =
-      `translate3d(
-        -${position}px,
-        0,
-        0
-      )`;
+      `translate3d(-${position}px, 0, 0)`;
 
 
     animationFrame =
       requestAnimationFrame(
-        animateCarousel
+        animatePeople
       );
 
   }
@@ -1008,8 +1014,9 @@ if (
 
   function setupPeopleCarousel() {
 
-    stopCarousel();
-    removeClones();
+    stopPeopleCarousel();
+
+    removePeopleClones();
 
 
     peopleViewport.classList.remove(
@@ -1018,12 +1025,13 @@ if (
 
 
     /*
-      Measure how much space the original
-      cards actually need.
+      המסילה היא width:max-content,
+      לכן scrollWidth נותן לנו בדיוק
+      כמה מקום כל הכרטיסים דורשים.
     */
 
-    const originalWidth =
-      getOriginalWidth();
+    const contentWidth =
+      peopleTrack.scrollWidth;
 
 
     const availableWidth =
@@ -1031,13 +1039,13 @@ if (
 
 
     /*
-      Everything fits:
-      keep all cards visible and static.
+      כל הכרטיסים נכנסים?
+      לא עושים כלום.
     */
 
     if (
-      originalWidth <=
-      availableWidth
+      contentWidth <=
+      availableWidth + 1
     ) {
 
       return;
@@ -1046,8 +1054,8 @@ if (
 
 
     /*
-      Not enough room:
-      turn it into the infinite conveyor.
+      אין מקום לכולם:
+      מפעילים את השרשרת.
     */
 
     peopleViewport.classList.add(
@@ -1055,24 +1063,20 @@ if (
     );
 
 
-    const gap =
-      getGap();
-
-
     loopWidth =
-      originalWidth + gap;
+      calculateLoopWidth();
 
 
-    createClones();
+    addPeopleClones();
 
 
     position = 0;
-    previousTime = null;
+    lastTime = null;
 
 
     animationFrame =
       requestAnimationFrame(
-        animateCarousel
+        animatePeople
       );
 
   }
