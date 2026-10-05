@@ -3612,10 +3612,13 @@
        נתוני השריונים
     ========================= */
 
-    const adminMeetingBookings =
-  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
-    const adminClients =
-  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+   const adminMeetingBookings =
+  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+
+const adminClients =
+  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+
+
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
 
@@ -4130,7 +4133,7 @@
       }
 
       const adminMeetingRooms =
-    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -5364,11 +5367,11 @@
     ===================================== */
 
     const floorDirectories = {
-      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <% - JSON.stringify(
+  <%- JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 
