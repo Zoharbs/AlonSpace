@@ -246,8 +246,9 @@
   padding: 7px 12px;
 
   font-size: .78rem;
-}/* =====================================
-   SMART PEOPLE CAROUSEL
+}
+/* =====================================
+   SMART PEOPLE ROTATOR
 ===================================== */
 
 .people-carousel-viewport {
@@ -256,63 +257,63 @@
 
   margin: 0 auto;
 
-  overflow: hidden;
-
-  direction: ltr;
+  overflow: visible;
 }
 
 
-/*
-  המסילה תמיד ברוחב האמיתי של הכרטיסים.
-  אם הכול נכנס - היא פשוט ממורכזת.
-*/
-
 .people-carousel-viewport
 .people-business-grid {
-  display: flex;
+  display: grid;
 
-  flex-wrap: nowrap;
+  grid-template-columns:
+    repeat(
+      var(--people-columns, 2),
+      minmax(0, 360px)
+    );
 
-  width: max-content;
-  max-width: none;
+  justify-content: center;
 
   gap: 16px;
 
+  max-width: none;
   margin: 0 auto;
-
-  justify-content: flex-start;
-
-  direction: ltr;
 }
 
 
-/*
-  מחזירים את הגודל היפה שהיה קודם.
-*/
+/* כרטיס שלא מוצג כרגע */
 
-.people-carousel-viewport
+.people-profile-card.people-hidden {
+  display: none;
+}
+
+
+/* =====================================
+   TRANSITIONS
+===================================== */
+
 .people-profile-card {
-  flex: 0 0 360px;
+  transition:
+    opacity .45s ease,
+    transform .45s ease;
 
-  width: 360px;
-
-  min-width: 360px;
-
-  direction: rtl;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 
-/*
-  כשצריך קרוסלה,
-  המסילה מתחילה מהקצה ולא ממורכזת.
-*/
+.people-profile-card.people-leaving {
+  opacity: 0;
 
-.people-carousel-viewport.is-overflowing
-.people-business-grid {
-  margin-left: 0;
-  margin-right: 0;
+  transform:
+    translateX(-18px);
+}
 
-  will-change: transform;
+
+.people-profile-card.people-entering {
+  opacity: 0;
+
+  transform:
+    translateX(18px);
 }
 
 
@@ -322,14 +323,28 @@
 
 @media (max-width: 700px) {
 
+  .people-carousel-viewport {
+    width: 100%;
+    max-width: 100%;
+
+    overflow: hidden;
+  }
+
+
+  .people-carousel-viewport
+  .people-business-grid {
+    display: block;
+
+    width: 100%;
+  }
+
+
   .people-carousel-viewport
   .people-profile-card {
-    flex: 0 0 calc(100vw - 64px);
+    width: 100%;
+    max-width: 360px;
 
-    width: calc(100vw - 64px);
-    min-width: calc(100vw - 64px);
-
-    max-width: 340px;
+    margin: 0 auto;
   }
 
 }
@@ -792,7 +807,7 @@
     ].classList.add('active');
   }
 /* =====================================
-   SMART INFINITE PEOPLE CAROUSEL
+   SMART PEOPLE ROTATOR
 ===================================== */
 
 const peopleViewport =
@@ -811,7 +826,7 @@ if (
   peopleTrack
 ) {
 
-  const originalCards =
+  const cards =
     Array.from(
       peopleTrack.querySelectorAll(
         '.people-profile-card'
@@ -819,233 +834,185 @@ if (
     );
 
 
-  let animationFrame = null;
-  let lastTime = null;
-  let position = 0;
-  let loopWidth = 0;
+  let visibleCards = [];
 
-  const speed = 12;
+  let waitingCards = [];
 
+  let rotationTimer = null;
 
-  function removePeopleClones() {
-
-    peopleTrack
-      .querySelectorAll(
-        '[data-people-clone]'
-      )
-      .forEach((clone) => {
-        clone.remove();
-      });
-
-  }
+  let replaceIndex = 0;
 
 
-  function stopPeopleCarousel() {
-
-    if (animationFrame !== null) {
-
-      cancelAnimationFrame(
-        animationFrame
-      );
-
-      animationFrame = null;
-
-    }
+  const rotationTime = 7000;
 
 
-    lastTime = null;
-    position = 0;
+  /* =====================================
+     RANDOM ORDER
+  ===================================== */
 
-    peopleTrack.style.transform =
-      'translate3d(0, 0, 0)';
+  function shuffleCards(items) {
 
-  }
-
-
-  function getPeopleGap() {
-
-    const styles =
-      getComputedStyle(
-        peopleTrack
-      );
+    const shuffled =
+      [...items];
 
 
-    return (
-      parseFloat(styles.gap) ||
-      parseFloat(styles.columnGap) ||
-      0
-    );
-
-  }
-
-
-  function calculateLoopWidth() {
-
-    const gap =
-      getPeopleGap();
-
-
-    let width = 0;
-
-
-    originalCards.forEach(
-      (card) => {
-
-        width +=
-          card.getBoundingClientRect()
-            .width;
-
-      }
-    );
-
-
-    /*
-      יש gap גם בין הכרטיס האחרון
-      לבין העותק הראשון.
-    */
-
-    width +=
-      gap * originalCards.length;
-
-
-    return width;
-
-  }
-
-
-  function addPeopleClones() {
-
-    /*
-      מוסיפים רצפים שלמים עד שיש
-      מספיק כרטיסים גם מחוץ למסך.
-    */
-
-    const targetWidth =
-      peopleViewport.clientWidth +
-      loopWidth;
-
-
-    let currentWidth =
-      loopWidth;
-
-
-    while (
-      currentWidth <
-      targetWidth
+    for (
+      let i = shuffled.length - 1;
+      i > 0;
+      i--
     ) {
 
-      originalCards.forEach(
-        (card) => {
-
-          const clone =
-            card.cloneNode(true);
-
-
-          clone.setAttribute(
-            'data-people-clone',
-            'true'
-          );
+      const randomIndex =
+        Math.floor(
+          Math.random() * (i + 1)
+        );
 
 
-          clone.setAttribute(
-            'aria-hidden',
-            'true'
-          );
-
-
-          peopleTrack.appendChild(
-            clone
-          );
-
-        }
-      );
-
-
-      currentWidth +=
-        loopWidth;
+      [
+        shuffled[i],
+        shuffled[randomIndex]
+      ] = [
+        shuffled[randomIndex],
+        shuffled[i]
+      ];
 
     }
+
+
+    return shuffled;
 
   }
 
 
-  function animatePeople(time) {
+  /* =====================================
+     HOW MANY CARDS FIT?
+  ===================================== */
 
-    if (lastTime === null) {
-      lastTime = time;
-    }
+  function getVisibleCount() {
 
-
-    const delta =
-      Math.min(
-        (time - lastTime) / 1000,
-        0.05
-      );
-
-
-    lastTime = time;
-
-
-    position +=
-      speed * delta;
-
-
-    if (
-      position >= loopWidth
-    ) {
-
-      position -=
-        loopWidth;
-
-    }
-
-
-    peopleTrack.style.transform =
-      `translate3d(-${position}px, 0, 0)`;
-
-
-    animationFrame =
-      requestAnimationFrame(
-        animatePeople
-      );
-
-  }
-
-
-  function setupPeopleCarousel() {
-
-    stopPeopleCarousel();
-
-    removePeopleClones();
-
-
-    peopleViewport.classList.remove(
-      'is-overflowing'
-    );
-
-
-    /*
-      המסילה היא width:max-content,
-      לכן scrollWidth נותן לנו בדיוק
-      כמה מקום כל הכרטיסים דורשים.
-    */
-
-    const contentWidth =
-      peopleTrack.scrollWidth;
-
-
-    const availableWidth =
+    const width =
       peopleViewport.clientWidth;
 
 
     /*
-      כל הכרטיסים נכנסים?
-      לא עושים כלום.
+      Mobile:
+      always one card.
+    */
+
+    if (window.innerWidth <= 700) {
+      return 1;
+    }
+
+
+    /*
+      Desired card width:
+      around 340px including gap.
+    */
+
+    const desiredWidth = 356;
+
+
+    const count =
+      Math.floor(
+        width / desiredWidth
+      );
+
+
+    return Math.max(
+      1,
+      Math.min(
+        4,
+        count
+      )
+    );
+
+  }
+
+
+  /* =====================================
+     SHOW INITIAL CARDS
+  ===================================== */
+
+  function setupPeopleRotator() {
+
+    if (rotationTimer) {
+
+      clearInterval(
+        rotationTimer
+      );
+
+      rotationTimer = null;
+
+    }
+
+
+    cards.forEach((card) => {
+
+      card.classList.remove(
+        'people-hidden',
+        'people-leaving',
+        'people-entering'
+      );
+
+    });
+
+
+    const visibleCount =
+      Math.min(
+        getVisibleCount(),
+        cards.length
+      );
+
+
+    peopleTrack.style.setProperty(
+      '--people-columns',
+      visibleCount
+    );
+
+
+    /*
+      Randomize on every page load/setup.
+    */
+
+    const shuffled =
+      shuffleCards(cards);
+
+
+    visibleCards =
+      shuffled.slice(
+        0,
+        visibleCount
+      );
+
+
+    waitingCards =
+      shuffled.slice(
+        visibleCount
+      );
+
+
+    cards.forEach((card) => {
+
+      if (
+        !visibleCards.includes(card)
+      ) {
+
+        card.classList.add(
+          'people-hidden'
+        );
+
+      }
+
+    });
+
+
+    /*
+      If everybody fits,
+      nothing needs to rotate.
     */
 
     if (
-      contentWidth <=
-      availableWidth + 1
+      waitingCards.length === 0
     ) {
 
       return;
@@ -1053,37 +1020,139 @@ if (
     }
 
 
-    /*
-      אין מקום לכולם:
-      מפעילים את השרשרת.
-    */
-
-    peopleViewport.classList.add(
-      'is-overflowing'
-    );
+    replaceIndex = 0;
 
 
-    loopWidth =
-      calculateLoopWidth();
-
-
-    addPeopleClones();
-
-
-    position = 0;
-    lastTime = null;
-
-
-    animationFrame =
-      requestAnimationFrame(
-        animatePeople
+    rotationTimer =
+      setInterval(
+        rotateOnePerson,
+        rotationTime
       );
 
   }
 
 
-  setupPeopleCarousel();
+  /* =====================================
+     REPLACE ONE CARD
+  ===================================== */
 
+  function rotateOnePerson() {
+
+    if (
+      waitingCards.length === 0 ||
+      visibleCards.length === 0
+    ) {
+      return;
+    }
+
+
+    const outgoingIndex =
+      replaceIndex %
+      visibleCards.length;
+
+
+    const outgoingCard =
+      visibleCards[
+        outgoingIndex
+      ];
+
+
+    const incomingCard =
+      waitingCards.shift();
+
+
+    /*
+      Start outgoing animation.
+    */
+
+    outgoingCard.classList.add(
+      'people-leaving'
+    );
+
+
+    setTimeout(
+      () => {
+
+        /*
+          Hide old card.
+        */
+
+        outgoingCard.classList.add(
+          'people-hidden'
+        );
+
+        outgoingCard.classList.remove(
+          'people-leaving'
+        );
+
+
+        /*
+          Prepare incoming card.
+        */
+
+        incomingCard.classList.add(
+          'people-entering'
+        );
+
+        incomingCard.classList.remove(
+          'people-hidden'
+        );
+
+
+        /*
+          Force browser to register
+          starting position.
+        */
+
+        void incomingCard.offsetWidth;
+
+
+        /*
+          Animate it in.
+        */
+
+        incomingCard.classList.remove(
+          'people-entering'
+        );
+
+
+        /*
+          Update queues.
+        */
+
+        visibleCards[
+          outgoingIndex
+        ] = incomingCard;
+
+
+        waitingCards.push(
+          outgoingCard
+        );
+
+
+        replaceIndex =
+          (
+            outgoingIndex + 1
+          ) %
+          visibleCards.length;
+
+      },
+      450
+    );
+
+  }
+
+
+  /* =====================================
+     INITIALIZE
+  ===================================== */
+
+  setupPeopleRotator();
+
+
+  /* =====================================
+     RESPONSIVE
+  ===================================== */
 
   let peopleResizeTimer;
 
@@ -1099,8 +1168,8 @@ if (
 
       peopleResizeTimer =
         setTimeout(
-          setupPeopleCarousel,
-          150
+          setupPeopleRotator,
+          200
         );
 
     }
