@@ -2567,17 +2567,30 @@
                           </div>
                         </div>
                       </details>
-
 <% if (
   businessProfiles &&
   businessProfiles.length
 ) { %>
 
-<section
-    class="business-profile-approvals"
-    id="business-profiles"
-  >
+<details
+  class="admin-collapse business-profiles-collapse"
+  id="business-profiles"
+>
 
+  <summary>
+
+    <span>
+      ניהול פרופילים עסקיים
+    </span>
+
+    <span class="business-profile-count">
+      <%= businessProfiles.length %>
+    </span>
+
+  </summary>
+
+
+  <section class="business-profile-approvals">
     <div class="business-profile-approvals-head">
 
       <div class="business-profile-approvals-title">
@@ -2914,7 +2927,7 @@
     </div>
 
   </section>
-
+</details>
 <% } %>
 
                       <section class="admin-card">
