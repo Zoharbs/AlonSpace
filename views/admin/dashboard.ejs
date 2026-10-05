@@ -1172,464 +1172,540 @@
     .admin-bookings-table tbody tr:last-child td {
       border-bottom: 0;
     }
+
     /* =====================================
    BUSINESS PROFILE APPROVALS
 ===================================== */
 
-.business-profile-approvals {
-  margin: 0 0 16px;
-  padding: 0;
-}
-.business-profile-approvals-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 6px;
-}
+    .business-profile-approvals {
+      margin: 0 0 16px;
+      padding: 0;
+    }
 
-.business-profile-approvals-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    .business-profile-approvals-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
 
-.business-profile-approvals-title h2 {
-  margin: 0;
-}
+    .business-profile-approvals-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-.business-profile-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+    .business-profile-approvals-title h2 {
+      margin: 0;
+    }
 
-  min-width: 30px;
-  height: 30px;
-  padding: 0 9px;
+    .business-profile-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
 
-  border-radius: 999px;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 9px;
 
-  background: var(--oak-dark);
-  color: #fff;
+      border-radius: 999px;
 
-  font-size: 0.8rem;
-  font-weight: 800;
-}
+      background: var(--oak-dark);
+      color: #fff;
 
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
 
-/* CARD */
 
-.business-profile-approval-list {
-  display: grid;
-  gap: 12px;
-}
+    /* CARD */
 
-.business-profile-approval-card {
-  display: grid;
-  grid-template-columns:
-    76px minmax(0, 1fr) auto;
+    .business-profile-approval-list {
+      display: grid;
+      gap: 12px;
+    }
 
-  align-items: center;
-  gap: 18px;
+    .business-profile-approval-card {
+      display: grid;
+      grid-template-columns:
+        76px minmax(0, 1fr) auto;
 
-  padding: 16px 18px;
+      align-items: center;
+      gap: 18px;
 
-  background: var(--cream);
-  border: 1px solid var(--stone-dark);
-  border-radius: 18px;
+      padding: 16px 18px;
 
-  box-shadow: var(--shadow);
-}
+      background: var(--cream);
+      border: 1px solid var(--stone-dark);
+      border-radius: 18px;
 
+      box-shadow: var(--shadow);
+    }
 
-/* LOGO - intentionally strict */
 
-.business-profile-approval-card
-.business-profile-admin-logo {
-  width: 76px !important;
-  height: 76px !important;
+    /* LOGO - intentionally strict */
 
-  min-width: 76px !important;
-  max-width: 76px !important;
+    .business-profile-approval-card .business-profile-admin-logo {
+      width: 76px !important;
+      height: 76px !important;
 
-  min-height: 76px !important;
-  max-height: 76px !important;
+      min-width: 76px !important;
+      max-width: 76px !important;
 
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
+      min-height: 76px !important;
+      max-height: 76px !important;
 
-  overflow: hidden;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
 
-  background: #fff;
-  border: 1px solid var(--stone-dark);
-  border-radius: 14px;
-}
+      overflow: hidden;
 
-.business-profile-approval-card
-.business-profile-admin-logo > img {
-  display: block !important;
+      background: #fff;
+      border: 1px solid var(--stone-dark);
+      border-radius: 14px;
+    }
 
-  width: 100% !important;
-  height: 100% !important;
+    .business-profile-approval-card .business-profile-admin-logo>img {
+      display: block !important;
 
-  min-width: 0 !important;
-  min-height: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
 
-  max-width: 100% !important;
-  max-height: 100% !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
 
-  object-fit: contain !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
 
-  padding: 7px !important;
-  margin: 0 !important;
-}
+      object-fit: contain !important;
 
-.business-profile-admin-logo-placeholder {
-  font-size: 1.6rem;
-}
+      padding: 7px !important;
+      margin: 0 !important;
+    }
 
+    .business-profile-admin-logo-placeholder {
+      font-size: 1.6rem;
+    }
 
-/* INFO */
 
-.business-profile-admin-info {
-  min-width: 0;
-}
+    /* INFO */
 
-.business-profile-admin-info h3 {
-  margin: 0 0 3px;
-  font-size: 1.05rem;
-}
+    .business-profile-admin-info {
+      min-width: 0;
+    }
 
-.business-profile-admin-field {
-  display: block;
+    .business-profile-admin-info h3 {
+      margin: 0 0 3px;
+      font-size: 1.05rem;
+    }
 
-  margin-bottom: 7px;
+    .business-profile-admin-field {
+      display: block;
 
-  color: var(--oak-dark);
+      margin-bottom: 7px;
 
-  font-size: 0.8rem;
-  font-weight: 700;
-}
+      color: var(--oak-dark);
 
-.business-profile-admin-bio {
-  max-width: 650px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
 
-  margin: 0 0 7px;
+    .business-profile-admin-bio {
+      max-width: 650px;
 
-  color: var(--ink-soft);
+      margin: 0 0 7px;
 
-  font-size: 0.86rem;
-  line-height: 1.5;
-}
+      color: var(--ink-soft);
 
-.business-profile-admin-meta {
-  margin-bottom: 8px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
 
-  color: var(--ink-soft);
+    .business-profile-admin-meta {
+      margin-bottom: 8px;
 
-  font-size: 0.75rem;
-}
+      color: var(--ink-soft);
 
+      font-size: 0.75rem;
+    }
 
-/* LINKS */
 
-.business-profile-admin-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+    /* LINKS */
 
-.business-profile-admin-links a {
-  display: inline-flex;
-  align-items: center;
+    .business-profile-admin-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-  padding: 5px 9px;
+    .business-profile-admin-links a {
+      display: inline-flex;
+      align-items: center;
 
-  border: 1px solid var(--stone-dark);
-  border-radius: 8px;
+      padding: 5px 9px;
 
-  color: var(--oak-dark);
+      border: 1px solid var(--stone-dark);
+      border-radius: 8px;
 
-  font-size: 0.75rem;
-  font-weight: 700;
+      color: var(--oak-dark);
 
-  text-decoration: none;
-}
+      font-size: 0.75rem;
+      font-weight: 700;
 
-.business-profile-admin-links a:hover {
-  background: var(--stone);
-}
+      text-decoration: none;
+    }
 
+    .business-profile-admin-links a:hover {
+      background: var(--stone);
+    }
 
-/* ACTIONS */
 
-.business-profile-admin-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+    /* ACTIONS */
 
-.business-profile-admin-actions form {
-  margin: 0;
-}
+    .business-profile-admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-.business-profile-admin-actions button {
-  white-space: nowrap;
-}
+    .business-profile-admin-actions form {
+      margin: 0;
+    }
 
+    .business-profile-admin-actions button {
+      white-space: nowrap;
+    }
 
-/* MOBILE */
 
-@media (max-width: 800px) {
+    /* MOBILE */
 
-  .business-profile-approvals-head {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 5px;
-  }
+    @media (max-width: 800px) {
 
-  .business-profile-approval-card {
-    grid-template-columns:
-      64px minmax(0, 1fr);
+      .business-profile-approvals-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+      }
 
-    gap: 13px;
-    padding: 14px;
-  }
+      .business-profile-approval-card {
+        grid-template-columns:
+          64px minmax(0, 1fr);
 
-  .business-profile-approval-card
-  .business-profile-admin-logo {
-    width: 64px !important;
-    height: 64px !important;
+        gap: 13px;
+        padding: 14px;
+      }
 
-    min-width: 64px !important;
-    max-width: 64px !important;
+      .business-profile-approval-card .business-profile-admin-logo {
+        width: 64px !important;
+        height: 64px !important;
 
-    min-height: 64px !important;
-    max-height: 64px !important;
-  }
+        min-width: 64px !important;
+        max-width: 64px !important;
 
-  .business-profile-admin-actions {
-    grid-column: 1 / -1;
+        min-height: 64px !important;
+        max-height: 64px !important;
+      }
 
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+      .business-profile-admin-actions {
+        grid-column: 1 / -1;
 
-    width: 100%;
-  }
+        display: grid;
+        grid-template-columns: 1fr 1fr;
 
-  .business-profile-admin-actions form,
-  .business-profile-admin-actions button {
-    width: 100%;
-  }
+        width: 100%;
+      }
 
-}
-/* =====================================
+      .business-profile-admin-actions form,
+      .business-profile-admin-actions button {
+        width: 100%;
+      }
+
+    }
+
+    /* =====================================
    BUSINESS PROFILES - FINAL POLISH
 ===================================== */
 
-/* REMOVE EXCESS SPACE */
+    /* REMOVE EXCESS SPACE */
 
-.business-profile-approvals {
-  margin: 8px 0 18px !important;
-  padding: 0 !important;
-}
+    .business-profile-approvals {
+      margin: 8px 0 18px !important;
+      padding: 0 !important;
+    }
 
-.business-profile-approvals-head {
-  margin: 0 0 10px !important;
-}
+    .business-profile-approvals-head {
+      margin: 0 0 10px !important;
+    }
 
-.business-profile-approvals + .stat-cards {
-  margin-top: 0 !important;
-}
-
-
-/* NAME + STATUS */
-
-.business-profile-admin-name-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  margin-bottom: 3px;
-}
-
-.business-profile-admin-name-row h3 {
-  margin: 0;
-}
+    .business-profile-approvals+.stat-cards {
+      margin-top: 0 !important;
+    }
 
 
-/* STATUS BADGES */
+    /* NAME + STATUS */
 
-.profile-admin-status {
-  display: inline-flex;
-  align-items: center;
+    .business-profile-admin-name-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
 
-  padding: 4px 9px;
+      margin-bottom: 3px;
+    }
 
-  border-radius: 999px;
-
-  font-size: 0.7rem;
-  font-weight: 800;
-
-  white-space: nowrap;
-}
-
-.profile-admin-status.pending {
-  background: #fff3cd;
-  color: #795b00;
-}
-
-.profile-admin-status.approved {
-  background: #dff3e5;
-  color: #176b37;
-}
-
-.profile-admin-status.rejected {
-  background: #f7dddd;
-  color: #8b2727;
-}
-
-.profile-admin-status.private {
-  background: #eceae5;
-  color: #66615a;
-}
+    .business-profile-admin-name-row h3 {
+      margin: 0;
+    }
 
 
-/* VISIBILITY */
+    /* STATUS BADGES */
 
-.business-profile-visibility {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+    .profile-admin-status {
+      display: inline-flex;
+      align-items: center;
 
-  gap: 6px;
+      padding: 4px 9px;
 
-  margin: 8px 0 10px;
-}
+      border-radius: 999px;
 
-.business-profile-visibility-label {
-  margin-left: 2px;
+      font-size: 0.7rem;
+      font-weight: 800;
 
-  color: var(--ink-soft);
+      white-space: nowrap;
+    }
 
-  font-size: 0.73rem;
-  font-weight: 700;
-}
+    .profile-admin-status.pending {
+      background: #fff3cd;
+      color: #795b00;
+    }
 
-.visibility-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+    .profile-admin-status.approved {
+      background: #dff3e5;
+      color: #176b37;
+    }
 
-  padding: 5px 9px;
+    .profile-admin-status.rejected {
+      background: #f7dddd;
+      color: #8b2727;
+    }
 
-  border-radius: 999px;
-
-  font-size: 0.72rem;
-  font-weight: 700;
-
-  white-space: nowrap;
-}
-
-.visibility-chip.active {
-  background: #e8f1e9;
-  color: #315d3a;
-  border: 1px solid #c9ddcc;
-}
-
-.visibility-chip.inactive {
-  background: #f1efeb;
-  color: #88827a;
-  border: 1px solid #dedad3;
-}
+    .profile-admin-status.private {
+      background: #eceae5;
+      color: #66615a;
+    }
 
 
-/* NO PUBLIC ACTION */
+    /* VISIBILITY */
 
-.business-profile-no-action {
-  display: inline-flex;
+    .business-profile-visibility {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
 
-  max-width: 150px;
+      gap: 6px;
 
-  color: var(--ink-soft);
+      margin: 8px 0 10px;
+    }
 
-  font-size: 0.74rem;
-  line-height: 1.4;
+    .business-profile-visibility-label {
+      margin-left: 2px;
 
-  text-align: center;
-}
+      color: var(--ink-soft);
+
+      font-size: 0.73rem;
+      font-weight: 700;
+    }
+
+    .visibility-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      padding: 5px 9px;
+
+      border-radius: 999px;
+
+      font-size: 0.72rem;
+      font-weight: 700;
+
+      white-space: nowrap;
+    }
+
+    .visibility-chip.active {
+      background: #e8f1e9;
+      color: #315d3a;
+      border: 1px solid #c9ddcc;
+    }
+
+    .visibility-chip.inactive {
+      background: #f1efeb;
+      color: #88827a;
+      border: 1px solid #dedad3;
+    }
 
 
-/* KEEP CARDS COMPACT */
+    /* NO PUBLIC ACTION */
 
-.business-profile-approval-list {
-  gap: 10px !important;
-}
+    .business-profile-no-action {
+      display: inline-flex;
 
-.business-profile-approval-card {
-  padding: 14px 16px !important;
-}
+      max-width: 150px;
+
+      color: var(--ink-soft);
+
+      font-size: 0.74rem;
+      line-height: 1.4;
+
+      text-align: center;
+    }
 
 
-/* MOBILE */
+    /* KEEP CARDS COMPACT */
 
-@media (max-width: 800px) {
+    .business-profile-approval-list {
+      gap: 10px !important;
+    }
 
-  .business-profile-approvals {
-    margin: 4px 0 14px !important;
-  }
+    .business-profile-approval-card {
+      padding: 14px 16px !important;
+    }
 
-  .business-profile-admin-name-row {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 5px;
-  }
 
-  .business-profile-visibility {
-    align-items: flex-start;
-  }
+    /* MOBILE */
 
-  .business-profile-visibility-label {
-    width: 100%;
-  }
+    @media (max-width: 800px) {
 
-  .business-profile-no-action {
-    max-width: none;
-    width: 100%;
-  }
+      .business-profile-approvals {
+        margin: 4px 0 14px !important;
+      }
 
-}
-/* =====================================
+      .business-profile-admin-name-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .business-profile-visibility {
+        align-items: flex-start;
+      }
+
+      .business-profile-visibility-label {
+        width: 100%;
+      }
+
+      .business-profile-no-action {
+        max-width: none;
+        width: 100%;
+      }
+
+    }
+
+    /* =====================================
    BUSINESS PROFILES INSIDE CLIENTS
 ===================================== */
 
-.business-profiles-collapse {
-  margin-bottom: 20px;
-}
+    .business-profiles-collapse {
+      margin-bottom: 20px;
+    }
 
-.business-profiles-collapse > summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
+    .business-profiles-collapse>summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
 
-.business-profiles-collapse .business-profile-count {
-  flex-shrink: 0;
-}
+    .business-profiles-collapse .business-profile-count {
+      flex-shrink: 0;
+    }
 
-.business-profiles-collapse
-.business-profile-approvals {
-  margin-top: 12px !important;
-}
+    .business-profiles-collapse .business-profile-approvals {
+      margin-top: 12px !important;
+    }
 
-.business-profiles-collapse
-.business-profile-approvals-head {
-  padding: 0 4px;
-  margin-bottom: 10px !important;
-}
+    .business-profiles-collapse .business-profile-approvals-head {
+      padding: 0 4px;
+      margin-bottom: 10px !important;
+    }
+
+    /* =====================================
+   ADMIN MANAGEMENT SECTIONS - UNIFIED
+===================================== */
+
+    #tab-clients>details.admin-collapse,
+    #tab-clients>details.floor-directory-section {
+      margin: 0 0 14px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+    }
+
+    #tab-clients>details.admin-collapse>summary,
+    #tab-clients>details.floor-directory-section>summary {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+
+      min-height: 58px;
+      padding: 16px 20px;
+
+      background: var(--cream);
+      border: 1px solid var(--stone-dark);
+      border-radius: var(--radius-lg);
+
+      box-shadow: var(--shadow);
+
+      color: var(--ink);
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: right;
+
+      cursor: pointer;
+      list-style: none;
+    }
+
+    #tab-clients>details.admin-collapse>summary::-webkit-details-marker,
+    #tab-clients>details.floor-directory-section>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    #tab-clients>details.admin-collapse>summary::before,
+    #tab-clients>details.floor-directory-section>summary::before {
+      content: "▾";
+
+      display: inline-block;
+      flex-shrink: 0;
+
+      font-size: .85rem;
+
+      transition: transform .2s ease;
+    }
+
+    #tab-clients>details.admin-collapse[open]>summary::before,
+    #tab-clients>details.floor-directory-section[open]>summary::before {
+      transform: rotate(180deg);
+    }
+
+    #tab-clients>details.admin-collapse[open]>summary,
+    #tab-clients>details.floor-directory-section[open]>summary {
+      margin-bottom: 12px;
+    }
+
+    /* מונה פרופילים עסקיים */
+    #tab-clients .business-profile-count {
+      margin-right: auto;
+    }
+
+    /* תוכן פנימי */
+    #tab-clients>details.admin-collapse>.admin-card,
+    #tab-clients>details.floor-directory-section>.admin-card {
+      margin-top: 0;
+    }
   </style>
 </head>
 
@@ -2031,7 +2107,7 @@
 
                   </details>
 
-                 <% } %>
+                  <% } %>
 
 
                     <div class="stat-cards">
@@ -2567,378 +2643,305 @@
                           </div>
                         </div>
                       </details>
-<% if (
-  businessProfiles &&
-  businessProfiles.length
-) { %>
+                      <% if ( businessProfiles && businessProfiles.length ) { %>
 
-<details
-  class="admin-collapse business-profiles-collapse"
-  id="business-profiles"
->
+                        <details class="admin-collapse business-profiles-collapse" id="business-profiles">
 
-  <summary>
+                          <summary>
 
-    <span>
-      ניהול פרופילים עסקיים
-    </span>
+                            <span>
+                              ניהול פרופילים עסקיים
+                            </span>
 
-    <span class="business-profile-count">
-      <%= businessProfiles.length %>
-    </span>
+                            <span class="business-profile-count">
+                              <%= businessProfiles.length %>
+                            </span>
 
-  </summary>
+                          </summary>
 
 
-  <section class="business-profile-approvals">
-    <div class="business-profile-approvals-head">
+                          <section class="business-profile-approvals">
+                            <div class="business-profile-approvals-head">
 
-      <div class="business-profile-approvals-title">
+                              <div class="business-profile-approvals-title">
 
-        <h2>
-          פרופילים עסקיים
-        </h2>
+                                <h2>
+                                  פרופילים עסקיים
+                                </h2>
 
-        <span class="business-profile-count">
-          <%= businessProfiles.length %>
-        </span>
+                                <span class="business-profile-count">
+                                  <%= businessProfiles.length %>
+                                </span>
 
-      </div>
+                              </div>
 
-      <span class="small">
-        ניהול החשיפה בקהילת הדיירים ובאתר הציבורי
-      </span>
+                              <span class="small">
+                                ניהול החשיפה בקהילת הדיירים ובאתר הציבורי
+                              </span>
 
-    </div>
-
-
-    <div class="business-profile-approval-list">
-
-      <% businessProfiles.forEach(profile => { %>
-
-        <article class="business-profile-approval-card">
+                            </div>
 
 
-          <!-- LOGO -->
+                            <div class="business-profile-approval-list">
 
-          <div class="business-profile-admin-logo">
+                              <% businessProfiles.forEach(profile=> { %>
 
-            <% if (profile.has_logo) { %>
-
-              <img
-                src="/admin/business-profiles/<%= profile.id %>/logo"
-                alt="לוגו <%= profile.display_name %>"
-              >
-
-            <% } else { %>
-
-              <span
-                class="business-profile-admin-logo-placeholder"
-                aria-hidden="true"
-              >
-                🏢
-              </span>
-
-            <% } %>
-
-          </div>
+                                <article class="business-profile-approval-card">
 
 
-          <!-- INFO -->
+                                  <!-- LOGO -->
 
-          <div class="business-profile-admin-info">
+                                  <div class="business-profile-admin-logo">
 
-            <div class="business-profile-admin-name-row">
+                                    <% if (profile.has_logo) { %>
 
-              <h3>
-                <%= profile.display_name %>
-              </h3>
+                                      <img src="/admin/business-profiles/<%= profile.id %>/logo"
+                                        alt="לוגו <%= profile.display_name %>">
 
-              <% if (
-                profile.public_consent &&
-                profile.public_status === 'pending'
-              ) { %>
+                                      <% } else { %>
 
-                <span class="profile-admin-status pending">
-                  ממתין לאישור
-                </span>
+                                        <span class="business-profile-admin-logo-placeholder" aria-hidden="true">
+                                          🏢
+                                        </span>
 
-              <% } else if (
-                profile.public_consent &&
-                profile.public_status === 'approved'
-              ) { %>
+                                        <% } %>
 
-                <span class="profile-admin-status approved">
-                  מוצג באתר
-                </span>
-
-              <% } else if (
-                profile.public_consent &&
-                profile.public_status === 'rejected'
-              ) { %>
-
-                <span class="profile-admin-status rejected">
-                  לא מוצג באתר
-                </span>
-
-              <% } else { %>
-
-                <span class="profile-admin-status private">
-                  ללא פרסום ציבורי
-                </span>
-
-              <% } %>
-
-            </div>
+                                  </div>
 
 
-            <% if (profile.business_field) { %>
+                                  <!-- INFO -->
 
-              <span class="business-profile-admin-field">
-                <%= profile.business_field %>
-              </span>
+                                  <div class="business-profile-admin-info">
 
-            <% } %>
+                                    <div class="business-profile-admin-name-row">
+
+                                      <h3>
+                                        <%= profile.display_name %>
+                                      </h3>
+
+                                      <% if ( profile.public_consent && profile.public_status==='pending' ) { %>
+
+                                        <span class="profile-admin-status pending">
+                                          ממתין לאישור
+                                        </span>
+
+                                        <% } else if ( profile.public_consent && profile.public_status==='approved' ) {
+                                          %>
+
+                                          <span class="profile-admin-status approved">
+                                            מוצג באתר
+                                          </span>
+
+                                          <% } else if ( profile.public_consent && profile.public_status==='rejected' )
+                                            { %>
+
+                                            <span class="profile-admin-status rejected">
+                                              לא מוצג באתר
+                                            </span>
+
+                                            <% } else { %>
+
+                                              <span class="profile-admin-status private">
+                                                ללא פרסום ציבורי
+                                              </span>
+
+                                              <% } %>
+
+                                    </div>
 
 
-            <!-- REQUESTED VISIBILITY -->
+                                    <% if (profile.business_field) { %>
 
-            <div class="business-profile-visibility">
+                                      <span class="business-profile-admin-field">
+                                        <%= profile.business_field %>
+                                      </span>
 
-              <span class="business-profile-visibility-label">
-                חשיפה:
-              </span>
+                                      <% } %>
 
 
-              <span
-                class="
+                                        <!-- REQUESTED VISIBILITY -->
+
+                                        <div class="business-profile-visibility">
+
+                                          <span class="business-profile-visibility-label">
+                                            חשיפה:
+                                          </span>
+
+
+                                          <span class="
                   visibility-chip
                   <%= profile.community_visible ? 'active' : 'inactive' %>
-                "
-              >
-                <%= profile.community_visible ? '✓' : '—' %>
-                קהילת הדיירים
-              </span>
+                ">
+                                            <%= profile.community_visible ? '✓' : '—' %>
+                                              קהילת הדיירים
+                                          </span>
 
 
-              <span
-                class="
+                                          <span class="
                   visibility-chip
                   <%= profile.public_consent ? 'active' : 'inactive' %>
-                "
-              >
-                <%= profile.public_consent ? '✓' : '—' %>
-                האתר הציבורי
-              </span>
+                ">
+                                            <%= profile.public_consent ? '✓' : '—' %>
+                                              האתר הציבורי
+                                          </span>
 
-            </div>
+                                        </div>
 
 
-            <% if (profile.bio) { %>
+                                        <% if (profile.bio) { %>
 
-              <p class="business-profile-admin-bio">
-                <%= profile.bio %>
-              </p>
+                                          <p class="business-profile-admin-bio">
+                                            <%= profile.bio %>
+                                          </p>
 
-            <% } %>
+                                          <% } %>
 
 
-            <div class="business-profile-admin-meta">
+                                            <div class="business-profile-admin-meta">
 
-              נשלח על ידי
+                                              נשלח על ידי
 
-              <strong>
-                <%= profile.tenant_name %>
-              </strong>
+                                              <strong>
+                                                <%= profile.tenant_name %>
+                                              </strong>
 
-              <% if (profile.office_number) { %>
-                · משרד <%= profile.office_number %>
-              <% } %>
+                                              <% if (profile.office_number) { %>
+                                                · משרד <%= profile.office_number %>
+                                                  <% } %>
 
-              <% if (profile.floor) { %>
-                · קומה <%= profile.floor %>
-              <% } %>
+                                                    <% if (profile.floor) { %>
+                                                      · קומה <%= profile.floor %>
+                                                        <% } %>
 
-            </div>
+                                            </div>
 
 
-            <% if (
-              profile.website_url ||
-              profile.linkedin_url
-            ) { %>
+                                            <% if ( profile.website_url || profile.linkedin_url ) { %>
 
-              <div class="business-profile-admin-links">
+                                              <div class="business-profile-admin-links">
 
-                <% if (profile.website_url) { %>
+                                                <% if (profile.website_url) { %>
 
-                  <a
-                    href="<%= profile.website_url %>"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    אתר העסק ↗
-                  </a>
+                                                  <a href="<%= profile.website_url %>" target="_blank"
+                                                    rel="noopener noreferrer">
+                                                    אתר העסק ↗
+                                                  </a>
 
-                <% } %>
+                                                  <% } %>
 
 
-                <% if (profile.linkedin_url) { %>
+                                                    <% if (profile.linkedin_url) { %>
 
-                  <a
-                    href="<%= profile.linkedin_url %>"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    LinkedIn ↗
-                  </a>
+                                                      <a href="<%= profile.linkedin_url %>" target="_blank"
+                                                        rel="noopener noreferrer">
+                                                        LinkedIn ↗
+                                                      </a>
 
-                <% } %>
+                                                      <% } %>
 
-              </div>
+                                              </div>
 
-            <% } %>
+                                              <% } %>
 
-          </div>
+                                  </div>
 
 
-          <!-- ACTIONS -->
+                                  <!-- ACTIONS -->
 
-          <div class="business-profile-admin-actions">
+                                  <div class="business-profile-admin-actions">
 
 
-            <% if (
-              profile.public_consent &&
-              profile.public_status === 'pending'
-            ) { %>
+                                    <% if ( profile.public_consent && profile.public_status==='pending' ) { %>
 
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/reject"
-                onsubmit="return confirm('לדחות את הפרסום באתר הציבורי?')"
-              >
+                                      <form method="POST" action="/admin/business-profiles/<%= profile.id %>/reject"
+                                        onsubmit="return confirm('לדחות את הפרסום באתר הציבורי?')">
 
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                <button
-                  type="submit"
-                  class="mini-btn danger"
-                >
-                  דחייה
-                </button>
+                                        <button type="submit" class="mini-btn danger">
+                                          דחייה
+                                        </button>
 
-              </form>
+                                      </form>
 
 
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/approve"
-              >
+                                      <form method="POST" action="/admin/business-profiles/<%= profile.id %>/approve">
 
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                <button
-                  type="submit"
-                  class="mini-btn primary"
-                >
-                  ✓ אישור לאתר
-                </button>
+                                        <button type="submit" class="mini-btn primary">
+                                          ✓ אישור לאתר
+                                        </button>
 
-              </form>
+                                      </form>
 
 
-            <% } else if (
-              profile.public_consent &&
-              profile.public_status === 'approved'
-            ) { %>
+                                      <% } else if ( profile.public_consent && profile.public_status==='approved' ) { %>
 
 
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/unpublish"
-                onsubmit="return confirm('להסיר את העסק מהאתר הציבורי?')"
-              >
+                                        <form method="POST"
+                                          action="/admin/business-profiles/<%= profile.id %>/unpublish"
+                                          onsubmit="return confirm('להסיר את העסק מהאתר הציבורי?')">
 
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
+                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                <button
-                  type="submit"
-                  class="mini-btn danger"
-                >
-                  הסרה מהאתר
-                </button>
+                                          <button type="submit" class="mini-btn danger">
+                                            הסרה מהאתר
+                                          </button>
 
-              </form>
+                                        </form>
 
 
-            <% } else if (
-              profile.public_consent &&
-              profile.public_status === 'rejected'
-            ) { %>
+                                        <% } else if ( profile.public_consent && profile.public_status==='rejected' ) {
+                                          %>
 
 
-              <form
-                method="POST"
-                action="/admin/business-profiles/<%= profile.id %>/approve"
-              >
+                                          <form method="POST"
+                                            action="/admin/business-profiles/<%= profile.id %>/approve">
 
-                <input
-                  type="hidden"
-                  name="_csrf"
-                  value="<%= csrfToken %>"
-                >
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                <button
-                  type="submit"
-                  class="mini-btn primary"
-                >
-                  ✓ אישור מחדש
-                </button>
+                                            <button type="submit" class="mini-btn primary">
+                                              ✓ אישור מחדש
+                                            </button>
 
-              </form>
+                                          </form>
 
 
-            <% } else { %>
+                                          <% } else { %>
 
-              <span class="business-profile-no-action">
-                אין בקשה לפרסום באתר
-              </span>
+                                            <span class="business-profile-no-action">
+                                              אין בקשה לפרסום באתר
+                                            </span>
 
-            <% } %>
+                                            <% } %>
 
 
-          </div>
+                                  </div>
 
-        </article>
+                                </article>
 
-      <% }) %>
+                                <% }) %>
 
-    </div>
+                            </div>
 
-  </section>
-</details>
-<% } %>
+                          </section>
+                        </details>
+                        <% } %>
 
-                      <section class="admin-card">
+                          <details class="admin-collapse">
 
-                        <h2>בחירת מנהלים </h2>
+                            <summary>
+                              בחירת מנהלים
+                            </summary>
 
-                        <p class="small">
-                          בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
-                        </p>
+                            <div class="admin-card">
 
-                        <form method="POST" action="/admin/make-admin" style="
+                              <p class="small">
+                                בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
+                              </p>
+
+                              <form method="POST" action="/admin/make-admin" style="
       display:flex;
       gap:12px;
       align-items:end;
@@ -2946,144 +2949,155 @@
       margin-top:18px;
     ">
 
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                          <div class="field" style="flex:1;min-width:220px;">
+                                <div class="field" style="flex:1;min-width:220px;">
 
-                            <label for="adminUser">
-                              משתמש
-                            </label>
+                                  <label for="adminUser">
+                                    משתמש
+                                  </label>
 
-                            <select id="adminUser" name="user_id" required>
+                                  <select id="adminUser" name="user_id" required>
 
-                              <option value="">
-                                בחר משתמש
-                              </option>
+                                    <option value="">
+                                      בחר משתמש
+                                    </option>
 
-                              <% clients.forEach(client=> { %>
+                                    <% clients.forEach(client=> { %>
 
-                                <option value="<%= client.id %>">
-                                  <%= client.display_name %>
-                                    (@<%= client.username %>)
-                                      <% if (client.business_name) { %>
-                                        - <%= client.business_name %>
-                                          <% } %>
-                                </option>
+                                      <option value="<%= client.id %>">
+                                        <%= client.display_name %>
+                                          (@<%= client.username %>)
+                                            <% if (client.business_name) { %>
+                                              - <%= client.business_name %>
+                                                <% } %>
+                                      </option>
 
-                                <% }) %>
+                                      <% }) %>
 
-                            </select>
-
-                          </div>
-
-                          <button type="submit" class="btn btn-primary"
-                            onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
-                            הפוך לאדמין
-                          </button>
-
-                        </form>
-
-                      </section>
-                      <section class="admin-card">
-
-                        <h2>ניהול אדמינים</h2>
-
-                        <p class="small">
-                          ניהול המשתמשים בעלי הרשאת מנהל במערכת.
-                        </p>
-
-                        <% if (!admins.length) { %>
-                          <p>אין אדמינים במערכת.</p>
-                          <% } %>
-
-                            <% admins.forEach(admin=> { %>
-
-                              <details class="admin-collapse client-card">
-
-                                <summary>
-
-                                  <div>
-                                    <strong>
-                                      <%= admin.display_name %>
-                                    </strong>
-
-                                    <span class="small">
-                                      @<%= admin.username %>
-                                    </span>
-                                  </div>
-
-                                  <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
-                                    <%= admin.is_active ? 'פעיל' : 'מושבת' %>
-                                  </span>
-
-                                </summary>
-
-                                <div class="admin-card">
-
-                                  <form method="POST" action="/admin/admins/<%= admin.id %>/update" class="form-grid">
-
-                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                    <div class="form-row-2">
-
-                                      <div class="field">
-                                        <label>שם</label>
-
-                                        <input type="text" name="display_name" value="<%= admin.display_name || '' %>"
-                                          required>
-                                      </div>
-
-                                      <div class="field">
-                                        <label>שם משתמש</label>
-
-                                        <input type="text" name="username" value="<%= admin.username || '' %>" required>
-                                      </div>
-
-                                      <div class="field">
-                                        <label>אימייל</label>
-
-                                        <input type="email" name="email" value="<%= admin.email || '' %>">
-                                      </div>
-
-                                      <div class="field">
-                                        <label>טלפון</label>
-
-                                        <input type="text" name="phone" value="<%= admin.phone || '' %>">
-                                      </div>
-
-                                    </div>
-
-                                    <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
-
-                                      <label class="terms-check">
-                                        <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked' : '' %>
-                                        >
-
-                                        אדמין פעיל
-                                      </label>
-
-                                      <% } else { %>
-
-                                        <p class="small">
-                                          זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
-                                        </p>
-
-                                        <% } %>
-
-                                          <button type="submit" class="btn btn-primary">
-                                            שמור שינויים
-                                          </button>
-
-                                  </form>
+                                  </select>
 
                                 </div>
 
-                              </details>
+                                <button type="submit" class="btn btn-primary"
+                                  onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
+                                  הפוך לאדמין
+                                </button>
 
-                              <% }) %>
+                              </form>
 
-                      </section>
-                      <!--
+                            </div>
+
+                          </details>
+                          <details class="admin-collapse">
+
+                            <summary>
+                              ניהול אדמינים
+                            </summary>
+
+                            <div class="admin-card">
+
+                              <p class="small">
+                                ניהול המשתמשים בעלי הרשאת מנהל במערכת.
+                              </p>
+
+                              <% if (!admins.length) { %>
+                                <p>אין אדמינים במערכת.</p>
+                                <% } %>
+
+                                  <% admins.forEach(admin=> { %>
+
+                                    <details class="admin-collapse client-card">
+
+                                      <summary>
+
+                                        <div>
+                                          <strong>
+                                            <%= admin.display_name %>
+                                          </strong>
+
+                                          <span class="small">
+                                            @<%= admin.username %>
+                                          </span>
+                                        </div>
+
+                                        <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
+                                          <%= admin.is_active ? 'פעיל' : 'מושבת' %>
+                                        </span>
+
+                                      </summary>
+
+                                      <div class="admin-card">
+
+                                        <form method="POST" action="/admin/admins/<%= admin.id %>/update"
+                                          class="form-grid">
+
+                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                          <div class="form-row-2">
+
+                                            <div class="field">
+                                              <label>שם</label>
+
+                                              <input type="text" name="display_name"
+                                                value="<%= admin.display_name || '' %>" required>
+                                            </div>
+
+                                            <div class="field">
+                                              <label>שם משתמש</label>
+
+                                              <input type="text" name="username" value="<%= admin.username || '' %>"
+                                                required>
+                                            </div>
+
+                                            <div class="field">
+                                              <label>אימייל</label>
+
+                                              <input type="email" name="email" value="<%= admin.email || '' %>">
+                                            </div>
+
+                                            <div class="field">
+                                              <label>טלפון</label>
+
+                                              <input type="text" name="phone" value="<%= admin.phone || '' %>">
+                                            </div>
+
+                                          </div>
+
+                                          <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
+
+                                            <label class="terms-check">
+                                              <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked'
+                                                : '' %>
+                                              >
+
+                                              אדמין פעיל
+                                            </label>
+
+                                            <% } else { %>
+
+                                              <p class="small">
+                                                זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
+                                              </p>
+
+                                              <% } %>
+
+                                                <button type="submit" class="btn btn-primary">
+                                                  שמור שינויים
+                                                </button>
+
+                                        </form>
+
+                                      </div>
+
+                                    </details>
+
+                                    <% }) %>
+
+                            </div>
+
+                          </details>
+                          <!--
 <section class="admin-card">
 
   <h2>מפות קומות</h2>
@@ -3114,59 +3128,59 @@
 
 </section>
 -->
-                      <details class="floor-directory-section">
+                          <details class="floor-directory-section">
 
-                        <summary>ניהול מפת הקומה / דיירים</summary>
-                        <div class="floor-directory-head">
-                          <div>
-                            <h2>מפות קומות</h2>
-                            <p class="small">
-                              יצירת רשימת דיירים מעודכנת למסכי המתחם.
-                            </p>
-                          </div>
+                            <summary>ניהול מפת הקומה / דיירים</summary>
+                            <div class="floor-directory-head">
+                              <div>
+                                <h2>מפות קומות</h2>
+                                <p class="small">
+                                  יצירת רשימת דיירים מעודכנת למסכי המתחם.
+                                </p>
+                              </div>
 
-                          <div class="floor-directory-switch">
-                            <button type="button" class="mini-btn primary floor-directory-btn" data-floor="4">
-                              קומה 4
+                              <div class="floor-directory-switch">
+                                <button type="button" class="mini-btn primary floor-directory-btn" data-floor="4">
+                                  קומה 4
+                                </button>
+
+                                <button type="button" class="mini-btn floor-directory-btn" data-floor="6">
+                                  קומה 6
+                                </button>
+                              </div>
+                            </div>
+
+
+                            <div class="floor-directory-preview">
+
+                              <img id="floorDirectoryPreview" src="/images/floor4-map.png" alt="מפת קומה">
+
+                            </div>
+
+
+                            <button type="button" class="btn btn-primary" id="saveFloorImage">
+                              שמירת תמונת הקומה
                             </button>
 
-                            <button type="button" class="mini-btn floor-directory-btn" data-floor="6">
-                              קומה 6
-                            </button>
-                          </div>
-                        </div>
+
+                            <div class="floor-directory-editor">
+
+                              <div class="floor-directory-editor-head">
+                                <h3 id="floorDirectoryTitle">
+                                  רשימת דיירים — קומה 4
+                                </h3>
+
+                                <span class="small">
+                                  ניתן לערוך את השם שיופיע בתמונה
+                                </span>
+                              </div>
 
 
-                        <div class="floor-directory-preview">
+                              <div class="floor-directory-list" id="floorDirectoryList"></div>
 
-                          <img id="floorDirectoryPreview" src="/images/floor4-map.png" alt="מפת קומה">
+                            </div>
 
-                        </div>
-
-
-                        <button type="button" class="btn btn-primary" id="saveFloorImage">
-                          שמירת תמונת הקומה
-                        </button>
-
-
-                        <div class="floor-directory-editor">
-
-                          <div class="floor-directory-editor-head">
-                            <h3 id="floorDirectoryTitle">
-                              רשימת דיירים — קומה 4
-                            </h3>
-
-                            <span class="small">
-                              ניתן לערוך את השם שיופיע בתמונה
-                            </span>
-                          </div>
-
-
-                          <div class="floor-directory-list" id="floorDirectoryList"></div>
-
-                        </div>
-
-                      </details>
+                          </details>
                     </section>
                     <!-- סוף tab-clients -->
 
@@ -3584,9 +3598,9 @@
     ========================= */
 
     const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
     const adminClients =
-  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
     const adminCalendar =
       document.getElementById('adminWeeklyCalendar');
 
@@ -4101,7 +4115,7 @@
       }
 
       const adminMeetingRooms =
-    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -5335,11 +5349,11 @@
     ===================================== */
 
     const floorDirectories = {
-      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <%- JSON.stringify(
+  <% - JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 
@@ -5463,13 +5477,14 @@
 
           floorDirectoryEdits[selectedDirectoryFloor][officeNumber] =
             input.value;
-refreshFloorDirectoryPreview()
-  .catch((error) => {
-    console.error(
-      'FLOOR DIRECTORY PREVIEW ERROR:',
-      error
-    );
-  });        });
+          refreshFloorDirectoryPreview()
+            .catch((error) => {
+              console.error(
+                'FLOOR DIRECTORY PREVIEW ERROR:',
+                error
+              );
+            });
+        });
 
 
         row.appendChild(number);
@@ -5478,48 +5493,49 @@ refreshFloorDirectoryPreview()
         list.appendChild(row);
 
       });
-refreshFloorDirectoryPreview()
-  .catch((error) => {
-    console.error(
-      'FLOOR DIRECTORY PREVIEW ERROR:',
-      error
-    );
-  });    }
+      refreshFloorDirectoryPreview()
+        .catch((error) => {
+          console.error(
+            'FLOOR DIRECTORY PREVIEW ERROR:',
+            error
+          );
+        });
+    }
 
 
     document
-  .querySelectorAll('.floor-directory-btn')
-  .forEach((button) => {
+      .querySelectorAll('.floor-directory-btn')
+      .forEach((button) => {
 
-    button.addEventListener('click', async () => {
+        button.addEventListener('click', async () => {
 
-      selectedDirectoryFloor =
-        Number(button.dataset.floor);
+          selectedDirectoryFloor =
+            Number(button.dataset.floor);
 
-      document
-        .querySelectorAll('.floor-directory-btn')
-        .forEach((btn) => {
-          btn.classList.toggle(
-            'primary',
-            Number(btn.dataset.floor) ===
-              selectedDirectoryFloor
-          );
+          document
+            .querySelectorAll('.floor-directory-btn')
+            .forEach((btn) => {
+              btn.classList.toggle(
+                'primary',
+                Number(btn.dataset.floor) ===
+                selectedDirectoryFloor
+              );
+            });
+
+          try {
+            renderFloorDirectoryEditor();
+          } catch (error) {
+            console.error(
+              'FLOOR SWITCH ERROR:',
+              error
+            );
+          }
+
         });
 
-      try {
-        renderFloorDirectoryEditor();
-      } catch (error) {
-        console.error(
-          'FLOOR SWITCH ERROR:',
-          error
-        );
-      }
+      });
 
-    });
 
-  });
-
-    
 
     function getDirectoryNameForOffice(
       floor,
@@ -5761,73 +5777,73 @@ refreshFloorDirectoryPreview()
         imageUrl;
     }
 
-async function exportFloorDirectoryImage() {
+    async function exportFloorDirectoryImage() {
 
-  // בונה את המפה הרגילה עם שמות הדיירים
-  const imageUrl =
-    await buildFloorDirectoryImage();
+      // בונה את המפה הרגילה עם שמות הדיירים
+      const imageUrl =
+        await buildFloorDirectoryImage();
 
-  const image =
-    new Image();
+      const image =
+        new Image();
 
-  image.src = imageUrl;
+      image.src = imageUrl;
 
-  await image.decode();
-
-
-  // קובץ Full HD לטלוויזיה
-  const exportCanvas =
-    document.createElement('canvas');
-
-  exportCanvas.width = 1920;
-  exportCanvas.height = 1080;
-
-  const ctx =
-    exportCanvas.getContext('2d');
+      await image.decode();
 
 
-  // רקע לבן למקרה הצורך
-  ctx.fillStyle = '#ffffff';
+      // קובץ Full HD לטלוויזיה
+      const exportCanvas =
+        document.createElement('canvas');
 
-  ctx.fillRect(
-    0,
-    0,
-    1920,
-    1080
-  );
+      exportCanvas.width = 1920;
+      exportCanvas.height = 1080;
 
-
-  // ממלא את כל שטח המסך
-  ctx.drawImage(
-    image,
-    0,
-    0,
-    1920,
-    1080
-  );
+      const ctx =
+        exportCanvas.getContext('2d');
 
 
-  const finalImage =
-    exportCanvas.toDataURL(
-      'image/png'
-    );
+      // רקע לבן למקרה הצורך
+      ctx.fillStyle = '#ffffff';
+
+      ctx.fillRect(
+        0,
+        0,
+        1920,
+        1080
+      );
 
 
-  const link =
-    document.createElement('a');
+      // ממלא את כל שטח המסך
+      ctx.drawImage(
+        image,
+        0,
+        0,
+        1920,
+        1080
+      );
 
-  link.href =
-    finalImage;
 
-  link.download =
-    `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
+      const finalImage =
+        exportCanvas.toDataURL(
+          'image/png'
+        );
 
-  document.body.appendChild(link);
 
-  link.click();
+      const link =
+        document.createElement('a');
 
-  link.remove();
-}
+      link.href =
+        finalImage;
+
+      link.download =
+        `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+    }
 
 
     /* =====================================
@@ -6020,14 +6036,14 @@ async function exportFloorDirectoryImage() {
 
         }
       );
-  
-  
-  /* =====================================
-   FLOOR DIRECTORY INIT
-===================================== */
 
-renderFloorDirectoryEditor();
-      </script>
+
+    /* =====================================
+     FLOOR DIRECTORY INIT
+  ===================================== */
+
+    renderFloorDirectoryEditor();
+  </script>
 
   <% if (newClientInvite) { %>
     <script>
