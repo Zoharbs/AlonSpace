@@ -2,221 +2,189 @@
   <%- include('partials/header') %>
 <style>
   /* =====================================
-   MEET THE PEOPLE OF ALONSPACE
-===================================== */
-
-.people-section {
-  padding: 64px 0;
-}
-
-.people-section-head {
-  margin-bottom: 32px;
-  text-align: center;
-}
-
-.people-section-head h2 {
-  margin: 6px 0 8px;
-}
-
-.people-section-head p {
-  max-width: 600px;
-  margin: 0 auto;
-
-  color: var(--ink-soft);
-  line-height: 1.6;
-}
-
-
-/* =====================================
-   BUSINESS GRID
-===================================== */
-
-.people-business-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 18px;
-
-  max-width: 820px;
-
-  margin: 0 auto;
-}
-
-
-/* =====================================
-   BUSINESS CARD
-===================================== */
-
-.people-business {
-  width: 100%;
-  min-height: 110px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 16px;
-
-  padding: 18px 20px;
-
-  box-sizing: border-box;
-
-  background: var(--cream);
-
-  border: 1px solid var(--stone-dark);
-  border-radius: 18px;
-
-  box-shadow:
-    0 6px 20px rgba(25, 20, 15, .045);
-
-  color: var(--ink);
-
-  direction: rtl;
-
-  cursor: pointer;
-
-  transition:
-    transform .16s ease,
-    border-color .16s ease,
-    box-shadow .16s ease;
-}
-
-button.people-business {
-  font: inherit;
-  text-align: right;
-}
-
-.people-business:hover {
-  transform: translateY(-2px);
-
-  border-color: var(--oak);
-
-  box-shadow:
-    0 10px 26px rgba(25, 20, 15, .08);
-}
-
-
-/* =====================================
-   LOGO
-===================================== */
-
-.people-business-logo {
-  width: 64px;
-  height: 64px;
-
-  flex: 0 0 64px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
-
-  background: #fff;
-
-  border: 1px solid var(--stone-dark);
-  border-radius: 14px;
-}
-
-.people-business-logo img {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: contain;
-
-  box-sizing: border-box;
-
-  padding: 7px;
-}
-
-
-/* =====================================
-   BUSINESS INFO
-===================================== */
-
-.people-business-copy {
-  min-width: 0;
-}
-
-.people-business-copy strong {
-  display: block;
-
-  margin-bottom: 5px;
-
-  color: var(--ink);
-
-  font-size: 1rem;
-  font-weight: 800;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.people-business-copy span {
-  display: block;
-
-  color: var(--oak-dark);
-
-  font-size: .8rem;
-  font-weight: 600;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-
-/* =====================================
-   MOBILE
-===================================== */
-
-@media (max-width: 700px) {
+     MEET THE PEOPLE OF ALONSPACE
+  ===================================== */
 
   .people-section {
-    padding: 46px 0;
+    padding: 64px 0;
   }
+
+  .people-section-head {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .people-section-head h2 {
+    margin: 6px 0 8px;
+  }
+
+  .people-section-head p {
+    max-width: 600px;
+    margin: 0 auto;
+
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+
+  /* =====================================
+     BUSINESS GRID
+  ===================================== */
 
   .people-business-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
-    gap: 12px;
+    gap: 16px;
+
+    max-width: 820px;
+    margin: 0 auto;
   }
+
+
+  /* =====================================
+     BUSINESS CARD
+  ===================================== */
 
   .people-business {
-    min-height: 96px;
+    width: 330px;
+    min-height: 94px;
 
-    padding: 15px 16px;
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 16px 18px;
+
+    box-sizing: border-box;
+
+    background: var(--cream);
+
+    border: 1px solid var(--stone-dark);
+    border-radius: 18px;
+
+    box-shadow:
+      0 6px 20px rgba(25, 20, 15, .045);
+
+    color: var(--ink);
+
+    direction: rtl;
+
+    cursor: pointer;
+
+    font: inherit;
+    text-align: right;
+
+    transition:
+      transform .16s ease,
+      border-color .16s ease,
+      box-shadow .16s ease;
   }
+
+  .people-business:hover {
+    transform: translateY(-2px);
+
+    border-color: var(--oak);
+
+    box-shadow:
+      0 10px 26px rgba(25, 20, 15, .08);
+  }
+
+
+  /* =====================================
+     BUSINESS LOGO
+  ===================================== */
 
   .people-business-logo {
     width: 58px;
     height: 58px;
 
-    flex-basis: 58px;
+    flex: 0 0 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #fff;
+
+    border: 1px solid var(--stone-dark);
+    border-radius: 14px;
   }
 
-}
+  .people-business-logo img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    box-sizing: border-box;
+
+    padding: 6px;
+  }
+
+
+  /* =====================================
+     BUSINESS INFO
+  ===================================== */
+
+  .people-business-copy {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .people-business-copy strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--ink);
+
+    font-size: .95rem;
+    font-weight: 800;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .people-business-copy span {
+    display: block;
+
+    color: var(--oak-dark);
+
+    font-size: .78rem;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 
   /* =====================================
      PROFILE DIALOG
   ===================================== */
 
   .public-profile-dialog {
-    width: min(520px, calc(100% - 28px));
+    width: min(440px, calc(100% - 32px));
 
     padding: 0;
 
     border: 0;
-    border-radius: 24px;
+    border-radius: 22px;
 
     background: var(--cream);
 
     box-shadow:
-      0 25px 80px rgba(0, 0, 0, .25);
+      0 24px 70px rgba(0, 0, 0, .24);
+
+    color: var(--ink);
 
     direction: rtl;
   }
@@ -229,8 +197,11 @@ button.people-business {
   .public-profile-dialog-inner {
     position: relative;
 
-    padding: 28px;
+    padding: 26px;
   }
+
+
+  /* CLOSE */
 
   .public-profile-dialog-close {
     position: absolute;
@@ -238,8 +209,8 @@ button.people-business {
     top: 16px;
     left: 16px;
 
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
 
     display: flex;
     align-items: center;
@@ -247,38 +218,49 @@ button.people-business {
 
     padding: 0;
 
-    border: 1px solid var(--stone-dark);
+    border: 0;
     border-radius: 50%;
 
     background: transparent;
 
-    color: var(--ink);
+    color: var(--ink-soft);
 
-    font-size: 1.5rem;
+    font-size: 1.35rem;
+    line-height: 1;
 
     cursor: pointer;
+
+    transition:
+      background .15s ease,
+      color .15s ease;
   }
 
   .public-profile-dialog-close:hover {
     background: var(--stone);
+    color: var(--ink);
   }
+
+
+  /* DIALOG HEADER */
 
   .public-profile-dialog-head {
     display: flex;
     align-items: center;
 
-    gap: 16px;
+    gap: 14px;
 
-    padding-left: 45px;
+    min-height: 58px;
 
-    margin-bottom: 20px;
+    padding-left: 42px;
+
+    margin-bottom: 18px;
   }
 
   .public-profile-dialog-logo {
-    width: 74px;
-    height: 74px;
+    width: 58px;
+    height: 58px;
 
-    flex: 0 0 74px;
+    flex: 0 0 58px;
 
     display: flex;
     align-items: center;
@@ -289,10 +271,12 @@ button.people-business {
     background: #fff;
 
     border: 1px solid var(--stone-dark);
-    border-radius: 17px;
+    border-radius: 14px;
   }
 
   .public-profile-dialog-logo img {
+    display: block;
+
     width: 100%;
     height: 100%;
 
@@ -300,30 +284,35 @@ button.people-business {
 
     box-sizing: border-box;
 
-    padding: 7px;
-  }
-
-  .public-profile-dialog-logo span {
-    font-size: 1.6rem;
+    padding: 6px;
   }
 
   .public-profile-dialog h3 {
-    margin: 0 0 4px;
+    margin: 0 0 5px;
+
+    font-size: 1.2rem;
+    line-height: 1.35;
   }
 
   .public-profile-dialog-field {
+    display: block;
+
     color: var(--oak-dark);
 
     font-size: .8rem;
     font-weight: 700;
   }
 
+
+  /* DIALOG CONTENT */
+
   .public-profile-dialog-bio {
     margin: 0;
 
     color: var(--ink-soft);
 
-    line-height: 1.7;
+    font-size: .92rem;
+    line-height: 1.75;
   }
 
   .public-profile-dialog-links {
@@ -332,43 +321,60 @@ button.people-business {
 
     gap: 9px;
 
-    margin-top: 22px;
-    padding-top: 18px;
+    margin-top: 20px;
+    padding-top: 16px;
 
     border-top: 1px solid var(--stone-dark);
   }
 
+  .public-profile-dialog-links .btn {
+    min-width: 0;
+  }
 
-  @media (max-width: 600px) {
+
+  /* =====================================
+     MOBILE
+  ===================================== */
+
+  @media (max-width: 700px) {
 
     .people-section {
       padding: 46px 0;
     }
 
-    .people-business {
-      width: 205px;
+    .people-section-head {
+      margin-bottom: 24px;
     }
 
-    .people-marquee::before,
-    .people-marquee::after {
-      width: 35px;
+    .people-business-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      gap: 12px;
+
+      max-width: 100%;
+    }
+
+    .people-business {
+      width: 100%;
+      min-height: 90px;
+
+      padding: 14px 16px;
+    }
+
+    .people-business-logo {
+      width: 54px;
+      height: 54px;
+
+      flex-basis: 54px;
+    }
+
+    .public-profile-dialog {
+      width: calc(100% - 28px);
     }
 
     .public-profile-dialog-inner {
       padding: 22px;
-    }
-
-  }
-
-
-  @media (prefers-reduced-motion: reduce) {
-
-    .people-marquee-track {
-      animation: none;
-    }
-
-    .people-marquee {
-      overflow-x: auto;
     }
 
   }
@@ -672,20 +678,19 @@ button.people-business {
             aria-label="פרטים על <%= profile.display_name %>"
           >
 
-            <div class="people-business-logo">
+           <% if (profile.has_logo) { %>
 
-              <% if (profile.has_logo) { %>
+  <div class="people-business-logo">
 
-                <img
-                  src="/business-profiles/<%= profile.id %>/logo"
-                  alt=""
-                  loading="lazy"
-                >
+    <img
+      src="/business-profiles/<%= profile.id %>/logo"
+      alt=""
+      loading="lazy"
+    >
 
-              <% } %>
+  </div>
 
-            </div>
-
+<% } %>
 
             <div class="people-business-copy">
 
@@ -739,24 +744,18 @@ button.people-business {
         <div class="public-profile-dialog-head">
 
 
-          <div class="public-profile-dialog-logo">
+<% if (profile.has_logo) { %>
 
-            <% if (profile.has_logo) { %>
+  <div class="public-profile-dialog-logo">
 
-              <img
-                src="/business-profiles/<%= profile.id %>/logo"
-                alt="לוגו <%= profile.display_name %>"
-              >
+    <img
+      src="/business-profiles/<%= profile.id %>/logo"
+      alt="לוגו <%= profile.display_name %>"
+    >
 
-            <% } else { %>
+  </div>
 
-              <span aria-hidden="true">
-                🏢
-              </span>
-
-            <% } %>
-
-          </div>
+<% } %>
 
 
           <div>
