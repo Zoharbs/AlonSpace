@@ -6053,11 +6053,31 @@
       );
 
 
-    /* =====================================
-     FLOOR DIRECTORY INIT
-  ===================================== */
+/* =====================================
+   FLOOR DIRECTORY INIT
+===================================== */
 
-    renderFloorDirectoryEditor();
+const floorDirectorySection =
+  document.querySelector(
+    '.floor-directory-section'
+  );
+
+if (floorDirectorySection) {
+
+  floorDirectorySection.addEventListener(
+    'toggle',
+    () => {
+
+      if (!floorDirectorySection.open) {
+        return;
+      }
+
+      renderFloorDirectoryEditor();
+
+    }
+  );
+
+}
   </script>
 
   <% if (newClientInvite) { %>
