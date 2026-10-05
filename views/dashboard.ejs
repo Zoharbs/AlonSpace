@@ -1004,1289 +1004,1274 @@
       .booking-time-separator {
         opacity: .65;
       }
-    .pwa-install-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
 
-  padding: 18px 20px;
-  margin-bottom: 24px;
+      .pwa-install-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
 
-  background: #f8f6ff;
-  border: 1px solid #e4dfff;
-  border-radius: 16px;
-}
+        padding: 18px 20px;
+        margin-bottom: 24px;
 
-.pwa-install-banner-content {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
+        background: #f8f6ff;
+        border: 1px solid #e4dfff;
+        border-radius: 16px;
+      }
 
-.pwa-install-banner-content strong {
-  display: block;
-  margin-bottom: 3px;
-}
+      .pwa-install-banner-content {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+      }
 
-.pwa-install-banner-content span {
-  display: block;
-  font-size: .85rem;
-  color: var(--ink-soft);
-}
+      .pwa-install-banner-content strong {
+        display: block;
+        margin-bottom: 3px;
+      }
 
-.pwa-install-icon {
-  font-size: 1.6rem;
-}
+      .pwa-install-banner-content span {
+        display: block;
+        font-size: .85rem;
+        color: var(--ink-soft);
+      }
 
-@media (max-width: 600px) {
-  .pwa-install-banner {
-    align-items: stretch;
-    flex-direction: column;
-  }
+      .pwa-install-icon {
+        font-size: 1.6rem;
+      }
 
-  .pwa-install-banner .btn {
-    width: 100%;
-  }
-}
-/* =====================================
+      @media (max-width: 600px) {
+        .pwa-install-banner {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .pwa-install-banner .btn {
+          width: 100%;
+        }
+      }
+
+      /* =====================================
    PWA INSTALL GUIDE
 ===================================== */
 
-.pwa-guide-overlay {
-  position: fixed;
-  inset: 0;
+      .pwa-guide-overlay {
+        position: fixed;
+        inset: 0;
 
-  display: none;
-  align-items: center;
-  justify-content: center;
+        display: none;
+        align-items: center;
+        justify-content: center;
 
-  padding: 20px;
+        padding: 20px;
 
-  background: rgba(20, 18, 35, .55);
-  backdrop-filter: blur(5px);
+        background: rgba(20, 18, 35, .55);
+        backdrop-filter: blur(5px);
 
-  z-index: 99999;
-}
+        z-index: 99999;
+      }
 
-.pwa-guide-overlay.open {
-  display: flex;
-}
+      .pwa-guide-overlay.open {
+        display: flex;
+      }
 
-.pwa-guide-modal {
-  position: relative;
+      .pwa-guide-modal {
+        position: relative;
 
-  width: min(440px, 100%);
-  padding: 30px;
+        width: min(440px, 100%);
+        padding: 30px;
 
-  background: var(--cream);
-  border-radius: 24px;
+        background: var(--cream);
+        border-radius: 24px;
 
-  box-shadow:
-    0 24px 70px rgba(20, 18, 40, .22);
-}
+        box-shadow:
+          0 24px 70px rgba(20, 18, 40, .22);
+      }
 
-.pwa-guide-close {
-  position: absolute;
+      .pwa-guide-close {
+        position: absolute;
 
-  top: 14px;
-  left: 14px;
+        top: 14px;
+        left: 14px;
 
-  width: 38px;
-  height: 38px;
+        width: 38px;
+        height: 38px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-  border: 0;
-  border-radius: 50%;
+        border: 0;
+        border-radius: 50%;
 
-  background: var(--stone);
+        background: var(--stone);
 
-  color: var(--ink);
+        color: var(--ink);
 
-  font-size: 1.5rem;
+        font-size: 1.5rem;
 
-  cursor: pointer;
-}
+        cursor: pointer;
+      }
 
-.pwa-guide-header {
-  text-align: center;
-}
+      .pwa-guide-header {
+        text-align: center;
+      }
 
-.pwa-guide-logo {
-  display: block;
+      .pwa-guide-logo {
+        display: block;
 
-  width: 72px;
-  height: 72px;
+        width: 72px;
+        height: 72px;
 
-  margin: 0 auto 14px;
+        margin: 0 auto 14px;
 
-  border-radius: 17px;
+        border-radius: 17px;
 
- object-fit: contain;
-background: #fff;
+        object-fit: contain;
+        background: #fff;
 
-  box-shadow:
-    0 8px 24px rgba(20, 18, 40, .12);
-}
+        box-shadow:
+          0 8px 24px rgba(20, 18, 40, .12);
+      }
 
-.pwa-guide-header h2 {
-  margin: 5px 0 7px;
+      .pwa-guide-header h2 {
+        margin: 5px 0 7px;
 
-  font-size: 1.4rem;
-}
+        font-size: 1.4rem;
+      }
 
-.pwa-guide-header p {
-  margin: 0 0 22px;
+      .pwa-guide-header p {
+        margin: 0 0 22px;
 
-  color: var(--ink-soft);
+        color: var(--ink-soft);
 
-  font-size: .9rem;
-}
+        font-size: .9rem;
+      }
 
-.pwa-guide-step {
-  min-height: 160px;
+      .pwa-guide-step {
+        min-height: 160px;
 
-  display: flex;
-  flex-direction: column;
+        display: flex;
+        flex-direction: column;
 
-  align-items: center;
-  justify-content: center;
+        align-items: center;
+        justify-content: center;
 
-  padding: 20px;
+        padding: 20px;
 
-  background: var(--stone);
+        background: var(--stone);
 
-  border-radius: 17px;
+        border-radius: 17px;
 
-  text-align: center;
-  overflow: hidden;
-}
+        text-align: center;
+        overflow: hidden;
+      }
 
-.pwa-guide-step-icon {
-  width: 52px;
-  height: 52px;
+      .pwa-guide-step-icon {
+        width: 52px;
+        height: 52px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-  margin-bottom: 10px;
+        margin-bottom: 10px;
 
-  border-radius: 50%;
+        border-radius: 50%;
 
-  background: #ebe8ff;
+        background: #ebe8ff;
 
-  font-size: 1.5rem;
-}
+        font-size: 1.5rem;
+      }
 
-.pwa-guide-step-number {
-  margin-bottom: 4px;
+      .pwa-guide-step-number {
+        margin-bottom: 4px;
 
-  color: #7865f6;
+        color: #7865f6;
 
-  font-size: .72rem;
-  font-weight: 800;
-}
+        font-size: .72rem;
+        font-weight: 800;
+      }
 
-.pwa-guide-step h3 {
-  margin: 0 0 6px;
+      .pwa-guide-step h3 {
+        margin: 0 0 6px;
 
-  font-size: 1.05rem;
-}
+        font-size: 1.05rem;
+      }
 
-.pwa-guide-step p {
-  max-width: 320px;
+      .pwa-guide-step p {
+        max-width: 320px;
 
-  margin: 0;
+        margin: 0;
 
-  color: var(--ink-soft);
+        color: var(--ink-soft);
 
-  font-size: .88rem;
-  line-height: 1.55;
-}
+        font-size: .88rem;
+        line-height: 1.55;
+      }
 
-.pwa-guide-dots {
-  display: flex;
-  justify-content: center;
+      .pwa-guide-dots {
+        display: flex;
+        justify-content: center;
 
-  gap: 7px;
+        gap: 7px;
 
-  margin: 17px 0;
-}
+        margin: 17px 0;
+      }
 
-.pwa-guide-dot {
-  width: 7px;
-  height: 7px;
+      .pwa-guide-dot {
+        width: 7px;
+        height: 7px;
 
-  border-radius: 20px;
+        border-radius: 20px;
 
-  background: var(--stone-dark);
+        background: var(--stone-dark);
 
-  transition: .2s ease;
-}
+        transition: .2s ease;
+      }
 
-.pwa-guide-dot.active {
-  width: 22px;
+      .pwa-guide-dot.active {
+        width: 22px;
 
-  background: #7865f6;
-}
+        background: #7865f6;
+      }
 
-.pwa-guide-actions {
-  display: flex;
+      .pwa-guide-actions {
+        display: flex;
 
-  gap: 10px;
-}
+        gap: 10px;
+      }
 
-.pwa-guide-actions .btn {
-  flex: 1;
-}
+      .pwa-guide-actions .btn {
+        flex: 1;
+      }
 
-@media (max-width: 600px) {
+      @media (max-width: 600px) {
 
-  .pwa-guide-overlay {
-    align-items: center;
+        .pwa-guide-overlay {
+          align-items: center;
 
-    padding:
-      calc(10px + env(safe-area-inset-top))
-      10px
-      calc(10px + env(safe-area-inset-bottom));
+          padding:
+            calc(10px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom));
 
-    overflow-y: auto;
-  }
+          overflow-y: auto;
+        }
 
 
-  .pwa-guide-modal {
-    width: 100%;
-    max-width: 440px;
+        .pwa-guide-modal {
+          width: 100%;
+          max-width: 440px;
 
-    max-height:
-      calc(
-        100dvh -
-        20px -
-        env(safe-area-inset-top) -
-        env(safe-area-inset-bottom)
-      );
+          max-height:
+            calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 
-    overflow-y: auto;
+          overflow-y: auto;
 
-    padding: 16px 16px 18px;
+          padding: 16px 16px 18px;
 
-    border-radius: 22px;
-  }
+          border-radius: 22px;
+        }
 
 
-  .pwa-guide-logo {
-    width: 48px;
-    height: 48px;
+        .pwa-guide-logo {
+          width: 48px;
+          height: 48px;
 
-    margin-bottom: 6px;
-  }
+          margin-bottom: 6px;
+        }
 
 
-  .pwa-guide-header h2 {
-    margin: 3px 0 4px;
+        .pwa-guide-header h2 {
+          margin: 3px 0 4px;
 
-    font-size: 1.18rem;
-  }
+          font-size: 1.18rem;
+        }
 
 
-  .pwa-guide-header p {
-    margin-bottom: 10px;
+        .pwa-guide-header p {
+          margin-bottom: 10px;
 
-    font-size: .82rem;
-  }
+          font-size: .82rem;
+        }
 
 
-  .pwa-guide-step {
-    min-height: 0;
+        .pwa-guide-step {
+          min-height: 0;
 
-    padding: 12px;
-  }
+          padding: 12px;
+        }
 
 
-  .pwa-guide-step-icon {
-    width: 44px;
-    height: 44px;
+        .pwa-guide-step-icon {
+          width: 44px;
+          height: 44px;
 
-    margin-bottom: 6px;
+          margin-bottom: 6px;
 
-    font-size: 1.3rem;
-  }
+          font-size: 1.3rem;
+        }
 
 
-  .pwa-guide-step-number {
-    margin-bottom: 2px;
-  }
+        .pwa-guide-step-number {
+          margin-bottom: 2px;
+        }
 
 
-  .pwa-guide-step h3 {
-    margin-bottom: 3px;
+        .pwa-guide-step h3 {
+          margin-bottom: 3px;
 
-    font-size: 1rem;
-  }
+          font-size: 1rem;
+        }
 
 
-  .pwa-guide-step p {
-    font-size: .82rem;
-    line-height: 1.4;
-  }
+        .pwa-guide-step p {
+          font-size: .82rem;
+          line-height: 1.4;
+        }
 
 
-  .pwa-guide-dots {
-    margin: 9px 0;
-  }
+        .pwa-guide-dots {
+          margin: 9px 0;
+        }
 
 
-  .pwa-guide-actions {
-    gap: 8px;
-  }
+        .pwa-guide-actions {
+          gap: 8px;
+        }
 
 
-  .pwa-guide-actions .btn {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-}
+        .pwa-guide-actions .btn {
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+      }
 
 
 
-/* Safari */
-.pwa-image-safari {
-  object-position: center 52%;
-}
+      /* Safari */
+      .pwa-image-safari {
+        object-position: center 52%;
+      }
 
 
-/* Share */
-.pwa-image-share {
-  object-position: center 25%;
-}
+      /* Share */
+      .pwa-image-share {
+        object-position: center 25%;
+      }
 
 
-/* Add to Home Screen */
+      /* Add to Home Screen */
 
 
-.pwa-install-banner {
-  position: relative;
-}
+      .pwa-install-banner {
+        position: relative;
+      }
 
 
-.pwa-banner-close {
-  position: absolute;
+      .pwa-banner-close {
+        position: absolute;
 
-  top: 7px;
-  left: 7px;
+        top: 7px;
+        left: 7px;
 
-  width: 30px;
-  height: 30px;
+        width: 30px;
+        height: 30px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-  padding: 0;
+        padding: 0;
 
-  border: 0;
-  border-radius: 50%;
+        border: 0;
+        border-radius: 50%;
 
-  background: transparent;
+        background: transparent;
 
-  color: var(--ink-soft);
+        color: var(--ink-soft);
 
-  font-size: 1.25rem;
-  line-height: 1;
+        font-size: 1.25rem;
+        line-height: 1;
 
-  cursor: pointer;
-}
+        cursor: pointer;
+      }
 
 
-.pwa-banner-close:hover {
-  background: rgba(0, 0, 0, .05);
+      .pwa-banner-close:hover {
+        background: rgba(0, 0, 0, .05);
 
-  color: var(--ink);
-}
-.pwa-install-banner[hidden] {
-  display: none !important;
-}
-/* =====================================
+        color: var(--ink);
+      }
+
+      .pwa-install-banner[hidden] {
+        display: none !important;
+      }
+
+      /* =====================================
    PWA GUIDE IMAGES
 ===================================== */
 
-.pwa-guide-image-frame {
-  width: 100%;
-  height: 210px;
+      .pwa-guide-image-frame {
+        width: 100%;
+        height: 210px;
 
-  margin: 16px auto 0;
+        margin: 16px auto 0;
 
-  overflow: hidden;
+        overflow: hidden;
 
-  border-radius: 14px;
+        border-radius: 14px;
 
-  box-shadow:
-    0 6px 20px rgba(20, 18, 40, .12);
-}
-
-
-.pwa-guide-step-image {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-}
+        box-shadow:
+          0 6px 20px rgba(20, 18, 40, .12);
+      }
 
 
-/* תמונה 1 */
-.pwa-image-safari {
-  object-position: center 52%;
-}
+      .pwa-guide-step-image {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+      }
 
 
-/* תמונה 2 */
-.pwa-image-share {
-  object-position: center 25%;
-}
+      /* תמונה 1 */
+      .pwa-image-safari {
+        object-position: center 52%;
+      }
 
 
-/* תמונה 3 */
-/* =====================================
+      /* תמונה 2 */
+      .pwa-image-share {
+        object-position: center 25%;
+      }
+
+
+      /* תמונה 3 */
+      /* =====================================
    PWA GUIDE IMAGE 3
 ===================================== */
 
-.pwa-image-home {
-  object-fit: cover;
-  object-position: center 85%;
-  transform: none;
-}
+      .pwa-image-home {
+        object-fit: cover;
+        object-position: center 85%;
+        transform: none;
+      }
 
 
-@media (max-width: 600px) {
+      @media (max-width: 600px) {
 
-  .pwa-guide-image-frame {
-    height: 170px;
-    margin-top: 9px;
-  }
+        .pwa-guide-image-frame {
+          height: 170px;
+          margin-top: 9px;
+        }
 
-}
-/* =====================================
+      }
+
+      /* =====================================
    TENANT BUSINESS PROFILE
 ===================================== */
 
-.tenant-business-profile {
-  margin-top: 32px;
-}
+      .tenant-business-profile {
+        margin-top: 32px;
+      }
 
-.business-profile-card {
-  overflow: hidden;
+      .business-profile-card {
+        overflow: hidden;
 
-  background: var(--cream);
+        background: var(--cream);
 
-  border: 1px solid var(--stone-dark);
-  border-radius: 24px;
+        border: 1px solid var(--stone-dark);
+        border-radius: 24px;
 
-  box-shadow: var(--shadow);
-}
+        box-shadow: var(--shadow);
+      }
 
-.business-profile-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+      .business-profile-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-  gap: 24px;
+        gap: 24px;
 
-  padding: 26px 28px;
+        padding: 26px 28px;
 
-  border-bottom: 1px solid var(--stone-dark);
-}
+        border-bottom: 1px solid var(--stone-dark);
+      }
 
-.business-profile-head h2 {
-  margin: 5px 0 6px;
-}
+      .business-profile-head h2 {
+        margin: 5px 0 6px;
+      }
 
-.business-profile-head p {
-  margin: 0;
+      .business-profile-head p {
+        margin: 0;
 
-  color: var(--ink-soft);
-}
+        color: var(--ink-soft);
+      }
 
-.business-profile-status {
-  flex-shrink: 0;
+      .business-profile-status {
+        flex-shrink: 0;
 
-  padding: 8px 13px;
+        padding: 8px 13px;
 
-  border-radius: 999px;
+        border-radius: 999px;
 
-  font-size: .78rem;
-  font-weight: 800;
+        font-size: .78rem;
+        font-weight: 800;
 
-  white-space: nowrap;
-}
+        white-space: nowrap;
+      }
 
-.business-profile-status.private {
-  background: var(--stone);
-  color: var(--ink-soft);
-}
+      .business-profile-status.private {
+        background: var(--stone);
+        color: var(--ink-soft);
+      }
 
-.business-profile-status.pending {
-  background: #fff4d6;
-  color: #8a6415;
-}
+      .business-profile-status.pending {
+        background: #fff4d6;
+        color: #8a6415;
+      }
 
-.business-profile-status.approved {
-  background: #e7f6ec;
-  color: #287344;
-}
+      .business-profile-status.approved {
+        background: #e7f6ec;
+        color: #287344;
+      }
 
-.business-profile-status.rejected {
-  background: #fde8e8;
-  color: #9c3535;
-}
+      .business-profile-status.rejected {
+        background: #fde8e8;
+        color: #9c3535;
+      }
 
 
-/* FORM */
+      /* FORM */
 
-.business-profile-form {
-  padding: 28px;
-}
+      .business-profile-form {
+        padding: 28px;
+      }
 
-.business-profile-grid {
-  display: grid;
+      .business-profile-grid {
+        display: grid;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
 
-  gap: 20px;
-}
+        gap: 20px;
+      }
 
-.business-profile-field {
-  display: flex;
-  flex-direction: column;
+      .business-profile-field {
+        display: flex;
+        flex-direction: column;
 
-  gap: 7px;
-}
+        gap: 7px;
+      }
 
-.business-profile-field.full {
-  grid-column: 1 / -1;
-}
+      .business-profile-field.full {
+        grid-column: 1 / -1;
+      }
 
-.business-profile-field label {
-  font-weight: 700;
-}
+      .business-profile-field label {
+        font-weight: 700;
+      }
 
-.business-profile-field input,
-.business-profile-field textarea {
-  width: 100%;
+      .business-profile-field input,
+      .business-profile-field textarea {
+        width: 100%;
 
-  box-sizing: border-box;
-}
+        box-sizing: border-box;
+      }
 
-.business-profile-field textarea {
-  min-height: 100px;
+      .business-profile-field textarea {
+        min-height: 100px;
 
-  resize: vertical;
-}
+        resize: vertical;
+      }
 
 
-/* LOGO */
+      /* LOGO */
 
-.business-logo-area {
-  display: flex;
-  align-items: center;
+      .business-logo-area {
+        display: flex;
+        align-items: center;
 
-  gap: 18px;
-}
+        gap: 18px;
+      }
 
-.business-logo-preview {
-  width: 76px;
-  height: 76px;
+      .business-logo-preview {
+        width: 76px;
+        height: 76px;
 
-  flex: 0 0 76px;
+        flex: 0 0 76px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-  overflow: hidden;
+        overflow: hidden;
 
-  background: #fff;
+        background: #fff;
 
-  border: 1px solid var(--stone-dark);
-  border-radius: 16px;
-}
+        border: 1px solid var(--stone-dark);
+        border-radius: 16px;
+      }
 
-.business-logo-preview img {
-  width: 100%;
-  height: 100%;
+      .business-logo-preview img {
+        width: 100%;
+        height: 100%;
 
-  object-fit: contain;
+        object-fit: contain;
 
-  padding: 7px;
+        padding: 7px;
 
-  box-sizing: border-box;
-}
+        box-sizing: border-box;
+      }
 
-.business-logo-placeholder {
-  font-size: 1.8rem;
-}
+      .business-logo-placeholder {
+        font-size: 1.8rem;
+      }
 
 
-/* PUBLIC CONSENT */
+      /* PUBLIC CONSENT */
 
-.business-public-consent {
-  display: flex;
-  align-items: flex-start;
+      .business-public-consent {
+        display: flex;
+        align-items: flex-start;
 
-  gap: 12px;
+        gap: 12px;
 
-  margin-top: 24px;
-  padding: 18px;
+        margin-top: 24px;
+        padding: 18px;
 
-  background: var(--stone);
+        background: var(--stone);
 
-  border-radius: 16px;
+        border-radius: 16px;
 
-  cursor: pointer;
-}
+        cursor: pointer;
+      }
 
-.business-public-consent input {
-  width: 19px;
-  height: 19px;
+      .business-public-consent input {
+        width: 19px;
+        height: 19px;
 
-  flex: 0 0 19px;
+        flex: 0 0 19px;
 
-  margin-top: 2px;
+        margin-top: 2px;
 
-  accent-color: var(--oak);
-}
+        accent-color: var(--oak);
+      }
 
-.business-public-consent strong {
-  display: block;
+      .business-public-consent strong {
+        display: block;
 
-  margin-bottom: 4px;
-}
+        margin-bottom: 4px;
+      }
 
-.business-public-consent span {
-  display: block;
+      .business-public-consent span {
+        display: block;
 
-  color: var(--ink-soft);
+        color: var(--ink-soft);
 
-  font-size: .84rem;
-  line-height: 1.5;
-}
+        font-size: .84rem;
+        line-height: 1.5;
+      }
 
 
-.business-profile-actions {
-  display: flex;
-  justify-content: flex-end;
+      .business-profile-actions {
+        display: flex;
+        justify-content: flex-end;
 
-  margin-top: 22px;
-}
+        margin-top: 22px;
+      }
 
 
-@media (max-width: 700px) {
+      @media (max-width: 700px) {
 
-  .business-profile-head {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+        .business-profile-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
 
-  .business-profile-grid {
-    grid-template-columns: 1fr;
-  }
+        .business-profile-grid {
+          grid-template-columns: 1fr;
+        }
 
-  .business-profile-field.full {
-    grid-column: auto;
-  }
+        .business-profile-field.full {
+          grid-column: auto;
+        }
 
-  .business-profile-form {
-    padding: 20px;
-  }
+        .business-profile-form {
+          padding: 20px;
+        }
 
-  .business-profile-head {
-    padding: 22px 20px;
-  }
+        .business-profile-head {
+          padding: 22px 20px;
+        }
 
-  .business-profile-actions .btn {
-    width: 100%;
-  }
+        .business-profile-actions .btn {
+          width: 100%;
+        }
 
-}
-/* =====================================
+      }
+
+      /* =====================================
    BUSINESS PROFILE APPROVALS
 ===================================== */
 
-.business-profile-approvals {
-  margin-bottom: 32px;
-}
+      .business-profile-approvals {
+        margin-bottom: 32px;
+      }
 
-.business-profile-approvals-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+      .business-profile-approvals-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
 
-  margin-bottom: 14px;
-}
+        margin-bottom: 14px;
+      }
 
-.business-profile-approvals-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+      .business-profile-approvals-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-.business-profile-approvals-title h2 {
-  margin: 0;
-}
+      .business-profile-approvals-title h2 {
+        margin: 0;
+      }
 
-.business-profile-count {
-  min-width: 34px;
-  height: 34px;
+      .business-profile-count {
+        min-width: 34px;
+        height: 34px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-  border-radius: 50%;
+        border-radius: 50%;
 
-  background: var(--oak-dark);
-  color: white;
+        background: var(--oak-dark);
+        color: white;
 
-  font-size: .82rem;
-  font-weight: 800;
-}
+        font-size: .82rem;
+        font-weight: 800;
+      }
 
-.business-profile-approval-list {
-  display: grid;
-  gap: 14px;
-}
+      .business-profile-approval-list {
+        display: grid;
+        gap: 14px;
+      }
 
-.business-profile-approval-card {
-  display: grid;
-  grid-template-columns: 86px 1fr auto;
-  gap: 20px;
-  align-items: center;
+      .business-profile-approval-card {
+        display: grid;
+        grid-template-columns: 86px 1fr auto;
+        gap: 20px;
+        align-items: center;
 
-  padding: 20px;
+        padding: 20px;
 
-  background: var(--cream);
+        background: var(--cream);
 
-  border-radius: var(--radius-lg);
+        border-radius: var(--radius-lg);
 
-  box-shadow: var(--shadow);
-}
+        box-shadow: var(--shadow);
+      }
 
-.business-profile-admin-logo {
-  width: 86px;
-  height: 86px;
+      .business-profile-admin-logo {
+        width: 86px;
+        height: 86px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-  overflow: hidden;
+        overflow: hidden;
 
-  border-radius: 16px;
+        border-radius: 16px;
 
-  background: white;
+        background: white;
 
-  border: 1px solid var(--stone-dark);
-}
+        border: 1px solid var(--stone-dark);
+      }
 
-.business-profile-admin-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+      .business-profile-admin-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
 
-  padding: 8px;
-}
+        padding: 8px;
+      }
 
-.business-profile-admin-logo-placeholder {
-  font-size: 1.8rem;
-}
+      .business-profile-admin-logo-placeholder {
+        font-size: 1.8rem;
+      }
 
-.business-profile-admin-info h3 {
-  margin: 0 0 4px;
-}
+      .business-profile-admin-info h3 {
+        margin: 0 0 4px;
+      }
 
-.business-profile-admin-field {
-  display: block;
+      .business-profile-admin-field {
+        display: block;
 
-  margin-bottom: 8px;
+        margin-bottom: 8px;
 
-  color: var(--oak-dark);
+        color: var(--oak-dark);
 
-  font-size: .82rem;
-  font-weight: 700;
-}
+        font-size: .82rem;
+        font-weight: 700;
+      }
 
-.business-profile-admin-bio {
-  margin: 0 0 10px;
+      .business-profile-admin-bio {
+        margin: 0 0 10px;
 
-  max-width: 650px;
+        max-width: 650px;
 
-  color: var(--ink-soft);
+        color: var(--ink-soft);
 
-  line-height: 1.55;
-}
+        line-height: 1.55;
+      }
 
-.business-profile-admin-meta {
-  font-size: .78rem;
-  color: var(--ink-soft);
+      .business-profile-admin-meta {
+        font-size: .78rem;
+        color: var(--ink-soft);
 
-  margin-bottom: 10px;
-}
+        margin-bottom: 10px;
+      }
 
-.business-profile-admin-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+      .business-profile-admin-links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
 
-.business-profile-admin-links a {
-  font-size: .8rem;
-  font-weight: 700;
-}
+      .business-profile-admin-links a {
+        font-size: .8rem;
+        font-weight: 700;
+      }
 
-.business-profile-admin-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
+      .business-profile-admin-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
 
-@media (max-width: 800px) {
-  .business-profile-approval-card {
-    grid-template-columns: 70px 1fr;
-  }
+      @media (max-width: 800px) {
+        .business-profile-approval-card {
+          grid-template-columns: 70px 1fr;
+        }
 
-  .business-profile-admin-logo {
-    width: 70px;
-    height: 70px;
-  }
+        .business-profile-admin-logo {
+          width: 70px;
+          height: 70px;
+        }
 
-  .business-profile-admin-actions {
-    grid-column: 1 / -1;
-    justify-content: stretch;
-  }
+        .business-profile-admin-actions {
+          grid-column: 1 / -1;
+          justify-content: stretch;
+        }
 
-  .business-profile-admin-actions form {
-    flex: 1;
-  }
+        .business-profile-admin-actions form {
+          flex: 1;
+        }
 
-  .business-profile-admin-actions button {
-    width: 100%;
-  }
-}
-/* =====================================
+        .business-profile-admin-actions button {
+          width: 100%;
+        }
+      }
+
+      /* =====================================
    BUSINESS PROFILE - COMPACT + MODAL
 ===================================== */
 
-.tenant-business-profile {
-  padding: 8px 0 50px;
-  margin: 0;
-}
+      .tenant-business-profile {
+        padding: 8px 0 50px;
+        margin: 0;
+      }
 
 
-/* COMPACT CARD */
+      /* COMPACT CARD */
 
-.business-profile-compact {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+      .business-profile-compact {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
 
-  padding: 18px 22px;
+        padding: 18px 22px;
 
-  background: var(--cream);
-  border: 1px solid var(--stone-dark);
-  border-radius: 20px;
+        background: var(--cream);
+        border: 1px solid var(--stone-dark);
+        border-radius: 20px;
 
-  box-shadow: var(--shadow);
-}
-
-
-.business-profile-compact-main {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-width: 0;
-}
+        box-shadow: var(--shadow);
+      }
 
 
-.business-profile-compact h3 {
-  margin: 3px 0 4px;
-}
+      .business-profile-compact-main {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+      }
 
 
-.business-profile-compact p {
-  margin: 0;
-}
+      .business-profile-compact h3 {
+        margin: 3px 0 4px;
+      }
 
 
-.business-profile-compact-icon {
-  width: 58px;
-  height: 58px;
-
-  flex: 0 0 58px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
-
-  background: white;
-  border: 1px solid var(--stone-dark);
-  border-radius: 15px;
-}
+      .business-profile-compact p {
+        margin: 0;
+      }
 
 
-.business-profile-compact-icon img {
-  display: block;
+      .business-profile-compact-icon {
+        width: 58px;
+        height: 58px;
 
-  width: 100%;
-  height: 100%;
+        flex: 0 0 58px;
 
-  object-fit: contain;
-  padding: 6px;
-}
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+
+        background: white;
+        border: 1px solid var(--stone-dark);
+        border-radius: 15px;
+      }
 
 
-.business-profile-compact-icon span {
-  font-size: 1.6rem;
-}
+      .business-profile-compact-icon img {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+        padding: 6px;
+      }
 
 
-/* =====================================
+      .business-profile-compact-icon span {
+        font-size: 1.6rem;
+      }
+
+
+      /* =====================================
    DIALOG
 ===================================== */
 
-.business-profile-dialog {
-  width: min(760px, calc(100% - 32px));
-  max-height: 88vh;
+      .business-profile-dialog {
+        width: min(760px, calc(100% - 32px));
+        max-height: 88vh;
 
-  padding: 0;
+        padding: 0;
 
-  border: 0;
-  border-radius: 24px;
+        border: 0;
+        border-radius: 24px;
 
-  background: var(--cream);
+        background: var(--cream);
 
-  box-shadow:
-    0 25px 80px rgba(0, 0, 0, 0.28);
+        box-shadow:
+          0 25px 80px rgba(0, 0, 0, 0.28);
 
-  direction: rtl;
-}
-
-
-.business-profile-dialog::backdrop {
-  background: rgba(10, 12, 26, 0.62);
-  backdrop-filter: blur(4px);
-}
+        direction: rtl;
+      }
 
 
-.business-profile-dialog-inner {
-  padding: 28px;
-
-  max-height: 88vh;
-  overflow-y: auto;
-}
+      .business-profile-dialog::backdrop {
+        background: rgba(10, 12, 26, 0.62);
+        backdrop-filter: blur(4px);
+      }
 
 
-.business-profile-dialog-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
+      .business-profile-dialog-inner {
+        padding: 28px;
 
-  margin-bottom: 26px;
-}
+        max-height: 88vh;
+        overflow-y: auto;
+      }
 
 
-.business-profile-dialog-head h2 {
-  margin: 4px 0 6px;
-}
+      .business-profile-dialog-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+
+        margin-bottom: 26px;
+      }
 
 
-.business-profile-dialog-head p {
-  margin: 0;
-  color: var(--ink-soft);
-  line-height: 1.6;
-}
+      .business-profile-dialog-head h2 {
+        margin: 4px 0 6px;
+      }
 
 
-.business-profile-dialog-close {
-  width: 40px;
-  height: 40px;
-
-  flex: 0 0 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  border: 1px solid var(--stone-dark);
-  border-radius: 50%;
-
-  background: transparent;
-  color: var(--ink);
-
-  font-size: 1.6rem;
-  line-height: 1;
-
-  cursor: pointer;
-}
+      .business-profile-dialog-head p {
+        margin: 0;
+        color: var(--ink-soft);
+        line-height: 1.6;
+      }
 
 
-.business-profile-dialog-close:hover {
-  background: var(--stone-dark);
-}
+      .business-profile-dialog-close {
+        width: 40px;
+        height: 40px;
+
+        flex: 0 0 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        border: 1px solid var(--stone-dark);
+        border-radius: 50%;
+
+        background: transparent;
+        color: var(--ink);
+
+        font-size: 1.6rem;
+        line-height: 1;
+
+        cursor: pointer;
+      }
 
 
-/* =====================================
+      .business-profile-dialog-close:hover {
+        background: var(--stone-dark);
+      }
+
+
+      /* =====================================
    FORM
 ===================================== */
 
-.business-profile-dialog
-.business-profile-form {
-  margin: 0;
-}
+      .business-profile-dialog .business-profile-form {
+        margin: 0;
+      }
 
 
-.business-profile-dialog
-.business-profile-grid {
-  display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+      .business-profile-dialog .business-profile-grid {
+        display: grid;
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
 
-  gap: 18px;
-}
-
-
-.business-profile-dialog
-.business-profile-field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
+        gap: 18px;
+      }
 
 
-.business-profile-dialog
-.business-profile-field.full {
-  grid-column: 1 / -1;
-}
+      .business-profile-dialog .business-profile-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
 
 
-.business-profile-dialog
-.business-profile-field label {
-  font-weight: 700;
-}
+      .business-profile-dialog .business-profile-field.full {
+        grid-column: 1 / -1;
+      }
 
 
-.business-profile-dialog
-.business-profile-field input[type="text"],
-.business-profile-dialog
-.business-profile-field input[type="url"],
-.business-profile-dialog
-.business-profile-field textarea {
-  width: 100%;
-
-  padding: 12px 14px;
-
-  border: 1px solid var(--stone-dark);
-  border-radius: 12px;
-
-  background: white;
-  color: var(--ink);
-
-  font: inherit;
-}
+      .business-profile-dialog .business-profile-field label {
+        font-weight: 700;
+      }
 
 
-.business-profile-dialog
-.business-profile-field textarea {
-  min-height: 100px;
-  resize: vertical;
-}
+      .business-profile-dialog .business-profile-field input[type="text"],
+      .business-profile-dialog .business-profile-field input[type="url"],
+      .business-profile-dialog .business-profile-field textarea {
+        width: 100%;
+
+        padding: 12px 14px;
+
+        border: 1px solid var(--stone-dark);
+        border-radius: 12px;
+
+        background: white;
+        color: var(--ink);
+
+        font: inherit;
+      }
 
 
-/* LOGO */
-
-.business-profile-dialog
-.business-logo-area {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+      .business-profile-dialog .business-profile-field textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
 
 
-.business-profile-dialog
-.business-logo-preview {
-  width: 72px;
-  height: 72px;
+      /* LOGO */
 
-  flex: 0 0 72px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
-
-  background: white;
-  border: 1px solid var(--stone-dark);
-  border-radius: 16px;
-}
+      .business-profile-dialog .business-logo-area {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
 
 
-.business-profile-dialog
-.business-logo-preview img {
-  display: block;
+      .business-profile-dialog .business-logo-preview {
+        width: 72px;
+        height: 72px;
 
-  width: 100%;
-  height: 100%;
+        flex: 0 0 72px;
 
-  object-fit: contain;
-  padding: 7px;
-}
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+
+        background: white;
+        border: 1px solid var(--stone-dark);
+        border-radius: 16px;
+      }
 
 
-/* =====================================
+      .business-profile-dialog .business-logo-preview img {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+        padding: 7px;
+      }
+
+
+      /* =====================================
    VISIBILITY OPTIONS
 ===================================== */
 
-.business-visibility-options {
-  display: grid;
-  gap: 10px;
+      .business-visibility-options {
+        display: grid;
+        gap: 10px;
 
-  margin-top: 24px;
-}
-
-
-.business-visibility-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-
-  padding: 15px 16px;
-
-  background: white;
-
-  border: 1px solid var(--stone-dark);
-  border-radius: 14px;
-
-  cursor: pointer;
-}
+        margin-top: 24px;
+      }
 
 
-.business-visibility-option:hover {
-  border-color: var(--oak);
-}
+      .business-visibility-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        padding: 15px 16px;
+
+        background: white;
+
+        border: 1px solid var(--stone-dark);
+        border-radius: 14px;
+
+        cursor: pointer;
+      }
 
 
-.business-visibility-option input {
-  width: 18px;
-  height: 18px;
-
-  flex: 0 0 18px;
-
-  margin-top: 3px;
-
-  accent-color: var(--oak);
-}
+      .business-visibility-option:hover {
+        border-color: var(--oak);
+      }
 
 
-.business-visibility-option > span {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
+      .business-visibility-option input {
+        width: 18px;
+        height: 18px;
+
+        flex: 0 0 18px;
+
+        margin-top: 3px;
+
+        accent-color: var(--oak);
+      }
 
 
-.business-visibility-option strong {
-  font-size: 0.95rem;
-}
+      .business-visibility-option>span {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
 
 
-.business-visibility-option small {
-  color: var(--ink-soft);
-  line-height: 1.5;
-}
+      .business-visibility-option strong {
+        font-size: 0.95rem;
+      }
 
 
-.business-profile-note {
-  margin: 14px 2px 0;
-}
+      .business-visibility-option small {
+        color: var(--ink-soft);
+        line-height: 1.5;
+      }
 
 
-.business-profile-actions {
-  display: flex;
-  justify-content: flex-end;
-
-  margin-top: 24px;
-}
+      .business-profile-note {
+        margin: 14px 2px 0;
+      }
 
 
-/* =====================================
+      .business-profile-actions {
+        display: flex;
+        justify-content: flex-end;
+
+        margin-top: 24px;
+      }
+
+
+      /* =====================================
    MOBILE
 ===================================== */
 
-@media (max-width: 650px) {
+      @media (max-width: 650px) {
 
-  .business-profile-compact {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-
-  .business-profile-compact > .btn {
-    width: 100%;
-  }
+        .business-profile-compact {
+          align-items: flex-start;
+          flex-direction: column;
+        }
 
 
-  .business-profile-dialog {
-    width: calc(100% - 20px);
-    max-height: 92vh;
-
-    border-radius: 20px;
-  }
+        .business-profile-compact>.btn {
+          width: 100%;
+        }
 
 
-  .business-profile-dialog-inner {
-    padding: 20px;
-    max-height: 92vh;
-  }
+        .business-profile-dialog {
+          width: calc(100% - 20px);
+          max-height: 92vh;
+
+          border-radius: 20px;
+        }
 
 
-  .business-profile-dialog
-  .business-profile-grid {
-    grid-template-columns: 1fr;
-  }
+        .business-profile-dialog-inner {
+          padding: 20px;
+          max-height: 92vh;
+        }
 
 
-  .business-profile-dialog
-  .business-profile-field.full {
-    grid-column: auto;
-  }
+        .business-profile-dialog .business-profile-grid {
+          grid-template-columns: 1fr;
+        }
 
 
-  .business-profile-dialog
-  .business-logo-area {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+        .business-profile-dialog .business-profile-field.full {
+          grid-column: auto;
+        }
 
 
-  .business-profile-actions .btn {
-    width: 100%;
-  }
+        .business-profile-dialog .business-logo-area {
+          align-items: flex-start;
+          flex-direction: column;
+        }
 
-}
+
+        .business-profile-actions .btn {
+          width: 100%;
+        }
+
+      }
     </style>
 
     <section class="page-hero tenant-hero">
@@ -2331,45 +2316,32 @@ background: #fff;
 
       <% } %>
 
-      <div
-  id="pwaInstallBanner"
-  class="pwa-install-banner"
-  hidden
->
-  <button
-    type="button"
-    class="pwa-banner-close"
-    id="dismissPwaBanner"
-    aria-label="הסתרת הצעת ההתקנה"
-    title="סגירה"
-  >
-    ×
-  </button>
+        <div id="pwaInstallBanner" class="pwa-install-banner" hidden>
+          <button type="button" class="pwa-banner-close" id="dismissPwaBanner" aria-label="הסתרת הצעת ההתקנה"
+            title="סגירה">
+            ×
+          </button>
 
-  <div class="pwa-install-banner-content">
-    <div class="pwa-install-icon">
-      📱
-    </div>
+          <div class="pwa-install-banner-content">
+            <div class="pwa-install-icon">
+              📱
+            </div>
 
-    <div>
-      <strong>
-        שמרו את AlonSpace כאפליקציה
-      </strong>
+            <div>
+              <strong>
+                שמרו את AlonSpace כאפליקציה
+              </strong>
 
-      <span>
-        גישה מהירה ישירות ממסך הבית
-      </span>
-    </div>
-  </div>
+              <span>
+                גישה מהירה ישירות ממסך הבית
+              </span>
+            </div>
+          </div>
 
-  <button
-    type="button"
-    class="btn btn-primary"
-    id="openPwaGuide"
-  >
-    שמירה כאפליקציה
-  </button>
-</div>
+          <button type="button" class="btn btn-primary" id="openPwaGuide">
+            שמירה כאפליקציה
+          </button>
+        </div>
         <main>
           <section style="padding-top:0;">
             <div class="container">
@@ -2384,567 +2356,454 @@ background: #fff;
                       <%= success %>
                     </div>
                     <% } %>
-                     
-                          <div class="tenant-summary">
-                            <article class="tenant-summary-card">
-                              <span class="eyebrow">המשרד שלי</span>
 
-                              <h3>
-                                <%= user.office_number ? `משרד ${user.office_number}` : 'משרד טרם הוגדר' %>
-                              </h3>
+                      <div class="tenant-summary">
+                        <article class="tenant-summary-card">
+                          <span class="eyebrow">המשרד שלי</span>
 
-                              <p class="small">
-                                <%= user.floor ? `קומה ${user.floor}` : 'קומה טרם הוגדרה' %>
-                              </p>
+                          <h3>
+                            <%= user.office_number ? `משרד ${user.office_number}` : 'משרד טרם הוגדר' %>
+                          </h3>
 
-                              <% if (user.business_name) { %>
-                                <p><strong>
-                                    <%= user.business_name %>
-                                  </strong></p>
-                                <% } %>
-                            </article>
+                          <p class="small">
+                            <%= user.floor ? `קומה ${user.floor}` : 'קומה טרם הוגדרה' %>
+                          </p>
 
-                            <article class="tenant-summary-card">
-                              <span class="eyebrow">תקופת השכירות</span>
+                          <% if (user.business_name) { %>
+                            <p><strong>
+                                <%= user.business_name %>
+                              </strong></p>
+                            <% } %>
+                        </article>
 
-                              <% if (user.rental_start_date || user.rental_end_date) { %>
-                                <h3>
-                                  <%= formatDate(user.rental_start_date) %>
-                                    –
-                                    <%= formatDate(user.rental_end_date) %>
-                                </h3>
+                        <article class="tenant-summary-card">
+                          <span class="eyebrow">תקופת השכירות</span>
 
-                                <p class="small">
-                                  תקופת השכירות המעודכנת בחשבון
-                                </p>
-                                <% } else { %>
-                                  <h3>טרם הוגדרה</h3>
+                          <% if (user.rental_start_date || user.rental_end_date) { %>
+                            <h3>
+                              <%= formatDate(user.rental_start_date) %>
+                                –
+                                <%= formatDate(user.rental_end_date) %>
+                            </h3>
 
-                                  <p class="small">
-                                    יש לפנות להנהלת AlonSpace לעדכון התקופה
-                                  </p>
-                                  <% } %>
-                            </article>
-
-                            <article class="tenant-summary-card"
-                              style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%">
-                              <span class="eyebrow">חדר ישיבות</span>
-
-                              <h3>
-                                <%= remainingHours.toFixed(1) %> שעות נותרו
-                              </h3>
+                            <p class="small">
+                              תקופת השכירות המעודכנת בחשבון
+                            </p>
+                            <% } else { %>
+                              <h3>טרם הוגדרה</h3>
 
                               <p class="small">
-                                נוצלו:
-                                <%= usedHours.toFixed(1) %>
-                                  מתוך
-                                  <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
-                                    שעות החודש
+                                יש לפנות להנהלת AlonSpace לעדכון התקופה
                               </p>
+                              <% } %>
+                        </article>
 
-                              <div class="quota-line" aria-hidden="true">
-                                <span></span>
-                              </div>
-                            </article>
-                          
+                        <article class="tenant-summary-card"
+                          style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%">
+                          <span class="eyebrow">חדר ישיבות</span>
+
+                          <h3>
+                            <%= remainingHours.toFixed(1) %> שעות נותרו
+                          </h3>
+
+                          <p class="small">
+                            נוצלו:
+                            <%= usedHours.toFixed(1) %>
+                              מתוך
+                              <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
+                                שעות החודש
+                          </p>
+
+                          <div class="quota-line" aria-hidden="true">
+                            <span></span>
                           </div>
+                        </article>
+
+                      </div>
             </div>
           </section>
-        <section
-  class="tenant-business-profile"
-  id="business-profile"
->
-  <div class="container">
+          <section class="tenant-business-profile" id="business-profile">
+            <div class="container">
 
-    <%
-      const profile =
-        typeof tenantProfile !== 'undefined'
-          ? tenantProfile
-          : null;
-
-      const profileStatus =
-        profile?.public_status || 'private';
-
-      let visibilityLabel = 'לא מוצג';
-
-      if (profile?.community_visible) {
-        visibilityLabel = 'מופיע בקהילת AlonSpace';
-      }
-
-      if (
-        profile?.community_visible &&
-        profile?.public_consent &&
-        profileStatus === 'pending'
-      ) {
-        visibilityLabel = 'בקהילה · ממתין לאישור לאתר';
-      }
-
-      if (
-        profile?.community_visible &&
-        profile?.public_consent &&
-        profileStatus === 'approved'
-      ) {
-        visibilityLabel = 'בקהילה ובאתר';
-      }
-
-      if (
-        profile?.community_visible &&
-        profile?.public_consent &&
-        profileStatus === 'rejected'
-      ) {
-        visibilityLabel = 'בקהילה · הפרסום באתר לא אושר';
-      }
-    %>
+              <% const profile=typeof tenantProfile !=='undefined' ? tenantProfile : null; const
+                profileStatus=profile?.public_status || 'private' ; let visibilityLabel='לא מוצג' ; if
+                (profile?.community_visible) { visibilityLabel='מופיע בקהילת AlonSpace' ; } if (
+                profile?.community_visible && profile?.public_consent && profileStatus==='pending' ) {
+                visibilityLabel='בקהילה · ממתין לאישור לאתר' ; } if ( profile?.community_visible &&
+                profile?.public_consent && profileStatus==='approved' ) { visibilityLabel='בקהילה ובאתר' ; } if (
+                profile?.community_visible && profile?.public_consent && profileStatus==='rejected' ) {
+                visibilityLabel='בקהילה · הפרסום באתר לא אושר' ; } %>
 
 
-    <!-- COMPACT CARD -->
+                <!-- COMPACT CARD -->
 
-    <div class="business-profile-compact">
+                <div class="business-profile-compact">
 
-      <div class="business-profile-compact-main">
+                  <div class="business-profile-compact-main">
 
-        <div class="business-profile-compact-icon">
+                    <div class="business-profile-compact-icon">
 
-          <% if (profile?.logo_url) { %>
+                      <% if (profile?.logo_url) { %>
 
-            <img
-              src="<%= profile.logo_url %>"
-              alt=""
-            >
+                        <img src="<%= profile.logo_url %>" alt="">
 
-          <% } else { %>
+                        <% } else { %>
 
-            <span aria-hidden="true">
-              🏢
-            </span>
+                          <span aria-hidden="true">
+                            🏢
+                          </span>
 
-          <% } %>
+                          <% } %>
 
-        </div>
+                    </div>
 
 
-        <div>
+                    <div>
 
-          <span class="eyebrow">
-            קהילת AlonSpace
-          </span>
+                      <span class="eyebrow">
+                        קהילת AlonSpace
+                      </span>
 
-          <h3>
-            הפרופיל העסקי שלי
-          </h3>
+                      <h3>
+                        הפרופיל העסקי שלי
+                      </h3>
 
-          <p class="small">
-            <%= visibilityLabel %>
-          </p>
+                      <p class="small">
+                        <%= visibilityLabel %>
+                      </p>
 
-        </div>
+                    </div>
 
-      </div>
+                  </div>
 
 
-      <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="
+                  <button type="button" class="btn btn-secondary" onclick="
           document
             .getElementById('businessProfileDialog')
             .showModal()
-        "
-      >
-        <%= profile ? 'עריכת הפרופיל' : 'יצירת פרופיל' %>
-      </button>
+        ">
+                    <%= profile ? 'עריכת הפרופיל' : 'יצירת פרופיל' %>
+                  </button>
 
-    </div>
+                </div>
 
-  </div>
-</section>
-
-
-<!-- BUSINESS PROFILE MODAL -->
-
-<dialog
-  id="businessProfileDialog"
-  class="business-profile-dialog"
->
-
-  <div class="business-profile-dialog-inner">
-
-    <div class="business-profile-dialog-head">
-
-      <div>
-
-        <span class="eyebrow">
-          קהילת AlonSpace
-        </span>
-
-        <h2>
-          הפרופיל העסקי שלי
-        </h2>
-
-        <p>
-          בחרו איך להציג את העסק שלכם
-          בתוך קהילת AlonSpace ומחוצה לה.
-        </p>
-
-      </div>
+            </div>
+          </section>
 
 
-      <button
-        type="button"
-        class="business-profile-dialog-close"
-        aria-label="סגירה"
-        onclick="
+          <!-- BUSINESS PROFILE MODAL -->
+
+          <dialog id="businessProfileDialog" class="business-profile-dialog">
+
+            <div class="business-profile-dialog-inner">
+
+              <div class="business-profile-dialog-head">
+
+                <div>
+
+                  <span class="eyebrow">
+                    קהילת AlonSpace
+                  </span>
+
+                  <h2>
+                    הפרופיל העסקי שלי
+                  </h2>
+
+                  <p>
+                    בחרו איך להציג את העסק שלכם
+                    בתוך קהילת AlonSpace ומחוצה לה.
+                  </p>
+
+                </div>
+
+
+                <button type="button" class="business-profile-dialog-close" aria-label="סגירה" onclick="
           document
             .getElementById('businessProfileDialog')
             .close()
-        "
-      >
-        ×
-      </button>
+        ">
+                  ×
+                </button>
 
-    </div>
-
-
-    <form
-      method="POST"
-      action="/dashboard/business-profile"
-      enctype="multipart/form-data"
-      class="business-profile-form"
-    >
-
-      <input
-        type="hidden"
-        name="_csrf"
-        value="<%= csrfToken %>"
-      >
+              </div>
 
 
-      <div class="business-profile-grid">
+              <form method="POST" action="/dashboard/business-profile" enctype="multipart/form-data"
+                class="business-profile-form">
+
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
 
-        <div class="business-profile-field">
-
-          <label for="business_display_name">
-            שם העסק / שם לתצוגה
-          </label>
-
-          <input
-            id="business_display_name"
-            type="text"
-            name="display_name"
-            maxlength="120"
-            value="<%= profile?.display_name || user.business_name || '' %>"
-            placeholder="לדוגמה: XYZ Technologies"
-          >
-
-        </div>
+                <div class="business-profile-grid">
 
 
-        <div class="business-profile-field">
+                  <div class="business-profile-field">
 
-          <label for="business_field">
-            תחום פעילות
-          </label>
+                    <label for="business_display_name">
+                      שם העסק / שם לתצוגה
+                    </label>
 
-          <input
-            id="business_field"
-            type="text"
-            name="business_field"
-            maxlength="120"
-            value="<%= profile?.business_field || '' %>"
-            placeholder="לדוגמה: טכנולוגיה, עריכת דין, עיצוב..."
-          >
+                    <input id="business_display_name" type="text" name="display_name" maxlength="120"
+                      value="<%= profile?.display_name || user.business_name || '' %>"
+                      placeholder="לדוגמה: XYZ Technologies">
 
-        </div>
+                  </div>
 
 
-        <div class="business-profile-field full">
+                  <div class="business-profile-field">
 
-          <label for="business_bio">
-            ספרו עליכם במשפט
-          </label>
+                    <label for="business_field">
+                      תחום פעילות
+                    </label>
 
-          <textarea
-            id="business_bio"
-            name="bio"
-            maxlength="300"
-            placeholder="מה אתם עושים? אפשר לשמור את זה קצר ואישי."
-          ><%= profile?.bio || '' %></textarea>
+                    <input id="business_field" type="text" name="business_field" maxlength="120"
+                      value="<%= profile?.business_field || '' %>" placeholder="לדוגמה: טכנולוגיה, עריכת דין, עיצוב...">
 
-        </div>
+                  </div>
 
 
-        <div class="business-profile-field">
+                  <div class="business-profile-field full">
 
-          <label for="business_website">
-            אתר
-          </label>
+                    <label for="business_bio">
+                      ספרו עליכם במשפט
+                    </label>
 
-          <input
-            id="business_website"
-            type="text"
-            name="website_url"
-            value="<%= profile?.website_url || '' %>"
-            placeholder="https://..."
-          >
+                    <textarea id="business_bio" name="bio" maxlength="300"
+                      placeholder="מה אתם עושים? אפשר לשמור את זה קצר ואישי."><%= profile?.bio || '' %></textarea>
 
-        </div>
+                  </div>
 
 
-        <div class="business-profile-field">
+                  <div class="business-profile-field">
 
-          <label for="business_linkedin">
-            LinkedIn
-          </label>
+                    <label for="business_website">
+                      אתר
+                    </label>
 
-          <input
-            id="business_linkedin"
-            type="text"
-            name="linkedin_url"
-            value="<%= profile?.linkedin_url || '' %>"
-            placeholder="https://linkedin.com/..."
-          >
+                    <input id="business_website" type="text" name="website_url"
+                      value="<%= profile?.website_url || '' %>" placeholder="https://...">
 
-        </div>
+                  </div>
 
 
-        <div class="business-profile-field full">
+                  <div class="business-profile-field">
 
-          <label>
-            לוגו
-          </label>
+                    <label for="business_linkedin">
+                      LinkedIn
+                    </label>
 
-          <div class="business-logo-area">
+                    <input id="business_linkedin" type="text" name="linkedin_url"
+                      value="<%= profile?.linkedin_url || '' %>" placeholder="https://linkedin.com/...">
 
-            <div class="business-logo-preview">
+                  </div>
 
-              <% if (profile?.logo_url) { %>
 
-                <img
-                  src="<%= profile.logo_url %>"
-                  alt="לוגו העסק"
-                >
+                  <div class="business-profile-field full">
 
-              <% } else { %>
+                    <label>
+                      לוגו
+                    </label>
 
-                <span
-                  class="business-logo-placeholder"
-                  aria-hidden="true"
-                >
-                  🏢
-                </span>
+                    <div class="business-logo-area">
 
-              <% } %>
+                      <div class="business-logo-preview">
+
+                        <% if (profile?.logo_url) { %>
+
+                          <img src="<%= profile.logo_url %>" alt="לוגו העסק">
+
+                          <% } else { %>
+
+                            <span class="business-logo-placeholder" aria-hidden="true">
+                              🏢
+                            </span>
+
+                            <% } %>
+
+                      </div>
+
+
+                      <div>
+
+                        <input id="business_logo" type="file" name="logo" accept="image/png,image/jpeg,image/webp">
+
+                        <p class="small">
+                          PNG, JPG או WebP.
+                          מומלץ לוגו מרובע או עם רקע שקוף.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <!-- VISIBILITY -->
+
+                <div class="business-visibility-options">
+
+                  <label class="business-visibility-option">
+
+                    <input type="checkbox" id="community-visible" name="community_visible" value="1"
+                      <%=profile?.community_visible ? 'checked' : '' %>
+                    >
+
+                    <span>
+
+                      <strong>
+                        הציגו אותי בקהילת AlonSpace
+                      </strong>
+
+                      <small>
+                        הפרופיל יהיה גלוי רק לדיירי
+                        AlonSpace המחוברים למערכת.
+                      </small>
+
+                    </span>
+
+                  </label>
+
+
+                  <label class="business-visibility-option">
+
+                    <input type="checkbox" id="public-consent" name="public_consent" value="1"
+                      <%=profile?.public_consent ? 'checked' : '' %>
+                    >
+
+                    <span>
+
+                      <strong>
+                        הציגו אותי גם באתר AlonSpace
+                      </strong>
+
+                      <small>
+                        אני מאשר/ת להציג את העסק גם
+                        באתר הציבורי של AlonSpace.
+                        הפרסום באתר כפוף לאישור ההנהלה.
+                      </small>
+
+                    </span>
+
+                  </label>
+
+                </div>
+
+
+                <% if ( profile?.public_consent && profileStatus==='pending' ) { %>
+
+                  <p class="small business-profile-note">
+                    הפרסום באתר הציבורי ממתין
+                    לאישור הנהלת AlonSpace.
+                  </p>
+
+                  <% } %>
+
+
+                    <% if ( profile?.public_consent && profileStatus==='approved' ) { %>
+
+                      <p class="small business-profile-note">
+                        ✓ הפרופיל מאושר להצגה גם באתר הציבורי.
+                      </p>
+
+                      <% } %>
+
+
+                        <% if ( profile?.public_consent && profileStatus==='rejected' ) { %>
+
+                          <p class="small business-profile-note">
+                            הפרסום באתר הציבורי לא אושר כרגע.
+                            הפרופיל עדיין יכול להופיע בקהילת
+                            AlonSpace.
+                          </p>
+
+                          <% } %>
+
+
+                            <div class="business-profile-actions">
+
+                              <button type="submit" class="btn btn-primary">
+                                שמירת הפרופיל
+                              </button>
+
+                            </div>
+
+              </form>
 
             </div>
 
+          </dialog>
 
-            <div>
 
-              <input
-                id="business_logo"
-                type="file"
-                name="logo"
-                accept="image/png,image/jpeg,image/webp"
-              >
+          <script>
+            (() => {
 
-              <p class="small">
-                PNG, JPG או WebP.
-                מומלץ לוגו מרובע או עם רקע שקוף.
-              </p>
+              const communityCheckbox =
+                document.getElementById(
+                  'community-visible'
+                );
 
-            </div>
+              const publicCheckbox =
+                document.getElementById(
+                  'public-consent'
+                );
 
-          </div>
+              const dialog =
+                document.getElementById(
+                  'businessProfileDialog'
+                );
 
-        </div>
 
-      </div>
+              if (
+                communityCheckbox &&
+                publicCheckbox
+              ) {
 
+                publicCheckbox.addEventListener(
+                  'change',
+                  () => {
 
-      <!-- VISIBILITY -->
+                    if (publicCheckbox.checked) {
+                      communityCheckbox.checked = true;
+                    }
 
-      <div class="business-visibility-options">
+                  }
+                );
 
-        <label class="business-visibility-option">
 
-          <input
-            type="checkbox"
-            id="community-visible"
-            name="community_visible"
-            value="1"
-            <%= profile?.community_visible ? 'checked' : '' %>
-          >
+                communityCheckbox.addEventListener(
+                  'change',
+                  () => {
 
-          <span>
+                    if (!communityCheckbox.checked) {
+                      publicCheckbox.checked = false;
+                    }
 
-            <strong>
-              הציגו אותי בקהילת AlonSpace
-            </strong>
+                  }
+                );
 
-            <small>
-              הפרופיל יהיה גלוי רק לדיירי
-              AlonSpace המחוברים למערכת.
-            </small>
+              }
 
-          </span>
 
-        </label>
+              if (dialog) {
 
+                dialog.addEventListener(
+                  'click',
+                  (event) => {
 
-        <label class="business-visibility-option">
+                    if (event.target === dialog) {
+                      dialog.close();
+                    }
 
-          <input
-            type="checkbox"
-            id="public-consent"
-            name="public_consent"
-            value="1"
-            <%= profile?.public_consent ? 'checked' : '' %>
-          >
+                  }
+                );
 
-          <span>
+              }
 
-            <strong>
-              הציגו אותי גם באתר AlonSpace
-            </strong>
-
-            <small>
-              אני מאשר/ת להציג את העסק גם
-              באתר הציבורי של AlonSpace.
-              הפרסום באתר כפוף לאישור ההנהלה.
-            </small>
-
-          </span>
-
-        </label>
-
-      </div>
-
-
-      <% if (
-        profile?.public_consent &&
-        profileStatus === 'pending'
-      ) { %>
-
-        <p class="small business-profile-note">
-          הפרסום באתר הציבורי ממתין
-          לאישור הנהלת AlonSpace.
-        </p>
-
-      <% } %>
-
-
-      <% if (
-        profile?.public_consent &&
-        profileStatus === 'approved'
-      ) { %>
-
-        <p class="small business-profile-note">
-          ✓ הפרופיל מאושר להצגה גם באתר הציבורי.
-        </p>
-
-      <% } %>
-
-
-      <% if (
-        profile?.public_consent &&
-        profileStatus === 'rejected'
-      ) { %>
-
-        <p class="small business-profile-note">
-          הפרסום באתר הציבורי לא אושר כרגע.
-          הפרופיל עדיין יכול להופיע בקהילת
-          AlonSpace.
-        </p>
-
-      <% } %>
-
-
-      <div class="business-profile-actions">
-
-        <button
-          type="submit"
-          class="btn btn-primary"
-        >
-          שמירת הפרופיל
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
-</dialog>
-
-
-<script>
-  (() => {
-
-    const communityCheckbox =
-      document.getElementById(
-        'community-visible'
-      );
-
-    const publicCheckbox =
-      document.getElementById(
-        'public-consent'
-      );
-
-    const dialog =
-      document.getElementById(
-        'businessProfileDialog'
-      );
-
-
-    if (
-      communityCheckbox &&
-      publicCheckbox
-    ) {
-
-      publicCheckbox.addEventListener(
-        'change',
-        () => {
-
-          if (publicCheckbox.checked) {
-            communityCheckbox.checked = true;
-          }
-
-        }
-      );
-
-
-      communityCheckbox.addEventListener(
-        'change',
-        () => {
-
-          if (!communityCheckbox.checked) {
-            publicCheckbox.checked = false;
-          }
-
-        }
-      );
-
-    }
-
-
-    if (dialog) {
-
-      dialog.addEventListener(
-        'click',
-        (event) => {
-
-          if (event.target === dialog) {
-            dialog.close();
-          }
-
-        }
-      );
-
-    }
-
-  })();
-</script>
+            })();
+          </script>
           <% if (user.must_change_password) { %>
 
             <div class="password-recommendation">
@@ -3122,39 +2981,25 @@ background: #fff;
                                         <% } %>
                                 </div>
 
-   <%
-  const bookingStart = new Date(
-    `${booking.booking_date}T${String(booking.start_time).slice(0, 8)}`
-  );
+                                <% const bookingStart=new Date(
+                                  `${booking.booking_date}T${String(booking.start_time).slice(0, 8)}` ); const
+                                  canCancel=bookingStart> new Date();
+                                  %>
 
-  const canCancel = bookingStart > new Date();
-%>
+                                  <% if (canCancel) { %>
+                                    <form method="POST" action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
+                                      onsubmit="return confirm('לבטל את השריון?')">
+                                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-<% if (canCancel) { %>
-  <form
-    method="POST"
-    action="/dashboard/meeting-bookings/<%= booking.id %>/delete"
-    onsubmit="return confirm('לבטל את השריון?')"
-  >
-    <input
-      type="hidden"
-      name="_csrf"
-      value="<%= csrfToken %>"
-    >
-
-    <button
-      class="btn btn-outline"
-      type="submit"
-      style="padding:7px 12px;"
-    >
-      ביטול
-    </button>
-  </form>
-<% } else { %>
-  <span class="small">
-    השריון כבר התחיל
-  </span>
-<% } %>
+                                      <button class="btn btn-outline" type="submit" style="padding:7px 12px;">
+                                        ביטול
+                                      </button>
+                                    </form>
+                                    <% } else { %>
+                                      <span class="small">
+                                        השריון כבר התחיל
+                                      </span>
+                                      <% } %>
                               </article>
                               <% }) %>
                     </div>
@@ -3162,82 +3007,57 @@ background: #fff;
                 </div>
               </section>
         </main>
-<!-- =====================================
+        <!-- =====================================
      PWA INSTALL GUIDE
 ===================================== -->
 
-<div
-  class="pwa-guide-overlay"
-  id="pwaGuideOverlay"
-  aria-hidden="true"
->
-  <div class="pwa-guide-modal">
+        <div class="pwa-guide-overlay" id="pwaGuideOverlay" aria-hidden="true">
+          <div class="pwa-guide-modal">
 
-    <button
-      type="button"
-      class="pwa-guide-close"
-      id="pwaGuideClose"
-      aria-label="סגירה"
-    >
-      ×
-    </button>
+            <button type="button" class="pwa-guide-close" id="pwaGuideClose" aria-label="סגירה">
+              ×
+            </button>
 
-    <div class="pwa-guide-header">
+            <div class="pwa-guide-header">
 
-      <img
-        src="/images/pwa/icon-192.png"
-        alt="AlonSpace"
-        class="pwa-guide-logo"
-      >
+              <img src="/images/pwa/icon-192.png" alt="AlonSpace" class="pwa-guide-logo">
 
-      <span class="eyebrow">
-        AlonSpace
-      </span>
+              <span class="eyebrow">
+                AlonSpace
+              </span>
 
-      <h2>
-        שמרו את AlonSpace כאפליקציה
-      </h2>
+              <h2>
+                שמרו את AlonSpace כאפליקציה
+              </h2>
 
-      <p>
-        גישה מהירה לפורטל ישירות ממסך הבית.
-      </p>
+              <p>
+                גישה מהירה לפורטל ישירות ממסך הבית.
+              </p>
 
-    </div>
+            </div>
 
-    <div
-      class="pwa-guide-step"
-      id="pwaGuideStep"
-    ></div>
+            <div class="pwa-guide-step" id="pwaGuideStep"></div>
 
-    <div class="pwa-guide-dots">
-      <span class="pwa-guide-dot active"></span>
-      <span class="pwa-guide-dot"></span>
-      <span class="pwa-guide-dot"></span>
-    </div>
+            <div class="pwa-guide-dots">
+              <span class="pwa-guide-dot active"></span>
+              <span class="pwa-guide-dot"></span>
+              <span class="pwa-guide-dot"></span>
+            </div>
 
-    <div class="pwa-guide-actions">
+            <div class="pwa-guide-actions">
 
-      <button
-        type="button"
-        class="btn btn-outline"
-        id="pwaGuideBack"
-        hidden
-      >
-        הקודם
-      </button>
+              <button type="button" class="btn btn-outline" id="pwaGuideBack" hidden>
+                הקודם
+              </button>
 
-      <button
-        type="button"
-        class="btn btn-primary"
-        id="pwaGuideNext"
-      >
-        הבא
-      </button>
+              <button type="button" class="btn btn-primary" id="pwaGuideNext">
+                הבא
+              </button>
 
-    </div>
+            </div>
 
-  </div>
-</div>
+          </div>
+        </div>
         <%- include('partials/footer') %>
           <%- include('partials/scripts') %>
 
@@ -3255,7 +3075,7 @@ background: #fff;
             </script>
             <script>
               const meetingBookings =
-    <%- JSON.stringify(meetingBookings || [])
+    <% - JSON.stringify(meetingBookings || [])
                   .replace(/</g, '\\u003c') %>;
 
 
@@ -3297,7 +3117,7 @@ background: #fff;
               const bookingPopupDate =
                 document.getElementById('bookingPopupDate');
 
-    
+
               /* =====================================
                  SETTINGS
               ===================================== */
@@ -4101,7 +3921,7 @@ background: #fff;
                           finishCalendarRange(
                             currentDateKey,
                             minutes,
-                            minutes+slotMinutes
+                            minutes + slotMinutes
                           );
                         },
                         {
@@ -4572,294 +4392,294 @@ background: #fff;
 
               renderCalendar();
             </script>
-<script>
-  /* =====================================
-     PWA INSTALL BANNER
-  ===================================== */
+            <script>
+              /* =====================================
+                 PWA INSTALL BANNER
+              ===================================== */
 
-  let deferredPwaInstallPrompt = null;
+              let deferredPwaInstallPrompt = null;
 
-  const pwaInstallBanner =
-    document.getElementById('pwaInstallBanner');
+              const pwaInstallBanner =
+                document.getElementById('pwaInstallBanner');
 
-  const dismissPwaBanner =
-    document.getElementById('dismissPwaBanner');
+              const dismissPwaBanner =
+                document.getElementById('dismissPwaBanner');
 
 
-  function isAlonSpaceInstalled() {
-    return (
-      window.matchMedia(
-        '(display-mode: standalone)'
-      ).matches ||
-      window.navigator.standalone === true
-    );
-  }
+              function isAlonSpaceInstalled() {
+                return (
+                  window.matchMedia(
+                    '(display-mode: standalone)'
+                  ).matches ||
+                  window.navigator.standalone === true
+                );
+              }
 
 
-  function isMobileDevice() {
-    return (
-      /Android|iPhone|iPad|iPod/i.test(
-        navigator.userAgent
-      ) ||
-      (
-        navigator.platform === 'MacIntel' &&
-        navigator.maxTouchPoints > 1
-      )
-    );
-  }
+              function isMobileDevice() {
+                return (
+                  /Android|iPhone|iPad|iPod/i.test(
+                    navigator.userAgent
+                  ) ||
+                  (
+                    navigator.platform === 'MacIntel' &&
+                    navigator.maxTouchPoints > 1
+                  )
+                );
+              }
 
 
-  function hasDismissedPwaBanner() {
-    return (
-      localStorage.getItem(
-        'alonspace-pwa-banner-dismissed'
-      ) === 'true'
-    );
-  }
+              function hasDismissedPwaBanner() {
+                return (
+                  localStorage.getItem(
+                    'alonspace-pwa-banner-dismissed'
+                  ) === 'true'
+                );
+              }
 
 
-  function updatePwaBannerVisibility() {
+              function updatePwaBannerVisibility() {
 
-    if (!pwaInstallBanner) {
-      return;
-    }
+                if (!pwaInstallBanner) {
+                  return;
+                }
 
-    const shouldShow =
-      isMobileDevice() &&
-      !isAlonSpaceInstalled() &&
-      !hasDismissedPwaBanner();
+                const shouldShow =
+                  isMobileDevice() &&
+                  !isAlonSpaceInstalled() &&
+                  !hasDismissedPwaBanner();
 
-    pwaInstallBanner.hidden =
-      !shouldShow;
-  }
+                pwaInstallBanner.hidden =
+                  !shouldShow;
+              }
 
 
-  /* Chrome / Android */
+              /* Chrome / Android */
 
-  window.addEventListener(
-    'beforeinstallprompt',
-    (event) => {
+              window.addEventListener(
+                'beforeinstallprompt',
+                (event) => {
 
-      event.preventDefault();
+                  event.preventDefault();
 
-      deferredPwaInstallPrompt =
-        event;
+                  deferredPwaInstallPrompt =
+                    event;
 
-      updatePwaBannerVisibility();
-    }
-  );
+                  updatePwaBannerVisibility();
+                }
+              );
 
 
-  /* X - סגירת הבאנר */
+              /* X - סגירת הבאנר */
 
-  dismissPwaBanner
-    ?.addEventListener(
-      'click',
-      (event) => {
+              dismissPwaBanner
+                ?.addEventListener(
+                  'click',
+                  (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
+                    event.preventDefault();
+                    event.stopPropagation();
 
-        localStorage.setItem(
-          'alonspace-pwa-banner-dismissed',
-          'true'
-        );
+                    localStorage.setItem(
+                      'alonspace-pwa-banner-dismissed',
+                      'true'
+                    );
 
-        pwaInstallBanner.hidden = true;
-      }
-    );
+                    pwaInstallBanner.hidden = true;
+                  }
+                );
 
 
-  /* לאחר התקנה */
+              /* לאחר התקנה */
 
-  window.addEventListener(
-    'appinstalled',
-    () => {
+              window.addEventListener(
+                'appinstalled',
+                () => {
 
-      deferredPwaInstallPrompt = null;
+                  deferredPwaInstallPrompt = null;
 
-      if (pwaInstallBanner) {
-        pwaInstallBanner.hidden = true;
-      }
-    }
-  );
+                  if (pwaInstallBanner) {
+                    pwaInstallBanner.hidden = true;
+                  }
+                }
+              );
 
 
-  /* טעינת הדף */
+              /* טעינת הדף */
 
-  updatePwaBannerVisibility();
-</script>
+              updatePwaBannerVisibility();
+            </script>
 
 
 
-<script>
-  /* =====================================
-     PWA INSTALL GUIDE
-  ===================================== */
+            <script>
+              /* =====================================
+                 PWA INSTALL GUIDE
+              ===================================== */
 
-  const pwaGuideOverlay =
-    document.getElementById(
-      'pwaGuideOverlay'
-    );
-
-  const pwaGuideStep =
-    document.getElementById(
-      'pwaGuideStep'
-    );
-
-  const pwaGuideNext =
-    document.getElementById(
-      'pwaGuideNext'
-    );
-
-  const pwaGuideBack =
-    document.getElementById(
-      'pwaGuideBack'
-    );
-
-  const pwaGuideClose =
-    document.getElementById(
-      'pwaGuideClose'
-    );
-
-  const openPwaGuide =
-    document.getElementById(
-      'openPwaGuide'
-    );
-
-
-  let pwaGuideCurrentStep = 0;
-
-
-const pwaIsIOS =
-  /iphone|ipad|ipod/i.test(
-    navigator.userAgent
-  ) ||
-  (
-    navigator.platform === 'MacIntel' &&
-    navigator.maxTouchPoints > 1
-  );
-
-  const pwaIsAndroid =
-    /android/i.test(
-      navigator.userAgent
-    );
-
-
-const iosPwaSteps = [
-  {
-    icon: '🌐',
-    title: 'פתחו ב-Safari',
-    text:
-      'כדי לפתוח את האתר דרך Safari, ' +
-      'לחצו על כפתור השיתוף ומצאו את הכפתור.',
-
-    image:
-      '/images/pwa/open-in-safari.png',
-
-    imageClass:
-      'pwa-image-safari'
-  },
+              const pwaGuideOverlay =
+                document.getElementById(
+                  'pwaGuideOverlay'
+                );
+
+              const pwaGuideStep =
+                document.getElementById(
+                  'pwaGuideStep'
+                );
+
+              const pwaGuideNext =
+                document.getElementById(
+                  'pwaGuideNext'
+                );
+
+              const pwaGuideBack =
+                document.getElementById(
+                  'pwaGuideBack'
+                );
+
+              const pwaGuideClose =
+                document.getElementById(
+                  'pwaGuideClose'
+                );
+
+              const openPwaGuide =
+                document.getElementById(
+                  'openPwaGuide'
+                );
+
+
+              let pwaGuideCurrentStep = 0;
+
+
+              const pwaIsIOS =
+                /iphone|ipad|ipod/i.test(
+                  navigator.userAgent
+                ) ||
+                (
+                  navigator.platform === 'MacIntel' &&
+                  navigator.maxTouchPoints > 1
+                );
+
+              const pwaIsAndroid =
+                /android/i.test(
+                  navigator.userAgent
+                );
+
+
+              const iosPwaSteps = [
+                {
+                  icon: '🌐',
+                  title: 'פתחו ב-Safari',
+                  text:
+                    'כדי לפתוח את האתר דרך Safari, ' +
+                    'לחצו על כפתור השיתוף ומצאו את הכפתור.',
+
+                  image:
+                    '/images/pwa/open-in-safari.png',
+
+                  imageClass:
+                    'pwa-image-safari'
+                },
 
-  {
-    icon: '↗',
-    title: 'פתחו את תפריט השיתוף',
-    text:
-      'לחצו על כפתור השיתוף של Safari.',
+                {
+                  icon: '↗',
+                  title: 'פתחו את תפריט השיתוף',
+                  text:
+                    'לחצו על כפתור השיתוף של Safari.',
 
-    image:
-      '/images/pwa/ios-share.png',
+                  image:
+                    '/images/pwa/ios-share.png',
 
-    imageClass:
-      'pwa-image-share'
-  },
+                  imageClass:
+                    'pwa-image-share'
+                },
 
-  {
-    icon: '＋',
-    title: 'הוסיפו למסך הבית',
-    text:
-      'גללו מטה ובחרו „Add to Home Screen”.',
+                {
+                  icon: '＋',
+                  title: 'הוסיפו למסך הבית',
+                  text:
+                    'גללו מטה ובחרו „Add to Home Screen”.',
 
-    image:
-      '/images/pwa/ios-add-home-screen.PNG',
+                  image:
+                    '/images/pwa/ios-add-home-screen.PNG',
 
-    imageClass:
-      'pwa-image-home'
-  }
-];
+                  imageClass:
+                    'pwa-image-home'
+                }
+              ];
 
-  const androidPwaSteps = [
-    {
-      icon: '🌐',
-      title: 'פתחו ב-Chrome',
-      text:
-        'פתחו את AlonSpace באמצעות Google Chrome.'
-    },
+              const androidPwaSteps = [
+                {
+                  icon: '🌐',
+                  title: 'פתחו ב-Chrome',
+                  text:
+                    'פתחו את AlonSpace באמצעות Google Chrome.'
+                },
 
-    {
-      icon: '⋮',
-      title: 'פתחו את התפריט',
-      text:
-        'לחצו על שלוש הנקודות בפינת הדפדפן.'
-    },
+                {
+                  icon: '⋮',
+                  title: 'פתחו את התפריט',
+                  text:
+                    'לחצו על שלוש הנקודות בפינת הדפדפן.'
+                },
 
-    {
-      icon: '＋',
-      title: 'התקינו את AlonSpace',
-      text:
-        'בחרו „התקנת אפליקציה” או „הוספה למסך הבית” ואשרו.'
-    }
-  ];
+                {
+                  icon: '＋',
+                  title: 'התקינו את AlonSpace',
+                  text:
+                    'בחרו „התקנת אפליקציה” או „הוספה למסך הבית” ואשרו.'
+                }
+              ];
 
 
-  const desktopPwaSteps = [
-    {
-      icon: '🌐',
-      title: 'פתחו בדפדפן',
-      text:
-        'פתחו את AlonSpace באמצעות Chrome או Edge.'
-    },
+              const desktopPwaSteps = [
+                {
+                  icon: '🌐',
+                  title: 'פתחו בדפדפן',
+                  text:
+                    'פתחו את AlonSpace באמצעות Chrome או Edge.'
+                },
 
-    {
-      icon: '⊕',
-      title: 'בחרו התקנה',
-      text:
-        'חפשו את אפשרות התקנת האפליקציה בדפדפן.'
-    },
+                {
+                  icon: '⊕',
+                  title: 'בחרו התקנה',
+                  text:
+                    'חפשו את אפשרות התקנת האפליקציה בדפדפן.'
+                },
 
-    {
-      icon: '✓',
-      title: 'אשרו',
-      text:
-        'אשרו את ההתקנה ו-AlonSpace ייפתח כאפליקציה.'
-    }
-  ];
+                {
+                  icon: '✓',
+                  title: 'אשרו',
+                  text:
+                    'אשרו את ההתקנה ו-AlonSpace ייפתח כאפליקציה.'
+                }
+              ];
 
 
-  function getPwaGuideSteps() {
+              function getPwaGuideSteps() {
 
-    if (pwaIsIOS) {
-      return iosPwaSteps;
-    }
+                if (pwaIsIOS) {
+                  return iosPwaSteps;
+                }
 
-    if (pwaIsAndroid) {
-      return androidPwaSteps;
-    }
+                if (pwaIsAndroid) {
+                  return androidPwaSteps;
+                }
 
-    return desktopPwaSteps;
-  }
+                return desktopPwaSteps;
+              }
 
 
-  function renderPwaGuideStep() {
+              function renderPwaGuideStep() {
 
-    const steps =
-      getPwaGuideSteps();
+                const steps =
+                  getPwaGuideSteps();
 
-    const step =
-      steps[pwaGuideCurrentStep];
+                const step =
+                  steps[pwaGuideCurrentStep];
 
 
-pwaGuideStep.innerHTML = `
+                pwaGuideStep.innerHTML = `
   <div class="pwa-guide-step-icon">
     ${step.icon}
   </div>
@@ -4877,9 +4697,8 @@ pwaGuideStep.innerHTML = `
     ${step.text}
   </p>
 
-  ${
-  step.image
-    ? `
+  ${step.image
+                    ? `
       <div class="pwa-guide-image-frame">
         <img
           src="${step.image}"
@@ -4888,189 +4707,189 @@ pwaGuideStep.innerHTML = `
         >
       </div>
     `
-    : ''
-}
+                    : ''
+                  }
 `;
 
-    document
-      .querySelectorAll('.pwa-guide-dot')
-      .forEach((dot, index) => {
+                document
+                  .querySelectorAll('.pwa-guide-dot')
+                  .forEach((dot, index) => {
 
-        dot.classList.toggle(
-          'active',
-          index === pwaGuideCurrentStep
-        );
+                    dot.classList.toggle(
+                      'active',
+                      index === pwaGuideCurrentStep
+                    );
 
-      });
-
-
-    pwaGuideBack.hidden =
-      pwaGuideCurrentStep === 0;
+                  });
 
 
-    pwaGuideNext.textContent =
-      pwaGuideCurrentStep ===
-        steps.length - 1
-        ? 'סיימתי'
-        : 'הבא';
-  }
+                pwaGuideBack.hidden =
+                  pwaGuideCurrentStep === 0;
 
 
-  function openPwaInstallGuide() {
-
-    pwaGuideCurrentStep = 0;
-
-    renderPwaGuideStep();
-
-    pwaGuideOverlay
-      .classList.add('open');
-
-    pwaGuideOverlay
-      .setAttribute(
-        'aria-hidden',
-        'false'
-      );
-
-    document.body.style.overflow =
-      'hidden';
-  }
+                pwaGuideNext.textContent =
+                  pwaGuideCurrentStep ===
+                    steps.length - 1
+                    ? 'סיימתי'
+                    : 'הבא';
+              }
 
 
-  function closePwaInstallGuide() {
+              function openPwaInstallGuide() {
 
-    pwaGuideOverlay
-      .classList.remove('open');
+                pwaGuideCurrentStep = 0;
 
-    pwaGuideOverlay
-      .setAttribute(
-        'aria-hidden',
-        'true'
-      );
+                renderPwaGuideStep();
 
-    document.body.style.overflow = '';
-  }
+                pwaGuideOverlay
+                  .classList.add('open');
 
+                pwaGuideOverlay
+                  .setAttribute(
+                    'aria-hidden',
+                    'false'
+                  );
 
-openPwaGuide
-  ?.addEventListener(
-    'click',
-    async () => {
-
-      /*
-        הדפדפן מאפשר התקנה ישירה
-        — נשתמש בה.
-      */
-
-      if (deferredPwaInstallPrompt) {
-
-        deferredPwaInstallPrompt.prompt();
-
-        const result =
-          await deferredPwaInstallPrompt
-            .userChoice;
-
-        /*
-          אי אפשר להשתמש שוב באותו event.
-        */
-
-        deferredPwaInstallPrompt =
-          null;
+                document.body.style.overflow =
+                  'hidden';
+              }
 
 
-        /*
-          אם המשתמש התקין,
-          נעלים את הבאנר.
-        */
+              function closePwaInstallGuide() {
 
-        if (
-          result.outcome ===
-          'accepted'
-        ) {
+                pwaGuideOverlay
+                  .classList.remove('open');
 
-          if (pwaInstallBanner) {
-            pwaInstallBanner.hidden =
-              true;
-          }
+                pwaGuideOverlay
+                  .setAttribute(
+                    'aria-hidden',
+                    'true'
+                  );
 
-        }
-
-        return;
-      }
+                document.body.style.overflow = '';
+              }
 
 
-      /*
-        אין התקנה ישירה
-        — למשל Safari באייפון.
-        פותחים את המדריך.
-      */
+              openPwaGuide
+                ?.addEventListener(
+                  'click',
+                  async () => {
 
-      openPwaInstallGuide();
-    }
-  );
+                    /*
+                      הדפדפן מאפשר התקנה ישירה
+                      — נשתמש בה.
+                    */
 
+                    if (deferredPwaInstallPrompt) {
 
-  pwaGuideClose
-    ?.addEventListener(
-      'click',
-      closePwaInstallGuide
-    );
+                      deferredPwaInstallPrompt.prompt();
 
+                      const result =
+                        await deferredPwaInstallPrompt
+                          .userChoice;
 
-  pwaGuideBack
-    ?.addEventListener(
-      'click',
-      () => {
+                      /*
+                        אי אפשר להשתמש שוב באותו event.
+                      */
 
-        if (
-          pwaGuideCurrentStep > 0
-        ) {
-          pwaGuideCurrentStep--;
-
-          renderPwaGuideStep();
-        }
-
-      }
-    );
+                      deferredPwaInstallPrompt =
+                        null;
 
 
-  pwaGuideNext
-    ?.addEventListener(
-      'click',
-      () => {
+                      /*
+                        אם המשתמש התקין,
+                        נעלים את הבאנר.
+                      */
 
-        const steps =
-          getPwaGuideSteps();
+                      if (
+                        result.outcome ===
+                        'accepted'
+                      ) {
 
+                        if (pwaInstallBanner) {
+                          pwaInstallBanner.hidden =
+                            true;
+                        }
 
-        if (
-          pwaGuideCurrentStep <
-          steps.length - 1
-        ) {
-          pwaGuideCurrentStep++;
+                      }
 
-          renderPwaGuideStep();
-
-          return;
-        }
-
-
-        closePwaInstallGuide();
-      }
-    );
+                      return;
+                    }
 
 
-  pwaGuideOverlay
-    ?.addEventListener(
-      'click',
-      (event) => {
+                    /*
+                      אין התקנה ישירה
+                      — למשל Safari באייפון.
+                      פותחים את המדריך.
+                    */
 
-        if (
-          event.target ===
-          pwaGuideOverlay
-        ) {
-          closePwaInstallGuide();
-        }
+                    openPwaInstallGuide();
+                  }
+                );
 
-      }
-    );
-</script>
+
+              pwaGuideClose
+                ?.addEventListener(
+                  'click',
+                  closePwaInstallGuide
+                );
+
+
+              pwaGuideBack
+                ?.addEventListener(
+                  'click',
+                  () => {
+
+                    if (
+                      pwaGuideCurrentStep > 0
+                    ) {
+                      pwaGuideCurrentStep--;
+
+                      renderPwaGuideStep();
+                    }
+
+                  }
+                );
+
+
+              pwaGuideNext
+                ?.addEventListener(
+                  'click',
+                  () => {
+
+                    const steps =
+                      getPwaGuideSteps();
+
+
+                    if (
+                      pwaGuideCurrentStep <
+                      steps.length - 1
+                    ) {
+                      pwaGuideCurrentStep++;
+
+                      renderPwaGuideStep();
+
+                      return;
+                    }
+
+
+                    closePwaInstallGuide();
+                  }
+                );
+
+
+              pwaGuideOverlay
+                ?.addEventListener(
+                  'click',
+                  (event) => {
+
+                    if (
+                      event.target ===
+                      pwaGuideOverlay
+                    ) {
+                      closePwaInstallGuide();
+                    }
+
+                  }
+                );
+            </script>
