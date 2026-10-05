@@ -138,6 +138,7 @@ router.get('/', async (req, res, next) => {
           SELECT
             id,
             user_id,
+            person_name,
             display_name,
             business_field,
             bio,
@@ -394,6 +395,7 @@ router.get('/community',
               tp.id,
               tp.user_id,
               tp.display_name,
+              tp.person_name,
               tp.business_field,
               tp.bio,
               tp.website_url,
@@ -575,6 +577,12 @@ router.post(
       /* =====================================
          FORM VALUES
       ===================================== */
+      const personName =
+        String(
+          req.body.person_name || ''
+        )
+          .trim()
+          .slice(0, 120);
 
       const displayName =
         String(
@@ -612,12 +620,12 @@ router.post(
         ).trim();
 
 
-const communityVisible =
-  req.body.community_visible === '1';
+      const communityVisible =
+        req.body.community_visible === '1';
 
-const publicConsent =
-  communityVisible &&
-  req.body.public_consent === '1';
+      const publicConsent =
+        communityVisible &&
+        req.body.public_consent === '1';
 
       /* =====================================
          BASIC VALIDATION
@@ -636,85 +644,85 @@ const publicConsent =
       }
 
 
-   function normalizeOptionalUrl(value) {
+      function normalizeOptionalUrl(value) {
 
-  const trimmed =
-    String(value || '').trim();
-
-
-  if (!trimmed) {
-    return {
-      valid: true,
-      url: null,
-    };
-  }
+        const trimmed =
+          String(value || '').trim();
 
 
-  const withProtocol =
-    /^https?:\/\//i.test(trimmed)
-      ? trimmed
-      : `https://${trimmed}`;
+        if (!trimmed) {
+          return {
+            valid: true,
+            url: null,
+          };
+        }
 
 
-  try {
-
-    const parsed =
-      new URL(withProtocol);
-
-
-    if (
-      parsed.protocol !== 'http:' &&
-      parsed.protocol !== 'https:'
-    ) {
-      return {
-        valid: false,
-        url: null,
-      };
-    }
+        const withProtocol =
+          /^https?:\/\//i.test(trimmed)
+            ? trimmed
+            : `https://${trimmed}`;
 
 
-    return {
-      valid: true,
-      url: parsed.toString(),
-    };
+        try {
 
-  } catch {
-
-    return {
-      valid: false,
-      url: null,
-    };
-
-  }
-
-}
+          const parsed =
+            new URL(withProtocol);
 
 
-const normalizedWebsite =
-  normalizeOptionalUrl(websiteUrl);
+          if (
+            parsed.protocol !== 'http:' &&
+            parsed.protocol !== 'https:'
+          ) {
+            return {
+              valid: false,
+              url: null,
+            };
+          }
 
 
-const normalizedLinkedin =
-  normalizeOptionalUrl(linkedinUrl);
+          return {
+            valid: true,
+            url: parsed.toString(),
+          };
+
+        } catch {
+
+          return {
+            valid: false,
+            url: null,
+          };
+
+        }
+
+      }
 
 
-if (
-  !normalizedWebsite.valid ||
-  !normalizedLinkedin.valid
-) {
-
-  return res.redirect(
-    '/dashboard?error=' +
-    encodeURIComponent(
-      'כתובת האתר או LinkedIn אינה תקינה'
-    ) +
-    '#business-profile'
-  );
-
-}
+      const normalizedWebsite =
+        normalizeOptionalUrl(websiteUrl);
 
 
-    
+      const normalizedLinkedin =
+        normalizeOptionalUrl(linkedinUrl);
+
+
+      if (
+        !normalizedWebsite.valid ||
+        !normalizedLinkedin.valid
+      ) {
+
+        return res.redirect(
+          '/dashboard?error=' +
+          encodeURIComponent(
+            'כתובת האתר או LinkedIn אינה תקינה'
+          ) +
+          '#business-profile'
+        );
+
+      }
+
+
+
 
       /* =====================================
          CURRENT PROFILE
@@ -789,7 +797,7 @@ if (
           INSERT INTO tenant_profiles (
 
             user_id,
-
+            person_name,
             display_name,
             business_field,
             bio,
@@ -822,6 +830,7 @@ updated_at
             $10,
             $11,
 $12,
+$13,
 
 NOW()
 
@@ -830,7 +839,8 @@ NOW()
           ON CONFLICT (user_id)
 
           DO UPDATE SET
-
+person_name =
+  EXCLUDED.person_name,
             display_name =
               EXCLUDED.display_name,
 
@@ -880,26 +890,28 @@ public_status =
             updated_at =
               NOW()
         `,
-        [
-          user.id,
+[
+  user.id,
 
-          displayName,
-          businessField || null,
-          bio || null,
+  personName || null,
+  displayName,
+  businessField || null,
+  bio || null,
 
-normalizedWebsite.url,
-normalizedLinkedin.url,
+  normalizedWebsite.url,
+  normalizedLinkedin.url,
 
-          logoData,
-          logoMimeType,
+  logoData,
+  logoMimeType,
 
-       req.file
-  ? `/dashboard/business-profile/logo`
-  : null,
-communityVisible,
-publicConsent,
-publicStatus
-        ]
+  req.file
+    ? `/dashboard/business-profile/logo`
+    : null,
+
+  communityVisible,
+  publicConsent,
+  publicStatus
+]
       );
 
 
@@ -1098,14 +1110,14 @@ router.post('/meeting-bookings/create',
       // נעילה ברמת transaction לפי התאריך,
       // כדי ששני משתמשים לא יצליחו לשריין
       // את אותו זמן בו-זמנית.
-await client.query(
-  `
+      await client.query(
+        `
     SELECT pg_advisory_xact_lock(
       hashtext($1)
     )
   `,
-  [`meeting-room:${roomId}:${bookingDate}`]
-);
+        [`meeting-room:${roomId}:${bookingDate}`]
+      );
 
       const conflictResult =
         await client.query(
@@ -1157,53 +1169,53 @@ await client.query(
       );
 
       let billingStatus = 'included';
- 
+
 
       const newTotalHours =
         usedHours + requestedHours;
-if (newTotalHours > limit) {
+      if (newTotalHours > limit) {
 
-  const warningResult = await client.query(
-    `
+        const warningResult = await client.query(
+          `
       SELECT meeting_quota_warning_month
       FROM users
       WHERE id = $1
       FOR UPDATE
     `,
-    [user.id]
-  );
+          [user.id]
+        );
 
-  const warningMonth =
-    warningResult.rows[0]
-      ?.meeting_quota_warning_month;
+        const warningMonth =
+          warningResult.rows[0]
+            ?.meeting_quota_warning_month;
 
-  if (warningMonth !== monthKey) {
+        if (warningMonth !== monthKey) {
 
-    billingStatus = 'warning';
+          billingStatus = 'warning';
 
-    await client.query(
-      `
+          await client.query(
+            `
         UPDATE users
         SET
           meeting_quota_warning_month = $1,
           updated_at = NOW()
         WHERE id = $2
       `,
-      [
-        monthKey,
-        user.id,
-      ]
-    );
+            [
+              monthKey,
+              user.id,
+            ]
+          );
 
-  } else {
+        } else {
 
-    billingStatus = 'chargeable';
+          billingStatus = 'chargeable';
 
-  }
-}
+        }
+      }
 
-await client.query(
-  `
+      await client.query(
+        `
     INSERT INTO meeting_bookings (
       user_id,
       meeting_room_id,
@@ -1227,17 +1239,17 @@ await client.query(
       'tenant'
     )
   `,
-  [
-    user.id,
-    roomId,
-    bookingDate,
-    startTime,
-    endTime,
-    note || null,
-    billingStatus,
-    req.session.userId
-  ]
-);
+        [
+          user.id,
+          roomId,
+          bookingDate,
+          startTime,
+          endTime,
+          note || null,
+          billingStatus,
+          req.session.userId
+        ]
+      );
       await client.query(
         `
     INSERT INTO user_activity (

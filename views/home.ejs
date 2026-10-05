@@ -190,6 +190,14 @@
     }
 
   }
+.people-person-name {
+  margin: 3px 0 5px;
+
+  color: var(--ink-soft);
+
+  font-size: .9rem;
+  font-weight: 600;
+}
 </style>
     <section class="hero">
       <div class="container">
@@ -502,21 +510,31 @@
               <% } %>
 
 
-              <div class="people-profile-title">
+<div class="people-profile-title">
 
-                <h3>
-                  <%= profile.display_name %>
-                </h3>
+  <h3>
+    <%= profile.display_name %>
+  </h3>
 
-                <% if (profile.business_field) { %>
 
-                  <span>
-                    <%= profile.business_field %>
-                  </span>
+  <% if (profile.person_name) { %>
 
-                <% } %>
+    <div class="people-person-name">
+      <%= profile.person_name %>
+    </div>
 
-              </div>
+  <% } %>
+
+
+  <% if (profile.business_field) { %>
+
+    <span>
+      <%= profile.business_field %>
+    </span>
+
+  <% } %>
+
+</div>
 
             </div>
 

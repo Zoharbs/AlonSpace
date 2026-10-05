@@ -360,7 +360,14 @@
     }
 
   }
+.community-person-name {
+  margin: 3px 0 5px;
 
+  color: var(--ink-soft);
+
+  font-size: .9rem;
+  font-weight: 600;
+}
 </style>
 
 
@@ -467,22 +474,31 @@
 
                 <!-- NAME -->
 
-                <div class="community-card-title">
+         <div class="community-card-title">
 
-                  <h2>
-                    <%= profile.display_name %>
-                  </h2>
+  <h2>
+    <%= profile.display_name %>
+  </h2>
 
 
-                  <% if (profile.business_field) { %>
+  <% if (profile.person_name) { %>
 
-                    <span class="community-field">
-                      <%= profile.business_field %>
-                    </span>
+    <div class="community-person-name">
+      <%= profile.person_name %>
+    </div>
 
-                  <% } %>
+  <% } %>
 
-                </div>
+
+  <% if (profile.business_field) { %>
+
+    <span class="community-field">
+      <%= profile.business_field %>
+    </span>
+
+  <% } %>
+
+</div>
 
               </div>
 

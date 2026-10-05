@@ -75,6 +75,7 @@ router.get('/', async (req, res, next) => {
       db.query(`
         SELECT
           tp.id,
+          tp.person_name,
           tp.display_name,
           tp.business_field,
           tp.bio,

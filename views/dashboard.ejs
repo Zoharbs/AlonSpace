@@ -2536,7 +2536,22 @@
 
                 <div class="business-profile-grid">
 
+<div class="business-profile-field">
 
+  <label for="person_name">
+    שם
+  </label>
+
+  <input
+    id="person_name"
+    type="text"
+    name="person_name"
+    maxlength="120"
+    value="<%= profile?.person_name || '' %>"
+    placeholder="השם שלך"
+  >
+
+</div>
                   <div class="business-profile-field">
 
                     <label for="business_display_name">
