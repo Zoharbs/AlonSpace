@@ -2357,140 +2357,232 @@
                     </div>
                     <% } %>
 
-                      <div class="tenant-summary">
-                        <article class="tenant-summary-card">
-                          <span class="eyebrow">המשרד שלי</span>
+<%
+  const profile =
+    typeof tenantProfile !== 'undefined'
+      ? tenantProfile
+      : null;
 
-                          <h3>
-                            <%= user.office_number ? `משרד ${user.office_number}` : 'משרד טרם הוגדר' %>
-                          </h3>
+  const profileStatus =
+    profile?.public_status || 'private';
 
-                          <p class="small">
-                            <%= user.floor ? `קומה ${user.floor}` : 'קומה טרם הוגדרה' %>
-                          </p>
+  let visibilityLabel = 'לא מוצג';
 
-                          <% if (user.business_name) { %>
-                            <p><strong>
-                                <%= user.business_name %>
-                              </strong></p>
-                            <% } %>
-                        </article>
+  if (profile?.community_visible) {
+    visibilityLabel =
+      'מופיע בקהילת AlonSpace';
+  }
 
-                        <article class="tenant-summary-card">
-                          <span class="eyebrow">תקופת השכירות</span>
+  if (
+    profile?.community_visible &&
+    profile?.public_consent &&
+    profileStatus === 'pending'
+  ) {
+    visibilityLabel =
+      'בקהילה · ממתין לאישור לאתר';
+  }
 
-                          <% if (user.rental_start_date || user.rental_end_date) { %>
-                            <h3>
-                              <%= formatDate(user.rental_start_date) %>
-                                –
-                                <%= formatDate(user.rental_end_date) %>
-                            </h3>
+  if (
+    profile?.community_visible &&
+    profile?.public_consent &&
+    profileStatus === 'approved'
+  ) {
+    visibilityLabel =
+      'בקהילה ובאתר';
+  }
 
-                            <p class="small">
-                              תקופת השכירות המעודכנת בחשבון
-                            </p>
-                            <% } else { %>
-                              <h3>טרם הוגדרה</h3>
-
-                              <p class="small">
-                                יש לפנות להנהלת AlonSpace לעדכון התקופה
-                              </p>
-                              <% } %>
-                        </article>
-
-                        <article class="tenant-summary-card"
-                          style="--quota-used:<%= Math.min(100, (usedHours / Number(user.monthly_meeting_hours || 6)) * 100) %>%">
-                          <span class="eyebrow">חדר ישיבות</span>
-
-                          <h3>
-                            <%= remainingHours.toFixed(1) %> שעות נותרו
-                          </h3>
-
-                          <p class="small">
-                            נוצלו:
-                            <%= usedHours.toFixed(1) %>
-                              מתוך
-                              <%= Number(user.monthly_meeting_hours || 6).toFixed(1) %>
-                                שעות החודש
-                          </p>
-
-                          <div class="quota-line" aria-hidden="true">
-                            <span></span>
-                          </div>
-                        </article>
-
-                      </div>
-            </div>
-          </section>
-          <section class="tenant-business-profile" id="business-profile">
-            <div class="container">
-
-              <% const profile=typeof tenantProfile !=='undefined' ? tenantProfile : null; const
-                profileStatus=profile?.public_status || 'private' ; let visibilityLabel='לא מוצג' ; if
-                (profile?.community_visible) { visibilityLabel='מופיע בקהילת AlonSpace' ; } if (
-                profile?.community_visible && profile?.public_consent && profileStatus==='pending' ) {
-                visibilityLabel='בקהילה · ממתין לאישור לאתר' ; } if ( profile?.community_visible &&
-                profile?.public_consent && profileStatus==='approved' ) { visibilityLabel='בקהילה ובאתר' ; } if (
-                profile?.community_visible && profile?.public_consent && profileStatus==='rejected' ) {
-                visibilityLabel='בקהילה · הפרסום באתר לא אושר' ; } %>
+  if (
+    profile?.community_visible &&
+    profile?.public_consent &&
+    profileStatus === 'rejected'
+  ) {
+    visibilityLabel =
+      'בקהילה · הפרסום באתר לא אושר';
+  }
+%>
 
 
-                <!-- COMPACT CARD -->
+<div class="tenant-summary">
 
-                <div class="business-profile-compact">
+  <!-- המשרד שלי -->
 
-                  <div class="business-profile-compact-main">
+  <article class="tenant-summary-card">
 
-                    <div class="business-profile-compact-icon">
+    <span class="eyebrow">
+      המשרד שלי
+    </span>
 
-                      <% if (profile?.logo_url) { %>
+    <h3>
+      <%= user.office_number
+        ? `משרד ${user.office_number}`
+        : 'משרד טרם הוגדר'
+      %>
+    </h3>
 
-                        <img src="<%= profile.logo_url %>" alt="">
+    <p class="small">
+      <%= user.floor
+        ? `קומה ${user.floor}`
+        : 'קומה טרם הוגדרה'
+      %>
+    </p>
 
-                        <% } else { %>
+    <% if (user.business_name) { %>
 
-                          <span aria-hidden="true">
-                            🏢
-                          </span>
+      <p>
+        <strong>
+          <%= user.business_name %>
+        </strong>
+      </p>
 
-                          <% } %>
+    <% } %>
 
-                    </div>
-
-
-                    <div>
-
-                      <span class="eyebrow">
-                        קהילת AlonSpace
-                      </span>
-
-                      <h3>
-                        הפרופיל העסקי שלי
-                      </h3>
-
-                      <p class="small">
-                        <%= visibilityLabel %>
-                      </p>
-
-                    </div>
-
-                  </div>
+  </article>
 
 
-                  <button type="button" class="btn btn-secondary" onclick="
-          document
-            .getElementById('businessProfileDialog')
-            .showModal()
-        ">
-                    <%= profile ? 'עריכת הפרופיל' : 'יצירת פרופיל' %>
-                  </button>
+  <!-- תקופת השכירות -->
 
-                </div>
+  <article class="tenant-summary-card">
 
-            </div>
-          </section>
+    <span class="eyebrow">
+      תקופת השכירות
+    </span>
+
+    <% if (
+      user.rental_start_date ||
+      user.rental_end_date
+    ) { %>
+
+      <h3>
+        <%= formatDate(
+          user.rental_start_date
+        ) %>
+        –
+        <%= formatDate(
+          user.rental_end_date
+        ) %>
+      </h3>
+
+      <p class="small">
+        תקופת השכירות המעודכנת בחשבון
+      </p>
+
+    <% } else { %>
+
+      <h3>
+        טרם הוגדרה
+      </h3>
+
+      <p class="small">
+        יש לפנות להנהלת AlonSpace
+        לעדכון התקופה
+      </p>
+
+    <% } %>
+
+  </article>
 
 
+  <!-- הפרופיל העסקי -->
+
+  <article
+    class="tenant-summary-card"
+    id="business-profile"
+  >
+
+    <span class="eyebrow">
+      קהילת AlonSpace
+    </span>
+
+    <h3>
+      הפרופיל העסקי שלי
+    </h3>
+
+    <p class="small">
+      <%= visibilityLabel %>
+    </p>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      onclick="
+        document
+          .getElementById(
+            'businessProfileDialog'
+          )
+          .showModal()
+      "
+    >
+      <%= profile
+        ? 'עריכת הפרופיל'
+        : 'יצירת פרופיל'
+      %>
+    </button>
+
+  </article>
+
+</div>
+
+
+<!-- חדר ישיבות - סיכום -->
+
+<section class="tenant-business-profile">
+
+  <div class="container">
+
+    <div class="business-profile-compact">
+
+      <div class="business-profile-compact-main">
+
+        <div>
+
+          <span class="eyebrow">
+            חדר ישיבות
+          </span>
+
+          <h3>
+            <%= remainingHours.toFixed(1) %>
+            שעות נותרו
+          </h3>
+
+          <p class="small">
+            נוצלו:
+            <%= usedHours.toFixed(1) %>
+            מתוך
+            <%= Number(
+              user.monthly_meeting_hours || 6
+            ).toFixed(1) %>
+            שעות החודש
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="quota-line"
+        aria-hidden="true"
+        style="
+          --quota-used:
+          <%= Math.min(
+            100,
+            (
+              usedHours /
+              Number(
+                user.monthly_meeting_hours || 6
+              )
+            ) * 100
+          ) %>%;
+        "
+      >
+        <span></span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
           <!-- BUSINESS PROFILE MODAL -->
 
           <dialog id="businessProfileDialog" class="business-profile-dialog">
