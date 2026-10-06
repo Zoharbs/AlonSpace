@@ -970,7 +970,7 @@
 
 }
 
-      /* ========================================
+/* ========================================
    DASHBOARD MESSAGES
 ======================================== */
 
@@ -2307,6 +2307,32 @@
         }
 
       }
+      .community-help-btn {
+  width: 30px;
+  height: 30px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 50%;
+
+  background: transparent;
+  color: var(--ink-soft);
+
+  font-size: .9rem;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.community-help-btn:hover {
+  background: var(--stone);
+  color: var(--ink);
+}
     </style>
 
     <section class="page-hero tenant-hero">
@@ -2527,7 +2553,13 @@
     <span class="eyebrow">
       קהילת AlonSpace
     </span>
-
+<button
+  type="button"
+  class="community-help-btn"
+  aria-label="הסבר על קהילת AlonSpace"
+>
+  ?
+</button>
     <h3>
       הפרופיל העסקי שלי
     </h3>
