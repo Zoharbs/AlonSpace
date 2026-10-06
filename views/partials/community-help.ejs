@@ -1,0 +1,242 @@
+<dialog
+  id="communityHelpDialog"
+  class="community-help-dialog"
+>
+  <div class="community-help-inner">
+
+    <button
+      type="button"
+      class="community-help-close"
+      aria-label="סגירה"
+    >
+      ×
+    </button>
+
+    <span class="eyebrow">
+      קהילת AlonSpace
+    </span>
+
+    <h2>
+      מהי קהילת AlonSpace?
+    </h2>
+
+    <p>
+      הקהילה מאפשרת לדיירי AlonSpace
+      להכיר את האנשים והעסקים שעובדים
+      איתם במתחם.
+    </p>
+
+    <div class="community-help-steps">
+
+      <div>
+        <strong>1. יוצרים פרופיל</strong>
+        <span>
+          מוסיפים שם, עסק, תחום פעילות,
+          תיאור קצר וקישורים.
+        </span>
+      </div>
+
+      <div>
+        <strong>2. בוחרים איפה להופיע</strong>
+        <span>
+          אפשר להציג את הפרופיל רק
+          לקהילת הדיירים של AlonSpace.
+        </span>
+      </div>
+
+      <div>
+        <strong>3. רוצים להופיע גם באתר?</strong>
+        <span>
+          אפשר לבקש להציג את העסק גם
+          באתר הציבורי של AlonSpace.
+          הפרסום באתר כפוף לאישור ההנהלה.
+        </span>
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary community-help-done"
+    >
+      הבנתי
+    </button>
+
+  </div>
+</dialog>
+
+
+<style>
+  .community-help-dialog {
+    width: min(520px, calc(100% - 28px));
+    padding: 0;
+
+    border: 0;
+    border-radius: 24px;
+
+    background: var(--cream);
+
+    direction: rtl;
+
+    box-shadow:
+      0 24px 70px rgba(10, 12, 30, .25);
+  }
+
+  .community-help-dialog::backdrop {
+    background: rgba(10, 12, 26, .62);
+    backdrop-filter: blur(4px);
+  }
+
+  .community-help-inner {
+    position: relative;
+    padding: 30px;
+  }
+
+  .community-help-inner h2 {
+    margin: 6px 0 10px;
+  }
+
+  .community-help-inner > p {
+    margin: 0 0 22px;
+
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .community-help-close {
+    position: absolute;
+
+    top: 16px;
+    left: 16px;
+
+    width: 38px;
+    height: 38px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: var(--stone);
+
+    color: var(--ink);
+
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+
+  .community-help-steps {
+    display: grid;
+    gap: 10px;
+
+    margin-bottom: 22px;
+  }
+
+  .community-help-steps > div {
+    padding: 15px 16px;
+
+    background: white;
+
+    border: 1px solid var(--stone-dark);
+    border-radius: 14px;
+  }
+
+  .community-help-steps strong,
+  .community-help-steps span {
+    display: block;
+  }
+
+  .community-help-steps span {
+    margin-top: 4px;
+
+    color: var(--ink-soft);
+
+    font-size: .86rem;
+    line-height: 1.5;
+  }
+
+  .community-help-done {
+    width: 100%;
+  }
+</style>
+
+
+<script>
+  (() => {
+
+    const helpDialog =
+      document.getElementById(
+        'communityHelpDialog'
+      );
+
+    if (!helpDialog) {
+      return;
+    }
+
+
+    document
+      .querySelectorAll(
+        '.community-help-btn'
+      )
+      .forEach((button) => {
+
+        button.addEventListener(
+          'click',
+          () => {
+
+            const profileDialog =
+              document.getElementById(
+                'businessProfileDialog'
+              );
+
+            if (
+              profileDialog &&
+              profileDialog.open
+            ) {
+              profileDialog.close();
+            }
+
+            helpDialog.showModal();
+
+          }
+        );
+
+      });
+
+
+    const closeHelp = () => {
+      helpDialog.close();
+    };
+
+
+    helpDialog
+      .querySelector(
+        '.community-help-close'
+      )
+      ?.addEventListener(
+        'click',
+        closeHelp
+      );
+
+
+    helpDialog
+      .querySelector(
+        '.community-help-done'
+      )
+      ?.addEventListener(
+        'click',
+        closeHelp
+      );
+
+
+    helpDialog.addEventListener(
+      'click',
+      (event) => {
+
+        if (event.target === helpDialog) {
+          closeHelp();
+        }
+
+      }
+    );
+
+  })();
+</script>
