@@ -359,7 +359,8 @@ router.get('/community',
               phone,
               business_name,
               office_number,
-              floor
+              floor,
+              community_tutorial_seen
             FROM users
             WHERE
               id = $1
@@ -457,7 +458,39 @@ router.get('/community',
   }
 );
 
+router.post('/community/tutorial-seen',
 
+  async (req, res, next) => {
+
+    try {
+
+      await db.query(
+        `
+          UPDATE users
+          SET
+            community_tutorial_seen = TRUE
+          WHERE
+            id = $1
+            AND role = 'tenant'
+            AND is_active = TRUE
+        `,
+        [req.session.userId]
+      );
+
+
+      return res.redirect(
+        '/dashboard/community'
+      );
+
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+
+  }
+);
 /* =====================================
    COMMUNITY PROFILE LOGO
 ===================================== */

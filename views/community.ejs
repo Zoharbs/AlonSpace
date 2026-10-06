@@ -368,9 +368,218 @@
   font-size: .9rem;
   font-weight: 600;
 }
+/* =====================================
+   COMMUNITY WELCOME
+===================================== */
+
+.community-welcome-dialog {
+  position: fixed;
+
+  inset: 0;
+
+  width: min(520px, calc(100% - 32px));
+
+  margin: auto;
+
+  padding: 0;
+
+  background: var(--cream);
+
+  border: 1px solid var(--stone-dark);
+  border-radius: 24px;
+
+  box-shadow:
+    0 24px 80px rgba(20, 18, 15, .22);
+
+  color: var(--ink);
+
+  z-index: 1000;
+
+  direction: rtl;
+}
+
+
+.community-welcome-dialog::backdrop {
+  background:
+    rgba(8, 12, 28, .68);
+
+  backdrop-filter:
+    blur(4px);
+}
+
+
+.community-welcome-content {
+  padding: 34px;
+}
+
+
+.community-welcome-content h2 {
+  margin:
+    7px 0 10px;
+
+  font-size: 1.8rem;
+}
+
+
+.community-welcome-intro {
+  margin:
+    0 0 26px;
+
+  color: var(--ink-soft);
+
+  line-height: 1.7;
+}
+
+
+.community-welcome-points {
+  display: grid;
+
+  gap: 12px;
+
+  margin-bottom: 26px;
+}
+
+
+.community-welcome-points > div {
+  padding: 14px 16px;
+
+  background:
+    rgba(255, 255, 255, .55);
+
+  border:
+    1px solid var(--stone-dark);
+
+  border-radius: 14px;
+}
+
+
+.community-welcome-points strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--ink);
+}
+
+
+.community-welcome-points span {
+  display: block;
+
+  color: var(--ink-soft);
+
+  font-size: .9rem;
+  line-height: 1.55;
+}
+
+
+.community-welcome-content form {
+  margin: 0;
+}
+
+
+.community-welcome-content .btn {
+  width: 100%;
+}
+
+
+@media (max-width: 600px) {
+
+  .community-welcome-content {
+    padding: 26px 20px;
+  }
+
+
+  .community-welcome-content h2 {
+    font-size: 1.55rem;
+  }
+
+}
 </style>
 
+<% if (!user.community_tutorial_seen) { %>
 
+  <dialog
+    class="community-welcome-dialog"
+    id="communityWelcomeDialog"
+    open
+  >
+
+    <div class="community-welcome-content">
+
+      <span class="eyebrow">
+        קהילת AlonSpace
+      </span>
+
+      <h2>
+        ברוכים הבאים לקהילה 👋
+      </h2>
+
+      <p class="community-welcome-intro">
+        כאן תוכלו להכיר את העסקים ואנשי
+        המקצוע שעובדים לצדכם ב-AlonSpace.
+      </p>
+
+
+      <div class="community-welcome-points">
+
+        <div>
+          <strong>הכירו את השכנים שלכם</strong>
+
+          <span>
+            גלו מי עובד במתחם,
+            במה הוא עוסק ואיך אפשר ליצור קשר.
+          </span>
+        </div>
+
+
+        <div>
+          <strong>הציגו את העסק שלכם</strong>
+
+          <span>
+            צרו פרופיל עסקי שיופיע בפני
+            שאר דיירי AlonSpace.
+          </span>
+        </div>
+
+
+        <div>
+          <strong>רוצים יותר חשיפה?</strong>
+
+          <span>
+            תוכלו לבקש להציג את הפרופיל
+            גם באתר הציבורי של AlonSpace,
+            בכפוף לאישור ההנהלה.
+          </span>
+        </div>
+
+      </div>
+
+
+      <form
+        method="POST"
+        action="/dashboard/community/tutorial-seen"
+      >
+
+        <input
+          type="hidden"
+          name="_csrf"
+          value="<%= csrfToken %>"
+        >
+
+        <button
+          type="submit"
+          class="btn btn-gold"
+        >
+          הבנתי, בואו נתחיל
+        </button>
+
+      </form>
+
+    </div>
+
+  </dialog>
+
+<% } %>
 <main>
 
   <section class="community-page">
@@ -608,6 +817,25 @@
 
 </main>
 
+<script>
+  const communityWelcomeDialog =
+    document.getElementById(
+      'communityWelcomeDialog'
+    );
 
+  if (
+    communityWelcomeDialog &&
+    typeof communityWelcomeDialog.showModal ===
+      'function'
+  ) {
+
+    communityWelcomeDialog.removeAttribute(
+      'open'
+    );
+
+    communityWelcomeDialog.showModal();
+
+  }
+</script>
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
