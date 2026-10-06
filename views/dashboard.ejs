@@ -631,26 +631,6 @@
    MOBILE
 ========================= */
 
-      @media (max-width: 900px) {
-
-        .weekly-calendar {
-          grid-template-columns:
-            60px repeat(7, minmax(105px, 1fr));
-
-          min-width: 800px;
-        }
-
-        .calendar-corner,
-        .calendar-day-header {
-          height: 76px;
-        }
-
-        .calendar-slot,
-        .calendar-time-label {
-          height: 34px;
-        }
-      }
-
       .tenant-section .container {
         max-width: 1600px;
         width: calc(100% - 64px);
@@ -913,27 +893,82 @@
    MOBILE
 ===================================== */
 
-      @media (max-width: 900px) {
+@media (max-width: 900px) {
 
-        .tenant-section .container {
-          width: calc(100% - 28px);
-        }
+  .tenant-section .container {
+    width: calc(100% - 24px);
+  }
 
-        .meeting-portal-grid {
-          grid-template-columns: 1fr;
-        }
+  .meeting-portal-grid {
+    grid-template-columns: 1fr;
+  }
 
-        .weekly-calendar-wrap {
-          overflow-x: auto;
-        }
 
-        .weekly-calendar {
-          grid-template-columns:
-            55px repeat(7, minmax(100px, 1fr));
+  /* הלוח עצמו */
 
-          min-width: 755px;
-        }
-      }
+  .weekly-calendar-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    border-radius: 18px;
+
+    scroll-behavior: smooth;
+  }
+
+
+  .weekly-calendar {
+    grid-template-columns:
+      52px repeat(7, 82px);
+
+    width: max-content;
+    min-width: 0;
+  }
+
+
+  /* כותרות */
+
+  .calendar-corner,
+  .calendar-day-header {
+    height: 72px;
+  }
+
+  .calendar-day-name {
+    font-size: .9rem;
+  }
+
+  .calendar-day-date {
+    font-size: .75rem;
+  }
+
+
+  /* שעות ומשבצות */
+
+  .calendar-slot,
+  .calendar-time-label {
+    height: 38px;
+  }
+
+  .calendar-time-label {
+    font-size: .7rem;
+  }
+
+
+  /* שריונים */
+
+  .calendar-booking {
+    right: 3px;
+    left: 3px;
+
+    padding: 5px 6px;
+
+    font-size: .67rem;
+  }
+
+}
 
       /* ========================================
    DASHBOARD MESSAGES
