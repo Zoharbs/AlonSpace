@@ -82,14 +82,15 @@
       border-color: var(--oak);
     }
 
-  .tab-panel {
-  display: none;
-  padding: 0;
-}
+    .tab-panel {
+      display: none;
+      padding: 0;
+    }
 
-.tab-panel.active {
-  display: block;
-}
+    .tab-panel.active {
+      display: block;
+    }
+
     .admin-card {
       background: var(--cream);
       border-radius: var(--radius-lg);
@@ -1714,238 +1715,242 @@
     .floor-directory-card .floor-directory-head {
       margin-top: 0;
     }
-  /* =====================================
+
+    /* =====================================
    ADMIN DASHBOARD - COMPACT SPACING
 ===================================== */
 
-/* פחות שטח ריק בתחילת הפאנל */
-.admin-wrap {
-  padding: 24px 0 32px;
-}
+    /* פחות שטח ריק בתחילת הפאנל */
+    .admin-wrap {
+      padding: 24px 0 32px;
+    }
 
 
-/* סטטיסטיקות → טאבים */
-.stat-cards {
-  margin-bottom: 20px;
-}
+    /* סטטיסטיקות → טאבים */
+    .stat-cards {
+      margin-bottom: 20px;
+    }
 
 
-/* טאבים → תוכן */
-.tabs {
-  margin-bottom: 16px;
-}
+    /* טאבים → תוכן */
+    .tabs {
+      margin-bottom: 16px;
+    }
 
 
-/* המרווח בין אזורי הניהול */
-#tab-clients > details.admin-collapse,
-#tab-clients > details.floor-directory-section {
-  margin-bottom: 10px;
-}
+    /* המרווח בין אזורי הניהול */
+    #tab-clients>details.admin-collapse,
+    #tab-clients>details.floor-directory-section {
+      margin-bottom: 10px;
+    }
 
 
-/* כותרות האזורים מעט יותר קומפקטיות */
-#tab-clients > details.admin-collapse > summary,
-#tab-clients > details.floor-directory-section > summary {
-  min-height: 52px;
-  padding: 13px 18px;
-}
+    /* כותרות האזורים מעט יותר קומפקטיות */
+    #tab-clients>details.admin-collapse>summary,
+    #tab-clients>details.floor-directory-section>summary {
+      min-height: 52px;
+      padding: 13px 18px;
+    }
 
 
-/* כשהאזור פתוח - פחות רווח בין הכותרת לתוכן */
-#tab-clients > details.admin-collapse[open] > summary,
-#tab-clients > details.floor-directory-section[open] > summary {
-  margin-bottom: 8px;
-}
+    /* כשהאזור פתוח - פחות רווח בין הכותרת לתוכן */
+    #tab-clients>details.admin-collapse[open]>summary,
+    #tab-clients>details.floor-directory-section[open]>summary {
+      margin-bottom: 8px;
+    }
 
 
-/* רשימת לקוחות - פחות רווח בין לקוח ללקוח */
-.clients-list {
-  gap: 8px;
-}
+    /* רשימת לקוחות - פחות רווח בין לקוח ללקוח */
+    .clients-list {
+      gap: 8px;
+    }
 
 
-/* כותרת של כל לקוח */
-.client-card > summary {
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
+    /* כותרת של כל לקוח */
+    .client-card>summary {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
 
 
-/* תוכן לקוח פתוח */
-.client-card .admin-card {
-  margin-top: 8px;
-}
+    /* תוכן לקוח פתוח */
+    .client-card .admin-card {
+      margin-top: 8px;
+    }
 
 
-/* פרופילים עסקיים */
-.business-profiles-collapse {
-  margin-bottom: 10px;
-}
+    /* פרופילים עסקיים */
+    .business-profiles-collapse {
+      margin-bottom: 10px;
+    }
 
 
-/* כרטיסים רגילים בתוך אזור הלקוחות */
-#tab-clients > .admin-card {
-  margin-bottom: 14px;
-}
-  /* =====================================
+    /* כרטיסים רגילים בתוך אזור הלקוחות */
+    #tab-clients>.admin-card {
+      margin-bottom: 14px;
+    }
+
+    /* =====================================
    ADMIN SPACING FIX
 ===================================== */
 
-/* פחות רווח אחרי כרטיסי הסטטיסטיקה */
-.stat-cards {
-  margin-bottom: 18px;
-}
+    /* פחות רווח אחרי כרטיסי הסטטיסטיקה */
+    .stat-cards {
+      margin-bottom: 18px;
+    }
 
-/* הטאבים קרובים יותר לתוכן */
-.tabs {
-  margin-bottom: 14px;
-}
+    /* הטאבים קרובים יותר לתוכן */
+    .tabs {
+      margin-bottom: 14px;
+    }
 
-/* כל אזורי הניהול צפופים ואחידים */
-#tab-clients > details.admin-collapse,
-#tab-clients > details.floor-directory-section {
-  margin-bottom: 10px;
-}
+    /* כל אזורי הניהול צפופים ואחידים */
+    #tab-clients>details.admin-collapse,
+    #tab-clients>details.floor-directory-section {
+      margin-bottom: 10px;
+    }
 
-/* כשאזור פתוח - רווח קטן בין הכותרת לתוכן */
-#tab-clients > details.admin-collapse[open] > summary,
-#tab-clients > details.floor-directory-section[open] > summary {
-  margin-bottom: 8px;
-}
+    /* כשאזור פתוח - רווח קטן בין הכותרת לתוכן */
+    #tab-clients>details.admin-collapse[open]>summary,
+    #tab-clients>details.floor-directory-section[open]>summary {
+      margin-bottom: 8px;
+    }
 
-/* כרטיסים פנימיים לא מוסיפים רווח ענק */
-#tab-clients > details.admin-collapse > .admin-card,
-#tab-clients > details.floor-directory-section > .admin-card {
-  margin-bottom: 0;
-}
+    /* כרטיסים פנימיים לא מוסיפים רווח ענק */
+    #tab-clients>details.admin-collapse>.admin-card,
+    #tab-clients>details.floor-directory-section>.admin-card {
+      margin-bottom: 0;
+    }
 
-/* ניהול לקוחות */
-#tab-clients .table-wrap {
-  margin: 0;
-}
+    /* ניהול לקוחות */
+    #tab-clients .table-wrap {
+      margin: 0;
+    }
 
-/* פרופילים עסקיים */
-#tab-clients .business-profile-approvals {
-  margin: 0 !important;
-}
+    /* פרופילים עסקיים */
+    #tab-clients .business-profile-approvals {
+      margin: 0 !important;
+    }
 
-/* מפת הקומה */
-#tab-clients .floor-directory-card {
-  margin: 0;
-}
-/* CLIENT SEARCH INSIDE SUMMARY */
+    /* מפת הקומה */
+    #tab-clients .floor-directory-card {
+      margin: 0;
+    }
 
-.clients-management-summary {
-  display: flex !important;
-  align-items: center !important;
+    /* CLIENT SEARCH INSIDE SUMMARY */
 
-  gap: 16px;
-}
+    .clients-management-summary {
+      display: flex !important;
+      align-items: center !important;
 
-.clients-management-title {
-  flex-shrink: 0;
-}
+      gap: 16px;
+    }
 
-.client-search-input {
-  width: min(360px, 100%);
-  height: 38px;
+    .clients-management-title {
+      flex-shrink: 0;
+    }
 
-  margin-right: auto;
+    .client-search-input {
+      width: min(360px, 100%);
+      height: 38px;
 
-  box-sizing: border-box;
+      margin-right: auto;
 
-  padding: 0 13px;
+      box-sizing: border-box;
 
-  background: #fff;
+      padding: 0 13px;
 
-  border: 1px solid var(--stone-dark);
-  border-radius: 10px;
+      background: #fff;
 
-  color: var(--ink);
+      border: 1px solid var(--stone-dark);
+      border-radius: 10px;
 
-  font: inherit;
-  font-size: .85rem;
-  font-weight: 400;
+      color: var(--ink);
 
-  outline: none;
+      font: inherit;
+      font-size: .85rem;
+      font-weight: 400;
 
-  transition:
-    border-color .15s ease,
-    box-shadow .15s ease;
-}
+      outline: none;
 
-.client-search-input::placeholder {
-  color: var(--ink-soft);
-}
+      transition:
+        border-color .15s ease,
+        box-shadow .15s ease;
+    }
 
-.client-search-input:focus {
-  border-color: var(--oak);
+    .client-search-input::placeholder {
+      color: var(--ink-soft);
+    }
 
-  box-shadow:
-    0 0 0 3px rgba(160, 125, 80, .10);
-}
+    .client-search-input:focus {
+      border-color: var(--oak);
+
+      box-shadow:
+        0 0 0 3px rgba(160, 125, 80, .10);
+    }
 
 
-@media (max-width: 700px) {
+    @media (max-width: 700px) {
 
-  .clients-management-summary {
-    flex-wrap: wrap;
-  }
+      .clients-management-summary {
+        flex-wrap: wrap;
+      }
 
-  .client-search-input {
-    width: 100%;
-    margin-right: 0;
-  }
+      .client-search-input {
+        width: 100%;
+        margin-right: 0;
+      }
 
-}
-.business-profile-edit-dialog {
-  width: min(520px, calc(100% - 32px));
-  max-height: 90vh;
-  padding: 0;
-  border: 0;
-  border-radius: 20px;
-  direction: rtl;
-  overflow-y: auto;
-  background: #fff;
-  color: #202020;
-}
+    }
 
-.business-profile-edit-dialog::backdrop {
-  background: rgba(0, 0, 0, .55);
-}
+    .business-profile-edit-dialog {
+      width: min(520px, calc(100% - 32px));
+      max-height: 90vh;
+      padding: 0;
+      border: 0;
+      border-radius: 20px;
+      direction: rtl;
+      overflow-y: auto;
+      background: #fff;
+      color: #202020;
+    }
 
-.business-profile-edit-content {
-  padding: 28px;
-}
+    .business-profile-edit-dialog::backdrop {
+      background: rgba(0, 0, 0, .55);
+    }
 
-.business-profile-edit-form {
-  display: grid;
-  gap: 16px;
-  margin-top: 22px;
-}
+    .business-profile-edit-content {
+      padding: 28px;
+    }
 
-.business-profile-edit-form label {
-  display: grid;
-  gap: 7px;
-  font-weight: 600;
-}
+    .business-profile-edit-form {
+      display: grid;
+      gap: 16px;
+      margin-top: 22px;
+    }
 
-.business-profile-edit-form input,
-.business-profile-edit-form textarea {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 11px 13px;
-  border: 1px solid #d8d8d8;
-  border-radius: 10px;
-  font: inherit;
-}
+    .business-profile-edit-form label {
+      display: grid;
+      gap: 7px;
+      font-weight: 600;
+    }
 
-.business-profile-edit-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
-}
+    .business-profile-edit-form input,
+    .business-profile-edit-form textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 13px;
+      border: 1px solid #d8d8d8;
+      border-radius: 10px;
+      font: inherit;
+    }
+
+    .business-profile-edit-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 
@@ -2454,30 +2459,21 @@
                           </form>
                         </div>
                       </details>
-                     <details
-  class="admin-collapse"
-  id="clientsManagement"
->
+                      <details class="admin-collapse" id="clientsManagement">
 
-  <summary class="clients-management-summary">
+                        <summary class="clients-management-summary">
 
-    <span class="clients-management-title">
-      ניהול לקוחות
-    </span>
+                          <span class="clients-management-title">
+                            ניהול לקוחות
+                          </span>
 
-    <input
-      type="search"
-      id="clientSearch"
-      class="client-search-input"
-      placeholder="חיפוש לפי שם, קומה או משרד..."
-      autocomplete="off"
-      aria-label="חיפוש לקוחות"
-    >
+                          <input type="search" id="clientSearch" class="client-search-input"
+                            placeholder="חיפוש לפי שם, קומה או משרד..." autocomplete="off" aria-label="חיפוש לקוחות">
 
-  </summary>
+                        </summary>
 
-  <div class="table-wrap">
-    <div class="clients-list">
+                        <div class="table-wrap">
+                          <div class="clients-list">
                             <% if (!clients.length) { %>
 
                               <div class="admin-card" style="text-align:center;">
@@ -3025,24 +3021,40 @@
                                             חשיפה:
                                           </span>
 
+                                          <% const communityApproved=profile.community_visible &&
+                                            profile.community_status==='approved' ; const
+                                            publicApproved=communityApproved && profile.public_consent &&
+                                            profile.public_status==='approved' ; %>
 
-                                          <span class="
-                  visibility-chip
-                  <%= profile.community_visible ? 'active' : 'inactive' %>
-                ">
-                                            <%= profile.community_visible ? '✓' : '—' %>
-                                              קהילת הדיירים
-                                          </span>
+                                            <span
+                                              class="visibility-chip <%= communityApproved ? 'active' : 'inactive' %>">
+                                              <% if (communityApproved) { %>
+                                                ✓ מאושר בקהילה
+                                                <% } else if (profile.community_visible &&
+                                                  profile.community_status==='pending' ) { %>
+                                                  ⏳ ממתין לאישור בקהילה
+                                                  <% } else if (profile.community_visible) { %>
+                                                    — לא מאושר בקהילה
+                                                    <% } else { %>
+                                                      — לא ביקש פרסום בקהילה
+                                                      <% } %>
+                                            </span>
 
-
-                                          <span class="
-                  visibility-chip
-                  <%= profile.public_consent ? 'active' : 'inactive' %>
-                ">
-                                            <%= profile.public_consent ? '✓' : '—' %>
-                                              האתר הציבורי
-                                          </span>
-
+                                            <span class="visibility-chip <%= publicApproved ? 'active' : 'inactive' %>">
+                                              <% if (publicApproved) { %>
+                                                ✓ מאושר באתר
+                                                <% } else if (profile.public_consent &&
+                                                  profile.public_status==='pending' ) { %>
+                                                  ⏳ ממתין לאישור באתר
+                                                  <% } else if (profile.public_consent &&
+                                                    profile.public_status==='rejected' ) { %>
+                                                    — לא מאושר באתר
+                                                    <% } else if (profile.public_consent) { %>
+                                                      — נדרש אישור לקהילה
+                                                      <% } else { %>
+                                                        — לא ביקש פרסום באתר
+                                                        <% } %>
+                                            </span>
                                         </div>
 
 
@@ -3108,218 +3120,167 @@
 
                                   <div class="business-profile-admin-actions">
 
-<button
-  type="button"
-  class="mini-btn primary"
-  onclick="document.getElementById('editBusinessProfile<%= profile.id %>').showModal()"
->
-  ✎ עריכת פרופיל
-</button>
+                                    <button type="button" class="mini-btn primary"
+                                      onclick="document.getElementById('editBusinessProfile<%= profile.id %>').showModal()">
+                                      ✎ עריכת פרופיל
+                                    </button>
 
-<form
-  method="POST"
-  action="/admin/business-profiles/<%= profile.id %>/toggle-community"
-  onsubmit="return confirm('<%= profile.community_visible ? 'להסיר את הפרופיל מהקהילה ומהאתר הציבורי?' : 'להציג את הפרופיל בקהילת הדיירים?' %>')"
->
-  <input
-    type="hidden"
-    name="_csrf"
-    value="<%= csrfToken %>"
-  >
+                                    <% if (profile.community_visible) { %>
 
-  <button
-    type="submit"
-    class="mini-btn <%= profile.community_visible ? 'danger' : 'primary' %>"
-  >
-    <%= profile.community_visible
-      ? 'הסרה מהקהילה'
-      : 'הצגה בקהילה' %>
-  </button>
-</form>
-                                    <% if ( profile.public_consent && profile.public_status==='pending' ) { %>
-
-                                      <form method="POST" action="/admin/business-profiles/<%= profile.id %>/reject"
-                                        onsubmit="return confirm('לדחות את הפרסום באתר הציבורי?')">
-
+                                      <form method="POST"
+                                        action="/admin/business-profiles/<%= profile.id %>/toggle-community" onsubmit="return confirm('<%= profile.community_status === 'approved'
+        ? 'להסיר את הפרופיל מהקהילה ומהאתר הציבורי?'
+        : 'לאשר את הפרופיל להצגה בקהילה?' %>')">
                                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                        <button type="submit" class="mini-btn danger">
-                                          דחייה
+                                        <button type="submit"
+                                          class="mini-btn <%= profile.community_status === 'approved' ? 'danger' : 'primary' %>">
+                                          <%= profile.community_status==='approved' ? 'הסרה מהקהילה' : '✓ אישור לקהילה'
+                                            %>
                                         </button>
-
                                       </form>
 
+                                      <% } else { %>
 
-                                      <form method="POST" action="/admin/business-profiles/<%= profile.id %>/approve">
+                                        <span class="business-profile-no-action">
+                                          הדייר לא ביקש להופיע בקהילה
+                                        </span>
 
-                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                        <button type="submit" class="mini-btn primary">
-                                          ✓ אישור לאתר
-                                        </button>
-
-                                      </form>
+                                        <% } %>
 
 
-                                      <% } else if ( profile.public_consent && profile.public_status==='approved' ) { %>
+                                          <% if ( profile.community_visible && profile.community_status==='approved' &&
+                                            profile.public_consent ) { %>
 
+                                            <% if (profile.public_status==='pending' ) { %>
 
-                                        <form method="POST"
-                                          action="/admin/business-profiles/<%= profile.id %>/unpublish"
-                                          onsubmit="return confirm('להסיר את העסק מהאתר הציבורי?')">
+                                              <form method="POST"
+                                                action="/admin/business-profiles/<%= profile.id %>/reject"
+                                                onsubmit="return confirm('לדחות את הפרסום באתר הציבורי?')">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                <button type="submit" class="mini-btn danger">
+                                                  דחייה
+                                                </button>
+                                              </form>
 
-                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                              <form method="POST"
+                                                action="/admin/business-profiles/<%= profile.id %>/approve">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                <button type="submit" class="mini-btn primary">
+                                                  ✓ אישור לאתר
+                                                </button>
+                                              </form>
 
-                                          <button type="submit" class="mini-btn danger">
-                                            הסרה מהאתר
-                                          </button>
+                                              <% } else if (profile.public_status==='approved' ) { %>
 
-                                        </form>
+                                                <form method="POST"
+                                                  action="/admin/business-profiles/<%= profile.id %>/unpublish"
+                                                  onsubmit="return confirm('להסיר את העסק מהאתר הציבורי?')">
+                                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                  <button type="submit" class="mini-btn danger">
+                                                    הסרה מהאתר
+                                                  </button>
+                                                </form>
 
+                                                <% } else if (profile.public_status==='rejected' ) { %>
 
-                                        <% } else if ( profile.public_consent && profile.public_status==='rejected' ) {
-                                          %>
+                                                  <form method="POST"
+                                                    action="/admin/business-profiles/<%= profile.id %>/approve">
+                                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                    <button type="submit" class="mini-btn primary">
+                                                      ✓ אישור מחדש לאתר
+                                                    </button>
+                                                  </form>
 
+                                                  <% } %>
 
-                                          <form method="POST"
-                                            action="/admin/business-profiles/<%= profile.id %>/approve">
+                                                    <% } else if (profile.public_consent) { %>
 
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                      <span class="business-profile-no-action">
+                                                        יש לאשר קודם את הפרופיל בקהילה
+                                                      </span>
 
-                                            <button type="submit" class="mini-btn primary">
-                                              ✓ אישור מחדש
-                                            </button>
+                                                      <% } else { %>
 
-                                          </form>
+                                                        <span class="business-profile-no-action">
+                                                          אין בקשה לפרסום באתר
+                                                        </span>
 
-
-                                          <% } else { %>
-
-                                            <span class="business-profile-no-action">
-                                              אין בקשה לפרסום באתר
-                                            </span>
-
-                                            <% } %>
-
+                                                        <% } %>
 
                                   </div>
 
                                 </article>
-<dialog
-  id="editBusinessProfile<%= profile.id %>"
-  class="business-profile-edit-dialog"
->
-  <div class="business-profile-edit-content">
+                                <dialog id="editBusinessProfile<%= profile.id %>" class="business-profile-edit-dialog">
+                                  <div class="business-profile-edit-content">
 
-    <h2>עריכת פרופיל עסקי</h2>
+                                    <h2>עריכת פרופיל עסקי</h2>
 
-    <p class="small">
-      <%= profile.display_name %>
-    </p>
+                                    <p class="small">
+                                      <%= profile.display_name %>
+                                    </p>
 
-    <form
-      method="POST"
-      action="/admin/business-profiles/<%= profile.id %>/edit"
-      enctype="multipart/form-data"
-      class="business-profile-edit-form"
-    >
+                                    <form method="POST" action="/admin/business-profiles/<%= profile.id %>/edit"
+                                      enctype="multipart/form-data" class="business-profile-edit-form">
 
-      <input
-        type="hidden"
-        name="_csrf"
-        value="<%= csrfToken %>"
-      >
+                                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-      <label>
-        שם
-        <input
-          type="text"
-          name="person_name"
-          maxlength="120"
-          value="<%= profile.person_name || '' %>"
-        >
-      </label>
+                                      <label>
+                                        שם
+                                        <input type="text" name="person_name" maxlength="120"
+                                          value="<%= profile.person_name || '' %>">
+                                      </label>
 
-      <label>
-        שם העסק
-        <input
-          type="text"
-          name="display_name"
-          maxlength="120"
-          value="<%= profile.display_name || '' %>"
-          required
-        >
-      </label>
+                                      <label>
+                                        שם העסק
+                                        <input type="text" name="display_name" maxlength="120"
+                                          value="<%= profile.display_name || '' %>" required>
+                                      </label>
 
-      <label>
-        תחום פעילות
-        <input
-          type="text"
-          name="business_field"
-          maxlength="120"
-          value="<%= profile.business_field || '' %>"
-        >
-      </label>
+                                      <label>
+                                        תחום פעילות
+                                        <input type="text" name="business_field" maxlength="120"
+                                          value="<%= profile.business_field || '' %>">
+                                      </label>
 
-      <label>
-        תיאור העסק
-        <textarea
-          name="bio"
-          maxlength="300"
-          rows="4"
-        ><%= profile.bio || '' %></textarea>
-      </label>
+                                      <label>
+                                        תיאור העסק
+                                        <textarea name="bio" maxlength="300"
+                                          rows="4"><%= profile.bio || '' %></textarea>
+                                      </label>
 
-      <label>
-        אתר העסק
-        <input
-          type="text"
-          name="website_url"
-          value="<%= profile.website_url || '' %>"
-        >
-      </label>
+                                      <label>
+                                        אתר העסק
+                                        <input type="text" name="website_url" value="<%= profile.website_url || '' %>">
+                                      </label>
 
-      <label>
-        LinkedIn
-        <input
-          type="text"
-          name="linkedin_url"
-          value="<%= profile.linkedin_url || '' %>"
-        >
-      </label>
+                                      <label>
+                                        LinkedIn
+                                        <input type="text" name="linkedin_url"
+                                          value="<%= profile.linkedin_url || '' %>">
+                                      </label>
 
-      <label>
-        החלפת לוגו (לא חובה)
-        <input
-          type="file"
-          name="logo"
-          accept="image/png,image/jpeg,image/webp"
-        >
-      </label>
+                                      <label>
+                                        החלפת לוגו (לא חובה)
+                                        <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
+                                      </label>
 
-      <div class="business-profile-edit-actions">
+                                      <div class="business-profile-edit-actions">
 
-        <button
-          type="button"
-          class="mini-btn"
-          onclick="this.closest('dialog').close()"
-        >
-          ביטול
-        </button>
+                                        <button type="button" class="mini-btn" onclick="this.closest('dialog').close()">
+                                          ביטול
+                                        </button>
 
-        <button
-          type="submit"
-          class="mini-btn primary"
-        >
-          שמירת שינויים
-        </button>
+                                        <button type="submit" class="mini-btn primary">
+                                          שמירת שינויים
+                                        </button>
 
-      </div>
+                                      </div>
 
-    </form>
+                                    </form>
 
-  </div>
-</dialog>
+                                  </div>
+                                </dialog>
                                 <% }) %>
 
                             </div>
@@ -4003,11 +3964,11 @@
        נתוני השריונים
     ========================= */
 
-   const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+    const adminMeetingBookings =
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
-const adminClients =
-  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+    const adminClients =
+  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
 
 
     const adminCalendar =
@@ -4524,7 +4485,7 @@ const adminClients =
       }
 
       const adminMeetingRooms =
-    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -5844,11 +5805,11 @@ const adminClients =
     ===================================== */
 
     const floorDirectories = {
-      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <%- JSON.stringify(
+  <% - JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 

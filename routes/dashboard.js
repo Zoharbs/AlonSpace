@@ -417,6 +417,7 @@ router.get('/community',
 
             WHERE
               tp.community_visible = TRUE
+              AND tp.community_status = 'approved'
               AND u.role = 'tenant'
               AND u.is_active = TRUE
 
@@ -495,8 +496,7 @@ router.post('/community/tutorial-seen',
    COMMUNITY PROFILE LOGO
 ===================================== */
 
-router.get(
-  '/community/business-profiles/:id/logo',
+router.get('/community/business-profiles/:id/logo',
 
   async (req, res, next) => {
 
@@ -517,6 +517,7 @@ router.get(
             WHERE
               tp.id = $1
               AND tp.community_visible = TRUE
+              AND tp.community_status = 'approved'
               AND u.role = 'tenant'
               AND u.is_active = TRUE
 
@@ -566,6 +567,7 @@ router.get(
 
   }
 );
+
 router.post('/business-profile',
 
   async (req, res, next) => {
@@ -840,11 +842,12 @@ router.post('/business-profile',
             logo_data,
             logo_mime_type,
 
-logo_url,
-community_visible,
-public_consent,
-public_status,
-updated_at
+            logo_url,
+            community_visible,
+            community_status,
+            public_consent,
+            public_status,
+            updated_at
 
           )
 
@@ -861,10 +864,10 @@ updated_at
             $9,
             $10,
             $11,
-$12,
-$13,
-
-NOW()
+            $12,
+            $13,
+            $14,
+            NOW()
 
           )
 
@@ -912,38 +915,40 @@ person_name =
                 ELSE tenant_profiles.logo_url
               END,
 
-           community_visible =
-  EXCLUDED.community_visible,
-public_consent =
-  EXCLUDED.public_consent,
-public_status =
-  EXCLUDED.public_status,
-
+            community_visible =
+            EXCLUDED.community_visible,
+          community_status =
+            EXCLUDED.community_status,
+          public_consent =
+            EXCLUDED.public_consent,
+          public_status =
+            EXCLUDED.public_status,
             updated_at =
               NOW()
         `,
-[
-  user.id,
+        [
+          user.id,
 
-  personName || null,
-  displayName,
-  businessField || null,
-  bio || null,
+          personName || null,
+          displayName,
+          businessField || null,
+          bio || null,
 
-  normalizedWebsite.url,
-  normalizedLinkedin.url,
+          normalizedWebsite.url,
+          normalizedLinkedin.url,
 
-  logoData,
-  logoMimeType,
+          logoData,
+          logoMimeType,
 
-  req.file
-    ? `/dashboard/business-profile/logo`
-    : null,
+          req.file
+            ? `/dashboard/business-profile/logo`
+            : null,
 
-  communityVisible,
-  publicConsent,
-  publicStatus
-]
+communityVisible,
+communityVisible ? 'pending' : 'rejected',
+publicConsent,
+publicStatus
+        ]
       );
 
 

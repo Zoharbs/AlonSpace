@@ -144,6 +144,7 @@ const pendingBusinessProfiles =
           AS has_logo,
 
         tp.community_visible,
+        tp.community_status,
         tp.public_consent,
         tp.public_status,
         tp.updated_at,
@@ -599,12 +600,9 @@ floorDirectoryOverrides,
     return next(error);
   }
 });
-/* =====================================
-   TENANT BUSINESS PROFILES
-===================================== */
 
-router.get(
-  '/business-profiles/:id/logo',
+
+router.get('/business-profiles/:id/logo',
 
   async (req, res, next) => {
     try {
@@ -666,6 +664,7 @@ router.post('/business-profiles/:id/approve',
             WHERE
               id = $1
 AND community_visible = TRUE
+AND community_status = 'approved'
 AND public_consent = TRUE
 AND public_status IN (
   'pending',
@@ -804,52 +803,69 @@ router.post('/business-profiles/:id/toggle-community',
   async (req, res, next) => {
     try {
 
-      const result = await db.query(
-        `
-          UPDATE tenant_profiles
+      const profileId = Number(req.params.id);
 
-          SET
-            community_visible = NOT community_visible,
-
-            public_status = CASE
-              WHEN
-                community_visible = TRUE
-                AND public_status = 'approved'
-              THEN 'rejected'
-
-              ELSE public_status
-            END,
-
-            updated_at = NOW()
-
-          WHERE id = $1
-
-          RETURNING
-            id,
-            display_name,
-            community_visible
-        `,
-        [req.params.id]
-      );
-
-
-      if (!result.rows.length) {
+      if (
+        !Number.isSafeInteger(profileId) ||
+        profileId <= 0
+      ) {
         return res.redirect(
           adminRedirect(
             'error',
-            'הפרופיל העסקי לא נמצא',
+            'מזהה פרופיל לא תקין',
             'business-profiles'
           )
         );
       }
 
+      const result = await db.query(
+        `
+          UPDATE tenant_profiles
+
+          SET
+            community_status =
+              CASE
+                WHEN community_status = 'approved'
+                  THEN 'rejected'
+                ELSE 'approved'
+              END,
+
+            public_status =
+              CASE
+                WHEN community_status = 'approved'
+                  THEN 'rejected'
+                ELSE public_status
+              END,
+
+            updated_at = NOW()
+
+          WHERE id = $1
+            AND community_visible = TRUE
+
+          RETURNING
+            id,
+            display_name,
+            community_status
+        `,
+        [profileId]
+      );
+
+      if (!result.rows.length) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הפרופיל לא נמצא או שהדייר לא ביקש להופיע בקהילה',
+            'business-profiles'
+          )
+        );
+      }
 
       const profile = result.rows[0];
 
-      const message = profile.community_visible
-        ? `הפרופיל של ${profile.display_name} מוצג כעת בקהילה`
-        : `הפרופיל של ${profile.display_name} הוסר מהקהילה`;
-
+      const message =
+        profile.community_status === 'approved'
+          ? `הפרופיל של ${profile.display_name} אושר לקהילה`
+          : `הפרופיל של ${profile.display_name} הוסר מהקהילה ומהאתר`;
 
       return res.redirect(
         adminRedirect(
@@ -1467,8 +1483,7 @@ averageMeetingRoomUsage,
   }
 });
 
-router.post(
-  '/floor-directory/save',
+router.post('/floor-directory/save',
   requireAdmin,
   async (req, res, next) => {
 
@@ -2713,8 +2728,7 @@ router.get('/setup-analytics-db', async (req, res) => {
     });
   }
 });
-router.post(
-  '/admins/:id/update',
+router.post('/admins/:id/update',
   async (req, res, next) => {
     try {
       const {
