@@ -652,8 +652,7 @@ router.get(
 );
 
 
-router.post(
-  '/business-profiles/:id/approve',
+router.post('/business-profiles/:id/approve',
 
   async (req, res, next) => {
     try {
@@ -702,8 +701,7 @@ AND public_status IN (
   }
 );
 
-router.post(
-  '/business-profiles/:id/unpublish',
+router.post('/business-profiles/:id/unpublish',
 
   async (req, res, next) => {
     try {
@@ -758,8 +756,7 @@ router.post(
   }
 );
 
-router.post(
-  '/business-profiles/:id/reject',
+router.post('/business-profiles/:id/reject',
 
   async (req, res, next) => {
     try {
@@ -797,6 +794,71 @@ router.post(
           'business-profiles'
         )
       );
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+router.post('/business-profiles/:id/toggle-community',
+
+  async (req, res, next) => {
+    try {
+
+      const result = await db.query(
+        `
+          UPDATE tenant_profiles
+
+          SET
+            community_visible = NOT community_visible,
+
+            public_status = CASE
+              WHEN
+                community_visible = TRUE
+                AND public_status = 'approved'
+              THEN 'rejected'
+
+              ELSE public_status
+            END,
+
+            updated_at = NOW()
+
+          WHERE id = $1
+
+          RETURNING
+            id,
+            display_name,
+            community_visible
+        `,
+        [req.params.id]
+      );
+
+
+      if (!result.rows.length) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הפרופיל העסקי לא נמצא',
+            'business-profiles'
+          )
+        );
+      }
+
+
+      const profile = result.rows[0];
+
+      const message = profile.community_visible
+        ? `הפרופיל של ${profile.display_name} מוצג כעת בקהילה`
+        : `הפרופיל של ${profile.display_name} הוסר מהקהילה`;
+
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          message,
+          'business-profiles'
+        )
+      );
+
     } catch (error) {
       return next(error);
     }

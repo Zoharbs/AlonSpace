@@ -188,6 +188,48 @@ app.post(
 
   }
 );
+app.post(/^\/admin\/business-profiles\/\d+\/edit\/?$/,
+
+  (req, res, next) => {
+
+    if (
+      !req.session?.userId ||
+      req.session?.userRole !== 'admin'
+    ) {
+      return res.redirect('/login');
+    }
+
+    businessLogoUpload.single('logo')(
+      req,
+      res,
+      (error) => {
+
+        if (!error) {
+          return next();
+        }
+
+        console.error(
+          'Admin business logo upload failed:',
+          error
+        );
+
+        const message =
+          error.code === 'LIMIT_FILE_SIZE'
+            ? 'הלוגו גדול מדי. ניתן להעלות קובץ עד 1MB.'
+            : error.message ||
+              'לא ניתן להעלות את הלוגו.';
+
+        return res.redirect(
+          '/admin?error=' +
+          encodeURIComponent(message) +
+          '#business-profiles'
+        );
+
+      }
+    );
+
+  }
+);
 app.use(
   csrf({
     cookie: false

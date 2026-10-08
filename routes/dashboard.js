@@ -566,8 +566,7 @@ router.get(
 
   }
 );
-router.post(
-  '/business-profile',
+router.post('/business-profile',
 
   async (req, res, next) => {
 
@@ -967,8 +966,7 @@ public_status =
 
   }
 );
-router.get(
-  '/business-profile/logo',
+router.get('/business-profile/logo',
 
   async (req, res, next) => {
 
@@ -1028,6 +1026,252 @@ router.get(
 
   }
 );
+
+router.post('/business-profiles/:id/edit',
+
+  async (req, res, next) => {
+
+    try {
+
+      const profileId =
+        Number(req.params.id);
+
+      if (
+        !Number.isSafeInteger(profileId) ||
+        profileId <= 0
+      ) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'מזהה פרופיל לא תקין',
+            'business-profiles'
+          )
+        );
+      }
+
+
+      /* =====================================
+         FORM VALUES
+      ===================================== */
+
+      const personName =
+        String(req.body.person_name || '')
+          .trim()
+          .slice(0, 120);
+
+      const displayName =
+        String(req.body.display_name || '')
+          .trim()
+          .slice(0, 120);
+
+      const businessField =
+        String(req.body.business_field || '')
+          .trim()
+          .slice(0, 120);
+
+      const bio =
+        String(req.body.bio || '')
+          .trim()
+          .slice(0, 300);
+
+      const websiteUrl =
+        String(req.body.website_url || '')
+          .trim();
+
+      const linkedinUrl =
+        String(req.body.linkedin_url || '')
+          .trim();
+
+
+      /* =====================================
+         VALIDATION
+      ===================================== */
+
+      if (!displayName) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'חובה להזין שם עסק',
+            'business-profiles'
+          )
+        );
+      }
+
+
+      function normalizeOptionalUrl(value) {
+
+        const trimmed =
+          String(value || '').trim();
+
+        if (!trimmed) {
+          return {
+            valid: true,
+            url: null
+          };
+        }
+
+        const withProtocol =
+          /^https?:\/\//i.test(trimmed)
+            ? trimmed
+            : `https://${trimmed}`;
+
+        try {
+
+          const parsed =
+            new URL(withProtocol);
+
+          if (
+            parsed.protocol !== 'http:' &&
+            parsed.protocol !== 'https:'
+          ) {
+            return {
+              valid: false,
+              url: null
+            };
+          }
+
+          return {
+            valid: true,
+            url: parsed.toString()
+          };
+
+        } catch {
+
+          return {
+            valid: false,
+            url: null
+          };
+
+        }
+
+      }
+
+
+      const normalizedWebsite =
+        normalizeOptionalUrl(websiteUrl);
+
+      const normalizedLinkedin =
+        normalizeOptionalUrl(linkedinUrl);
+
+      if (
+        !normalizedWebsite.valid ||
+        !normalizedLinkedin.valid
+      ) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'כתובת האתר או LinkedIn אינה תקינה',
+            'business-profiles'
+          )
+        );
+      }
+
+
+      /* =====================================
+         LOGO
+      ===================================== */
+
+      const logoData =
+        req.file
+          ? req.file.buffer
+          : null;
+
+      const logoMimeType =
+        req.file
+          ? req.file.mimetype
+          : null;
+
+
+      /* =====================================
+         UPDATE PROFILE
+      ===================================== */
+
+      const result =
+        await db.query(
+          `
+            UPDATE tenant_profiles
+
+            SET
+
+              person_name = $2,
+              display_name = $3,
+              business_field = $4,
+              bio = $5,
+
+              website_url = $6,
+              linkedin_url = $7,
+
+              logo_data =
+                CASE
+                  WHEN $8::bytea IS NOT NULL
+                  THEN $8::bytea
+                  ELSE logo_data
+                END,
+
+              logo_mime_type =
+                CASE
+                  WHEN $8::bytea IS NOT NULL
+                  THEN $9
+                  ELSE logo_mime_type
+                END,
+
+              logo_url =
+                CASE
+                  WHEN $8::bytea IS NOT NULL
+                  THEN '/dashboard/business-profile/logo'
+                  ELSE logo_url
+                END,
+
+              updated_at = NOW()
+
+            WHERE id = $1
+
+            RETURNING
+              id,
+              display_name
+          `,
+          [
+            profileId,
+            personName || null,
+            displayName,
+            businessField || null,
+            bio || null,
+            normalizedWebsite.url,
+            normalizedLinkedin.url,
+            logoData,
+            logoMimeType
+          ]
+        );
+
+
+      if (!result.rows.length) {
+        return res.redirect(
+          adminRedirect(
+            'error',
+            'הפרופיל העסקי לא נמצא',
+            'business-profiles'
+          )
+        );
+      }
+
+
+      return res.redirect(
+        adminRedirect(
+          'success',
+          `הפרופיל של ${result.rows[0].display_name} עודכן בהצלחה`,
+          'business-profiles'
+        )
+      );
+
+    } catch (error) {
+
+      return next(error);
+
+    }
+
+  }
+);
+
 router.post('/meeting-bookings/create',
   async (req, res, next) => {
     const client = await db.pool.connect();
@@ -1327,8 +1571,7 @@ router.post('/meeting-bookings/create',
   }
 );
 
-router.post(
-  '/meeting-bookings/:id/delete',
+router.post('/meeting-bookings/:id/delete',
   async (req, res, next) => {
     try {
       const result = await db.query(

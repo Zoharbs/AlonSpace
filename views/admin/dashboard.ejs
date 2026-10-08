@@ -1898,6 +1898,54 @@
   }
 
 }
+.business-profile-edit-dialog {
+  width: min(520px, calc(100% - 32px));
+  max-height: 90vh;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  direction: rtl;
+  overflow-y: auto;
+  background: #fff;
+  color: #202020;
+}
+
+.business-profile-edit-dialog::backdrop {
+  background: rgba(0, 0, 0, .55);
+}
+
+.business-profile-edit-content {
+  padding: 28px;
+}
+
+.business-profile-edit-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.business-profile-edit-form label {
+  display: grid;
+  gap: 7px;
+  font-weight: 600;
+}
+
+.business-profile-edit-form input,
+.business-profile-edit-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  font: inherit;
+}
+
+.business-profile-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
   </style>
 </head>
 
@@ -3060,7 +3108,34 @@
 
                                   <div class="business-profile-admin-actions">
 
+<button
+  type="button"
+  class="mini-btn primary"
+  onclick="document.getElementById('editBusinessProfile<%= profile.id %>').showModal()"
+>
+  ✎ עריכת פרופיל
+</button>
 
+<form
+  method="POST"
+  action="/admin/business-profiles/<%= profile.id %>/toggle-community"
+  onsubmit="return confirm('<%= profile.community_visible ? 'להסיר את הפרופיל מהקהילה ומהאתר הציבורי?' : 'להציג את הפרופיל בקהילת הדיירים?' %>')"
+>
+  <input
+    type="hidden"
+    name="_csrf"
+    value="<%= csrfToken %>"
+  >
+
+  <button
+    type="submit"
+    class="mini-btn <%= profile.community_visible ? 'danger' : 'primary' %>"
+  >
+    <%= profile.community_visible
+      ? 'הסרה מהקהילה'
+      : 'הצגה בקהילה' %>
+  </button>
+</form>
                                     <% if ( profile.public_consent && profile.public_status==='pending' ) { %>
 
                                       <form method="POST" action="/admin/business-profiles/<%= profile.id %>/reject"
@@ -3130,7 +3205,121 @@
                                   </div>
 
                                 </article>
+<dialog
+  id="editBusinessProfile<%= profile.id %>"
+  class="business-profile-edit-dialog"
+>
+  <div class="business-profile-edit-content">
 
+    <h2>עריכת פרופיל עסקי</h2>
+
+    <p class="small">
+      <%= profile.display_name %>
+    </p>
+
+    <form
+      method="POST"
+      action="/admin/business-profiles/<%= profile.id %>/edit"
+      enctype="multipart/form-data"
+      class="business-profile-edit-form"
+    >
+
+      <input
+        type="hidden"
+        name="_csrf"
+        value="<%= csrfToken %>"
+      >
+
+      <label>
+        שם
+        <input
+          type="text"
+          name="person_name"
+          maxlength="120"
+          value="<%= profile.person_name || '' %>"
+        >
+      </label>
+
+      <label>
+        שם העסק
+        <input
+          type="text"
+          name="display_name"
+          maxlength="120"
+          value="<%= profile.display_name || '' %>"
+          required
+        >
+      </label>
+
+      <label>
+        תחום פעילות
+        <input
+          type="text"
+          name="business_field"
+          maxlength="120"
+          value="<%= profile.business_field || '' %>"
+        >
+      </label>
+
+      <label>
+        תיאור העסק
+        <textarea
+          name="bio"
+          maxlength="300"
+          rows="4"
+        ><%= profile.bio || '' %></textarea>
+      </label>
+
+      <label>
+        אתר העסק
+        <input
+          type="text"
+          name="website_url"
+          value="<%= profile.website_url || '' %>"
+        >
+      </label>
+
+      <label>
+        LinkedIn
+        <input
+          type="text"
+          name="linkedin_url"
+          value="<%= profile.linkedin_url || '' %>"
+        >
+      </label>
+
+      <label>
+        החלפת לוגו (לא חובה)
+        <input
+          type="file"
+          name="logo"
+          accept="image/png,image/jpeg,image/webp"
+        >
+      </label>
+
+      <div class="business-profile-edit-actions">
+
+        <button
+          type="button"
+          class="mini-btn"
+          onclick="this.closest('dialog').close()"
+        >
+          ביטול
+        </button>
+
+        <button
+          type="submit"
+          class="mini-btn primary"
+        >
+          שמירת שינויים
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</dialog>
                                 <% }) %>
 
                             </div>
