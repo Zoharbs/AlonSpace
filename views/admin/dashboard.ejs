@@ -3827,7 +3827,48 @@
 
                           </div>
 
+<div class="client-bookings-section" id="adminSelectedBookingSection">
 
+  <h4>פרטי השריון שנבחר</h4>
+
+  <div class="client-bookings-list">
+
+    <div class="client-booking-item">
+
+      <div>
+        <strong id="adminSelectedBookingDate">-</strong>
+
+        <div class="small" id="adminSelectedBookingTime"></div>
+
+        <div class="small" id="adminSelectedBookingRoom"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="field" style="margin-top:14px;">
+    <label>הערה / תיאור</label>
+
+    <div class="small" id="adminSelectedBookingNote">
+      אין הערה
+    </div>
+  </div>
+
+  <form
+    method="POST"
+    id="adminSelectedBookingDeleteForm"
+    onsubmit="return confirm('למחוק את השריון?')"
+    style="margin-top:14px;"
+  >
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <button type="submit" class="mini-btn danger">
+      ביטול
+    </button>
+  </form>
+
+</div>
                           <div class="client-usage-grid">
 
                             <div class="client-usage-box">
@@ -4129,7 +4170,7 @@
     }
 
 
-    function openAdminClientDetails(userId) {
+    function openAdminClientDetails(userId, selectedBooking) {
 
       const client =
         adminClients.find(
@@ -4138,10 +4179,83 @@
             Number(userId)
         );
 
-      if (!client) {
-        return;
-      }
+if (!client) {
+  return;
+}
 
+const selectedBookingDate =
+  document.getElementById(
+    'adminSelectedBookingDate'
+  );
+
+const selectedBookingTime =
+  document.getElementById(
+    'adminSelectedBookingTime'
+  );
+
+const selectedBookingRoom =
+  document.getElementById(
+    'adminSelectedBookingRoom'
+  );
+
+const selectedBookingNote =
+  document.getElementById(
+    'adminSelectedBookingNote'
+  );
+
+const selectedBookingDeleteForm =
+  document.getElementById(
+    'adminSelectedBookingDeleteForm'
+  );
+
+if (selectedBooking) {
+
+  if (selectedBookingDate) {
+    selectedBookingDate.textContent =
+      formatClientBookingDate(
+        selectedBooking.booking_date
+      );
+  }
+
+  if (selectedBookingTime) {
+    selectedBookingTime.textContent =
+      `${normalizeAdminTime(selectedBooking.start_time)} – ` +
+      `${normalizeAdminTime(selectedBooking.end_time)}`;
+  }
+
+  if (selectedBookingRoom) {
+    const roomFloor =
+      getBookingRoomFloor(selectedBooking);
+
+    selectedBookingRoom.textContent =
+      selectedBooking.meeting_room_name ||
+      (
+        Number.isFinite(roomFloor) && roomFloor > 0
+          ? `חדר ישיבות קומה ${roomFloor}`
+          : 'חדר ישיבות'
+      );
+  }
+
+  if (selectedBookingNote) {
+    selectedBookingNote.textContent =
+      selectedBooking.note?.trim() ||
+      'אין הערה לשריון זה';
+  }
+
+  if (selectedBookingDeleteForm) {
+    const bookingId =
+      Number(selectedBooking.id);
+
+    if (Number.isSafeInteger(bookingId) && bookingId > 0) {
+      selectedBookingDeleteForm.action =
+        `/admin/meeting-bookings/${bookingId}/delete`;
+
+      selectedBookingDeleteForm.hidden = false;
+    } else {
+      selectedBookingDeleteForm.hidden = true;
+    }
+  }
+}
 
       if (adminClientDetailsName) {
         adminClientDetailsName.textContent =
@@ -5345,9 +5459,10 @@
               (event) => {
                 event.stopPropagation();
 
-                openAdminClientDetails(
-                  booking.user_id
-                );
+openAdminClientDetails(
+  booking.user_id,
+  booking
+);
               }
             );
 
