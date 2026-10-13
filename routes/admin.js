@@ -593,6 +593,222 @@ router.post('/units/tenancies/create', async (req, res, next) => {
     }
   }
 });
+
+
+// =====================================================
+// AlonSpace - Update Existing Unit Tenancy
+// =====================================================
+
+router.post('/units/tenancies/update', async (req, res, next) => {
+  const tenancyId = String(req.body.tenancy_id || '').trim();
+  const userId = String(req.body.user_id || '').trim();
+  const rentalModel = String(req.body.rental_model || '').trim();
+  const startDate = String(req.body.start_date || '').trim();
+  const endDate = String(req.body.end_date || '').trim() || null;
+  const notes = normalizeOptional(req.body.notes);
+
+  const redirectError = (message) => {
+    return res.redirect(
+      '/admin/units?error=' + encodeURIComponent(message)
+    );
+  };
+
+  const validDate = (value) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) {
+      return false;
+    }
+
+    const date = new Date(value + 'T00:00:00Z');
+
+    return (
+      !Number.isNaN(date.getTime()) &&
+      date.toISOString().slice(0, 10) === value
+    );
+  };
+
+  if (
+    !/^[1-9]\d*$/.test(tenancyId) ||
+    !/^[1-9]\d*$/.test(userId)
+  ) {
+    return redirectError('יש לבחור שכירות ושוכר תקינים');
+  }
+
+  if (
+    !validDate(startDate) ||
+    (endDate && !validDate(endDate))
+  ) {
+    return redirectError('יש להזין תאריכים תקינים');
+  }
+
+  if (endDate && endDate < startDate) {
+    return redirectError('תאריך הסיום קודם לתאריך ההתחלה');
+  }
+
+  if (notes && notes.length > 2000) {
+    return redirectError('שדה ההערות ארוך מדי');
+  }
+
+  let client;
+
+  try {
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    const tenancyResult = await client.query(
+      `
+        SELECT
+          t.id,
+          t.unit_id,
+          ru.ownership_type
+        FROM unit_tenancies t
+        JOIN rental_units ru ON ru.id = t.unit_id
+        WHERE
+          t.id = $1
+          AND ru.is_active = TRUE
+        LIMIT 1
+      `,
+      [tenancyId]
+    );
+
+    if (!tenancyResult.rows.length) {
+      await client.query('ROLLBACK');
+      return redirectError('השכירות אינה קיימת');
+    }
+
+    const tenancy = tenancyResult.rows[0];
+
+    await client.query(
+      'SELECT pg_advisory_xact_lock($1::bigint)',
+      [tenancy.unit_id]
+    );
+
+    const allowedModels = tenancy.ownership_type === 'alonspace'
+      ? ['alonspace_owned']
+      : ['managed', 'direct_owner'];
+
+    if (!allowedModels.includes(rentalModel)) {
+      await client.query('ROLLBACK');
+      return redirectError('מודל ההשכרה אינו מתאים לסוג הבעלות');
+    }
+
+    const userResult = await client.query(
+      `
+        SELECT id
+        FROM users
+        WHERE
+          id = $1
+          AND role = 'tenant'
+          AND is_active = TRUE
+        LIMIT 1
+      `,
+      [userId]
+    );
+
+    if (!userResult.rows.length) {
+      await client.query('ROLLBACK');
+      return redirectError('השוכר אינו קיים או אינו פעיל');
+    }
+
+    const overlapResult = await client.query(
+      `
+        SELECT id
+        FROM unit_tenancies
+        WHERE
+          unit_id = $1
+          AND id <> $2
+          AND start_date <= COALESCE(
+            $4::date,
+            'infinity'::date
+          )
+          AND COALESCE(
+            end_date,
+            'infinity'::date
+          ) >= $3::date
+        LIMIT 1
+      `,
+      [
+        tenancy.unit_id,
+        tenancyId,
+        startDate,
+        endDate
+      ]
+    );
+
+    if (overlapResult.rows.length) {
+      await client.query('ROLLBACK');
+      return redirectError(
+        'התאריכים חופפים לשכירות אחרת באותו משרד'
+      );
+    }
+
+    await client.query(
+      `
+        UPDATE unit_tenancies
+        SET
+          rental_model = $1,
+          start_date = $2,
+          end_date = $3,
+          notes = $4,
+          updated_at = NOW()
+        WHERE id = $5
+      `,
+      [
+        rentalModel,
+        startDate,
+        endDate,
+        notes,
+        tenancyId
+      ]
+    );
+
+    const primaryResult = await client.query(
+      `
+        UPDATE unit_tenancy_users
+        SET user_id = $1
+        WHERE
+          tenancy_id = $2
+          AND tenant_role = 'primary'
+        RETURNING id
+      `,
+      [userId, tenancyId]
+    );
+
+    if (!primaryResult.rows.length) {
+      await client.query(
+        `
+          INSERT INTO unit_tenancy_users (
+            tenancy_id,
+            user_id,
+            tenant_role
+          )
+          VALUES ($1, $2, 'primary')
+        `,
+        [tenancyId, userId]
+      );
+    }
+
+    await client.query('COMMIT');
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('פרטי השכירות עודכנו בהצלחה')
+    );
+  } catch (error) {
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.error('Tenancy update rollback failed:', rollbackError);
+      }
+    }
+
+    return next(error);
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+});
 // =====================================================
 // AlonSpace - Save Monthly Management Fee
 // =====================================================
