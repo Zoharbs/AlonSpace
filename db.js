@@ -331,6 +331,88 @@ await query(`
     ON rental_units(floor, unit_number);
   `);
 
+  // =====================================================
+  // AlonSpace - Unit Tenancies
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_tenancies (
+      id BIGSERIAL PRIMARY KEY,
+
+      unit_id BIGINT NOT NULL
+        REFERENCES rental_units(id)
+        ON DELETE RESTRICT,
+
+      rental_model TEXT NOT NULL
+        CHECK (
+          rental_model IN (
+            'managed',
+            'direct_owner',
+            'alonspace_owned'
+          )
+        ),
+
+      start_date DATE NOT NULL,
+      end_date DATE,
+
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      CHECK (
+        end_date IS NULL
+        OR end_date >= start_date
+      )
+    );
+  `);
+
+  // =====================================================
+  // AlonSpace - Tenancy Users
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_tenancy_users (
+      id BIGSERIAL PRIMARY KEY,
+
+      tenancy_id BIGINT NOT NULL
+        REFERENCES unit_tenancies(id)
+        ON DELETE CASCADE,
+
+      user_id BIGINT NOT NULL
+        REFERENCES users(id)
+        ON DELETE RESTRICT,
+
+      tenant_role TEXT NOT NULL DEFAULT 'primary'
+        CHECK (
+          tenant_role IN ('primary', 'partner')
+        ),
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE (tenancy_id, user_id)
+    );
+  `);
+
+  await query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS
+      idx_unit_tenancy_one_primary
+    ON unit_tenancy_users(tenancy_id)
+    WHERE tenant_role = 'primary';
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_tenancies_unit_dates
+    ON unit_tenancies(unit_id, start_date, end_date);
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_tenancy_users_user
+    ON unit_tenancy_users(user_id);
+  `);
+
   await seedAdmin();
   await seedGallery();
   await seedTestimonials();
