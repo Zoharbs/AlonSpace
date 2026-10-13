@@ -2460,42 +2460,6 @@
                           </article>
 
 
-                          <!-- תקופת השכירות -->
-
-                          <article class="tenant-summary-card">
-
-                            <span class="eyebrow">
-                              תקופת השכירות
-                            </span>
-
-                            <% if ( user.rental_start_date || user.rental_end_date ) { %>
-
-                              <h3>
-                                <%= formatDate( user.rental_start_date ) %>
-                                  –
-                                  <%= formatDate( user.rental_end_date ) %>
-                              </h3>
-
-                              <p class="small">
-                                תקופת השכירות המעודכנת בחשבון
-                              </p>
-
-                              <% } else { %>
-
-                                <h3>
-                                  טרם הוגדרה
-                                </h3>
-
-                                <p class="small">
-                                  יש לפנות להנהלת AlonSpace
-                                  לעדכון התקופה
-                                </p>
-
-                                <% } %>
-
-                          </article>
-
-
                           <!-- הפרופיל העסקי -->
 
                           <article class="tenant-summary-card" id="business-profile">
@@ -2532,6 +2496,43 @@
                             </button>
 
                           </article>
+
+                          <!-- תקופת השכירות -->
+
+                          <article class="tenant-summary-card">
+
+                            <span class="eyebrow">
+                              תקופת השכירות
+                            </span>
+
+                            <% if ( user.rental_start_date || user.rental_end_date ) { %>
+
+                              <h3>
+                                <%= formatDate( user.rental_start_date ) %>
+                                  –
+                                  <%= formatDate( user.rental_end_date ) %>
+                              </h3>
+
+                              <p class="small">
+                                תקופת השכירות המעודכנת בחשבון
+                              </p>
+
+                              <% } else { %>
+
+                                <h3>
+                                  טרם הוגדרה
+                                </h3>
+
+                                <p class="small">
+                                  יש לפנות להנהלת AlonSpace
+                                  לעדכון התקופה
+                                </p>
+
+                                <% } %>
+
+                          </article>
+
+
 
                         </div>
 
@@ -3203,7 +3204,7 @@
               </script>
               <script>
                 const meetingBookings =
-    <%- JSON.stringify(meetingBookings || [])
+    <% - JSON.stringify(meetingBookings || [])
                     .replace(/</g, '\\u003c') %>;
 
 
