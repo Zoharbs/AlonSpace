@@ -486,6 +486,227 @@ await query(`
     );
   `);
 
+  // =====================================================
+  // AlonSpace - Unit Financial Entries
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_financial_entries (
+      id BIGSERIAL PRIMARY KEY,
+
+      unit_id BIGINT NOT NULL
+        REFERENCES rental_units(id)
+        ON DELETE RESTRICT,
+
+      tenancy_id BIGINT
+        REFERENCES unit_tenancies(id)
+        ON DELETE RESTRICT,
+
+      entry_type TEXT NOT NULL
+        CHECK (
+          entry_type IN (
+            'rent_income',
+            'management_fee_income',
+            'owner_payout',
+            'operating_expense',
+            'other_income',
+            'other_expense'
+          )
+        ),
+
+      category TEXT,
+
+      description TEXT,
+
+      amount NUMERIC(12, 2) NOT NULL
+        CHECK (amount > 0),
+
+      period_month DATE NOT NULL,
+
+      due_date DATE,
+
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      CHECK (
+        period_month =
+        DATE_TRUNC('month', period_month)::DATE
+      )
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_financial_entries_unit_month
+    ON unit_financial_entries (
+      unit_id,
+      period_month
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_financial_entries_type
+    ON unit_financial_entries (
+      entry_type
+    );
+  `);
+
+  await seedAdmin();
+  await seedGallery();
+  await seedTestimonials();  // =====================================================
+  // AlonSpace - Unit Financial Entries
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_financial_entries (
+      id BIGSERIAL PRIMARY KEY,
+
+      unit_id BIGINT NOT NULL
+        REFERENCES rental_units(id)
+        ON DELETE RESTRICT,
+
+      tenancy_id BIGINT
+        REFERENCES unit_tenancies(id)
+        ON DELETE RESTRICT,
+
+      entry_type TEXT NOT NULL
+        CHECK (
+          entry_type IN (
+            'rent_income',
+            'management_fee_income',
+            'owner_payout',
+            'operating_expense',
+            'other_income',
+            'other_expense'
+          )
+        ),
+
+      category TEXT,
+
+      description TEXT,
+
+      amount NUMERIC(12, 2) NOT NULL
+        CHECK (amount > 0),
+
+      period_month DATE NOT NULL,
+
+      due_date DATE,
+
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      CHECK (
+        period_month =
+        DATE_TRUNC('month', period_month)::DATE
+      )
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_financial_entries_unit_month
+    ON unit_financial_entries (
+      unit_id,
+      period_month
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_financial_entries_type
+    ON unit_financial_entries (
+      entry_type
+    );
+  `);
+  // =====================================================
+  // AlonSpace - Financial Payments
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_financial_payments (
+      id BIGSERIAL PRIMARY KEY,
+
+      entry_id BIGINT NOT NULL
+        REFERENCES unit_financial_entries(id)
+        ON DELETE RESTRICT,
+
+      amount NUMERIC(12, 2) NOT NULL
+        CHECK (amount > 0),
+
+      payment_date DATE NOT NULL,
+
+      payment_method TEXT NOT NULL DEFAULT 'bank_transfer'
+        CHECK (
+          payment_method IN (
+            'bank_transfer',
+            'cash',
+            'check',
+            'credit_card',
+            'other'
+          )
+        ),
+
+      reference_number TEXT,
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  // =====================================================
+  // AlonSpace - Owner Management Fee Offsets
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_financial_offsets (
+      id BIGSERIAL PRIMARY KEY,
+
+      management_fee_entry_id BIGINT NOT NULL
+        REFERENCES unit_financial_entries(id)
+        ON DELETE RESTRICT,
+
+      owner_payout_entry_id BIGINT NOT NULL
+        REFERENCES unit_financial_entries(id)
+        ON DELETE RESTRICT,
+
+      amount NUMERIC(12, 2) NOT NULL
+        CHECK (amount > 0),
+
+      offset_date DATE NOT NULL,
+
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      CHECK (
+        management_fee_entry_id <> owner_payout_entry_id
+      )
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_financial_payments_entry
+    ON unit_financial_payments(entry_id);
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_financial_offsets_management
+    ON unit_financial_offsets(management_fee_entry_id);
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_financial_offsets_payout
+    ON unit_financial_offsets(owner_payout_entry_id);
+  `);
+
   await seedAdmin();
   await seedGallery();
   await seedTestimonials();
