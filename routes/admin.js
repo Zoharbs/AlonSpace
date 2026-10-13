@@ -270,6 +270,190 @@ router.post('/units/create', async (req, res, next) => {
     return next(error);
   }
 });
+
+
+// =====================================================
+// AlonSpace - Create Unit Tenancy
+// =====================================================
+
+router.post('/units/tenancies/create', async (req, res, next) => {
+  const unitId = String(req.body.unit_id || '').trim();
+  const userId = String(req.body.user_id || '').trim();
+  const rentalModel = String(req.body.rental_model || '').trim();
+  const startDate = String(req.body.start_date || '').trim();
+  const endDate = String(req.body.end_date || '').trim() || null;
+  const notes = normalizeOptional(req.body.notes);
+
+  const redirectError = (message) => {
+    return res.redirect(
+      '/admin/units?error=' + encodeURIComponent(message)
+    );
+  };
+
+  const validDate = (value) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) {
+      return false;
+    }
+
+    const date = new Date(value + 'T00:00:00Z');
+
+    return (
+      !Number.isNaN(date.getTime()) &&
+      date.toISOString().slice(0, 10) === value
+    );
+  };
+
+  if (
+    !/^[1-9]\d*$/.test(unitId) ||
+    !/^[1-9]\d*$/.test(userId)
+  ) {
+    return redirectError('יש לבחור יחידה ושוכר תקינים');
+  }
+
+  if (!validDate(startDate) || (endDate && !validDate(endDate))) {
+    return redirectError('יש להזין תאריכי חוזה תקינים');
+  }
+
+  if (endDate && endDate < startDate) {
+    return redirectError('תאריך הסיום קודם לתאריך ההתחלה');
+  }
+
+  if (notes && notes.length > 2000) {
+    return redirectError('שדה ההערות ארוך מדי');
+  }
+  let client;
+
+  try {
+    client = await db.pool.connect();
+
+    await client.query('BEGIN');
+
+    // מונע יצירת חוזים חופפים בבקשות מקבילות
+    await client.query(
+      'SELECT pg_advisory_xact_lock($1::bigint)',
+      [unitId]
+    );
+
+    const unitResult = await client.query(
+      `
+        SELECT id, ownership_type
+        FROM rental_units
+        WHERE id = $1 AND is_active = TRUE
+        LIMIT 1
+      `,
+      [unitId]
+    );
+
+    if (!unitResult.rows.length) {
+      await client.query('ROLLBACK');
+      return redirectError('היחידה אינה קיימת או אינה פעילה');
+    }
+
+    const ownershipType = unitResult.rows[0].ownership_type;
+
+    const allowedModels = ownershipType === 'alonspace'
+      ? ['alonspace_owned']
+      : ['managed', 'direct_owner'];
+
+    if (!allowedModels.includes(rentalModel)) {
+      await client.query('ROLLBACK');
+      return redirectError('מודל ההשכרה אינו מתאים לסוג הבעלות');
+    }
+
+    const userResult = await client.query(
+      `
+        SELECT id
+        FROM users
+        WHERE
+          id = $1
+          AND role = 'tenant'
+          AND is_active = TRUE
+        LIMIT 1
+      `,
+      [userId]
+    );
+
+    if (!userResult.rows.length) {
+      await client.query('ROLLBACK');
+      return redirectError('השוכר אינו קיים או אינו פעיל');
+    }
+
+    const overlapResult = await client.query(
+      `
+        SELECT id
+        FROM unit_tenancies
+        WHERE
+          unit_id = $1
+          AND start_date <= COALESCE(
+            $3::date,
+            'infinity'::date
+          )
+          AND COALESCE(
+            end_date,
+            'infinity'::date
+          ) >= $2::date
+        LIMIT 1
+      `,
+      [unitId, startDate, endDate]
+    );
+
+    if (overlapResult.rows.length) {
+      await client.query('ROLLBACK');
+
+      return redirectError(
+        'כבר קיים חוזה לתקופה זו ביחידה. לא ניתן ליצור חוזים חופפים.'
+      );
+    }
+
+    const tenancyResult = await client.query(
+      `
+        INSERT INTO unit_tenancies (
+          unit_id,
+          rental_model,
+          start_date,
+          end_date,
+          notes
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id
+      `,
+      [unitId, rentalModel, startDate, endDate, notes]
+    );
+
+    await client.query(
+      `
+        INSERT INTO unit_tenancy_users (
+          tenancy_id,
+          user_id,
+          tenant_role
+        )
+        VALUES ($1, $2, 'primary')
+      `,
+      [tenancyResult.rows[0].id, userId]
+    );
+
+    await client.query('COMMIT');
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('חוזה השכירות נוצר בהצלחה')
+    );
+    } catch (error) {
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.error('Tenancy rollback failed:', rollbackError);
+      }
+    }
+
+    return next(error);
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+});
 // =====================================================
 // AlonSpace - Units Management
 // =====================================================
@@ -361,12 +545,27 @@ router.get('/units', async (req, res, next) => {
       ORDER BY LOWER(name) ASC, id ASC
     `);
 
+      const tenantsResult = await db.query(`
+      SELECT
+        id,
+        display_name,
+        business_name,
+        office_number,
+        floor
+      FROM users
+      WHERE
+        role = 'tenant'
+        AND is_active = TRUE
+      ORDER BY LOWER(display_name), id
+    `);
+
     return res.render('admin/units', {
       title: 'יחידות וכספים - AlonSpace',
       layout: false,
       adminName: req.session.userName,
       units,
       owners: ownersResult.rows,
+      tenants: tenantsResult.rows,
       success: req.query.success || null,
       error: req.query.error || null
     });

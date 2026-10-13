@@ -253,11 +253,14 @@
       gap: 16px;
       margin-top: 18px;
     }
-
     .owner-form label {
       display: grid;
       gap: 6px;
       font-weight: 600;
+    }
+
+    .owner-form label[hidden] {
+      display: none;
     }
 
     .owner-form input,
@@ -432,6 +435,21 @@
       .unit-dialog-actions {
         flex-wrap: wrap;
       }
+    }
+        .unit-tenancy-open {
+      padding: 6px 11px;
+      border: 1px solid var(--oak);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--oak-dark);
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .unit-tenancy-open:hover {
+      background: var(--stone);
     }
   </style>
 </head>
@@ -844,6 +862,21 @@
                       <strong>
                         <%= unit.unit_number %>
                       </strong>
+
+                      <% if (unit.is_active && !unit.tenancy_id) { %>
+                        <div style="margin-top:8px;">
+                          <button
+                            type="button"
+                            class="unit-tenancy-open"
+                            data-unit-id="<%= unit.id %>"
+                            data-unit-number="<%= unit.unit_number %>"
+                            data-unit-floor="<%= unit.floor %>"
+                            data-ownership-type="<%= unit.ownership_type %>"
+                          >
+                            + הוסף חוזה
+                          </button>
+                        </div>
+                      <% } %>
                     </td>
 
                     <td>
@@ -902,26 +935,182 @@
       </section>
 
     <% }); %>
+    <dialog id="addTenancyDialog" class="unit-dialog">
 
+      <div class="unit-dialog-header">
+        <div>
+          <h3>הוספת חוזה שכירות</h3>
+          <p id="tenancyUnitDescription"></p>
+        </div>
+
+        <button
+          type="button"
+          class="unit-dialog-close"
+          onclick="document.getElementById('addTenancyDialog').close()"
+          aria-label="סגירה"
+        >×</button>
+      </div>
+
+      <form
+        method="POST"
+        action="/admin/units/tenancies/create"
+        class="owner-form"
+      >
+        <input
+          type="hidden"
+          name="_csrf"
+          value="<%= csrfToken %>"
+        >
+
+        <input
+          type="hidden"
+          name="unit_id"
+          id="tenancyUnitId"
+        >
+
+        <label class="full-width">
+          שוכר ראשי *
+          <select name="user_id" required>
+            <option value="">בחר דייר קיים</option>
+
+            <% tenants.forEach(tenant => { %>
+              <option value="<%= tenant.id %>">
+                <%= tenant.display_name %>
+                <% if (tenant.business_name) { %>
+                  — <%= tenant.business_name %>
+                <% } %>
+              </option>
+            <% }); %>
+          </select>
+        </label>
+
+        <label class="full-width">
+          מודל השכרה *
+          <select
+            name="rental_model"
+            id="tenancyRentalModel"
+            required
+          >
+            <option value="managed">
+              מנוהל על ידי AlonSpace
+            </option>
+
+            <option value="direct_owner">
+              השוכר משלם ישירות לבעלים
+            </option>
+
+            <option value="alonspace_owned">
+              יחידה בבעלות AlonSpace
+            </option>
+          </select>
+        </label>
+
+        <label>
+          תחילת חוזה *
+          <input
+            type="date"
+            name="start_date"
+            required
+          >
+        </label>
+
+        <label>
+          סיום חוזה
+          <input
+            type="date"
+            name="end_date"
+          >
+        </label>
+
+        <label class="full-width">
+          הערות
+          <textarea
+            name="notes"
+            rows="3"
+            maxlength="2000"
+          ></textarea>
+        </label>
+
+        <div class="unit-dialog-actions full-width">
+          <button
+            type="button"
+            class="unit-cancel-btn"
+            onclick="document.getElementById('addTenancyDialog').close()"
+          >
+            ביטול
+          </button>
+
+          <button type="submit">
+            שמירת חוזה
+          </button>
+        </div>
+      </form>
+
+    </dialog>
   </main>
-  <script>
+<script>
   document.querySelectorAll('.unit-dialog').forEach(dialog => {
     dialog.addEventListener('click', event => {
-      if (event.target === dialog) {
-        const rect = dialog.getBoundingClientRect();
+      if (event.target !== dialog) {
+        return;
+      }
 
-        const clickedInside =
-          event.clientX >= rect.left &&
-          event.clientX <= rect.right &&
-          event.clientY >= rect.top &&
-          event.clientY <= rect.bottom;
+      const rect = dialog.getBoundingClientRect();
 
-        if (!clickedInside) {
-          dialog.close();
-        }
+      const outside =
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom;
+
+      if (outside) {
+        dialog.close();
       }
     });
   });
+</script>
+<script>
+  (() => {
+    const dialog =
+      document.getElementById('addTenancyDialog');
+
+    const unitInput =
+      document.getElementById('tenancyUnitId');
+
+    const description =
+      document.getElementById('tenancyUnitDescription');
+
+    const modelSelect =
+      document.getElementById('tenancyRentalModel');
+
+    document.querySelectorAll('.unit-tenancy-open')
+      .forEach(button => {
+        button.addEventListener('click', () => {
+          const ownershipType =
+            button.dataset.ownershipType;
+
+          unitInput.value = button.dataset.unitId;
+
+          description.textContent =
+            'משרד ' +
+            button.dataset.unitNumber +
+            ' · קומה ' +
+            button.dataset.unitFloor;
+
+          Array.from(modelSelect.options).forEach(option => {
+            option.disabled = ownershipType === 'alonspace'
+              ? option.value !== 'alonspace_owned'
+              : option.value === 'alonspace_owned';
+          });
+
+          modelSelect.value = ownershipType === 'alonspace'
+            ? 'alonspace_owned'
+            : 'managed';
+
+          dialog.showModal();
+        });
+      });
+  })();
 </script>
 </body>
 </html>
