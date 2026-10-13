@@ -918,7 +918,7 @@ router.get('/units', async (req, res, next) => {
         ut.rental_model,
         ut.start_date,
         ut.end_date,
-        ut.notes AS tenancy_notes,
+        NULL::text AS tenancy_notes,
 
         tenant.display_name AS tenant_name,
         tenant.business_name AS tenant_business_name,
