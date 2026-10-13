@@ -918,9 +918,11 @@ router.get('/units', async (req, res, next) => {
         ut.rental_model,
         ut.start_date,
         ut.end_date,
+        ut.notes AS tenancy_notes,
 
         tenant.display_name AS tenant_name,
-        tenant.business_name AS tenant_business_name
+        tenant.business_name AS tenant_business_name,
+        tenant.id AS tenant_user_id
 
       FROM rental_units ru
 
@@ -960,6 +962,7 @@ router.get('/units', async (req, res, next) => {
 
       LEFT JOIN LATERAL (
         SELECT
+          u.id,
           u.display_name,
           u.business_name
         FROM unit_tenancy_users tu

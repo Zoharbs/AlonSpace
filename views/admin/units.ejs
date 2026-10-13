@@ -1014,8 +1014,7 @@
                       <strong>
                         <%= unit.unit_number %>
                       </strong>
-
-                      <% if (unit.is_active && !unit.tenancy_id) { %>
+                      <% if (unit.is_active) { %>
                         <div style="margin-top:8px;">
                           <button
                             type="button"
@@ -1024,8 +1023,14 @@
                             data-unit-number="<%= unit.unit_number %>"
                             data-unit-floor="<%= unit.floor %>"
                             data-ownership-type="<%= unit.ownership_type %>"
+                            data-tenancy-id="<%= unit.tenancy_id || '' %>"
+                            data-user-id="<%= unit.tenant_user_id || '' %>"
+                            data-rental-model="<%= unit.rental_model || '' %>"
+                            data-start-date="<%= unit.start_date ? new Date(unit.start_date).toISOString().slice(0, 10) : '' %>"
+                            data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
+                            data-notes="<%= unit.tenancy_notes || '' %>"
                           >
-                            + הוסף חוזה
+                            <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
                           </button>
                         </div>
                       <% } %>
@@ -1179,7 +1184,7 @@
 
       <div class="unit-dialog-header">
         <div>
-          <h3>הוספת חוזה שכירות</h3>
+          <h3 id="tenancyDialogTitle">הוספת שוכר</h3>
           <p id="tenancyUnitDescription"></p>
         </div>
 
@@ -1195,6 +1200,7 @@
         method="POST"
         action="/admin/units/tenancies/create"
         class="owner-form"
+        id="tenancyForm"
       >
         <input
           type="hidden"
@@ -1207,7 +1213,11 @@
           name="unit_id"
           id="tenancyUnitId"
         >
-
+        <input
+          type="hidden"
+          name="tenancy_id"
+          id="tenancyId"
+        >
         <label class="full-width">
           שוכר ראשי *
           <select name="user_id" id="tenancyUserSelect" required>
@@ -1267,6 +1277,7 @@
           הערות
           <textarea
             name="notes"
+            id="tenancyNotes"
             rows="3"
             maxlength="2000"
           ></textarea>
@@ -1281,8 +1292,8 @@
             ביטול
           </button>
 
-          <button type="submit">
-            שמירת חוזה
+          <button type="submit" id="tenancySubmitButton">
+            שמירת שוכר
           </button>
         </div>
       </form>
@@ -1312,31 +1323,45 @@
 </script>
 <script>
   (() => {
-    const dialog =
-      document.getElementById('addTenancyDialog');
+    const dialog = document.getElementById('addTenancyDialog');
+    const form = document.getElementById('tenancyForm');
+    const title = document.getElementById('tenancyDialogTitle');
+    const submitButton = document.getElementById('tenancySubmitButton');
 
-    const unitInput =
-      document.getElementById('tenancyUnitId');
+    const unitInput = document.getElementById('tenancyUnitId');
+    const tenancyIdInput = document.getElementById('tenancyId');
+    const description = document.getElementById('tenancyUnitDescription');
 
-    const description =
-      document.getElementById('tenancyUnitDescription');
+    const userSelect = document.getElementById('tenancyUserSelect');
+    const modelSelect = document.getElementById('tenancyRentalModel');
+    const startInput = document.getElementById('tenancyStartDate');
+    const endInput = document.getElementById('tenancyEndDate');
+    const notesInput = document.getElementById('tenancyNotes');
 
-    const modelSelect =
-      document.getElementById('tenancyRentalModel');
+    if (
+      !dialog || !form || !title || !submitButton ||
+      !unitInput || !tenancyIdInput || !description ||
+      !userSelect || !modelSelect || !startInput ||
+      !endInput || !notesInput
+    ) {
+      return;
+    }
 
     document.querySelectorAll('.unit-tenancy-open')
       .forEach(button => {
         button.addEventListener('click', () => {
-          const ownershipType =
-            button.dataset.ownershipType;
+          const ownershipType = button.dataset.ownershipType;
+          const tenancyId = button.dataset.tenancyId || '';
+          const isEditing = Boolean(tenancyId);
+
+          form.reset();
 
           unitInput.value = button.dataset.unitId;
+          tenancyIdInput.value = tenancyId;
 
           description.textContent =
-            'משרד ' +
-            button.dataset.unitNumber +
-            ' · קומה ' +
-            button.dataset.unitFloor;
+            'משרד ' + button.dataset.unitNumber +
+            ' · קומה ' + button.dataset.unitFloor;
 
           Array.from(modelSelect.options).forEach(option => {
             option.disabled = ownershipType === 'alonspace'
@@ -1344,9 +1369,30 @@
               : option.value === 'alonspace_owned';
           });
 
-          modelSelect.value = ownershipType === 'alonspace'
-            ? 'alonspace_owned'
-            : 'managed';
+          if (isEditing) {
+            title.textContent = 'עריכת שוכר';
+            submitButton.textContent = 'שמירת שינויים';
+            form.action = '/admin/units/tenancies/update';
+
+            userSelect.value = button.dataset.userId || '';
+            modelSelect.value = button.dataset.rentalModel || '';
+            startInput.value = button.dataset.startDate || '';
+            endInput.value = button.dataset.endDate || '';
+            notesInput.value = button.dataset.notes || '';
+          } else {
+            title.textContent = 'הוספת שוכר';
+            submitButton.textContent = 'שמירת שוכר';
+            form.action = '/admin/units/tenancies/create';
+
+            modelSelect.value = ownershipType === 'alonspace'
+              ? 'alonspace_owned'
+              : 'managed';
+
+            userSelect.value = '';
+            startInput.value = '';
+            endInput.value = '';
+            notesInput.value = '';
+          }
 
           dialog.showModal();
         });
