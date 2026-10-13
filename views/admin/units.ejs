@@ -10,6 +10,16 @@
 
   <title><%= title %></title>
 
+  <link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
     * {
       box-sizing: border-box;
@@ -175,6 +185,125 @@
         padding: 24px 14px;
       }
     }
+      /* AlonSpace admin visual alignment */
+
+    body {
+      font-family: 'Assistant', Arial, sans-serif;
+      background: var(--stone);
+      color: var(--ink);
+    }
+
+    .topbar {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 20px 24px;
+      border-radius: var(--radius-lg);
+    }
+
+    .topbar h1 {
+      color: var(--cream);
+    }
+
+    .topbar .subtitle {
+      color: var(--cream);
+      opacity: .8;
+    }
+
+    .back-link {
+      color: var(--cream);
+    }
+
+    .stat-card,
+    .floor-section,
+    .owner-management {
+      background: var(--cream);
+      border: 1px solid var(--stone-dark);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label,
+    .muted {
+      color: var(--ink-soft);
+    }
+
+    .floor-heading,
+    th,
+    td {
+      border-color: var(--stone-dark);
+    }
+
+    th {
+      background: var(--stone-dark);
+      color: var(--ink);
+    }
+
+    .owner-management {
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+
+    .owner-management h2 {
+      margin: 0 0 8px;
+    }
+
+    .owner-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .owner-form label {
+      display: grid;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .owner-form input,
+    .owner-form textarea {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1px solid var(--stone-dark);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    .owner-form .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .owner-form button {
+      justify-self: start;
+      padding: 11px 24px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--ink);
+      color: var(--cream);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .owner-feedback {
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      border-radius: 9px;
+      background: var(--stone);
+    }
+
+    .owner-feedback.error {
+      color: #9c3b3b;
+      background: #f1d4d4;
+    }
+
+    @media (max-width: 700px) {
+      .owner-form {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -213,7 +342,111 @@
         alonspace_owned: 'בבעלות AlonSpace'
       };
     %>
+    <% if (success) { %>
+      <div class="owner-feedback" role="status">
+        <%= success %>
+      </div>
+    <% } %>
 
+    <% if (error) { %>
+      <div class="owner-feedback error" role="alert">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <section class="owner-management">
+      <h2>ניהול בעלי יחידות</h2>
+
+      <p class="muted">
+        הוסף בעלים כדי שנוכל לשייך אליו יחידות
+        ולנהל את דמי הניהול שלו.
+      </p>
+
+      <details>
+        <summary style="cursor:pointer; font-weight:700;">
+          + הוספת בעלים חדש
+        </summary>
+
+        <form
+          method="POST"
+          action="/admin/units/owners"
+          class="owner-form"
+        >
+          <input
+            type="hidden"
+            name="_csrf"
+            value="<%= csrfToken %>"
+          >
+
+          <label>
+            שם הבעלים *
+            <input
+              type="text"
+              name="name"
+              maxlength="200"
+              required
+            >
+          </label>
+
+          <label>
+            טלפון
+            <input
+              type="tel"
+              name="phone"
+              maxlength="50"
+            >
+          </label>
+
+          <label>
+            אימייל
+            <input
+              type="email"
+              name="email"
+              maxlength="254"
+            >
+          </label>
+
+          <label class="full-width">
+            הערות
+            <textarea
+              name="notes"
+              rows="3"
+              maxlength="2000"
+            ></textarea>
+          </label>
+
+          <button type="submit">
+            שמירת בעלים
+          </button>
+        </form>
+      </details>
+
+      <% if (owners.length > 0) { %>
+        <div style="margin-top:24px;" class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>שם הבעלים</th>
+                <th>טלפון</th>
+                <th>אימייל</th>
+                <th>הערות</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% owners.forEach(owner => { %>
+                <tr>
+                  <td><strong><%= owner.name %></strong></td>
+                  <td><%= owner.phone || '—' %></td>
+                  <td><%= owner.email || '—' %></td>
+                  <td><%= owner.notes || '—' %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
     <div class="stats">
 
       <div class="stat-card">

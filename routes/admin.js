@@ -86,7 +86,65 @@ function buildFloorDirectory(clients, floor) {
 }
 
 router.use(requireAdmin);
+// =====================================================
+// AlonSpace - Create Unit Owner
+// =====================================================
 
+router.post('/units/owners', async (req, res, next) => {
+  try {
+    const name = String(req.body.name || '').trim();
+    const phone = normalizeOptional(req.body.phone);
+    const email = normalizeOptional(req.body.email);
+    const notes = normalizeOptional(req.body.notes);
+
+    if (!name || name.length > 200) {
+      return res.redirect(
+        '/admin/units?error=' +
+        encodeURIComponent('יש להזין שם בעלים תקין')
+      );
+    }
+
+    if (email && (
+      email.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    )) {
+      return res.redirect(
+        '/admin/units?error=' +
+        encodeURIComponent('כתובת האימייל אינה תקינה')
+      );
+    }
+
+    if (
+      (phone && phone.length > 50) ||
+      (notes && notes.length > 2000)
+    ) {
+      return res.redirect(
+        '/admin/units?error=' +
+        encodeURIComponent('אחד השדות ארוך מדי')
+      );
+    }
+
+    await db.query(
+      `
+        INSERT INTO unit_owners (
+          name,
+          phone,
+          email,
+          notes
+        )
+        VALUES ($1, $2, $3, $4)
+      `,
+      [name, phone, email, notes]
+    );
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('הבעלים נוסף בהצלחה')
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
 // =====================================================
 // AlonSpace - Units Management
 // =====================================================
@@ -164,13 +222,28 @@ router.get('/units', async (req, res, next) => {
         ru.unit_number ASC
     `);
 
-    const units = unitsResult.rows;
+       const units = unitsResult.rows;
+
+    const ownersResult = await db.query(`
+      SELECT
+        id,
+        name,
+        phone,
+        email,
+        notes
+      FROM unit_owners
+      WHERE is_active = TRUE
+      ORDER BY LOWER(name) ASC, id ASC
+    `);
 
     return res.render('admin/units', {
       title: 'יחידות וכספים - AlonSpace',
       layout: false,
       adminName: req.session.userName,
-      units
+      units,
+      owners: ownersResult.rows,
+      success: req.query.success || null,
+      error: req.query.error || null
     });
   } catch (error) {
     return next(error);
