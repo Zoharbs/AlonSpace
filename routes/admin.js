@@ -145,6 +145,131 @@ router.post('/units/owners', async (req, res, next) => {
     return next(error);
   }
 });
+
+// =====================================================
+// AlonSpace - Create Rental Unit
+// =====================================================
+
+router.post('/units/create', async (req, res, next) => {
+  try {
+    const floor = Number(req.body.floor);
+
+    const unitNumber = String(
+      req.body.unit_number || ''
+    ).trim();
+
+    const ownershipType = String(
+      req.body.ownership_type || ''
+    ).trim();
+
+    const ownerId = String(
+      req.body.owner_id || ''
+    ).trim();
+
+    const notes = normalizeOptional(req.body.notes);
+
+    const redirectError = (message) => {
+      return res.redirect(
+        '/admin/units?error=' +
+        encodeURIComponent(message)
+      );
+    };
+
+    if (![4, 6].includes(floor)) {
+      return redirectError('יש לבחור קומה תקינה');
+    }
+
+    if (
+      !unitNumber ||
+      unitNumber.length > 30
+    ) {
+      return redirectError(
+        'יש להזין מספר יחידה תקין (עד 30 תווים)'
+      );
+    }
+
+    if (
+      !['external', 'alonspace'].includes(
+        ownershipType
+      )
+    ) {
+      return redirectError('סוג הבעלות אינו תקין');
+    }
+
+    if (notes && notes.length > 2000) {
+      return redirectError('שדה ההערות ארוך מדי');
+    }
+
+    let selectedOwnerId = null;
+
+    if (ownershipType === 'external') {
+      if (!/^[1-9]\d*$/.test(ownerId)) {
+        return redirectError(
+          'יש לבחור בעלים ליחידה בבעלות חיצונית'
+        );
+      }
+
+      const ownerResult = await db.query(
+        `
+          SELECT id
+          FROM unit_owners
+          WHERE
+            id = $1
+            AND is_active = TRUE
+          LIMIT 1
+        `,
+        [ownerId]
+      );
+
+      if (!ownerResult.rows.length) {
+        return redirectError(
+          'הבעלים שנבחר אינו קיים או אינו פעיל'
+        );
+      }
+
+      selectedOwnerId = ownerResult.rows[0].id;
+    }
+
+    await db.query(
+      `
+        INSERT INTO rental_units (
+          floor,
+          unit_number,
+          ownership_type,
+          owner_id,
+          notes
+        )
+        VALUES ($1, $2, $3, $4, $5)
+      `,
+      [
+        floor,
+        unitNumber,
+        ownershipType,
+        selectedOwnerId,
+        notes
+      ]
+    );
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent(
+        `יחידה ${unitNumber} בקומה ${floor} נוספה בהצלחה`
+      )
+    );
+
+  } catch (error) {
+    if (error.code === '23505') {
+      return res.redirect(
+        '/admin/units?error=' +
+        encodeURIComponent(
+          'יחידה עם מספר זה כבר קיימת בקומה שנבחרה'
+        )
+      );
+    }
+
+    return next(error);
+  }
+});
 // =====================================================
 // AlonSpace - Units Management
 // =====================================================

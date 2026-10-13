@@ -261,6 +261,7 @@
     }
 
     .owner-form input,
+    .owner-form select,
     .owner-form textarea {
       width: 100%;
       padding: 11px 13px;
@@ -447,6 +448,139 @@
         </div>
       <% } %>
     </section>
+        <section class="owner-management">
+
+      <h2>ניהול יחידות</h2>
+
+      <p class="muted">
+        הוסף משרדים בקומות 4 ו־6,
+        והגדר את סוג הבעלות של כל יחידה.
+      </p>
+
+      <details>
+        <summary style="cursor:pointer; font-weight:700;">
+          + הוספת יחידה חדשה
+        </summary>
+
+        <form
+          method="POST"
+          action="/admin/units/create"
+          class="owner-form"
+        >
+
+          <input
+            type="hidden"
+            name="_csrf"
+            value="<%= csrfToken %>"
+          >
+
+          <label>
+            קומה *
+            <select name="floor" required>
+              <option value="">בחר קומה</option>
+              <option value="4">קומה 4</option>
+              <option value="6">קומה 6</option>
+            </select>
+          </label>
+
+          <label>
+            מספר יחידה *
+            <input
+              type="text"
+              name="unit_number"
+              maxlength="30"
+              placeholder="לדוגמה: 12"
+              required
+            >
+          </label>
+
+          <label>
+            סוג בעלות *
+            <select
+              name="ownership_type"
+              id="unitOwnershipType"
+              required
+            >
+              <option value="external">
+                בעלות חיצונית
+              </option>
+
+              <option value="alonspace">
+                בבעלות AlonSpace
+              </option>
+            </select>
+          </label>
+
+          <label id="unitOwnerField">
+            בעל היחידה *
+            <select
+              name="owner_id"
+              id="unitOwnerSelect"
+              required
+            >
+              <option value="">
+                בחר בעלים
+              </option>
+
+              <% owners.forEach(owner => { %>
+                <option value="<%= owner.id %>">
+                  <%= owner.name %>
+                </option>
+              <% }); %>
+            </select>
+          </label>
+
+          <label class="full-width">
+            הערות
+            <textarea
+              name="notes"
+              rows="3"
+              maxlength="2000"
+              placeholder="הערות על היחידה (לא חובה)"
+            ></textarea>
+          </label>
+
+          <button type="submit">
+            שמירת יחידה
+          </button>
+
+        </form>
+      </details>
+
+    </section>
+
+    <script>
+      (() => {
+        const ownershipSelect =
+          document.getElementById('unitOwnershipType');
+
+        const ownerField =
+          document.getElementById('unitOwnerField');
+
+        const ownerSelect =
+          document.getElementById('unitOwnerSelect');
+
+        function updateOwnerField() {
+          const isExternal =
+            ownershipSelect.value === 'external';
+
+          ownerField.hidden = !isExternal;
+          ownerSelect.disabled = !isExternal;
+          ownerSelect.required = isExternal;
+
+          if (!isExternal) {
+            ownerSelect.value = '';
+          }
+        }
+
+        ownershipSelect.addEventListener(
+          'change',
+          updateOwnerField
+        );
+
+        updateOwnerField();
+      })();
+    </script>
     <div class="stats">
 
       <div class="stat-card">
