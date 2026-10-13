@@ -366,7 +366,10 @@ await query(`
       )
     );
   `);
-
+await pool.query(`
+  ALTER TABLE unit_tenancies
+  ADD COLUMN IF NOT EXISTS notes TEXT
+`);
   // =====================================================
   // AlonSpace - Tenancy Users
   // =====================================================
