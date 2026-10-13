@@ -305,6 +305,134 @@
         grid-template-columns: 1fr;
       }
     }
+        /* =====================================
+       ALONSPACE - UNIT MANAGEMENT MODALS
+    ===================================== */
+
+    .unit-add-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
+      margin-top: 12px;
+      border: 1px solid var(--ink);
+      border-radius: 10px;
+      background: var(--ink);
+      color: var(--cream);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s ease;
+    }
+
+    .unit-add-btn:hover {
+      opacity: .85;
+    }
+
+    .unit-dialog {
+      position: fixed;
+      width: min(540px, calc(100% - 32px));
+      max-height: calc(100dvh - 40px);
+      margin: auto;
+      padding: 28px;
+      border: 1px solid var(--stone-dark);
+      border-radius: 20px;
+      background: var(--cream);
+      color: var(--ink);
+      box-shadow: 0 24px 80px rgba(0,0,0,.22);
+      overflow-y: auto;
+      direction: rtl;
+    }
+
+    .unit-dialog::backdrop {
+      background: rgba(10, 12, 26, .55);
+      backdrop-filter: blur(3px);
+    }
+
+    .unit-dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .unit-dialog-header h3 {
+      margin: 0 0 5px;
+      font-size: 1.4rem;
+      color: var(--ink);
+    }
+
+    .unit-dialog-header p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: .9rem;
+    }
+
+    .unit-dialog-close {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: var(--stone);
+      color: var(--ink);
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .unit-dialog .owner-form {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 0;
+    }
+
+    .unit-dialog .owner-form label {
+      min-width: 0;
+    }
+
+    .unit-dialog .owner-form input,
+    .unit-dialog .owner-form select,
+    .unit-dialog .owner-form textarea {
+      width: 100%;
+    }
+
+    .unit-dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 16px;
+      margin-top: 6px;
+      border-top: 1px solid var(--stone-dark);
+    }
+
+    .unit-dialog .owner-form .unit-cancel-btn {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--stone-dark);
+    }
+
+    @media (max-width: 600px) {
+      .unit-dialog {
+        width: 100%;
+        max-width: 100%;
+        max-height: 90dvh;
+        margin: auto 0 0;
+        padding: 24px 18px;
+        border-radius: 20px 20px 0 0;
+      }
+
+      .unit-dialog .owner-form {
+        grid-template-columns: 1fr;
+      }
+
+      .unit-dialog-actions {
+        flex-wrap: wrap;
+      }
+    }
   </style>
 </head>
 
@@ -363,10 +491,28 @@
         ולנהל את דמי הניהול שלו.
       </p>
 
-      <details>
-        <summary style="cursor:pointer; font-weight:700;">
-          + הוספת בעלים חדש
-        </summary>
+           <button
+        type="button"
+        class="unit-add-btn"
+        onclick="document.getElementById('addOwnerDialog').showModal()"
+      >
+        + הוספת בעלים חדש
+      </button>
+
+      <dialog id="addOwnerDialog" class="unit-dialog">
+        <div class="unit-dialog-header">
+          <div>
+            <h3>הוספת בעלים חדש</h3>
+            <p>פרטי בעל היחידה</p>
+          </div>
+
+          <button
+            type="button"
+            class="unit-dialog-close"
+            onclick="document.getElementById('addOwnerDialog').close()"
+            aria-label="סגירה"
+          >×</button>
+        </div>
 
         <form
           method="POST"
@@ -415,12 +561,21 @@
               maxlength="2000"
             ></textarea>
           </label>
+          <div class="unit-dialog-actions full-width">
+            <button
+              type="button"
+              class="unit-cancel-btn"
+              onclick="document.getElementById('addOwnerDialog').close()"
+            >
+              ביטול
+            </button>
 
-          <button type="submit">
-            שמירת בעלים
-          </button>
+            <button type="submit">
+              שמירת בעלים
+            </button>
+          </div>
         </form>
-      </details>
+      </dialog>
 
       <% if (owners.length > 0) { %>
         <div style="margin-top:24px;" class="table-wrap">
@@ -457,10 +612,28 @@
         והגדר את סוג הבעלות של כל יחידה.
       </p>
 
-      <details>
-        <summary style="cursor:pointer; font-weight:700;">
-          + הוספת יחידה חדשה
-        </summary>
+          <button
+        type="button"
+        class="unit-add-btn"
+        onclick="document.getElementById('addUnitDialog').showModal()"
+      >
+        + הוספת יחידה חדשה
+      </button>
+
+      <dialog id="addUnitDialog" class="unit-dialog">
+        <div class="unit-dialog-header">
+          <div>
+            <h3>הוספת יחידה חדשה</h3>
+            <p>פרטי המשרד וסוג הבעלות</p>
+          </div>
+
+          <button
+            type="button"
+            class="unit-dialog-close"
+            onclick="document.getElementById('addUnitDialog').close()"
+            aria-label="סגירה"
+          >×</button>
+        </div>
 
         <form
           method="POST"
@@ -540,12 +713,22 @@
             ></textarea>
           </label>
 
-          <button type="submit">
-            שמירת יחידה
-          </button>
+          <div class="unit-dialog-actions full-width">
+            <button
+              type="button"
+              class="unit-cancel-btn"
+              onclick="document.getElementById('addUnitDialog').close()"
+            >
+              ביטול
+            </button>
+
+            <button type="submit">
+              שמירת יחידה
+            </button>
+          </div>
 
         </form>
-      </details>
+      </dialog>
 
     </section>
 
@@ -721,5 +904,24 @@
     <% }); %>
 
   </main>
+  <script>
+  document.querySelectorAll('.unit-dialog').forEach(dialog => {
+    dialog.addEventListener('click', event => {
+      if (event.target === dialog) {
+        const rect = dialog.getBoundingClientRect();
+
+        const clickedInside =
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom;
+
+        if (!clickedInside) {
+          dialog.close();
+        }
+      }
+    });
+  });
+</script>
 </body>
 </html>
