@@ -945,7 +945,8 @@ router.get('/units', async (req, res, next) => {
           t.id,
           t.rental_model,
           t.start_date,
-          t.end_date
+          t.end_date,
+          t.notes
         FROM unit_tenancies t
         WHERE
           t.unit_id = ru.id
@@ -1008,7 +1009,9 @@ router.get('/units', async (req, res, next) => {
         display_name,
         business_name,
         office_number,
-        floor
+        floor,
+        rental_start_date,
+        rental_end_date
       FROM users
       WHERE
         role = 'tenant'
