@@ -950,12 +950,18 @@ router.get('/units', async (req, res, next) => {
         FROM unit_tenancies t
         WHERE
           t.unit_id = ru.id
-          AND t.start_date <= CURRENT_DATE
-          AND (
-            t.end_date IS NULL
-            OR t.end_date >= CURRENT_DATE
-          )
         ORDER BY
+          CASE
+            WHEN t.start_date <= CURRENT_DATE
+              AND (
+                t.end_date IS NULL
+                OR t.end_date >= CURRENT_DATE
+              )
+            THEN 0
+            WHEN t.start_date > CURRENT_DATE
+            THEN 1
+            ELSE 2
+          END,
           t.start_date DESC,
           t.id DESC
         LIMIT 1
