@@ -87,6 +87,96 @@ function buildFloorDirectory(clients, floor) {
 
 router.use(requireAdmin);
 
+// =====================================================
+// AlonSpace - Units Management
+// =====================================================
+
+router.get('/units', async (req, res, next) => {
+  try {
+    const unitsResult = await db.query(`
+      SELECT
+        ru.id,
+        ru.floor,
+        ru.unit_number,
+        ru.ownership_type,
+        ru.is_active,
+        ru.notes,
+
+        uo.name AS owner_name,
+
+        ut.id AS tenancy_id,
+        ut.rental_model,
+        ut.start_date,
+        ut.end_date,
+
+        tenant.display_name AS tenant_name,
+        tenant.business_name AS tenant_business_name
+
+      FROM rental_units ru
+
+      LEFT JOIN unit_owners uo
+        ON uo.id = ru.owner_id
+
+      LEFT JOIN LATERAL (
+        SELECT
+          t.id,
+          t.rental_model,
+          t.start_date,
+          t.end_date
+        FROM unit_tenancies t
+        WHERE
+          t.unit_id = ru.id
+          AND t.start_date <= CURRENT_DATE
+          AND (
+            t.end_date IS NULL
+            OR t.end_date >= CURRENT_DATE
+          )
+        ORDER BY
+          t.start_date DESC,
+          t.id DESC
+        LIMIT 1
+      ) ut ON TRUE
+
+      LEFT JOIN LATERAL (
+        SELECT
+          u.display_name,
+          u.business_name
+        FROM unit_tenancy_users tu
+        JOIN users u
+          ON u.id = tu.user_id
+        WHERE
+          tu.tenancy_id = ut.id
+          AND tu.tenant_role = 'primary'
+        LIMIT 1
+      ) tenant ON TRUE
+
+      ORDER BY
+        ru.floor ASC,
+        CASE
+          WHEN ru.unit_number ~ '^[0-9]+'
+          THEN (
+            SUBSTRING(
+              ru.unit_number FROM '^[0-9]+'
+            )
+          )::NUMERIC
+          ELSE 999999
+        END ASC,
+        ru.unit_number ASC
+    `);
+
+    const units = unitsResult.rows;
+
+    return res.render('admin/units', {
+      title: 'יחידות וכספים - AlonSpace',
+      layout: false,
+      adminName: req.session.userName,
+      units
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
 router.get('/', async (req, res, next) => {
   try {
     const pendingBusinessProfilesResult =

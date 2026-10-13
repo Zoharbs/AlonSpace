@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title><%= title %></title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0a0c1a;
+      color: #ece9f7;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 36px 20px 80px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .back-link {
+      color: #f2c14e;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: #a6a8bd;
+      margin: 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin: 28px 0 36px;
+    }
+
+    .stat-card,
+    .floor-section {
+      background: #14182b;
+      border: 1px solid #292f48;
+      border-radius: 14px;
+    }
+
+    .stat-card {
+      padding: 22px;
+    }
+
+    .stat-label {
+      color: #a6a8bd;
+      font-size: 14px;
+    }
+
+    .stat-value {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .floor-section {
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .floor-heading {
+      padding: 20px 24px;
+      border-bottom: 1px solid #292f48;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .floor-heading h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      min-width: 780px;
+    }
+
+    th,
+    td {
+      padding: 15px 18px;
+      border-bottom: 1px solid #292f48;
+    }
+
+    th {
+      color: #a6a8bd;
+      font-size: 13px;
+      font-weight: normal;
+    }
+
+    td {
+      font-size: 14px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .muted {
+      color: #a6a8bd;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #242a40;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .pill.occupied {
+      background: #193a32;
+      color: #83e3bc;
+    }
+
+    .pill.vacant {
+      background: #49351d;
+      color: #f2c14e;
+    }
+
+    .empty {
+      padding: 40px 24px;
+      text-align: center;
+      color: #a6a8bd;
+    }
+
+    @media (max-width: 700px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .container {
+        padding: 24px 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <div class="topbar">
+      <div>
+        <h1>יחידות וכספים</h1>
+        <p class="subtitle">
+          ניהול היחידות בקומות 4 ו־6
+        </p>
+      </div>
+
+      <a href="/admin" class="back-link">
+        ← חזרה לפאנל הניהול
+      </a>
+    </div>
+
+    <%
+      const activeUnits = units.filter(
+        unit => unit.is_active
+      );
+
+      const occupiedUnits = activeUnits.filter(
+        unit => unit.tenancy_id
+      );
+
+      const ownedUnits = activeUnits.filter(
+        unit => unit.ownership_type === 'alonspace'
+      );
+
+      const rentalModelNames = {
+        managed: 'ניהול AlonSpace',
+        direct_owner: 'דרך הבעלים',
+        alonspace_owned: 'בבעלות AlonSpace'
+      };
+    %>
+
+    <div class="stats">
+
+      <div class="stat-card">
+        <div class="stat-label">
+          יחידות פעילות
+        </div>
+        <div class="stat-value">
+          <%= activeUnits.length %>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">
+          יחידות מושכרות
+        </div>
+        <div class="stat-value">
+          <%= occupiedUnits.length %>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">
+          יחידות בבעלות AlonSpace
+        </div>
+        <div class="stat-value">
+          <%= ownedUnits.length %>
+        </div>
+      </div>
+
+    </div>
+
+    <% [4, 6].forEach(floor => { %>
+
+      <%
+        const floorUnits = units.filter(
+          unit => Number(unit.floor) === floor
+        );
+      %>
+
+      <section class="floor-section">
+
+        <div class="floor-heading">
+          <h2>קומה <%= floor %></h2>
+          <span class="muted">
+            <%= floorUnits.length %> יחידות
+          </span>
+        </div>
+
+        <% if (floorUnits.length === 0) { %>
+
+          <div class="empty">
+            עדיין לא הוגדרו יחידות בקומה זו.
+          </div>
+
+        <% } else { %>
+
+          <div class="table-wrap">
+            <table>
+
+              <thead>
+                <tr>
+                  <th>יחידה</th>
+                  <th>בעלות</th>
+                  <th>בעלים</th>
+                  <th>שוכר ראשי</th>
+                  <th>מודל השכרה</th>
+                  <th>מצב</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <% floorUnits.forEach(unit => { %>
+
+                  <tr>
+
+                    <td>
+                      <strong>
+                        <%= unit.unit_number %>
+                      </strong>
+                    </td>
+
+                    <td>
+                      <%= unit.ownership_type === 'alonspace'
+                        ? 'AlonSpace'
+                        : 'בעלות חיצונית' %>
+                    </td>
+
+                    <td>
+                      <%= unit.ownership_type === 'alonspace'
+                        ? 'AlonSpace'
+                        : (unit.owner_name || 'לא הוגדר') %>
+                    </td>
+
+                    <td>
+                      <%= unit.tenant_name || '—' %>
+
+                      <% if (unit.tenant_business_name) { %>
+                        <div class="muted">
+                          <%= unit.tenant_business_name %>
+                        </div>
+                      <% } %>
+                    </td>
+
+                    <td>
+                      <%= rentalModelNames[unit.rental_model]
+                        || 'לא הוגדר' %>
+                    </td>
+
+                    <td>
+                      <% if (!unit.is_active) { %>
+                        <span class="pill">
+                          לא פעילה
+                        </span>
+                      <% } else if (unit.tenancy_id) { %>
+                        <span class="pill occupied">
+                          מושכרת
+                        </span>
+                      <% } else { %>
+                        <span class="pill vacant">
+                          פנויה
+                        </span>
+                      <% } %>
+                    </td>
+
+                  </tr>
+
+                <% }); %>
+
+              </tbody>
+            </table>
+          </div>
+
+        <% } %>
+
+      </section>
+
+    <% }); %>
+
+  </main>
+</body>
+</html>
