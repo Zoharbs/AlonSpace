@@ -1228,21 +1228,23 @@
           name="tenancy_id"
           id="tenancyId"
         >
-        <label class="full-width">
-          שוכר ראשי *
-          <select name="user_id" id="tenancyUserSelect" required>
-  <option value="">בחר דייר קיים</option>
+       <label class="full-width">
+  שוכר ראשי *
+  <select name="user_id" id="tenancyUserSelect" required>
+    <option value="">בחר דייר קיים</option>
 
-  <% tenants.forEach(tenant => { %>
-    <option
-      value="<%= tenant.id %>"
-      data-start-date="<%= tenant.rental_start_date ? new Date(tenant.rental_start_date).toISOString().slice(0, 10) : '' %>"
-      data-end-date="<%= tenant.rental_end_date ? new Date(tenant.rental_end_date).toISOString().slice(0, 10) : '' %>"
-    >
-            <% }); %>
-          </select>
-        </label>
-
+    <% tenants.forEach(tenant => { %>
+      <option
+        value="<%= tenant.id %>"
+        data-start-date="<%= tenant.rental_start_date ? new Date(tenant.rental_start_date).toISOString().slice(0, 10) : '' %>"
+        data-end-date="<%= tenant.rental_end_date ? new Date(tenant.rental_end_date).toISOString().slice(0, 10) : '' %>"
+      >
+        <%= tenant.display_name %>
+        <%= tenant.business_name ? ' — ' + tenant.business_name : '' %>
+      </option>
+    <% }); %>
+  </select>
+</label>
         <label class="full-width">
           מודל השכרה *
           <select
