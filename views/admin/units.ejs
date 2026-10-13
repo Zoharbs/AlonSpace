@@ -1210,16 +1210,15 @@
 
         <label class="full-width">
           שוכר ראשי *
-          <select name="user_id" required>
-            <option value="">בחר דייר קיים</option>
+          <select name="user_id" id="tenancyUserSelect" required>
+  <option value="">בחר דייר קיים</option>
 
-            <% tenants.forEach(tenant => { %>
-              <option value="<%= tenant.id %>">
-                <%= tenant.display_name %>
-                <% if (tenant.business_name) { %>
-                  — <%= tenant.business_name %>
-                <% } %>
-              </option>
+  <% tenants.forEach(tenant => { %>
+    <option
+      value="<%= tenant.id %>"
+      data-start-date="<%= tenant.rental_start_date ? new Date(tenant.rental_start_date).toISOString().slice(0, 10) : '' %>"
+      data-end-date="<%= tenant.rental_end_date ? new Date(tenant.rental_end_date).toISOString().slice(0, 10) : '' %>"
+    >
             <% }); %>
           </select>
         </label>
@@ -1248,18 +1247,20 @@
         <label>
           תחילת חוזה *
           <input
-            type="date"
-            name="start_date"
-            required
-          >
+  type="date"
+  name="start_date"
+  id="tenancyStartDate"
+  required
+>
         </label>
 
         <label>
           סיום חוזה
           <input
-            type="date"
-            name="end_date"
-          >
+  type="date"
+  name="end_date"
+  id="tenancyEndDate"
+>
         </label>
 
         <label class="full-width">
@@ -1429,6 +1430,33 @@
         });
 
       list.appendChild(row);
+    });
+  })();
+</script>
+<script>
+  (() => {
+    const userSelect =
+      document.getElementById('tenancyUserSelect');
+
+    const startInput =
+      document.getElementById('tenancyStartDate');
+
+    const endInput =
+      document.getElementById('tenancyEndDate');
+
+    if (!userSelect || !startInput || !endInput) {
+      return;
+    }
+
+    userSelect.addEventListener('change', () => {
+      const selectedOption =
+        userSelect.selectedOptions[0];
+
+      startInput.value =
+        selectedOption?.dataset.startDate || '';
+
+      endInput.value =
+        selectedOption?.dataset.endDate || '';
     });
   })();
 </script>
