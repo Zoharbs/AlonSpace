@@ -91,40 +91,85 @@ router.use(requireAdmin);
 // =====================================================
 
 router.post('/units/owners', async (req, res, next) => {
-  try {
-    const name = String(req.body.name || '').trim();
-    const phone = normalizeOptional(req.body.phone);
-    const email = normalizeOptional(req.body.email);
-    const notes = normalizeOptional(req.body.notes);
+  const name = String(req.body.name || '').trim();
+  const phone = normalizeOptional(req.body.phone);
+  const email = normalizeOptional(req.body.email);
+  const notes = normalizeOptional(req.body.notes);
 
-    if (!name || name.length > 200) {
-      return res.redirect(
-        '/admin/units?error=' +
-        encodeURIComponent('יש להזין שם בעלים תקין')
-      );
-    }
+  const rawUnitIds = req.body.unit_ids;
+  const unitIds = rawUnitIds == null
+    ? []
+    : Array.isArray(rawUnitIds)
+      ? rawUnitIds
+      : [rawUnitIds];
 
-    if (email && (
+  const redirectError = (message) => {
+    return res.redirect(
+      '/admin/units?error=' + encodeURIComponent(message)
+    );
+  };
+
+  if (!name || name.length > 200) {
+    return redirectError('יש להזין שם בעלים תקין');
+  }
+
+  if (
+    email &&
+    (
       email.length > 254 ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    )) {
-      return res.redirect(
-        '/admin/units?error=' +
-        encodeURIComponent('כתובת האימייל אינה תקינה')
+    )
+  ) {
+    return redirectError('כתובת האימייל אינה תקינה');
+  }
+
+  if (
+    (phone && phone.length > 50) ||
+    (notes && notes.length > 2000)
+  ) {
+    return redirectError('אחד השדות ארוך מדי');
+  }
+
+  if (
+    unitIds.length > 100 ||
+    unitIds.some(id => !/^[1-9]\d*$/.test(String(id))) ||
+    new Set(unitIds.map(String)).size !== unitIds.length
+  ) {
+    return redirectError('רשימת היחידות אינה תקינה');
+  }
+
+  let client;
+
+  try {
+    client = await db.pool.connect();
+
+    await client.query('BEGIN');
+
+    if (unitIds.length > 0) {
+      const availableResult = await client.query(
+        `
+          SELECT id
+          FROM rental_units
+          WHERE
+            id = ANY($1::bigint[])
+            AND ownership_type = 'external'
+            AND owner_id IS NULL
+            AND is_active = TRUE
+          FOR UPDATE
+        `,
+        [unitIds]
       );
+
+      if (availableResult.rows.length !== unitIds.length) {
+        await client.query('ROLLBACK');
+
+        return redirectError(
+          'אחת היחידות שנבחרו כבר משויכת לבעלים או אינה זמינה'
+        );
+      }
     }
 
-    if (
-      (phone && phone.length > 50) ||
-      (notes && notes.length > 2000)
-    ) {
-      return res.redirect(
-        '/admin/units?error=' +
-        encodeURIComponent('אחד השדות ארוך מדי')
-      );
-    }
-
-    await db.query(
+    const ownerResult = await client.query(
       `
         INSERT INTO unit_owners (
           name,
@@ -133,16 +178,44 @@ router.post('/units/owners', async (req, res, next) => {
           notes
         )
         VALUES ($1, $2, $3, $4)
+        RETURNING id
       `,
       [name, phone, email, notes]
     );
 
+    if (unitIds.length > 0) {
+      await client.query(
+        `
+          UPDATE rental_units
+          SET
+            owner_id = $1,
+            updated_at = NOW()
+          WHERE id = ANY($2::bigint[])
+        `,
+        [ownerResult.rows[0].id, unitIds]
+      );
+    }
+
+    await client.query('COMMIT');
+
     return res.redirect(
       '/admin/units?success=' +
-      encodeURIComponent('הבעלים נוסף בהצלחה')
+      encodeURIComponent('הבעלים והיחידות נשמרו בהצלחה')
     );
   } catch (error) {
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.error('Owner rollback failed:', rollbackError);
+      }
+    }
+
     return next(error);
+  } finally {
+    if (client) {
+      client.release();
+    }
   }
 });
 
@@ -548,6 +621,7 @@ router.get('/units', async (req, res, next) => {
         ru.floor,
         ru.unit_number,
         ru.ownership_type,
+        ru.owner_id,
         ru.is_active,
         ru.notes,
 

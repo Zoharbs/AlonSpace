@@ -451,6 +451,44 @@
     .unit-tenancy-open:hover {
       background: var(--stone);
     }
+  
+      .owner-unit-selection {
+      padding: 16px;
+      border: 1px solid var(--stone-dark);
+      border-radius: 12px;
+      background: var(--stone);
+    }
+
+    .owner-unit-selection > p {
+      margin: 6px 0 14px;
+      font-size: .9rem;
+    }
+
+    .owner-unit-options {
+      display: grid;
+      gap: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .owner-form .owner-unit-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--stone-dark);
+      border-radius: 9px;
+      background: var(--cream);
+      cursor: pointer;
+    }
+
+    .owner-form .owner-unit-option input {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin: 0;
+      accent-color: var(--ink);
+    }
   </style>
 </head>
 
@@ -579,6 +617,44 @@
               maxlength="2000"
             ></textarea>
           </label>
+
+          <div class="full-width owner-unit-selection">
+            <strong>שיוך יחידות לבעלים</strong>
+
+            <p class="muted">
+              ניתן לבחור יחידות קיימות שעדיין לא
+              שויכו לבעלים. אפשר גם להוסיף יחידות
+              לאחר יצירת הבעלים.
+            </p>
+
+            <div class="owner-unit-options">
+              <% const unassignedUnits = units.filter(unit =>
+                unit.ownership_type === 'external' &&
+                !unit.owner_id &&
+                unit.is_active
+              ); %>
+
+              <% if (unassignedUnits.length === 0) { %>
+                <p class="muted">
+                  אין כרגע יחידות פנויות לשיוך.
+                </p>
+              <% } else { %>
+                <% unassignedUnits.forEach(unit => { %>
+                  <label class="owner-unit-option">
+                    <input
+                      type="checkbox"
+                      name="unit_ids"
+                      value="<%= unit.id %>"
+                    >
+                    <span>
+                      קומה <%= unit.floor %> —
+                      משרד <%= unit.unit_number %>
+                    </span>
+                  </label>
+                <% }); %>
+              <% } %>
+            </div>
+          </div>
           <div class="unit-dialog-actions full-width">
             <button
               type="button"
