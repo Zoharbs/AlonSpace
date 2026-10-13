@@ -270,6 +270,66 @@ await query(`
     idx_meeting_bookings_created_by
   ON meeting_bookings(created_by_user_id);
 `);
+  // =====================================================
+  // AlonSpace - Unit Owners
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_owners (
+      id BIGSERIAL PRIMARY KEY,
+
+      name TEXT NOT NULL,
+      phone TEXT,
+      email TEXT,
+      notes TEXT,
+
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  // =====================================================
+  // AlonSpace - Rental Units
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS rental_units (
+      id BIGSERIAL PRIMARY KEY,
+
+      floor INTEGER NOT NULL
+        CHECK (floor IN (4, 6)),
+
+      unit_number TEXT NOT NULL,
+
+      ownership_type TEXT NOT NULL DEFAULT 'external'
+        CHECK (ownership_type IN ('external', 'alonspace')),
+
+      owner_id BIGINT
+        REFERENCES unit_owners(id)
+        ON DELETE RESTRICT,
+
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE (floor, unit_number)
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_rental_units_owner
+    ON rental_units(owner_id);
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS idx_rental_units_floor
+    ON rental_units(floor, unit_number);
+  `);
 
   await seedAdmin();
   await seedGallery();
