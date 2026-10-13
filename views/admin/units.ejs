@@ -848,6 +848,7 @@
                   <th>בעלים</th>
                   <th>שוכר ראשי</th>
                   <th>מודל השכרה</th>
+                  <th>דמי ניהול</th>
                   <th>מצב</th>
                 </tr>
               </thead>
@@ -907,6 +908,29 @@
                     </td>
 
                     <td>
+                      <% if (unit.ownership_type === 'external' && unit.is_active) { %>
+                        <strong>
+                          ₪<%= Number(unit.monthly_management_fee).toLocaleString('he-IL') %>
+                        </strong>
+
+                        <div style="margin-top:8px;">
+                          <button
+                            type="button"
+                            class="unit-tenancy-open management-fee-open"
+                            data-unit-id="<%= unit.id %>"
+                            data-unit-number="<%= unit.unit_number %>"
+                            data-unit-floor="<%= unit.floor %>"
+                            data-amount="<%= unit.monthly_management_fee %>"
+                          >
+                            עריכת דמי ניהול
+                          </button>
+                        </div>
+                      <% } else { %>
+                        —
+                      <% } %>
+                    </td>
+
+                    <td>
                       <% if (!unit.is_active) { %>
                         <span class="pill">
                           לא פעילה
@@ -935,6 +959,71 @@
       </section>
 
     <% }); %>
+        <dialog id="managementFeeDialog" class="unit-dialog">
+      <div class="unit-dialog-header">
+        <div>
+          <h3>דמי ניהול חודשיים</h3>
+          <p id="managementFeeUnitDescription"></p>
+        </div>
+
+        <button
+          type="button"
+          class="unit-dialog-close"
+          onclick="document.getElementById('managementFeeDialog').close()"
+          aria-label="סגירה"
+        >×</button>
+      </div>
+
+      <form
+        method="POST"
+        action="/admin/units/management-fee"
+        class="owner-form"
+      >
+        <input
+          type="hidden"
+          name="_csrf"
+          value="<%= csrfToken %>"
+        >
+
+        <input
+          type="hidden"
+          name="unit_id"
+          id="managementFeeUnitId"
+        >
+
+        <label class="full-width">
+          דמי ניהול חודשיים (₪)
+          <input
+            type="number"
+            name="monthly_amount"
+            id="managementFeeAmount"
+            min="0"
+            max="1000000"
+            step="0.01"
+            required
+          >
+        </label>
+
+        <p class="muted full-width">
+          הסכום שבעל היחידה חייב ל־AlonSpace בכל חודש,
+          גם אם המשרד פנוי.
+        </p>
+
+        <div class="unit-dialog-actions full-width">
+          <button
+            type="button"
+            class="unit-cancel-btn"
+            onclick="document.getElementById('managementFeeDialog').close()"
+          >
+            ביטול
+          </button>
+
+          <button type="submit">
+            שמירת דמי ניהול
+          </button>
+        </div>
+      </form>
+    </dialog>
     <dialog id="addTenancyDialog" class="unit-dialog">
 
       <div class="unit-dialog-header">
@@ -1106,6 +1195,37 @@
           modelSelect.value = ownershipType === 'alonspace'
             ? 'alonspace_owned'
             : 'managed';
+
+          dialog.showModal();
+        });
+      });
+  })();
+</script>
+<script>
+  (() => {
+    const dialog =
+      document.getElementById('managementFeeDialog');
+
+    const unitInput =
+      document.getElementById('managementFeeUnitId');
+
+    const amountInput =
+      document.getElementById('managementFeeAmount');
+
+    const description =
+      document.getElementById('managementFeeUnitDescription');
+
+    document.querySelectorAll('.management-fee-open')
+      .forEach(button => {
+        button.addEventListener('click', () => {
+          unitInput.value = button.dataset.unitId;
+          amountInput.value = button.dataset.amount;
+
+          description.textContent =
+            'משרד ' +
+            button.dataset.unitNumber +
+            ' · קומה ' +
+            button.dataset.unitFloor;
 
           dialog.showModal();
         });

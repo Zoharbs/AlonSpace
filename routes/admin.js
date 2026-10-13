@@ -455,6 +455,88 @@ router.post('/units/tenancies/create', async (req, res, next) => {
   }
 });
 // =====================================================
+// AlonSpace - Save Monthly Management Fee
+// =====================================================
+
+router.post('/units/management-fee', async (req, res, next) => {
+  try {
+    const unitId = String(req.body.unit_id || '').trim();
+    const amountText = String(
+      req.body.monthly_amount ?? ''
+    ).trim();
+
+    const amount = Number(amountText);
+
+    const redirectError = (message) => {
+      return res.redirect(
+        '/admin/units?error=' +
+        encodeURIComponent(message)
+      );
+    };
+
+    if (!/^[1-9]\d*$/.test(unitId)) {
+      return redirectError('יחידה לא תקינה');
+    }
+
+    if (
+      amountText === '' ||
+      !/^\d+(\.\d{1,2})?$/.test(amountText) ||
+      !Number.isFinite(amount) ||
+      amount < 0 ||
+      amount > 1000000
+    ) {
+      return redirectError(
+        'יש להזין דמי ניהול תקינים בשקלים'
+      );
+    }
+
+    const unitResult = await db.query(
+      `
+        SELECT id
+        FROM rental_units
+        WHERE
+          id = $1
+          AND ownership_type = 'external'
+          AND is_active = TRUE
+        LIMIT 1
+      `,
+      [unitId]
+    );
+
+    if (!unitResult.rows.length) {
+      return redirectError(
+        'ניתן להגדיר דמי ניהול רק ליחידה פעילה בבעלות חיצונית'
+      );
+    }
+
+    await db.query(
+      `
+        INSERT INTO unit_management_fee_rates (
+          unit_id,
+          monthly_amount,
+          effective_from
+        )
+        VALUES (
+          $1,
+          $2,
+          DATE_TRUNC('month', CURRENT_DATE)::date
+        )
+        ON CONFLICT (unit_id, effective_from)
+        DO UPDATE SET
+          monthly_amount = EXCLUDED.monthly_amount
+      `,
+      [unitId, amount]
+    );
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('דמי הניהול נשמרו בהצלחה')
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
+// =====================================================
 // AlonSpace - Units Management
 // =====================================================
 
@@ -471,6 +553,11 @@ router.get('/units', async (req, res, next) => {
 
         uo.name AS owner_name,
 
+        COALESCE(
+          fee.monthly_amount,
+          0
+        ) AS monthly_management_fee,
+
         ut.id AS tenancy_id,
         ut.rental_model,
         ut.start_date,
@@ -483,6 +570,17 @@ router.get('/units', async (req, res, next) => {
 
       LEFT JOIN unit_owners uo
         ON uo.id = ru.owner_id
+
+      LEFT JOIN LATERAL (
+        SELECT monthly_amount
+        FROM unit_management_fee_rates
+        WHERE
+          unit_id = ru.id
+          AND effective_from <=
+            DATE_TRUNC('month', CURRENT_DATE)::date
+        ORDER BY effective_from DESC, id DESC
+        LIMIT 1
+      ) fee ON TRUE
 
       LEFT JOIN LATERAL (
         SELECT
