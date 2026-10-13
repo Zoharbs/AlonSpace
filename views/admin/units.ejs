@@ -436,7 +436,8 @@
         flex-wrap: wrap;
       }
     }
-        .unit-tenancy-open {
+        .unit-tenancy-open,
+.management-fee-open {
       padding: 6px 11px;
       border: 1px solid var(--oak);
       border-radius: 8px;
@@ -448,7 +449,8 @@
       cursor: pointer;
     }
 
-    .unit-tenancy-open:hover {
+    .unit-tenancy-open:hover,
+.management-fee-open:hover {
       background: var(--stone);
     }
   
@@ -1082,7 +1084,7 @@
                         <div style="margin-top:8px;">
                           <button
                             type="button"
-                            class="unit-tenancy-open management-fee-open"
+                            class="management-fee-open"
                             data-unit-id="<%= unit.id %>"
                             data-unit-number="<%= unit.unit_number %>"
                             data-unit-floor="<%= unit.floor %>"
@@ -1358,7 +1360,12 @@
     ) {
       return;
     }
-
+    console.log('AlonSpace tenant options:',
+      Array.from(userSelect.options).map(option => ({
+        id: option.value,
+        name: option.textContent.trim()
+      }))
+    );
     document.querySelectorAll('.unit-tenancy-open')
       .forEach(button => {
         button.addEventListener('click', () => {
