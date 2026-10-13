@@ -96,12 +96,15 @@ router.post('/units/owners', async (req, res, next) => {
   const email = normalizeOptional(req.body.email);
   const notes = normalizeOptional(req.body.notes);
 
-  const rawUnitIds = req.body.unit_ids;
-  const unitIds = rawUnitIds == null
-    ? []
-    : Array.isArray(rawUnitIds)
-      ? rawUnitIds
-      : [rawUnitIds];
+  const asArray = (value) => {
+    if (value == null) return [];
+    return Array.isArray(value) ? value : [value];
+  };
+
+  const unitIds = asArray(req.body.unit_ids).map(String);
+
+  const floors = asArray(req.body.new_unit_floors);
+  const numbers = asArray(req.body.new_unit_numbers);
 
   const redirectError = (message) => {
     return res.redirect(
@@ -132,17 +135,55 @@ router.post('/units/owners', async (req, res, next) => {
 
   if (
     unitIds.length > 100 ||
-    unitIds.some(id => !/^[1-9]\d*$/.test(String(id))) ||
-    new Set(unitIds.map(String)).size !== unitIds.length
+    unitIds.some(id => !/^[1-9]\d*$/.test(id)) ||
+    new Set(unitIds).size !== unitIds.length
   ) {
-    return redirectError('רשימת היחידות אינה תקינה');
+    return redirectError('רשימת היחידות הקיימות אינה תקינה');
+  }
+
+  if (
+    floors.length !== numbers.length ||
+    floors.length > 100
+  ) {
+    return redirectError('רשימת היחידות החדשות אינה תקינה');
+  }
+
+  const newUnits = [];
+
+  for (let i = 0; i < floors.length; i++) {
+    const floor = Number(floors[i]);
+    const unitNumber = String(numbers[i] || '').trim();
+
+    if (
+      ![4, 6].includes(floor) ||
+      !unitNumber ||
+      unitNumber.length > 30
+    ) {
+      return redirectError(
+        'יש להזין קומה ומספר תקינים לכל יחידה'
+      );
+    }
+
+    newUnits.push({
+      floor,
+      unitNumber
+    });
+  }
+
+  const uniqueUnits = new Set(
+    newUnits.map(unit => `${unit.floor}:${unit.unitNumber}`)
+  );
+
+  if (uniqueUnits.size !== newUnits.length) {
+    return redirectError(
+      'אותה יחידה הוזנה יותר מפעם אחת'
+    );
   }
 
   let client;
 
   try {
     client = await db.pool.connect();
-
     await client.query('BEGIN');
 
     if (unitIds.length > 0) {
@@ -164,7 +205,7 @@ router.post('/units/owners', async (req, res, next) => {
         await client.query('ROLLBACK');
 
         return redirectError(
-          'אחת היחידות שנבחרו כבר משויכת לבעלים או אינה זמינה'
+          'אחת היחידות הקיימות כבר משויכת לבעלים או אינה זמינה'
         );
       }
     }
@@ -183,6 +224,8 @@ router.post('/units/owners', async (req, res, next) => {
       [name, phone, email, notes]
     );
 
+    const ownerId = ownerResult.rows[0].id;
+
     if (unitIds.length > 0) {
       await client.query(
         `
@@ -192,7 +235,22 @@ router.post('/units/owners', async (req, res, next) => {
             updated_at = NOW()
           WHERE id = ANY($2::bigint[])
         `,
-        [ownerResult.rows[0].id, unitIds]
+        [ownerId, unitIds]
+      );
+    }
+
+    for (const unit of newUnits) {
+      await client.query(
+        `
+          INSERT INTO rental_units (
+            floor,
+            unit_number,
+            ownership_type,
+            owner_id
+          )
+          VALUES ($1, $2, 'external', $3)
+        `,
+        [unit.floor, unit.unitNumber, ownerId]
       );
     }
 
@@ -200,7 +258,9 @@ router.post('/units/owners', async (req, res, next) => {
 
     return res.redirect(
       '/admin/units?success=' +
-      encodeURIComponent('הבעלים והיחידות נשמרו בהצלחה')
+      encodeURIComponent(
+        'בעל היחידות והמשרדים נשמרו בהצלחה'
+      )
     );
   } catch (error) {
     if (client) {
@@ -209,6 +269,12 @@ router.post('/units/owners', async (req, res, next) => {
       } catch (rollbackError) {
         console.error('Owner rollback failed:', rollbackError);
       }
+    }
+
+    if (error.code === '23505') {
+      return redirectError(
+        'אחד המשרדים שהוזנו כבר קיים בקומה שנבחרה'
+      );
     }
 
     return next(error);

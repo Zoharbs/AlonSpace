@@ -489,6 +489,61 @@
       margin: 0;
       accent-color: var(--ink);
     }
+      .owner-new-units {
+      padding: 18px;
+      border: 1px solid var(--stone-dark);
+      border-radius: 12px;
+      background: var(--stone);
+    }
+
+    .owner-new-units h4 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+    }
+
+    .owner-new-units > p {
+      margin: 0 0 16px;
+    }
+
+    #ownerNewUnitsList {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .owner-new-unit-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+      padding: 12px;
+      background: var(--cream);
+      border: 1px solid var(--stone-dark);
+      border-radius: 10px;
+    }
+
+    .unit-dialog .owner-form .unit-add-row-btn {
+      background: transparent;
+      color: var(--ink);
+      border: 1px dashed var(--ink);
+      width: 100%;
+    }
+
+    .unit-dialog .owner-form .unit-remove-row-btn {
+      background: #f1d4d4;
+      color: #9c3b3b;
+      padding: 10px 13px;
+    }
+
+    @media (max-width: 600px) {
+      .owner-new-unit-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .owner-new-unit-row .unit-remove-row-btn {
+        grid-column: 1 / -1;
+      }
+    }
   </style>
 </head>
 
@@ -806,7 +861,24 @@
               placeholder="הערות על היחידה (לא חובה)"
             ></textarea>
           </label>
+          <div class="full-width owner-new-units">
+            <h4>יחידות חדשות בבעלות</h4>
 
+            <p class="muted">
+              הוסף את המשרדים של בעל היחידות.
+              ניתן להוסיף כמה משרדים בקומות 4 ו־6.
+            </p>
+
+            <div id="ownerNewUnitsList"></div>
+
+            <button
+              type="button"
+              id="addOwnerUnitRow"
+              class="unit-add-row-btn"
+            >
+              + הוספת יחידה
+            </button>
+          </div>
           <div class="unit-dialog-actions full-width">
             <button
               type="button"
@@ -1306,6 +1378,55 @@
           dialog.showModal();
         });
       });
+  })();
+</script>
+<script>
+  (() => {
+    const list = document.getElementById('ownerNewUnitsList');
+    const addButton = document.getElementById('addOwnerUnitRow');
+
+    if (!list || !addButton) return;
+
+    addButton.addEventListener('click', () => {
+      const row = document.createElement('div');
+      row.className = 'owner-new-unit-row';
+
+      row.innerHTML = `
+        <label>
+          קומה *
+          <select name="new_unit_floors" required>
+            <option value="">בחר קומה</option>
+            <option value="4">קומה 4</option>
+            <option value="6">קומה 6</option>
+          </select>
+        </label>
+
+        <label>
+          מספר משרד *
+          <input
+            type="text"
+            name="new_unit_numbers"
+            maxlength="30"
+            placeholder="לדוגמה: 12"
+            required
+          >
+        </label>
+
+        <button
+          type="button"
+          class="unit-remove-row-btn"
+        >
+          הסרה
+        </button>
+      `;
+
+      row.querySelector('.unit-remove-row-btn')
+        .addEventListener('click', () => {
+          row.remove();
+        });
+
+      list.appendChild(row);
+    });
   })();
 </script>
 </body>
