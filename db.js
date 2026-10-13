@@ -413,6 +413,41 @@ await query(`
     ON unit_tenancy_users(user_id);
   `);
 
+  // =====================================================
+  // AlonSpace - Unit Management Fee Rates
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_management_fee_rates (
+      id BIGSERIAL PRIMARY KEY,
+
+      unit_id BIGINT NOT NULL
+        REFERENCES rental_units(id)
+        ON DELETE RESTRICT,
+
+      monthly_amount NUMERIC(12, 2) NOT NULL
+        CHECK (monthly_amount >= 0),
+
+      effective_from DATE NOT NULL,
+
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE (unit_id, effective_from)
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_management_fee_rates_lookup
+    ON unit_management_fee_rates (
+      unit_id,
+      effective_from DESC
+    );
+  `);
+
   await seedAdmin();
   await seedGallery();
   await seedTestimonials();
