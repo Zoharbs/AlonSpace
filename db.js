@@ -448,6 +448,44 @@ await query(`
     );
   `);
 
+  // =====================================================
+  // AlonSpace - Unit Rent Rates
+  // =====================================================
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS unit_rent_rates (
+      id BIGSERIAL PRIMARY KEY,
+
+      tenancy_id BIGINT NOT NULL
+        REFERENCES unit_tenancies(id)
+        ON DELETE RESTRICT,
+
+      monthly_rent NUMERIC(12, 2) NOT NULL
+        CHECK (monthly_rent >= 0),
+
+      monthly_owner_payout NUMERIC(12, 2) NOT NULL DEFAULT 0
+        CHECK (monthly_owner_payout >= 0),
+
+      effective_from DATE NOT NULL,
+
+      notes TEXT,
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE (tenancy_id, effective_from)
+    );
+  `);
+
+  await query(`
+    CREATE INDEX IF NOT EXISTS
+      idx_unit_rent_rates_lookup
+    ON unit_rent_rates (
+      tenancy_id,
+      effective_from DESC
+    );
+  `);
+
   await seedAdmin();
   await seedGallery();
   await seedTestimonials();
