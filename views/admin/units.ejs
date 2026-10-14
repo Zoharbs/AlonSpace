@@ -589,6 +589,53 @@
     .floor-section tbody tr:hover {
       background: rgba(120, 105, 170, 0.045);
     }
+    /* Financial summary per floor */
+
+.floor-finance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 18px 24px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--stone-dark);
+}
+
+.floor-finance-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px;
+  background: var(--stone);
+  border: 1px solid var(--stone-dark);
+  border-radius: 12px;
+}
+
+.floor-finance-item span {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.floor-finance-item strong {
+  color: var(--ink);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.floor-finance-warning {
+  margin: 0;
+  padding: 12px 24px;
+  color: #9c3b3b;
+  background: #fff1ed;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 700px) {
+  .floor-finance-summary {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 10px;
+  }
+}
   </style>
 </head>
 
@@ -1039,9 +1086,30 @@
                 </section>
                 <% [4, 6].forEach(floor=> { %>
 
-                  <% const floorUnits=units.filter( unit=> Number(unit.floor) === floor
-                    );
-                    %>
+<%
+  const floorUnits = units.filter(
+    unit => Number(unit.floor) === floor
+  );
+
+  const floorFinance = floorUnits.reduce((totals, unit) => {
+    const finance = unitFinance(unit);
+
+    totals.income += finance.income;
+    totals.payout += finance.payout;
+    totals.profit += finance.profit;
+
+    if (finance.missing) {
+      totals.missing += 1;
+    }
+
+    return totals;
+  }, {
+    income: 0,
+    payout: 0,
+    profit: 0,
+    missing: 0
+  });
+%>
 
                     <section class="floor-section">
 
@@ -1053,8 +1121,30 @@
                         </span>
                       </div>
 
-                      <% if (floorUnits.length===0) { %>
+<div class="floor-finance-summary">
+  <div class="floor-finance-item">
+    <span>הכנסה צפויה</span>
+    <strong><%= money(floorFinance.income) %></strong>
+  </div>
 
+  <div class="floor-finance-item">
+    <span>תשלום לבעלים</span>
+    <strong><%= money(floorFinance.payout) %></strong>
+  </div>
+
+  <div class="floor-finance-item">
+    <span>יתרה לפני הוצאות</span>
+    <strong><%= money(floorFinance.profit) %></strong>
+  </div>
+</div>
+
+<% if (floorFinance.missing > 0) { %>
+  <p class="floor-finance-warning">
+    חסרות הגדרות כספיות עבור
+    <%= floorFinance.missing %>
+    יחידות בקומה זו. הסכומים חלקיים.
+  </p>
+<% } %>
                         <div class="empty">
                           עדיין לא הוגדרו יחידות בקומה זו.
                         </div>
