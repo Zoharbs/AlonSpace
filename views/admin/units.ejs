@@ -1781,7 +1781,7 @@
                                         dateText=value=>
                                         value ? new Date(value).toISOString().slice(0, 10) : null;
 
-                                        const currentOfficeTenants = tenants.filter(tenant => {
+                                        let currentOfficeTenants = tenants.filter(tenant => {
                                         if (Number(tenant.floor) !== Number(unit.floor)) {
                                         return false;
                                         }
@@ -1805,6 +1805,14 @@
 
                                         return (!startDate || startDate <= today) && (!endDate || endDate>= today);
                                           });
+
+                                          if (unit.tenant_override_active) {
+                                          const selectedIds = (unit.manual_tenant_ids || []).map(String);
+
+                                          currentOfficeTenants = tenants.filter(tenant =>
+                                          selectedIds.includes(String(tenant.id))
+                                          );
+                                          }
                                           %>
 
                                           <tr>
@@ -1825,6 +1833,14 @@
 
                                                 <div class="unit-actions">
 
+                                                  <button type="button" class="unit-tenancy-open tenant-assignment-open"
+                                                    data-unit-id="<%= unit.id %>"
+                                                    data-unit-label="משרד <%= unit.unit_number %> · קומה <%= unit.floor %>"
+                                                    data-selected-ids="<%= currentOfficeTenants.map(tenant => tenant.id).join(',') %>"
+                                                    data-override-active="<%= unit.tenant_override_active ? '1' : '0' %>">
+                                                    עריכת דיירים
+                                                  </button>
+
                                                   <button type="button" class="unit-tenancy-open"
                                                     data-unit-id="<%= unit.id %>"
                                                     data-unit-number="<%= unit.unit_number %>"
@@ -1837,7 +1853,7 @@
                                                     data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
                                                     data-notes="<%= unit.tenancy_notes || '' %>">
 
-                                                    <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
+                                                    <%= unit.tenancy_id ? 'עריכת חוזה' : '+ הוסף חוזה' %>
 
                                                   </button>
 
@@ -1877,29 +1893,29 @@
 
                                             <td>
 
-                                              <%
-  const officeCompanyNames = [...new Set(
-    currentOfficeTenants
-      .map(tenant => String(
-        tenant.business_name || tenant.display_name || ''
-      ).trim())
-      .filter(Boolean)
-  )];
-%>
+                                              <% const officeCompanyNames=[...new Set( currentOfficeTenants
+                                                .map(tenant=> String(
+                                                tenant.business_name || tenant.display_name || ''
+                                                ).trim())
+                                                .filter(Boolean)
+                                                )];
+                                                %>
 
-<% if (officeCompanyNames.length) { %>
+                                                <% if (officeCompanyNames.length) { %>
 
-  <% officeCompanyNames.forEach(companyName => { %>
-    <div style="margin-bottom: 8px;">
-      <strong><%= companyName %></strong>
-    </div>
-  <% }) %>
+                                                  <% officeCompanyNames.forEach(companyName=> { %>
+                                                    <div style="margin-bottom: 8px;">
+                                                      <strong>
+                                                        <%= companyName %>
+                                                      </strong>
+                                                    </div>
+                                                    <% }) %>
 
-<% } else { %>
+                                                      <% } else { %>
 
-  <span class="muted">לא נמצאו דיירים באתר</span>
+                                                        <span class="muted">לא נמצאו דיירים באתר</span>
 
-<% } %>
+                                                        <% } %>
                                             </td>
                                             <td>
 
@@ -2006,7 +2022,87 @@
                     </section>
 
                     <% }); %>
+                      <dialog id="tenantAssignmentDialog" class="unit-dialog">
+                        <div class="unit-dialog-header">
+                          <div>
+                            <h3>עריכת דיירים</h3>
+                            <p id="tenantAssignmentDescription"></p>
+                          </div>
 
+                          <button type="button" class="unit-dialog-close"
+                            onclick="document.getElementById('tenantAssignmentDialog').close()">
+                            ×
+                          </button>
+                        </div>
+
+                        <form method="POST" action="/admin/units/tenant-assignment" class="owner-form">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <input type="hidden" name="unit_id" id="tenantAssignmentUnitId">
+                          <input type="hidden" name="restore_auto" id="tenantRestoreAuto" value="0">
+
+                          <div class="full-width">
+                            <strong>בחר את הדיירים המשויכים למשרד</strong>
+                            <p class="muted">השינוי משפיע רק על עמוד יחידות וכספים, ולא על פרטי המשתמשים באתר.</p>
+                          </div>
+
+                          <div class="full-width owner-unit-options" style="max-height:320px;overflow-y:auto;">
+                            <% tenants.forEach(tenant=> { %>
+                              <label class="owner-unit-option">
+                                <input type="checkbox" name="user_ids" value="<%= tenant.id %>"
+                                  class="tenant-assignment-checkbox">
+                                <span>
+                                  <%= tenant.business_name || tenant.display_name %>
+                                    <% if (tenant.business_name) { %>
+                                      — <%= tenant.display_name %>
+                                        <% } %>
+                                </span>
+                              </label>
+                              <% }); %>
+                          </div>
+
+                          <div class="unit-dialog-actions full-width">
+                            <button type="button" class="unit-cancel-btn" id="restoreAutomaticTenants">
+                              חזרה לשיוך אוטומטי
+                            </button>
+                            <button type="submit">שמירת שיוך</button>
+                          </div>
+                        </form>
+                      </dialog>
+
+                      <script>
+                        (() => {
+                          const dialog = document.getElementById('tenantAssignmentDialog');
+                          const unitInput = document.getElementById('tenantAssignmentUnitId');
+                          const description = document.getElementById('tenantAssignmentDescription');
+                          const restoreInput = document.getElementById('tenantRestoreAuto');
+                          const checkboxes = Array.from(
+                            document.querySelectorAll('.tenant-assignment-checkbox')
+                          );
+
+                          document.querySelectorAll('.tenant-assignment-open').forEach(button => {
+                            button.addEventListener('click', () => {
+                              unitInput.value = button.dataset.unitId;
+                              description.textContent = button.dataset.unitLabel;
+                              restoreInput.value = '0';
+
+                              const selected = new Set(
+                                (button.dataset.selectedIds || '').split(',').filter(Boolean)
+                              );
+
+                              checkboxes.forEach(checkbox => {
+                                checkbox.checked = selected.has(checkbox.value);
+                              });
+
+                              dialog.showModal();
+                            });
+                          });
+
+                          document.getElementById('restoreAutomaticTenants').addEventListener('click', () => {
+                            restoreInput.value = '1';
+                            dialog.querySelector('form').requestSubmit();
+                          });
+                        })();
+                      </script>
                       <dialog id="rentSettingsDialog" class="unit-dialog">
 
                         <div class="unit-dialog-header">

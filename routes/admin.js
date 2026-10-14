@@ -1141,6 +1141,90 @@ router.post('/units/rent-settings', async (req, res, next) => {
 });
 
 // =====================================================
+// AlonSpace - Update Unit Tenant Display Assignment
+// =====================================================
+
+router.post('/units/tenant-assignment', async (req, res, next) => {
+  try {
+    const unitId = String(req.body.unit_id || '').trim();
+
+    const userIds = [
+      ...new Set(
+        (Array.isArray(req.body.user_ids)
+          ? req.body.user_ids
+          : req.body.user_ids
+            ? [req.body.user_ids]
+            : []
+        ).map(String)
+      )
+    ];
+
+    const redirectError = message =>
+      res.redirect('/admin/units?error=' + encodeURIComponent(message));
+
+    if (!/^[1-9]\d*$/.test(unitId)) {
+      return redirectError('מזהה יחידה אינו תקין');
+    }
+
+    if (
+      userIds.length > 100 ||
+      userIds.some(id => !/^[1-9]\d*$/.test(id))
+    ) {
+      return redirectError('רשימת הדיירים אינה תקינה');
+    }
+
+    const unitResult = await db.query(
+      `SELECT id FROM rental_units
+       WHERE id = $1 AND is_active = TRUE`,
+      [unitId]
+    );
+
+    if (!unitResult.rows.length) {
+      return redirectError('היחידה לא נמצאה');
+    }
+
+    if (req.body.restore_auto === '1') {
+      await db.query(
+        'DELETE FROM unit_tenant_overrides WHERE unit_id = $1',
+        [unitId]
+      );
+    } else {
+      if (userIds.length) {
+        const usersResult = await db.query(
+          `SELECT id FROM users
+           WHERE id = ANY($1::bigint[])
+             AND role = 'tenant'
+             AND is_active = TRUE`,
+          [userIds]
+        );
+
+        if (usersResult.rows.length !== userIds.length) {
+          return redirectError('אחד הדיירים שנבחרו אינו פעיל או אינו קיים');
+        }
+      }
+
+      await db.query(
+        `INSERT INTO unit_tenant_overrides
+           (unit_id, user_ids, updated_at)
+         VALUES ($1, $2::bigint[], NOW())
+         ON CONFLICT (unit_id)
+         DO UPDATE SET
+           user_ids = EXCLUDED.user_ids,
+           updated_at = NOW()`,
+        [unitId, userIds]
+      );
+    }
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('שיוך הדיירים עודכן בהצלחה')
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
+
+// =====================================================
 // AlonSpace - Units Management
 // =====================================================
 
