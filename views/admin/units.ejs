@@ -1323,6 +1323,28 @@
       background: #9c3b3b;
       color: white;
     }
+    .owner-list-details {
+  margin-top: 22px;
+  border: 1px solid var(--stone-dark);
+  border-radius: 12px;
+  background: var(--stone);
+  overflow: hidden;
+}
+
+.owner-list-details summary {
+  cursor: pointer;
+  padding: 16px 20px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.owner-list-details[open] {
+  padding-bottom: 14px;
+}
+
+.owner-list-details .table-wrap {
+  margin: 0 14px;
+}
   </style>
 
 </head>
@@ -2323,14 +2345,9 @@
                               </div>
 
 
-
-                              <% } %>
-
-
-
-                    </section>
-
-
+<% } %>
+</details>
+</section>
 
                     <% }); %>
 
@@ -2666,15 +2683,10 @@
                         </p>
 
 
-
-                        <details class="owner-create-details">
-                          <summary>הוספת בעל יחידה חדש</summary>
-                          <button type="button" class="unit-add-btn"
-                            onclick="document.getElementById('addOwnerDialog').showModal()">
-                            + פתיחת טופס הוספת בעלים
-                          </button>
-                        </details>
-
+                        <button type="button" class="unit-add-btn"
+                          onclick="document.getElementById('addOwnerDialog').showModal()">
+                          + הוספת בעלים חדש
+                        </button>
 
 
                         <dialog id="addOwnerDialog" class="unit-dialog">
@@ -2866,143 +2878,148 @@
                         </dialog>
 
 
+                        <details class="owner-list-details">
+                          <summary>רשימת בעלי יחידות (<%= owners.length %>)</summary>
 
-                        <% if (owners.length> 0) { %>
+                          <% if (owners.length> 0) { %>
 
-                          <div style="margin-top:24px;" class="table-wrap">
+                            <div style="margin-top:24px;" class="table-wrap">
 
-                            <table>
+                              <table>
 
-                              <thead>
-
-                                <tr>
-
-                                  <th>שם הבעלים</th>
-
-                                  <th>טלפון</th>
-
-                                  <th>אימייל</th>
-
-                                  <th>הערות</th>
-                                  <th>יחידות משויכות</th>
-                                  <th>פעולות</th>
-
-                                </tr>
-
-                              </thead>
-
-
-
-                              <tbody>
-
-                                <% owners.forEach(owner=> { %>
+                                <thead>
 
                                   <tr>
 
-                                    <td><strong>
+                                    <th>שם הבעלים</th>
 
-                                        <%= owner.name %>
+                                    <th>טלפון</th>
 
-                                      </strong></td>
+                                    <th>אימייל</th>
 
-                                    <td>
-
-                                      <%= owner.phone || '—' %>
-
-                                    </td>
-
-                                    <td>
-
-                                      <%= owner.email || '—' %>
-
-                                    </td>
-
-                                    <td>
-
-                                      <%= owner.notes || '—' %>
-
-                                    </td>
-                                    <% const ownerUnits=units.filter(unit=> String(unit.owner_id || '') ===
-                                      String(owner.id)); %>
-                                      <td>
-                                        <%= ownerUnits.length ? ownerUnits.map(unit=> 'קומה ' + unit.floor + ' / ' +
-                                          unit.unit_number).join(', ') : '—' %>
-                                      </td>
-                                      <td>
-                                        <div class="owner-row-actions">
-                                          <button type="button" class="owner-edit-open" data-id="<%= owner.id %>"
-                                            data-name="<%= owner.name %>" data-phone="<%= owner.phone || '' %>"
-                                            data-email="<%= owner.email || '' %>"
-                                            data-notes="<%= owner.notes || '' %>">עריכה</button>
-                                          <button type="button" class="owner-delete-open" data-id="<%= owner.id %>"
-                                            data-name="<%= owner.name %>" <% if (ownerUnits.length> 0) { %>disabled
-                                            title="לא ניתן למחוק בעלים עם יחידות משויכות"<% } %>>מחיקה</button>
-                                        </div>
-                                      </td>
+                                    <th>הערות</th>
+                                    <th>יחידות משויכות</th>
+                                    <th>פעולות</th>
 
                                   </tr>
 
-                                  <% }); %>
+                                </thead>
 
-                              </tbody>
 
-                            </table>
 
-                          </div>
+                                <tbody>
 
-                          <% } %>
+                                  <% owners.forEach(owner=> { %>
 
-                            <dialog id="editOwnerDialog" class="unit-dialog">
-                              <div class="unit-dialog-header">
-                                <div>
-                                  <h3>עריכת בעל יחידה</h3>
-                                  <p>עדכון פרטי קשר והערות</p>
+                                    <tr>
+
+                                      <td><strong>
+
+                                          <%= owner.name %>
+
+                                        </strong></td>
+
+                                      <td>
+
+                                        <%= owner.phone || '—' %>
+
+                                      </td>
+
+                                      <td>
+
+                                        <%= owner.email || '—' %>
+
+                                      </td>
+
+                                      <td>
+
+                                        <%= owner.notes || '—' %>
+
+                                      </td>
+                                      <% const ownerUnits=units.filter(unit=> String(unit.owner_id || '') ===
+                                        String(owner.id)); %>
+                                        <td>
+                                          <%= ownerUnits.length ? ownerUnits.map(unit=> 'קומה ' + unit.floor + ' / ' +
+                                            unit.unit_number).join(', ') : '—' %>
+                                        </td>
+                                        <td>
+                                          <div class="owner-row-actions">
+                                            <button type="button" class="owner-edit-open" data-id="<%= owner.id %>"
+                                              data-name="<%= owner.name %>" data-phone="<%= owner.phone || '' %>"
+                                              data-email="<%= owner.email || '' %>"
+                                              data-notes="<%= owner.notes || '' %>">עריכה</button>
+                                            <button type="button" class="owner-delete-open" data-id="<%= owner.id %>"
+                                              data-name="<%= owner.name %>" <% if (ownerUnits.length> 0) { %>disabled
+                                              title="לא ניתן למחוק בעלים עם יחידות משויכות"<% } %>>מחיקה</button>
+                                          </div>
+                                        </td>
+
+                                    </tr>
+
+                                    <% }); %>
+
+                                </tbody>
+
+                              </table>
+
+                            </div>
+
+                            <% } %>
+
+                              <dialog id="editOwnerDialog" class="unit-dialog">
+                                <div class="unit-dialog-header">
+                                  <div>
+                                    <h3>עריכת בעל יחידה</h3>
+                                    <p>עדכון פרטי קשר והערות</p>
+                                  </div>
+                                  <button type="button" class="unit-dialog-close"
+                                    onclick="document.getElementById('editOwnerDialog').close()"
+                                    aria-label="סגירה">×</button>
                                 </div>
-                                <button type="button" class="unit-dialog-close"
-                                  onclick="document.getElementById('editOwnerDialog').close()"
-                                  aria-label="סגירה">×</button>
-                              </div>
-                              <form id="editOwnerForm" method="POST" class="owner-form">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <label>שם הבעלים * <input name="name" id="editOwnerName" maxlength="200"
-                                    required></label>
-                                <label>טלפון <input name="phone" id="editOwnerPhone" type="tel" maxlength="50"></label>
-                                <label>אימייל <input name="email" id="editOwnerEmail" type="email"
-                                    maxlength="254"></label>
-                                <label class="full-width">הערות <textarea name="notes" id="editOwnerNotes" rows="3"
-                                    maxlength="2000"></textarea></label>
-                                <div class="unit-dialog-actions full-width">
-                                  <button type="button" class="unit-cancel-btn"
-                                    onclick="document.getElementById('editOwnerDialog').close()">ביטול</button>
-                                  <button type="submit">שמירת שינויים</button>
+                                <form id="editOwnerForm" method="POST" class="owner-form">
+                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                  <label>שם הבעלים * <input name="name" id="editOwnerName" maxlength="200"
+                                      required></label>
+                                  <label>טלפון <input name="phone" id="editOwnerPhone" type="tel"
+                                      maxlength="50"></label>
+                                  <label>אימייל <input name="email" id="editOwnerEmail" type="email"
+                                      maxlength="254"></label>
+                                  <label class="full-width">הערות <textarea name="notes" id="editOwnerNotes" rows="3"
+                                      maxlength="2000"></textarea></label>
+                                  <div class="unit-dialog-actions full-width">
+                                    <button type="button" class="unit-cancel-btn"
+                                      onclick="document.getElementById('editOwnerDialog').close()">ביטול</button>
+                                    <button type="submit">שמירת שינויים</button>
+                                  </div>
+                                </form>
+                              </dialog>
+                              <dialog id="deleteOwnerDialog" class="unit-dialog">
+                                <div class="unit-dialog-header">
+                                  <div>
+                                    <h3>מחיקת בעל יחידה</h3>
+                                    <p>פעולה בלתי הפיכה</p>
+                                  </div>
+                                  <button type="button" class="unit-dialog-close"
+                                    onclick="document.getElementById('deleteOwnerDialog').close()"
+                                    aria-label="סגירה">×</button>
                                 </div>
-                              </form>
-                            </dialog>
-                            <dialog id="deleteOwnerDialog" class="unit-dialog">
-                              <div class="unit-dialog-header">
-                                <div>
-                                  <h3>מחיקת בעל יחידה</h3>
-                                  <p>פעולה בלתי הפיכה</p>
-                                </div>
-                                <button type="button" class="unit-dialog-close"
-                                  onclick="document.getElementById('deleteOwnerDialog').close()"
-                                  aria-label="סגירה">×</button>
-                              </div>
-                              <p>האם למחוק את <strong id="deleteOwnerName"></strong>? ניתן למחוק רק בעלים שאין לו יחידות
-                                או רשומות היסטוריות תלויות.</p>
-                              <form id="deleteOwnerForm" method="POST" class="owner-form">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <div class="unit-dialog-actions full-width">
-                                  <button type="button" class="unit-cancel-btn"
-                                    onclick="document.getElementById('deleteOwnerDialog').close()">ביטול</button>
-                                  <button type="submit" class="owner-danger-btn">אישור מחיקה</button>
-                                </div>
-                              </form>
-                            </dialog>
+                                <p>האם למחוק את <strong id="deleteOwnerName"></strong>? ניתן למחוק רק בעלים שאין לו
+                                  יחידות
+                                  או רשומות היסטוריות תלויות.</p>
+                                <form id="deleteOwnerForm" method="POST" class="owner-form">
+                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                  <div class="unit-dialog-actions full-width">
+                                    <button type="button" class="unit-cancel-btn"
+                                      onclick="document.getElementById('deleteOwnerDialog').close()">ביטול</button>
+                                    <button type="submit" class="owner-danger-btn">אישור מחיקה</button>
+                                  </div>
+                                </form>
+                              </dialog>
                       </section>
 
 
   </main>
+
   <script>
     (() => {
       const editDialog = document.getElementById('editOwnerDialog');
@@ -3026,11 +3043,6 @@
       });
     })();
   </script>
-
-
-
-
-
 
   <script>
 
@@ -3077,10 +3089,6 @@
 
 
   </script>
-
-
-
-
 
   <script>
 
@@ -3248,10 +3256,6 @@
 
   </script>
 
-
-
-
-
   <script>
 
     (() => {
@@ -3313,10 +3317,6 @@
     })();
 
   </script>
-
-
-
-
 
   <script>
 
@@ -3416,10 +3416,6 @@
 
   </script>
 
-
-
-
-
   <script>
 
     (() => {
@@ -3473,10 +3469,6 @@
     })();
 
   </script>
-
-
-
-
 
   <script>
 
@@ -3538,12 +3530,5 @@
 
   </script>
 
-
-
-
-
 </body>
-
-
-
 </html>
