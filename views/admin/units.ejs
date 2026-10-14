@@ -1042,7 +1042,7 @@
                             data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
                             data-notes="<%= unit.tenancy_notes || '' %>"
                           >
-                            <% if (unit.tenancy_id) { %>
+                            <% if (unit.tenancy_id && unit.rental_model !== 'direct_owner') { %>
   <button
     type="button"
     class="management-fee-open rent-settings-open"
