@@ -107,6 +107,7 @@ router.get('/', async (req, res, next) => {
           rental_start_date,
           rental_end_date,
           monthly_meeting_hours,
+          meeting_access_both_floors,
           must_change_password
         FROM users
         WHERE
@@ -254,6 +255,7 @@ created_at,
             mb.end_time,
             mb.note,
             mb.created_at,
+            mr.floor AS meeting_floor,
             u.display_name,
             u.business_name,
             u.office_number,
@@ -267,14 +269,19 @@ created_at,
 
           FROM meeting_bookings mb
 
+          JOIN meeting_rooms mr
+            ON mr.id = mb.meeting_room_id
+
           JOIN users u
             ON u.id = mb.user_id
 
           WHERE
-            mb.meeting_room_id = (
-              SELECT id
-              FROM meeting_rooms
-              WHERE floor = $2
+            (
+              mr.floor = $2
+              OR (
+                $3::BOOLEAN = TRUE
+                AND mr.floor IN (4, 6)
+              )
             )
 
           ORDER BY
@@ -285,7 +292,8 @@ created_at,
         `,
         [
           user.id,
-          user.floor
+          user.floor,
+          user.meeting_access_both_floors
         ]
       );
 
@@ -1044,7 +1052,8 @@ router.post('/meeting-bookings/create',
           SELECT
             id,
             floor,
-            monthly_meeting_hours
+            monthly_meeting_hours,
+            meeting_access_both_floors
           FROM users
           WHERE
             id = $1
@@ -1060,7 +1069,23 @@ router.post('/meeting-bookings/create',
       if (!user) {
         return res.redirect('/login');
       }
+const requestedFloor = Number(
+  req.body.meeting_floor || user.floor
+);
 
+const allowedFloors = user.meeting_access_both_floors
+  ? [4, 6]
+  : [Number(user.floor)];
+
+if (!allowedFloors.includes(requestedFloor)) {
+  return res.redirect(
+    dashboardRedirect(
+      'error',
+      'אין לך הרשאה להזמין חדר ישיבות בקומה זו',
+      'meeting-room'
+    )
+  );
+}
       const roomResult = await client.query(
         `
     SELECT id
@@ -1068,7 +1093,7 @@ router.post('/meeting-bookings/create',
     WHERE floor = $1
     LIMIT 1
   `,
-        [user.floor]
+        [requestedFloor]
       );
 
       const room = roomResult.rows[0];

@@ -2938,14 +2938,34 @@
                                 <div class="section-head">
                                   <span class="eyebrow">חדר הישיבות שלך</span>
 
-                                  <h2>
+                                  <h2 id="meetingRoomTitle">
                                     חדר ישיבות - קומה <%= user.floor %>
                                   </h2>
 
                                   <p>
                                     לחצו על שעה פנויה בלוח כדי להתחיל שריון.
-                                    מוצגים רק השריונים של חדר הישיבות בקומה שלך.
+                                    <% if (user.meeting_access_both_floors) { %>
+                                      ניתן לעבור בין חדרי הישיבות בקומות 4 ו־6.
+                                    <% } else { %>
+                                      מוצגים רק השריונים של חדר הישיבות בקומה שלך.
+                                    <% } %>
                                   </p>
+
+                                  <% if (user.meeting_access_both_floors) { %>
+                                    <div class="calendar-navigation" style="margin-top:16px;">
+                                      <button type="button"
+                                        class="btn btn-outline meeting-floor-button"
+                                        data-floor="4">
+                                        קומה 4
+                                      </button>
+
+                                      <button type="button"
+                                        class="btn btn-outline meeting-floor-button"
+                                        data-floor="6">
+                                        קומה 6
+                                      </button>
+                                    </div>
+                                  <% } %>
                                 </div>
 
                                 <div class="meeting-calendar-toolbar">
@@ -3014,7 +3034,12 @@
                                       id="meetingBookingForm" class="form-grid">
 
                                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
+<input
+  type="hidden"
+  id="meeting_floor"
+  name="meeting_floor"
+  value="<%= user.floor %>"
+>
                                       <input type="hidden" id="booking_date" name="booking_date">
 
                                       <input type="hidden" id="start_time" name="start_time">
@@ -3214,6 +3239,41 @@
 
                 const calendar =
                   document.getElementById('weeklyCalendar');
+
+                const meetingFloorInput =
+                  document.getElementById('meeting_floor');
+
+                const meetingRoomTitle =
+                  document.getElementById('meetingRoomTitle');
+
+                let selectedMeetingFloor =
+                  Number(<%- JSON.stringify(user.floor) %>);
+
+                function bookingsForSelectedFloor() {
+                  return meetingBookings.filter(
+                    booking =>
+                      Number(booking.meeting_floor) ===
+                      selectedMeetingFloor
+                  );
+                }
+
+                document.querySelectorAll(
+                  '.meeting-floor-button'
+                ).forEach(button => {
+                  button.addEventListener('click', () => {
+                    selectedMeetingFloor =
+                      Number(button.dataset.floor);
+
+                    meetingFloorInput.value =
+                      String(selectedMeetingFloor);
+
+                    meetingRoomTitle.textContent =
+                      `חדר ישיבות - קומה ${selectedMeetingFloor}`;
+
+                    closeBookingPopup();
+                    renderCalendar();
+                  });
+                });
 
                 const weekTitle =
                   document.getElementById('calendarWeekTitle');
@@ -3608,7 +3668,7 @@
                   startMinutes,
                   endMinutes
                 ) {
-                  return meetingBookings.some(
+                  return bookingsForSelectedFloor().some(
                     (booking) => {
 
                       if (
@@ -4050,7 +4110,7 @@
                             finishCalendarRange(
                               currentDateKey,
                               minutes,
-                              minutes + slotMinutes
+                              minutes
                             );
                           },
                           {
@@ -4175,7 +4235,7 @@
                       ========================= */
 
                       const booking =
-                        meetingBookings.find(
+                        bookingsForSelectedFloor().find(
                           (item) => {
 
                             const bookingStart =

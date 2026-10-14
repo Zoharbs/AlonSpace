@@ -206,7 +206,11 @@ ADD COLUMN IF NOT EXISTS billing_status VARCHAR(20) DEFAULT 'included';
 // =====================================================
 // מעקב אחרי מי יצר את השריון
 // =====================================================
-
+await pool.query(`
+  ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS
+  meeting_access_both_floors BOOLEAN NOT NULL DEFAULT FALSE
+`);
 await query(`
   ALTER TABLE meeting_bookings
   ADD COLUMN IF NOT EXISTS created_by_user_id BIGINT;

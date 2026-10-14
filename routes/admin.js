@@ -1229,6 +1229,7 @@ db.query(`
     u.rental_start_date,
     u.rental_end_date,
     u.monthly_meeting_hours,
+    u.meeting_access_both_floors,
     u.is_active,
     u.must_change_password,
     u.created_at,
@@ -2703,6 +2704,7 @@ router.post('/clients/:id/update',
         rental_start_date,
         rental_end_date,
         monthly_meeting_hours,
+        meeting_access_both_floors,
         is_active,
       } = req.body;
 
@@ -2733,6 +2735,7 @@ router.post('/clients/:id/update',
             rental_end_date = $8,
             monthly_meeting_hours = $9,
             is_active = $10,
+            meeting_access_both_floors = $12,
             updated_at = NOW()
           WHERE
             id = $11
@@ -2758,6 +2761,7 @@ router.post('/clients/:id/update',
           ),
           Boolean(is_active),
           req.params.id,
+          meeting_access_both_floors === 'on',
         ]
       );
 

@@ -2833,7 +2833,14 @@
                                             חשבון פעיל
 
                                           </label>
-
+<label style="display:flex; align-items:center; gap:8px; margin-top:12px;">
+  <input
+    type="checkbox"
+    name="meeting_access_both_floors"
+    <%= client.meeting_access_both_floors ? 'checked' : '' %>
+  >
+  גישה לחדרי הישיבות בקומות 4 ו־6
+</label>
 
                                           <button type="submit" class="btn btn-primary">
                                             שמור שינויים
