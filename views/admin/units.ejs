@@ -1877,34 +1877,29 @@
 
                                             <td>
 
-                                              <% if (currentOfficeTenants.length) { %>
+                                              <%
+  const officeCompanyNames = [...new Set(
+    currentOfficeTenants
+      .map(tenant => String(
+        tenant.business_name || tenant.display_name || ''
+      ).trim())
+      .filter(Boolean)
+  )];
+%>
 
-                                                <% currentOfficeTenants.forEach(tenant=> { %>
+<% if (officeCompanyNames.length) { %>
 
-                                                  <div style="margin-bottom: 8px;">
+  <% officeCompanyNames.forEach(companyName => { %>
+    <div style="margin-bottom: 8px;">
+      <strong><%= companyName %></strong>
+    </div>
+  <% }) %>
 
-                                                    <strong>
-                                                      <%= tenant.display_name %>
-                                                    </strong>
+<% } else { %>
 
-                                                    <% if (tenant.business_name) { %>
+  <span class="muted">לא נמצאו דיירים באתר</span>
 
-                                                      <div class="muted">
-                                                        <%= tenant.business_name %>
-                                                      </div>
-
-                                                      <% } %>
-
-                                                  </div>
-
-                                                  <% }) %>
-
-                                                    <% } else { %>
-
-                                                      <span class="muted">לא נמצאו דיירים באתר</span>
-
-                                                      <% } %>
-
+<% } %>
                                             </td>
                                             <td>
 

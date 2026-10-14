@@ -1290,6 +1290,25 @@ router.get('/units', async (req, res, next) => {
       ORDER BY LOWER(display_name), id
     `);
 
+    const overridesResult = await db.query(`
+      SELECT unit_id, user_ids
+      FROM unit_tenant_overrides
+    `);
+
+    const overridesByUnit = new Map(
+      overridesResult.rows.map(row => [
+        String(row.unit_id),
+        row.user_ids.map(String)
+      ])
+    );
+
+    units.forEach(unit => {
+      const unitId = String(unit.id);
+
+      unit.tenant_override_active = overridesByUnit.has(unitId);
+      unit.manual_tenant_ids = overridesByUnit.get(unitId) || [];
+    });
+
     return res.render('admin/units', {
       title: 'יחידות וכספים - AlonSpace',
       layout: false,
