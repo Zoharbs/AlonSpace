@@ -437,8 +437,9 @@
       }
     }
         .unit-tenancy-open,
-.management-fee-open {
-      padding: 6px 11px;
+.management-fee-open,
+.rent-settings-open {
+        padding: 6px 11px;
       border: 1px solid var(--oak);
       border-radius: 8px;
       background: transparent;
@@ -450,7 +451,8 @@
     }
 
     .unit-tenancy-open:hover,
-.management-fee-open:hover {
+.management-fee-open:hover,
+.rent-settings-open:hover {
       background: var(--stone);
     }
   
@@ -1045,7 +1047,7 @@
                             <% if (unit.tenancy_id && unit.rental_model !== 'direct_owner') { %>
   <button
     type="button"
-    class="management-fee-open rent-settings-open"
+class="rent-settings-open"
     style="margin-top:8px;"
     data-tenancy-id="<%= unit.tenancy_id %>"
     data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
