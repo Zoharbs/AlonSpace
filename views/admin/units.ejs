@@ -1,1721 +1,3549 @@
 <!DOCTYPE html>
+
 <html lang="he" dir="rtl">
 
+
+
 <head>
+
   <meta charset="UTF-8">
+
+
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+
+
   <title>
+
     <%= title %>
+
   </title>
+
+
 
   <link rel="stylesheet" href="/css/style.css">
 
+
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
 
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+
+
   <style>
     * {
+
       box-sizing: border-box;
+
     }
+
+
 
     body {
+
       margin: 0;
+
       font-family: Arial, sans-serif;
+
       background: #0a0c1a;
+
       color: #ece9f7;
+
       line-height: 1.6;
+
     }
+
+
 
     .container {
+
       max-width: 1250px;
+
       margin: 0 auto;
+
       padding: 36px 20px 80px;
+
     }
+
+
 
     .topbar {
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: center;
+
       flex-wrap: wrap;
+
       gap: 16px;
+
       margin-bottom: 32px;
+
     }
+
+
 
     .back-link {
+
       color: #f2c14e;
+
       text-decoration: none;
+
       font-weight: bold;
+
     }
+
+
 
     h1 {
+
       margin: 0 0 8px;
+
       font-size: 30px;
+
     }
+
+
 
     .subtitle {
+
       color: #a6a8bd;
+
       margin: 0;
+
     }
+
+
 
     .stats {
+
       display: grid;
+
       grid-template-columns:
+
         repeat(3, minmax(0, 1fr));
+
       gap: 16px;
+
       margin: 28px 0 36px;
+
     }
+
+
 
     .stat-card,
+
     .floor-section {
+
       background: #14182b;
+
       border: 1px solid #292f48;
+
       border-radius: 14px;
+
     }
+
+
 
     .stat-card {
+
       padding: 22px;
+
     }
+
+
 
     .stat-label {
+
       color: #a6a8bd;
+
       font-size: 14px;
+
     }
+
+
 
     .stat-value {
+
       font-size: 30px;
+
       font-weight: bold;
+
       margin-top: 6px;
+
     }
+
+
 
     .floor-section {
+
       margin-bottom: 28px;
+
       overflow: hidden;
+
     }
+
+
 
     .floor-heading {
+
       padding: 20px 24px;
+
       border-bottom: 1px solid #292f48;
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: center;
+
     }
+
+
 
     .floor-heading h2 {
+
       margin: 0;
+
       font-size: 21px;
+
     }
+
+
 
     .table-wrap {
+
       overflow-x: auto;
+
     }
+
+
 
     table {
+
       width: 100%;
+
       border-collapse: collapse;
+
       text-align: right;
+
       min-width: 780px;
+
     }
+
+
 
     th,
+
     td {
+
       padding: 15px 18px;
+
       border-bottom: 1px solid #292f48;
+
     }
+
+
 
     th {
+
       color: #a6a8bd;
+
       font-size: 13px;
+
       font-weight: normal;
+
     }
+
+
 
     td {
+
       font-size: 14px;
+
     }
+
+
 
     tr:last-child td {
+
       border-bottom: none;
+
     }
+
+
 
     .muted {
+
       color: #a6a8bd;
+
     }
+
+
 
     .pill {
+
       display: inline-block;
+
       padding: 4px 10px;
+
       border-radius: 20px;
+
       background: #242a40;
+
       font-size: 12px;
+
       white-space: nowrap;
+
     }
+
+
 
     .pill.occupied {
+
       background: #193a32;
+
       color: #83e3bc;
+
     }
+
+
 
     .pill.vacant {
+
       background: #49351d;
+
       color: #f2c14e;
+
     }
+
+
 
     .empty {
+
       padding: 40px 24px;
+
       text-align: center;
+
       color: #a6a8bd;
+
     }
+
+
 
     @media (max-width: 700px) {
+
       .stats {
+
         grid-template-columns: 1fr;
+
       }
+
+
 
       h1 {
+
         font-size: 24px;
+
       }
 
+
+
       .container {
+
         padding: 24px 14px;
+
       }
+
     }
+
+
 
     /* AlonSpace admin visual alignment */
 
+
+
     body {
+
       font-family: 'Assistant', Arial, sans-serif;
+
       background: var(--stone);
+
       color: var(--ink);
+
     }
+
+
 
     .topbar {
+
       background: var(--ink);
+
       color: var(--cream);
+
       padding: 20px 24px;
+
       border-radius: var(--radius-lg);
+
     }
+
+
 
     .topbar h1 {
+
       color: var(--cream);
+
     }
+
+
 
     .topbar .subtitle {
+
       color: var(--cream);
+
       opacity: .8;
+
     }
+
+
 
     .back-link {
+
       color: var(--cream);
+
     }
+
+
 
     .stat-card,
+
     .floor-section,
+
     .owner-management {
+
       background: var(--cream);
+
       border: 1px solid var(--stone-dark);
+
       border-radius: var(--radius-lg);
+
       box-shadow: var(--shadow);
+
     }
+
+
 
     .stat-label,
+
     .muted {
+
       color: var(--ink-soft);
+
     }
+
+
 
     .floor-heading,
+
     th,
+
     td {
+
       border-color: var(--stone-dark);
+
     }
+
+
 
     th {
+
       background: var(--stone-dark);
+
       color: var(--ink);
+
     }
+
+
 
     .owner-management {
+
       padding: 24px;
+
       margin-bottom: 28px;
+
     }
+
+
 
     .owner-management h2 {
+
       margin: 0 0 8px;
+
     }
+
+
 
     .owner-form {
+
       display: grid;
+
       grid-template-columns: repeat(2, minmax(0, 1fr));
+
       gap: 16px;
+
       margin-top: 18px;
+
     }
+
+
 
     .owner-form label {
+
       display: grid;
+
       gap: 6px;
+
       font-weight: 600;
+
     }
+
+
 
     .owner-form label[hidden] {
+
       display: none;
+
     }
+
+
 
     .owner-form input,
+
     .owner-form select,
+
     .owner-form textarea {
+
       width: 100%;
+
       padding: 11px 13px;
+
       border: 1px solid var(--stone-dark);
+
       border-radius: 9px;
+
       background: #fff;
+
       color: var(--ink);
+
       font: inherit;
+
     }
+
+
 
     .owner-form .full-width {
+
       grid-column: 1 / -1;
+
     }
+
+
 
     .owner-form button {
+
       justify-self: start;
+
       padding: 11px 24px;
+
       border: 0;
+
       border-radius: 9px;
+
       background: var(--ink);
+
       color: var(--cream);
+
       font: inherit;
+
       font-weight: 700;
+
       cursor: pointer;
+
     }
+
+
 
     .owner-feedback {
+
       padding: 12px 16px;
+
       margin-bottom: 16px;
+
       border-radius: 9px;
+
       background: var(--stone);
+
     }
+
+
 
     .owner-feedback.error {
+
       color: #9c3b3b;
+
       background: #f1d4d4;
+
     }
+
+
 
     @media (max-width: 700px) {
+
       .owner-form {
+
         grid-template-columns: 1fr;
+
       }
+
     }
+
+
 
     /* =====================================
+
        ALONSPACE - UNIT MANAGEMENT MODALS
+
     ===================================== */
 
+
+
     .unit-add-btn {
+
       display: inline-flex;
+
       align-items: center;
+
       justify-content: center;
+
       padding: 11px 18px;
+
       margin-top: 12px;
+
       border: 1px solid var(--ink);
+
       border-radius: 10px;
+
       background: var(--ink);
+
       color: var(--cream);
+
       font: inherit;
+
       font-weight: 700;
+
       cursor: pointer;
+
       transition: opacity .2s ease;
+
     }
+
+
 
     .unit-add-btn:hover {
+
       opacity: .85;
+
     }
+
+
 
     .unit-dialog {
+
       position: fixed;
+
       width: min(540px, calc(100% - 32px));
+
       max-height: calc(100dvh - 40px);
+
       margin: auto;
+
       padding: 28px;
+
       border: 1px solid var(--stone-dark);
+
       border-radius: 20px;
+
       background: var(--cream);
+
       color: var(--ink);
+
       box-shadow: 0 24px 80px rgba(0, 0, 0, .22);
+
       overflow-y: auto;
+
       direction: rtl;
+
     }
+
+
 
     .unit-dialog::backdrop {
+
       background: rgba(10, 12, 26, .55);
+
       backdrop-filter: blur(3px);
+
     }
+
+
 
     .unit-dialog-header {
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: flex-start;
+
       gap: 16px;
+
       margin-bottom: 22px;
+
     }
+
+
 
     .unit-dialog-header h3 {
+
       margin: 0 0 5px;
+
       font-size: 1.4rem;
+
       color: var(--ink);
+
     }
+
+
 
     .unit-dialog-header p {
+
       margin: 0;
+
       color: var(--ink-soft);
+
       font-size: .9rem;
+
     }
+
+
 
     .unit-dialog-close {
+
       display: grid;
+
       place-items: center;
+
       flex-shrink: 0;
+
       width: 36px;
+
       height: 36px;
+
       padding: 0;
+
       border: 0;
+
       border-radius: 50%;
+
       background: var(--stone);
+
       color: var(--ink);
+
       font-size: 1.6rem;
+
       line-height: 1;
+
       cursor: pointer;
+
     }
+
+
 
     .unit-dialog .owner-form {
+
       grid-template-columns: 1fr 1fr;
+
       margin-top: 0;
+
     }
+
+
 
     .unit-dialog .owner-form label {
+
       min-width: 0;
+
     }
+
+
 
     .unit-dialog .owner-form input,
+
     .unit-dialog .owner-form select,
+
     .unit-dialog .owner-form textarea {
+
       width: 100%;
+
     }
+
+
 
     .unit-dialog-actions {
+
       display: flex;
+
       justify-content: flex-end;
+
       gap: 10px;
+
       padding-top: 16px;
+
       margin-top: 6px;
+
       border-top: 1px solid var(--stone-dark);
+
     }
+
+
 
     .unit-dialog .owner-form .unit-cancel-btn {
+
       background: transparent;
+
       color: var(--ink);
+
       border: 1px solid var(--stone-dark);
+
     }
+
+
 
     @media (max-width: 600px) {
+
       .unit-dialog {
+
         width: 100%;
+
         max-width: 100%;
+
         max-height: 90dvh;
+
         margin: auto 0 0;
+
         padding: 24px 18px;
+
         border-radius: 20px 20px 0 0;
+
       }
+
+
 
       .unit-dialog .owner-form {
+
         grid-template-columns: 1fr;
+
       }
+
+
 
       .unit-dialog-actions {
+
         flex-wrap: wrap;
+
       }
+
     }
 
+
+
     .unit-tenancy-open,
+
     .management-fee-open,
+
     .rent-settings-open {
+
       padding: 6px 11px;
+
+      border: 1px solid var(--oak);
+
+      border-radius: 8px;
+
+      background: transparent;
+
+      color: var(--oak-dark);
+
+      font: inherit;
+
+      font-size: .8rem;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+    }
+
+
+
+    .unit-tenancy-open:hover,
+
+    .management-fee-open:hover,
+
+    .rent-settings-open:hover {
+
+      background: var(--stone);
+
+    }
+
+
+
+    .owner-unit-selection {
+
+      padding: 16px;
+
+      border: 1px solid var(--stone-dark);
+
+      border-radius: 12px;
+
+      background: var(--stone);
+
+    }
+
+
+
+    .owner-unit-selection>p {
+
+      margin: 6px 0 14px;
+
+      font-size: .9rem;
+
+    }
+
+
+
+    .owner-unit-options {
+
+      display: grid;
+
+      gap: 10px;
+
+      max-height: 220px;
+
+      overflow-y: auto;
+
+    }
+
+
+
+    .owner-form .owner-unit-option {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 10px 12px;
+
+      border: 1px solid var(--stone-dark);
+
+      border-radius: 9px;
+
+      background: var(--cream);
+
+      cursor: pointer;
+
+    }
+
+
+
+    .owner-form .owner-unit-option input {
+
+      width: 18px;
+
+      height: 18px;
+
+      flex-shrink: 0;
+
+      margin: 0;
+
+      accent-color: var(--ink);
+
+    }
+
+
+
+    .owner-new-units {
+
+      padding: 18px;
+
+      border: 1px solid var(--stone-dark);
+
+      border-radius: 12px;
+
+      background: var(--stone);
+
+    }
+
+
+
+    .owner-new-units h4 {
+
+      margin: 0 0 6px;
+
+      font-size: 1.1rem;
+
+    }
+
+
+
+    .owner-new-units>p {
+
+      margin: 0 0 16px;
+
+    }
+
+
+
+    #ownerNewUnitsList {
+
+      display: grid;
+
+      gap: 12px;
+
+      margin-bottom: 12px;
+
+    }
+
+
+
+    .owner-new-unit-row {
+
+      display: grid;
+
+      grid-template-columns: 1fr 1fr auto;
+
+      gap: 10px;
+
+      align-items: end;
+
+      padding: 12px;
+
+      background: var(--cream);
+
+      border: 1px solid var(--stone-dark);
+
+      border-radius: 10px;
+
+    }
+
+
+
+    .unit-dialog .owner-form .unit-add-row-btn {
+
+      background: transparent;
+
+      color: var(--ink);
+
+      border: 1px dashed var(--ink);
+
+      width: 100%;
+
+    }
+
+
+
+    .unit-dialog .owner-form .unit-remove-row-btn {
+
+      background: #f1d4d4;
+
+      color: #9c3b3b;
+
+      padding: 10px 13px;
+
+    }
+
+
+
+    @media (max-width: 600px) {
+
+      .owner-new-unit-row {
+
+        grid-template-columns: 1fr 1fr;
+
+      }
+
+
+
+      .owner-new-unit-row .unit-remove-row-btn {
+
+        grid-column: 1 / -1;
+
+      }
+
+    }
+
+
+
+    .unit-dialog select {
+
+      color: #243047;
+
+      background-color: #ffffff;
+
+      color-scheme: light;
+
+    }
+
+
+
+    .unit-dialog select option {
+
+      color: #243047;
+
+      background-color: #ffffff;
+
+    }
+
+
+
+    /* Unit action buttons */
+
+
+
+    .unit-actions-cell {
+
+      min-width: 280px;
+
+    }
+
+
+
+    .unit-actions {
+
+      display: flex;
+
+      align-items: center;
+
+      flex-wrap: wrap;
+
+      gap: 8px;
+
+    }
+
+
+
+    .unit-actions .unit-tenancy-open,
+
+    .unit-actions .rent-settings-open {
+
+      margin: 0 !important;
+
+      min-width: 0;
+
+      white-space: nowrap;
+
+    }
+
+
+
+    .floor-section td {
+
+      vertical-align: middle;
+
+    }
+
+
+
+    .floor-section tbody tr:hover {
+
+      background: rgba(120, 105, 170, 0.045);
+
+    }
+
+    /* Financial summary per floor */
+
+
+
+    .floor-finance-summary {
+
+      display: grid;
+
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+
+      gap: 16px;
+
+      padding: 18px 24px;
+
+      background: var(--cream);
+
+      border-bottom: 1px solid var(--stone-dark);
+
+    }
+
+
+
+    .floor-finance-item {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 5px;
+
+      padding: 14px 16px;
+
+      background: var(--stone);
+
+      border: 1px solid var(--stone-dark);
+
+      border-radius: 12px;
+
+    }
+
+
+
+    .floor-finance-item span {
+
+      color: var(--ink-soft);
+
+      font-size: 0.85rem;
+
+    }
+
+
+
+    .floor-finance-item strong {
+
+      color: var(--ink);
+
+      font-size: 1.35rem;
+
+      font-weight: 700;
+
+    }
+
+
+
+    .floor-finance-warning {
+
+      margin: 0;
+
+      padding: 12px 24px;
+
+      color: #9c3b3b;
+
+      background: #fff1ed;
+
+      font-size: 0.9rem;
+
+    }
+
+
+
+    @media (max-width: 700px) {
+
+      .floor-finance-summary {
+
+        grid-template-columns: 1fr;
+
+        padding: 14px;
+
+        gap: 10px;
+
+      }
+
+    }
+
+
+    /* Owner management */
+    .owner-create-details {
+      margin-top: 20px;
+      padding: 16px 20px;
+      border: 1px solid var(--stone-dark);
+      border-radius: 12px;
+      background: var(--stone);
+    }
+
+    .owner-create-details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .owner-create-details .unit-add-btn {
+      margin-top: 16px;
+    }
+
+    .owner-row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .owner-row-actions button {
+      padding: 6px 12px;
       border: 1px solid var(--oak);
       border-radius: 8px;
       background: transparent;
       color: var(--oak-dark);
       font: inherit;
-      font-size: .8rem;
-      font-weight: 700;
       cursor: pointer;
     }
 
-    .unit-tenancy-open:hover,
-    .management-fee-open:hover,
-    .rent-settings-open:hover {
-      background: var(--stone);
+    .owner-row-actions button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
     }
 
-    .owner-unit-selection {
-      padding: 16px;
-      border: 1px solid var(--stone-dark);
-      border-radius: 12px;
-      background: var(--stone);
-    }
-
-    .owner-unit-selection>p {
-      margin: 6px 0 14px;
-      font-size: .9rem;
-    }
-
-    .owner-unit-options {
-      display: grid;
-      gap: 10px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .owner-form .owner-unit-option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border: 1px solid var(--stone-dark);
-      border-radius: 9px;
-      background: var(--cream);
-      cursor: pointer;
-    }
-
-    .owner-form .owner-unit-option input {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      margin: 0;
-      accent-color: var(--ink);
-    }
-
-    .owner-new-units {
-      padding: 18px;
-      border: 1px solid var(--stone-dark);
-      border-radius: 12px;
-      background: var(--stone);
-    }
-
-    .owner-new-units h4 {
-      margin: 0 0 6px;
-      font-size: 1.1rem;
-    }
-
-    .owner-new-units>p {
-      margin: 0 0 16px;
-    }
-
-    #ownerNewUnitsList {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .owner-new-unit-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 10px;
-      align-items: end;
-      padding: 12px;
-      background: var(--cream);
-      border: 1px solid var(--stone-dark);
-      border-radius: 10px;
-    }
-
-    .unit-dialog .owner-form .unit-add-row-btn {
-      background: transparent;
-      color: var(--ink);
-      border: 1px dashed var(--ink);
-      width: 100%;
-    }
-
-    .unit-dialog .owner-form .unit-remove-row-btn {
-      background: #f1d4d4;
+    .owner-row-actions .owner-delete-open:not(:disabled) {
       color: #9c3b3b;
-      padding: 10px 13px;
+      border-color: #9c3b3b;
     }
 
-    @media (max-width: 600px) {
-      .owner-new-unit-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .owner-new-unit-row .unit-remove-row-btn {
-        grid-column: 1 / -1;
-      }
+    .unit-dialog .owner-form .owner-danger-btn {
+      background: #9c3b3b;
+      color: white;
     }
-
-    .unit-dialog select {
-      color: #243047;
-      background-color: #ffffff;
-      color-scheme: light;
-    }
-
-    .unit-dialog select option {
-      color: #243047;
-      background-color: #ffffff;
-    }
-
-    /* Unit action buttons */
-
-    .unit-actions-cell {
-      min-width: 280px;
-    }
-
-    .unit-actions {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .unit-actions .unit-tenancy-open,
-    .unit-actions .rent-settings-open {
-      margin: 0 !important;
-      min-width: 0;
-      white-space: nowrap;
-    }
-
-    .floor-section td {
-      vertical-align: middle;
-    }
-
-    .floor-section tbody tr:hover {
-      background: rgba(120, 105, 170, 0.045);
-    }
-    /* Financial summary per floor */
-
-.floor-finance-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  padding: 18px 24px;
-  background: var(--cream);
-  border-bottom: 1px solid var(--stone-dark);
-}
-
-.floor-finance-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 14px 16px;
-  background: var(--stone);
-  border: 1px solid var(--stone-dark);
-  border-radius: 12px;
-}
-
-.floor-finance-item span {
-  color: var(--ink-soft);
-  font-size: 0.85rem;
-}
-
-.floor-finance-item strong {
-  color: var(--ink);
-  font-size: 1.35rem;
-  font-weight: 700;
-}
-
-.floor-finance-warning {
-  margin: 0;
-  padding: 12px 24px;
-  color: #9c3b3b;
-  background: #fff1ed;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 700px) {
-  .floor-finance-summary {
-    grid-template-columns: 1fr;
-    padding: 14px;
-    gap: 10px;
-  }
-}
   </style>
+
 </head>
 
+
+
 <body>
+
   <main class="container">
 
+
+
     <div class="topbar">
+
       <div>
+
         <h1>יחידות וכספים</h1>
+
         <p class="subtitle">
+
           ניהול היחידות בקומות 4 ו־6
+
         </p>
+
       </div>
 
+
+
       <a href="/admin" class="back-link">
+
         ← חזרה לפאנל הניהול
+
       </a>
+
     </div>
 
+
+
     <% const activeUnits=units.filter( unit=> unit.is_active
+
       );
+
+
 
       const occupiedUnits = activeUnits.filter(
+
       unit => unit.tenancy_id
+
       );
+
+
 
       const ownedUnits = activeUnits.filter(
+
       unit => unit.ownership_type === 'alonspace'
+
       );
 
+
+
       const rentalModelNames = {
+
       managed: 'ניהול AlonSpace',
+
       direct_owner: 'דרך הבעלים',
+
       alonspace_owned: 'בבעלות AlonSpace'
+
       };
+
       %>
+
       <% if (success) { %>
+
         <div class="owner-feedback" role="status">
+
           <%= success %>
+
         </div>
+
         <% } %>
 
+
+
           <% if (error) { %>
+
             <div class="owner-feedback error" role="alert">
+
               <%= error %>
+
             </div>
+
             <% } %>
 
+
+
               <section class="owner-management">
-                <h2>ניהול בעלי יחידות</h2>
 
-                <p class="muted">
-                  הוסף בעלים כדי שנוכל לשייך אליו יחידות
-                  ולנהל את דמי הניהול שלו.
-                </p>
 
-                <button type="button" class="unit-add-btn"
-                  onclick="document.getElementById('addOwnerDialog').showModal()">
-                  + הוספת בעלים חדש
-                </button>
-
-                <dialog id="addOwnerDialog" class="unit-dialog">
-                  <div class="unit-dialog-header">
-                    <div>
-                      <h3>הוספת בעלים חדש</h3>
-                      <p>פרטי בעל היחידה</p>
-                    </div>
-
-                    <button type="button" class="unit-dialog-close"
-                      onclick="document.getElementById('addOwnerDialog').close()" aria-label="סגירה">×</button>
-                  </div>
-
-                  <form method="POST" action="/admin/units/owners" class="owner-form">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                    <label>
-                      שם הבעלים *
-                      <input type="text" name="name" maxlength="200" required>
-                    </label>
-
-                    <label>
-                      טלפון
-                      <input type="tel" name="phone" maxlength="50">
-                    </label>
-
-                    <label>
-                      אימייל
-                      <input type="email" name="email" maxlength="254">
-                    </label>
-
-                    <label class="full-width">
-                      הערות
-                      <textarea name="notes" rows="3" maxlength="2000"></textarea>
-                    </label>
-
-                    <div class="full-width owner-unit-selection">
-                      <strong>שיוך יחידות לבעלים</strong>
-
-                      <p class="muted">
-                        ניתן לבחור יחידות קיימות שעדיין לא
-                        שויכו לבעלים. אפשר גם להוסיף יחידות
-                        לאחר יצירת הבעלים.
-                      </p>
-
-                      <div class="owner-unit-options">
-                        <% const unassignedUnits=units.filter(unit=>
-                          unit.ownership_type === 'external' &&
-                          !unit.owner_id &&
-                          unit.is_active
-                          ); %>
-
-                          <% if (unassignedUnits.length===0) { %>
-                            <p class="muted">
-                              אין כרגע יחידות פנויות לשיוך.
-                            </p>
-                            <% } else { %>
-                              <% unassignedUnits.forEach(unit=> { %>
-                                <label class="owner-unit-option">
-                                  <input type="checkbox" name="unit_ids" value="<%= unit.id %>">
-                                  <span>
-                                    קומה <%= unit.floor %> —
-                                      משרד <%= unit.unit_number %>
-                                  </span>
-                                </label>
-                                <% }); %>
-                                  <% } %>
-                      </div>
-                    </div>
-
-                    <div class="full-width owner-new-units">
-                      <h4>יחידות חדשות בבעלות</h4>
-
-                      <p class="muted">
-                        הוסף את המשרדים של בעל היחידות.
-                        ניתן להוסיף כמה משרדים בקומות 4 ו־6.
-                      </p>
-
-                      <div id="ownerNewUnitsList"></div>
-
-                      <button type="button" id="addOwnerUnitRow" class="unit-add-row-btn">
-                        + הוספת יחידה
-                      </button>
-                    </div>
-
-                    <div class="unit-dialog-actions full-width">
-                      <button type="button" class="unit-cancel-btn"
-                        onclick="document.getElementById('addOwnerDialog').close()">
-                        ביטול
-                      </button>
-
-                      <button type="submit">
-                        שמירת בעלים
-                      </button>
-                    </div>
-                  </form>
-                </dialog>
-
-                <% if (owners.length> 0) { %>
-                  <div style="margin-top:24px;" class="table-wrap">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>שם הבעלים</th>
-                          <th>טלפון</th>
-                          <th>אימייל</th>
-                          <th>הערות</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <% owners.forEach(owner=> { %>
-                          <tr>
-                            <td><strong>
-                                <%= owner.name %>
-                              </strong></td>
-                            <td>
-                              <%= owner.phone || '—' %>
-                            </td>
-                            <td>
-                              <%= owner.email || '—' %>
-                            </td>
-                            <td>
-                              <%= owner.notes || '—' %>
-                            </td>
-                          </tr>
-                          <% }); %>
-                      </tbody>
-                    </table>
-                  </div>
-                  <% } %>
-              </section>
-              <section class="owner-management">
 
                 <h2>ניהול יחידות</h2>
 
+
+
                 <p class="muted">
+
                   הוסף משרדים בקומות 4 ו־6,
+
                   והגדר את סוג הבעלות של כל יחידה.
+
                 </p>
+
+
 
                 <button type="button" class="unit-add-btn"
                   onclick="document.getElementById('addUnitDialog').showModal()">
+
                   + הוספת יחידה חדשה
+
                 </button>
 
+
+
                 <dialog id="addUnitDialog" class="unit-dialog">
+
                   <div class="unit-dialog-header">
+
                     <div>
+
                       <h3>הוספת יחידה חדשה</h3>
+
                       <p>פרטי המשרד וסוג הבעלות</p>
+
                     </div>
+
+
 
                     <button type="button" class="unit-dialog-close"
                       onclick="document.getElementById('addUnitDialog').close()" aria-label="סגירה">×</button>
+
                   </div>
+
+
 
                   <form method="POST" action="/admin/units/create" class="owner-form">
 
+
+
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
+
+
                     <label>
+
                       קומה *
+
                       <select name="floor" required>
+
                         <option value="">בחר קומה</option>
+
                         <option value="4">קומה 4</option>
+
                         <option value="6">קומה 6</option>
+
                       </select>
+
                     </label>
 
+
+
                     <label>
+
                       מספר יחידה *
+
                       <input type="text" name="unit_number" maxlength="30" placeholder="לדוגמה: 12" required>
+
                     </label>
 
+
+
                     <label>
+
                       סוג בעלות *
+
                       <select name="ownership_type" id="unitOwnershipType" required>
+
                         <option value="external">
+
                           בעלות חיצונית
+
                         </option>
+
+
 
                         <option value="alonspace">
+
                           בבעלות AlonSpace
+
                         </option>
+
                       </select>
+
                     </label>
+
+
 
                     <label id="unitOwnerField">
+
                       בעל היחידה *
+
                       <select name="owner_id" id="unitOwnerSelect" required>
+
                         <option value="">
+
                           בחר בעלים
+
                         </option>
 
+
+
                         <% owners.forEach(owner=> { %>
+
                           <option value="<%= owner.id %>">
+
                             <%= owner.name %>
+
                           </option>
+
                           <% }); %>
+
                       </select>
+
                     </label>
+
+
 
                     <label class="full-width">
+
                       הערות
+
                       <textarea name="notes" rows="3" maxlength="2000"
                         placeholder="הערות על היחידה (לא חובה)"></textarea>
+
                     </label>
 
+
+
                     <div class="unit-dialog-actions full-width">
+
                       <button type="button" class="unit-cancel-btn"
                         onclick="document.getElementById('addUnitDialog').close()">
+
                         ביטול
+
                       </button>
+
+
 
                       <button type="submit">
+
                         שמירת יחידה
+
                       </button>
+
                     </div>
 
+
+
                   </form>
+
                 </dialog>
+
+
 
               </section>
 
+
+
               <script>
+
                 (() => {
+
                   const ownershipSelect =
+
                     document.getElementById('unitOwnershipType');
 
+
+
                   const ownerField =
+
                     document.getElementById('unitOwnerField');
 
+
+
                   const ownerSelect =
+
                     document.getElementById('unitOwnerSelect');
 
+
+
                   function updateOwnerField() {
+
                     const isExternal =
+
                       ownershipSelect.value === 'external';
 
+
+
                     ownerField.hidden = !isExternal;
+
                     ownerSelect.disabled = !isExternal;
+
                     ownerSelect.required = isExternal;
 
+
+
                     if (!isExternal) {
+
                       ownerSelect.value = '';
+
                     }
+
                   }
 
+
+
                   ownershipSelect.addEventListener(
+
                     'change',
+
                     updateOwnerField
+
                   );
 
+
+
                   updateOwnerField();
+
                 })();
+
               </script>
 
+
+
               <% const money=amount=>
+
                 '₪' + Number(amount || 0).toLocaleString('he-IL', {
+
                 maximumFractionDigits: 2
+
                 });
 
+
+
                 function unitFinance(unit) {
+
                 if (!unit.is_active) {
+
                 return { income: 0, payout: 0, profit: 0, missing: false };
+
                 }
 
+
+
                 const isExternal = unit.ownership_type === 'external';
+
                 const hasTenancy = Boolean(unit.tenancy_id);
+
                 const managed = hasTenancy && unit.rental_model === 'managed';
+
                 const owned = hasTenancy && unit.rental_model === 'alonspace_owned';
 
+
+
                 const managementFee = isExternal
+
                 ? Number(unit.monthly_management_fee || 0)
+
                 : 0;
+
+
 
                 const needsRent = managed || owned;
+
                 const missing = needsRent && (
+
                 unit.monthly_rent == null ||
+
                 (managed && unit.monthly_owner_payout == null)
+
                 );
 
+
+
                 const rent = needsRent
+
                 ? Number(unit.monthly_rent || 0)
+
                 : 0;
 
+
+
                 const payout = managed
+
                 ? Number(unit.monthly_owner_payout || 0)
+
                 : 0;
+
+
 
                 const income = managementFee + rent;
 
+
+
                 return {
+
                 income,
+
                 payout,
+
                 profit: income - payout,
+
                 missing
+
                 };
+
                 }
+
+
 
                 const financialTotals = activeUnits.reduce((totals, unit) => {
+
                 const finance = unitFinance(unit);
 
+
+
                 totals.income += finance.income;
+
                 totals.payout += finance.payout;
+
                 totals.profit += finance.profit;
 
+
+
                 if (finance.missing) {
+
                 totals.missing += 1;
+
                 }
 
+
+
                 return totals;
+
                 }, {
+
                 income: 0,
+
                 payout: 0,
+
                 profit: 0,
+
                 missing: 0
+
                 });
+
                 %>
+
                 <div class="stats">
 
+
+
                   <div class="stat-card">
+
                     <div class="stat-label">
+
                       יחידות פעילות
+
                     </div>
+
                     <div class="stat-value">
+
                       <%= activeUnits.length %>
+
                     </div>
+
                   </div>
 
+
+
                   <div class="stat-card">
+
                     <div class="stat-label">
+
                       יחידות מושכרות
+
                     </div>
+
                     <div class="stat-value">
+
                       <%= occupiedUnits.length %>
+
                     </div>
+
                   </div>
 
+
+
                   <div class="stat-card">
+
                     <div class="stat-label">
+
                       יחידות בבעלות AlonSpace
+
                     </div>
+
                     <div class="stat-value">
+
                       <%= ownedUnits.length %>
+
                     </div>
+
                   </div>
+
+
 
                 </div>
+
                 <section class="owner-management">
+
                   <h2>סיכום כספי חודשי צפוי</h2>
 
+
+
                   <p class="muted">
+
                     לפי תעריפי השכירות ודמי הניהול שהוגדרו.
+
                     הסכומים אינם משקפים גבייה בפועל ואינם כוללים הוצאות תפעול.
+
                   </p>
 
+
+
                   <div class="stats" style="margin-bottom:0;">
+
                     <div class="stat-card">
+
                       <div class="stat-label">הכנסות צפויות</div>
+
                       <div class="stat-value">
+
                         <%= money(financialTotals.income) %>
+
                       </div>
+
                     </div>
 
+
+
                     <div class="stat-card">
+
                       <div class="stat-label">תשלומים לבעלים</div>
+
                       <div class="stat-value">
+
                         <%= money(financialTotals.payout) %>
+
                       </div>
+
                     </div>
 
+
+
                     <div class="stat-card">
+
                       <div class="stat-label">יתרה צפויה לפני הוצאות</div>
+
                       <div class="stat-value">
+
                         <%= money(financialTotals.profit) %>
+
                       </div>
+
                     </div>
+
                   </div>
 
+
+
                   <% if (financialTotals.missing> 0) { %>
+
                     <p style="margin-top:16px; color:#9c3b3b;">
+
                       חסרות הגדרות כספיות עבור
+
                       <%= financialTotals.missing %>
+
                         יחידות. הסיכום חלקי.
+
                     </p>
+
                     <% } %>
+
                 </section>
+
                 <% [4, 6].forEach(floor=> { %>
 
-<%
-  const floorUnits = units.filter(
-    unit => Number(unit.floor) === floor
-  );
 
-  const floorFinance = floorUnits.reduce((totals, unit) => {
-    const finance = unitFinance(unit);
 
-    totals.income += finance.income;
-    totals.payout += finance.payout;
-    totals.profit += finance.profit;
+                  <% const floorUnits=units.filter( unit=> Number(unit.floor) === floor
 
-    if (finance.missing) {
-      totals.missing += 1;
-    }
+                    );
 
-    return totals;
-  }, {
-    income: 0,
-    payout: 0,
-    profit: 0,
-    missing: 0
-  });
-%>
+
+
+                    const floorFinance = floorUnits.reduce((totals, unit) => {
+
+                    const finance = unitFinance(unit);
+
+
+
+                    totals.income += finance.income;
+
+                    totals.payout += finance.payout;
+
+                    totals.profit += finance.profit;
+
+
+
+                    if (finance.missing) {
+
+                    totals.missing += 1;
+
+                    }
+
+
+
+                    return totals;
+
+                    }, {
+
+                    income: 0,
+
+                    payout: 0,
+
+                    profit: 0,
+
+                    missing: 0
+
+                    });
+
+                    %>
+
+
 
                     <section class="floor-section">
 
+
+
                       <div class="floor-heading">
+
                         <h2>קומה <%= floor %>
+
                         </h2>
+
                         <span class="muted">
+
                           <%= floorUnits.length %> יחידות
+
                         </span>
+
                       </div>
 
-<div class="floor-finance-summary">
-  <div class="floor-finance-item">
-    <span>הכנסה צפויה</span>
-    <strong><%= money(floorFinance.income) %></strong>
-  </div>
 
-  <div class="floor-finance-item">
-    <span>תשלום לבעלים</span>
-    <strong><%= money(floorFinance.payout) %></strong>
-  </div>
 
-  <div class="floor-finance-item">
-    <span>יתרה לפני הוצאות</span>
-    <strong><%= money(floorFinance.profit) %></strong>
-  </div>
-</div>
+                      <div class="floor-finance-summary">
 
-<% if (floorFinance.missing > 0) { %>
-  <p class="floor-finance-warning">
-    חסרות הגדרות כספיות עבור
-    <%= floorFinance.missing %>
-    יחידות בקומה זו. הסכומים חלקיים.
-  </p>
-<% } %>
-                        <div class="empty">
-                          עדיין לא הוגדרו יחידות בקומה זו.
+                        <div class="floor-finance-item">
+
+                          <span>הכנסה צפויה</span>
+
+                          <strong>
+                            <%= money(floorFinance.income) %>
+                          </strong>
+
                         </div>
 
-                        <% } else { %>
 
-                          <div class="table-wrap">
+
+                        <div class="floor-finance-item">
+
+                          <span>תשלום לבעלים</span>
+
+                          <strong>
+                            <%= money(floorFinance.payout) %>
+                          </strong>
+
+                        </div>
+
+
+
+                        <div class="floor-finance-item">
+
+                          <span>יתרה לפני הוצאות</span>
+
+                          <strong>
+                            <%= money(floorFinance.profit) %>
+                          </strong>
+
+                        </div>
+
+                      </div>
+
+
+
+                      <% if (floorFinance.missing> 0) { %>
+
+                        <p class="floor-finance-warning">
+
+                          חסרות הגדרות כספיות עבור
+
+                          <%= floorFinance.missing %>
+
+                            יחידות בקומה זו. הסכומים חלקיים.
+
+                        </p>
+
+                        <% } %>
+
+                          <% if (floorUnits.length===0) { %>
+                            <div class="empty">
+
+                              עדיין לא הוגדרו יחידות בקומה זו.
+
+                            </div>
+
+
+
+                            <% } else { %>
+
+
+
+                              <div class="table-wrap">
+
+                                <table>
+
+
+
+                                  <thead>
+
+                                    <tr>
+
+                                      <th>יחידה</th>
+
+                                      <th>פעולות</th>
+
+                                      <th>בעלות</th>
+
+                                      <th>בעלים</th>
+
+                                      <th>שוכר ראשי</th>
+
+                                      <th>מודל השכרה</th>
+
+                                      <th>דמי ניהול</th>
+
+                                      <th>יתרה צפויה</th>
+
+                                      <th>מצב</th>
+
+                                    </tr>
+
+                                  </thead>
+
+
+
+                                  <tbody>
+
+
+
+                                    <% floorUnits.forEach(unit=> { %>
+
+
+
+                                      <tr>
+
+
+
+                                        <td>
+
+                                          <strong>
+
+                                            <%= unit.unit_number %>
+
+                                          </strong>
+
+                                        </td>
+
+
+
+                                        <td class="unit-actions-cell">
+
+                                          <% if (unit.is_active) { %>
+
+                                            <div class="unit-actions">
+
+                                              <button type="button" class="unit-tenancy-open"
+                                                data-unit-id="<%= unit.id %>" data-unit-number="<%= unit.unit_number %>"
+                                                data-unit-floor="<%= unit.floor %>"
+                                                data-ownership-type="<%= unit.ownership_type %>"
+                                                data-tenancy-id="<%= unit.tenancy_id || '' %>"
+                                                data-user-id="<%= unit.tenant_user_id || '' %>"
+                                                data-rental-model="<%= unit.rental_model || '' %>"
+                                                data-start-date="<%= unit.start_date ? new Date(unit.start_date).toISOString().slice(0, 10) : '' %>"
+                                                data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
+                                                data-notes="<%= unit.tenancy_notes || '' %>">
+
+                                                <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
+
+                                              </button>
+
+
+
+                                              <% if (unit.tenancy_id && unit.rental_model !=='direct_owner' ) { %>
+
+                                                <button type="button" class="rent-settings-open"
+                                                  data-tenancy-id="<%= unit.tenancy_id %>"
+                                                  data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
+                                                  data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
+                                                  data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
+                                                  data-ownership-type="<%= unit.ownership_type %>">
+
+                                                  הגדרות כספיות
+
+                                                </button>
+
+                                                <% } %>
+
+
+
+                                            </div>
+
+                                            <% } %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                          <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : 'בעלות חיצונית' %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                          <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : (unit.owner_name
+                                            || 'לא הוגדר' ) %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                          <%= unit.tenant_name || '—' %>
+
+
+
+                                            <% if (unit.tenant_business_name) { %>
+
+                                              <div class="muted">
+
+                                                <%= unit.tenant_business_name %>
+
+                                              </div>
+
+                                              <% } %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                          <%= rentalModelNames[unit.rental_model] || 'לא הוגדר' %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                          <% if (unit.ownership_type==='external' && unit.is_active) { %>
+
+                                            <strong>
+
+                                              ₪<%= Number(unit.monthly_management_fee).toLocaleString('he-IL') %>
+
+                                            </strong>
+
+
+
+                                            <div style="margin-top:8px;">
+
+                                              <button type="button" class="management-fee-open"
+                                                data-unit-id="<%= unit.id %>" data-unit-number="<%= unit.unit_number %>"
+                                                data-unit-floor="<%= unit.floor %>"
+                                                data-amount="<%= unit.monthly_management_fee %>">
+
+                                                עריכת דמי ניהול
+
+                                              </button>
+
+                                            </div>
+
+                                            <% } else { %>
+
+                                              —
+
+                                              <% } %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                          <% const finance=unitFinance(unit); %>
+
+
+
+                                            <% if (finance.missing) { %>
+
+                                              <span class="muted">חסרים נתונים</span>
+
+                                              <% } else { %>
+
+                                                <strong>
+
+                                                  <%= money(finance.profit) %>
+
+                                                </strong>
+
+                                                <% } %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                          <% if (!unit.is_active) { %>
+
+                                            <span class="pill">
+
+                                              לא פעילה
+
+                                            </span>
+
+                                            <% } else if (unit.tenancy_id) { %>
+
+                                              <span class="pill occupied">
+
+                                                מושכרת
+
+                                              </span>
+
+                                              <% } else { %>
+
+                                                <span class="pill vacant">
+
+                                                  פנויה
+
+                                                </span>
+
+                                                <% } %>
+
+                                        </td>
+
+
+
+                                      </tr>
+
+
+
+                                      <% }); %>
+
+
+
+                                  </tbody>
+
+                                </table>
+
+                              </div>
+
+
+
+                              <% } %>
+
+
+
+                    </section>
+
+
+
+                    <% }); %>
+
+
+
+                      <dialog id="rentSettingsDialog" class="unit-dialog">
+
+                        <div class="unit-dialog-header">
+
+                          <div>
+
+                            <h3>הגדרות כספיות</h3>
+
+                            <p id="rentSettingsDescription"></p>
+
+                          </div>
+
+
+
+                          <button type="button" class="unit-dialog-close"
+                            onclick="document.getElementById('rentSettingsDialog').close()"
+                            aria-label="סגירה">×</button>
+
+                        </div>
+
+
+
+                        <form method="POST" action="/admin/units/rent-settings" class="owner-form">
+
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+
+
+                          <input type="hidden" name="tenancy_id" id="rentSettingsTenancyId">
+
+
+
+                          <label class="full-width">
+
+                            שכר דירה חודשי (₪)
+
+                            <input type="number" name="monthly_rent" id="rentSettingsMonthlyRent" min="0" max="1000000"
+                              step="0.01" required>
+
+                          </label>
+
+
+
+                          <label class="full-width" id="rentSettingsPayoutField">
+
+                            תשלום חודשי לבעלים (₪)
+
+                            <input type="number" name="monthly_owner_payout" id="rentSettingsOwnerPayout" min="0"
+                              max="1000000" step="0.01" required>
+
+                          </label>
+
+
+
+                          <p class="muted full-width">
+
+                            הסכומים הם תעריפים חודשיים צפויים, ולא אישור על תשלום בפועל.
+
+                            דמי הניהול מוגדרים בנפרד.
+
+                          </p>
+
+
+
+                          <div class="unit-dialog-actions full-width">
+
+                            <button type="button" class="unit-cancel-btn"
+                              onclick="document.getElementById('rentSettingsDialog').close()">
+
+                              ביטול
+
+                            </button>
+
+
+
+                            <button type="submit">
+
+                              שמירת הגדרות כספיות
+
+                            </button>
+
+                          </div>
+
+                        </form>
+
+                      </dialog>
+
+
+
+                      <dialog id="managementFeeDialog" class="unit-dialog">
+
+                        <div class="unit-dialog-header">
+
+                          <div>
+
+                            <h3>דמי ניהול חודשיים</h3>
+
+                            <p id="managementFeeUnitDescription"></p>
+
+                          </div>
+
+
+
+                          <button type="button" class="unit-dialog-close"
+                            onclick="document.getElementById('managementFeeDialog').close()"
+                            aria-label="סגירה">×</button>
+
+                        </div>
+
+
+
+                        <form method="POST" action="/admin/units/management-fee" class="owner-form">
+
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+
+
+                          <input type="hidden" name="unit_id" id="managementFeeUnitId">
+
+
+
+                          <label class="full-width">
+
+                            דמי ניהול חודשיים (₪)
+
+                            <input type="number" name="monthly_amount" id="managementFeeAmount" min="0" max="1000000"
+                              step="0.01" required>
+
+                          </label>
+
+
+
+                          <p class="muted full-width">
+
+                            הסכום שבעל היחידה חייב ל־AlonSpace בכל חודש,
+
+                            גם אם המשרד פנוי.
+
+                          </p>
+
+
+
+                          <div class="unit-dialog-actions full-width">
+
+                            <button type="button" class="unit-cancel-btn"
+                              onclick="document.getElementById('managementFeeDialog').close()">
+
+                              ביטול
+
+                            </button>
+
+
+
+                            <button type="submit">
+
+                              שמירת דמי ניהול
+
+                            </button>
+
+                          </div>
+
+                        </form>
+
+                      </dialog>
+
+                      <dialog id="addTenancyDialog" class="unit-dialog">
+
+
+
+                        <div class="unit-dialog-header">
+
+                          <div>
+
+                            <h3 id="tenancyDialogTitle">הוספת שוכר</h3>
+
+                            <p id="tenancyUnitDescription"></p>
+
+                          </div>
+
+
+
+                          <button type="button" class="unit-dialog-close"
+                            onclick="document.getElementById('addTenancyDialog').close()" aria-label="סגירה">×</button>
+
+                        </div>
+
+
+
+                        <form method="POST" action="/admin/units/tenancies/create" class="owner-form" id="tenancyForm">
+
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+
+
+                          <input type="hidden" name="unit_id" id="tenancyUnitId">
+
+                          <input type="hidden" name="tenancy_id" id="tenancyId">
+
+                          <label class="full-width">
+
+                            שוכר ראשי *
+
+                            <select name="user_id" id="tenancyUserSelect" required>
+
+                              <option value="">בחר דייר קיים</option>
+
+
+
+                              <% tenants.forEach(tenant=> { %>
+
+                                <option value="<%= tenant.id %>"
+                                  data-start-date="<%= tenant.rental_start_date ? new Date(tenant.rental_start_date).toISOString().slice(0, 10) : '' %>"
+                                  data-end-date="<%= tenant.rental_end_date ? new Date(tenant.rental_end_date).toISOString().slice(0, 10) : '' %>">
+
+                                  <%= tenant.display_name %>
+
+                                    <%= tenant.business_name ? ' — ' + tenant.business_name : '' %>
+
+                                </option>
+
+                                <% }); %>
+
+                            </select>
+
+                          </label>
+
+                          <label class="full-width">
+
+                            מודל השכרה *
+
+                            <select name="rental_model" id="tenancyRentalModel" required>
+
+                              <option value="managed">
+
+                                מנוהל על ידי AlonSpace
+
+                              </option>
+
+
+
+                              <option value="direct_owner">
+
+                                השוכר משלם ישירות לבעלים
+
+                              </option>
+
+
+
+                              <option value="alonspace_owned">
+
+                                יחידה בבעלות AlonSpace
+
+                              </option>
+
+                            </select>
+
+                          </label>
+
+
+
+                          <label>
+
+                            תחילת חוזה *
+
+                            <input type="date" name="start_date" id="tenancyStartDate" required>
+
+                          </label>
+
+
+
+                          <label>
+
+                            סיום חוזה
+
+                            <input type="date" name="end_date" id="tenancyEndDate">
+
+                          </label>
+
+
+
+                          <label class="full-width">
+
+                            הערות
+
+                            <textarea name="notes" id="tenancyNotes" rows="3" maxlength="2000"></textarea>
+
+                          </label>
+
+
+
+                          <div class="unit-dialog-actions full-width">
+
+                            <button type="button" class="unit-cancel-btn"
+                              onclick="document.getElementById('addTenancyDialog').close()">
+
+                              ביטול
+
+                            </button>
+
+
+
+                            <button type="submit" id="tenancySubmitButton">
+
+                              שמירת שוכר
+
+                            </button>
+
+                          </div>
+
+                        </form>
+
+
+
+                      </dialog>
+
+                      <section class="owner-management">
+
+                        <h2>ניהול בעלי יחידות</h2>
+
+
+
+                        <p class="muted">
+
+                          הוסף בעלים כדי שנוכל לשייך אליו יחידות
+
+                          ולנהל את דמי הניהול שלו.
+
+                        </p>
+
+
+
+                        <details class="owner-create-details">
+                          <summary>הוספת בעל יחידה חדש</summary>
+                          <button type="button" class="unit-add-btn"
+                            onclick="document.getElementById('addOwnerDialog').showModal()">
+                            + פתיחת טופס הוספת בעלים
+                          </button>
+                        </details>
+
+
+
+                        <dialog id="addOwnerDialog" class="unit-dialog">
+
+                          <div class="unit-dialog-header">
+
+                            <div>
+
+                              <h3>הוספת בעלים חדש</h3>
+
+                              <p>פרטי בעל היחידה</p>
+
+                            </div>
+
+
+
+                            <button type="button" class="unit-dialog-close"
+                              onclick="document.getElementById('addOwnerDialog').close()" aria-label="סגירה">×</button>
+
+                          </div>
+
+
+
+                          <form method="POST" action="/admin/units/owners" class="owner-form">
+
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+
+
+                            <label>
+
+                              שם הבעלים *
+
+                              <input type="text" name="name" maxlength="200" required>
+
+                            </label>
+
+
+
+                            <label>
+
+                              טלפון
+
+                              <input type="tel" name="phone" maxlength="50">
+
+                            </label>
+
+
+
+                            <label>
+
+                              אימייל
+
+                              <input type="email" name="email" maxlength="254">
+
+                            </label>
+
+
+
+                            <label class="full-width">
+
+                              הערות
+
+                              <textarea name="notes" rows="3" maxlength="2000"></textarea>
+
+                            </label>
+
+
+
+                            <div class="full-width owner-unit-selection">
+
+                              <strong>שיוך יחידות לבעלים</strong>
+
+
+
+                              <p class="muted">
+
+                                ניתן לבחור יחידות קיימות שעדיין לא
+
+                                שויכו לבעלים. אפשר גם להוסיף יחידות
+
+                                לאחר יצירת הבעלים.
+
+                              </p>
+
+
+
+                              <div class="owner-unit-options">
+
+                                <% const unassignedUnits=units.filter(unit=>
+
+                                  unit.ownership_type === 'external' &&
+
+                                  !unit.owner_id &&
+
+                                  unit.is_active
+
+                                  ); %>
+
+
+
+                                  <% if (unassignedUnits.length===0) { %>
+
+                                    <p class="muted">
+
+                                      אין כרגע יחידות פנויות לשיוך.
+
+                                    </p>
+
+                                    <% } else { %>
+
+                                      <% unassignedUnits.forEach(unit=> { %>
+
+                                        <label class="owner-unit-option">
+
+                                          <input type="checkbox" name="unit_ids" value="<%= unit.id %>">
+
+                                          <span>
+
+                                            קומה <%= unit.floor %> —
+
+                                              משרד <%= unit.unit_number %>
+
+                                          </span>
+
+                                        </label>
+
+                                        <% }); %>
+
+                                          <% } %>
+
+                              </div>
+
+                            </div>
+
+
+
+                            <div class="full-width owner-new-units">
+
+                              <h4>יחידות חדשות בבעלות</h4>
+
+
+
+                              <p class="muted">
+
+                                הוסף את המשרדים של בעל היחידות.
+
+                                ניתן להוסיף כמה משרדים בקומות 4 ו־6.
+
+                              </p>
+
+
+
+                              <div id="ownerNewUnitsList"></div>
+
+
+
+                              <button type="button" id="addOwnerUnitRow" class="unit-add-row-btn">
+
+                                + הוספת יחידה
+
+                              </button>
+
+                            </div>
+
+
+
+                            <div class="unit-dialog-actions full-width">
+
+                              <button type="button" class="unit-cancel-btn"
+                                onclick="document.getElementById('addOwnerDialog').close()">
+
+                                ביטול
+
+                              </button>
+
+
+
+                              <button type="submit">
+
+                                שמירת בעלים
+
+                              </button>
+
+                            </div>
+
+                          </form>
+
+                        </dialog>
+
+
+
+                        <% if (owners.length> 0) { %>
+
+                          <div style="margin-top:24px;" class="table-wrap">
+
                             <table>
 
                               <thead>
+
                                 <tr>
-                                  <th>יחידה</th>
+
+                                  <th>שם הבעלים</th>
+
+                                  <th>טלפון</th>
+
+                                  <th>אימייל</th>
+
+                                  <th>הערות</th>
+                                  <th>יחידות משויכות</th>
                                   <th>פעולות</th>
-                                  <th>בעלות</th>
-                                  <th>בעלים</th>
-                                  <th>שוכר ראשי</th>
-                                  <th>דמי ניהול</th>
-                                  <th>יתרה צפויה</th>
-                                  <th>מצב</th>
+
                                 </tr>
+
                               </thead>
+
+
 
                               <tbody>
 
-                                <% floorUnits.forEach(unit=> { %>
+                                <% owners.forEach(owner=> { %>
 
                                   <tr>
 
+                                    <td><strong>
+
+                                        <%= owner.name %>
+
+                                      </strong></td>
+
                                     <td>
-                                      <strong>
-                                        <%= unit.unit_number %>
-                                      </strong>
+
+                                      <%= owner.phone || '—' %>
+
                                     </td>
 
-                                    <td class="unit-actions-cell">
-                                      <% if (unit.is_active) { %>
-                                        <div class="unit-actions">
-                                          <button type="button" class="unit-tenancy-open" data-unit-id="<%= unit.id %>"
-                                            data-unit-number="<%= unit.unit_number %>"
-                                            data-unit-floor="<%= unit.floor %>"
-                                            data-ownership-type="<%= unit.ownership_type %>"
-                                            data-tenancy-id="<%= unit.tenancy_id || '' %>"
-                                            data-user-id="<%= unit.tenant_user_id || '' %>"
-                                            data-rental-model="<%= unit.rental_model || '' %>"
-                                            data-start-date="<%= unit.start_date ? new Date(unit.start_date).toISOString().slice(0, 10) : '' %>"
-                                            data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
-                                            data-notes="<%= unit.tenancy_notes || '' %>">
-                                            <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
-                                          </button>
+                                    <td>
 
-                                          <% if (unit.tenancy_id && unit.rental_model !=='direct_owner' ) { %>
-                                            <button type="button" class="rent-settings-open"
-                                              data-tenancy-id="<%= unit.tenancy_id %>"
-                                              data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
-                                              data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
-                                              data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
-                                              data-ownership-type="<%= unit.ownership_type %>">
-                                              הגדרות כספיות
-                                            </button>
-                                            <% } %>
+                                      <%= owner.email || '—' %>
 
+                                    </td>
+
+                                    <td>
+
+                                      <%= owner.notes || '—' %>
+
+                                    </td>
+                                    <% const ownerUnits=units.filter(unit=> String(unit.owner_id || '') ===
+                                      String(owner.id)); %>
+                                      <td>
+                                        <%= ownerUnits.length ? ownerUnits.map(unit=> 'קומה ' + unit.floor + ' / ' +
+                                          unit.unit_number).join(', ') : '—' %>
+                                      </td>
+                                      <td>
+                                        <div class="owner-row-actions">
+                                          <button type="button" class="owner-edit-open" data-id="<%= owner.id %>"
+                                            data-name="<%= owner.name %>" data-phone="<%= owner.phone || '' %>"
+                                            data-email="<%= owner.email || '' %>"
+                                            data-notes="<%= owner.notes || '' %>">עריכה</button>
+                                          <button type="button" class="owner-delete-open" data-id="<%= owner.id %>"
+                                            data-name="<%= owner.name %>" <% if (ownerUnits.length> 0) { %>disabled
+                                            title="לא ניתן למחוק בעלים עם יחידות משויכות"<% } %>>מחיקה</button>
                                         </div>
-                                        <% } %>
-                                    </td>
-
-                                    <td>
-                                      <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : 'בעלות חיצונית' %>
-                                    </td>
-
-                                    <td>
-                                      <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : (unit.owner_name
-                                        || 'לא הוגדר' ) %>
-                                    </td>
-
-                                    <td>
-                                      <%= unit.tenant_name || '—' %>
-
-                                        <% if (unit.tenant_business_name) { %>
-                                          <div class="muted">
-                                            <%= unit.tenant_business_name %>
-                                          </div>
-                                          <% } %>
-                                    </td>
-
-                                    <td>
-                                      <%= rentalModelNames[unit.rental_model] || 'לא הוגדר' %>
-                                    </td>
-
-                                    <td>
-                                      <% if (unit.ownership_type==='external' && unit.is_active) { %>
-                                        <strong>
-                                          ₪<%= Number(unit.monthly_management_fee).toLocaleString('he-IL') %>
-                                        </strong>
-
-                                        <div style="margin-top:8px;">
-                                          <button type="button" class="management-fee-open"
-                                            data-unit-id="<%= unit.id %>" data-unit-number="<%= unit.unit_number %>"
-                                            data-unit-floor="<%= unit.floor %>"
-                                            data-amount="<%= unit.monthly_management_fee %>">
-                                            עריכת דמי ניהול
-                                          </button>
-                                        </div>
-                                        <% } else { %>
-                                          —
-                                          <% } %>
-                                    </td>
-
-                                    <td>
-                                      <% const finance=unitFinance(unit); %>
-
-                                        <% if (finance.missing) { %>
-                                          <span class="muted">חסרים נתונים</span>
-                                          <% } else { %>
-                                            <strong>
-                                              <%= money(finance.profit) %>
-                                            </strong>
-                                            <% } %>
-                                    </td>
-
-                                    <td>
-                                      <% if (!unit.is_active) { %>
-                                        <span class="pill">
-                                          לא פעילה
-                                        </span>
-                                        <% } else if (unit.tenancy_id) { %>
-                                          <span class="pill occupied">
-                                            מושכרת
-                                          </span>
-                                          <% } else { %>
-                                            <span class="pill vacant">
-                                              פנויה
-                                            </span>
-                                            <% } %>
-                                    </td>
+                                      </td>
 
                                   </tr>
 
                                   <% }); %>
 
                               </tbody>
+
                             </table>
+
                           </div>
 
                           <% } %>
 
-                    </section>
+                            <dialog id="editOwnerDialog" class="unit-dialog">
+                              <div class="unit-dialog-header">
+                                <div>
+                                  <h3>עריכת בעל יחידה</h3>
+                                  <p>עדכון פרטי קשר והערות</p>
+                                </div>
+                                <button type="button" class="unit-dialog-close"
+                                  onclick="document.getElementById('editOwnerDialog').close()"
+                                  aria-label="סגירה">×</button>
+                              </div>
+                              <form id="editOwnerForm" method="POST" class="owner-form">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <label>שם הבעלים * <input name="name" id="editOwnerName" maxlength="200"
+                                    required></label>
+                                <label>טלפון <input name="phone" id="editOwnerPhone" type="tel" maxlength="50"></label>
+                                <label>אימייל <input name="email" id="editOwnerEmail" type="email"
+                                    maxlength="254"></label>
+                                <label class="full-width">הערות <textarea name="notes" id="editOwnerNotes" rows="3"
+                                    maxlength="2000"></textarea></label>
+                                <div class="unit-dialog-actions full-width">
+                                  <button type="button" class="unit-cancel-btn"
+                                    onclick="document.getElementById('editOwnerDialog').close()">ביטול</button>
+                                  <button type="submit">שמירת שינויים</button>
+                                </div>
+                              </form>
+                            </dialog>
+                            <dialog id="deleteOwnerDialog" class="unit-dialog">
+                              <div class="unit-dialog-header">
+                                <div>
+                                  <h3>מחיקת בעל יחידה</h3>
+                                  <p>פעולה בלתי הפיכה</p>
+                                </div>
+                                <button type="button" class="unit-dialog-close"
+                                  onclick="document.getElementById('deleteOwnerDialog').close()"
+                                  aria-label="סגירה">×</button>
+                              </div>
+                              <p>האם למחוק את <strong id="deleteOwnerName"></strong>? ניתן למחוק רק בעלים שאין לו יחידות
+                                או רשומות היסטוריות תלויות.</p>
+                              <form id="deleteOwnerForm" method="POST" class="owner-form">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <div class="unit-dialog-actions full-width">
+                                  <button type="button" class="unit-cancel-btn"
+                                    onclick="document.getElementById('deleteOwnerDialog').close()">ביטול</button>
+                                  <button type="submit" class="owner-danger-btn">אישור מחיקה</button>
+                                </div>
+                              </form>
+                            </dialog>
+                      </section>
 
-                    <% }); %>
 
-                      <dialog id="rentSettingsDialog" class="unit-dialog">
-                        <div class="unit-dialog-header">
-                          <div>
-                            <h3>הגדרות כספיות</h3>
-                            <p id="rentSettingsDescription"></p>
-                          </div>
-
-                          <button type="button" class="unit-dialog-close"
-                            onclick="document.getElementById('rentSettingsDialog').close()"
-                            aria-label="סגירה">×</button>
-                        </div>
-
-                        <form method="POST" action="/admin/units/rent-settings" class="owner-form">
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                          <input type="hidden" name="tenancy_id" id="rentSettingsTenancyId">
-
-                          <label class="full-width">
-                            שכר דירה חודשי (₪)
-                            <input type="number" name="monthly_rent" id="rentSettingsMonthlyRent" min="0" max="1000000"
-                              step="0.01" required>
-                          </label>
-
-                          <label class="full-width" id="rentSettingsPayoutField">
-                            תשלום חודשי לבעלים (₪)
-                            <input type="number" name="monthly_owner_payout" id="rentSettingsOwnerPayout" min="0"
-                              max="1000000" step="0.01" required>
-                          </label>
-
-                          <p class="muted full-width">
-                            הסכומים הם תעריפים חודשיים צפויים, ולא אישור על תשלום בפועל.
-                            דמי הניהול מוגדרים בנפרד.
-                          </p>
-
-                          <div class="unit-dialog-actions full-width">
-                            <button type="button" class="unit-cancel-btn"
-                              onclick="document.getElementById('rentSettingsDialog').close()">
-                              ביטול
-                            </button>
-
-                            <button type="submit">
-                              שמירת הגדרות כספיות
-                            </button>
-                          </div>
-                        </form>
-                      </dialog>
-
-                      <dialog id="managementFeeDialog" class="unit-dialog">
-                        <div class="unit-dialog-header">
-                          <div>
-                            <h3>דמי ניהול חודשיים</h3>
-                            <p id="managementFeeUnitDescription"></p>
-                          </div>
-
-                          <button type="button" class="unit-dialog-close"
-                            onclick="document.getElementById('managementFeeDialog').close()"
-                            aria-label="סגירה">×</button>
-                        </div>
-
-                        <form method="POST" action="/admin/units/management-fee" class="owner-form">
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                          <input type="hidden" name="unit_id" id="managementFeeUnitId">
-
-                          <label class="full-width">
-                            דמי ניהול חודשיים (₪)
-                            <input type="number" name="monthly_amount" id="managementFeeAmount" min="0" max="1000000"
-                              step="0.01" required>
-                          </label>
-
-                          <p class="muted full-width">
-                            הסכום שבעל היחידה חייב ל־AlonSpace בכל חודש,
-                            גם אם המשרד פנוי.
-                          </p>
-
-                          <div class="unit-dialog-actions full-width">
-                            <button type="button" class="unit-cancel-btn"
-                              onclick="document.getElementById('managementFeeDialog').close()">
-                              ביטול
-                            </button>
-
-                            <button type="submit">
-                              שמירת דמי ניהול
-                            </button>
-                          </div>
-                        </form>
-                      </dialog>
-                      <dialog id="addTenancyDialog" class="unit-dialog">
-
-                        <div class="unit-dialog-header">
-                          <div>
-                            <h3 id="tenancyDialogTitle">הוספת שוכר</h3>
-                            <p id="tenancyUnitDescription"></p>
-                          </div>
-
-                          <button type="button" class="unit-dialog-close"
-                            onclick="document.getElementById('addTenancyDialog').close()" aria-label="סגירה">×</button>
-                        </div>
-
-                        <form method="POST" action="/admin/units/tenancies/create" class="owner-form" id="tenancyForm">
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                          <input type="hidden" name="unit_id" id="tenancyUnitId">
-                          <input type="hidden" name="tenancy_id" id="tenancyId">
-                          <label class="full-width">
-                            שוכר ראשי *
-                            <select name="user_id" id="tenancyUserSelect" required>
-                              <option value="">בחר דייר קיים</option>
-
-                              <% tenants.forEach(tenant=> { %>
-                                <option value="<%= tenant.id %>"
-                                  data-start-date="<%= tenant.rental_start_date ? new Date(tenant.rental_start_date).toISOString().slice(0, 10) : '' %>"
-                                  data-end-date="<%= tenant.rental_end_date ? new Date(tenant.rental_end_date).toISOString().slice(0, 10) : '' %>">
-                                  <%= tenant.display_name %>
-                                    <%= tenant.business_name ? ' — ' + tenant.business_name : '' %>
-                                </option>
-                                <% }); %>
-                            </select>
-                          </label>
-                          <label class="full-width">
-                            מודל השכרה *
-                            <select name="rental_model" id="tenancyRentalModel" required>
-                              <option value="managed">
-                                מנוהל על ידי AlonSpace
-                              </option>
-
-                              <option value="direct_owner">
-                                השוכר משלם ישירות לבעלים
-                              </option>
-
-                              <option value="alonspace_owned">
-                                יחידה בבעלות AlonSpace
-                              </option>
-                            </select>
-                          </label>
-
-                          <label>
-                            תחילת חוזה *
-                            <input type="date" name="start_date" id="tenancyStartDate" required>
-                          </label>
-
-                          <label>
-                            סיום חוזה
-                            <input type="date" name="end_date" id="tenancyEndDate">
-                          </label>
-
-                          <label class="full-width">
-                            הערות
-                            <textarea name="notes" id="tenancyNotes" rows="3" maxlength="2000"></textarea>
-                          </label>
-
-                          <div class="unit-dialog-actions full-width">
-                            <button type="button" class="unit-cancel-btn"
-                              onclick="document.getElementById('addTenancyDialog').close()">
-                              ביטול
-                            </button>
-
-                            <button type="submit" id="tenancySubmitButton">
-                              שמירת שוכר
-                            </button>
-                          </div>
-                        </form>
-
-                      </dialog>
   </main>
+  <script>
+    (() => {
+      const editDialog = document.getElementById('editOwnerDialog');
+      const deleteDialog = document.getElementById('deleteOwnerDialog');
+      document.querySelectorAll('.owner-edit-open').forEach(button => {
+        button.addEventListener('click', () => {
+          document.getElementById('editOwnerForm').action = '/admin/units/owners/' + encodeURIComponent(button.dataset.id) + '/update';
+          document.getElementById('editOwnerName').value = button.dataset.name || '';
+          document.getElementById('editOwnerPhone').value = button.dataset.phone || '';
+          document.getElementById('editOwnerEmail').value = button.dataset.email || '';
+          document.getElementById('editOwnerNotes').value = button.dataset.notes || '';
+          editDialog.showModal();
+        });
+      });
+      document.querySelectorAll('.owner-delete-open:not(:disabled)').forEach(button => {
+        button.addEventListener('click', () => {
+          document.getElementById('deleteOwnerForm').action = '/admin/units/owners/' + encodeURIComponent(button.dataset.id) + '/delete';
+          document.getElementById('deleteOwnerName').textContent = button.dataset.name || '';
+          deleteDialog.showModal();
+        });
+      });
+    })();
+  </script>
+
+
+
+
 
 
   <script>
+
     document.querySelectorAll('.unit-dialog').forEach(dialog => {
+
       dialog.addEventListener('click', event => {
+
         if (event.target !== dialog) {
+
           return;
+
         }
+
+
 
         const rect = dialog.getBoundingClientRect();
 
+
+
         const outside =
+
           event.clientX < rect.left ||
+
           event.clientX > rect.right ||
+
           event.clientY < rect.top ||
+
           event.clientY > rect.bottom;
 
+
+
         if (outside) {
+
           dialog.close();
+
         }
+
       });
+
     });
 
 
+
+
+
   </script>
 
 
+
+
+
   <script>
+
     (() => {
+
       const dialog = document.getElementById('addTenancyDialog');
+
       const form = document.getElementById('tenancyForm');
+
       const title = document.getElementById('tenancyDialogTitle');
+
       const submitButton = document.getElementById('tenancySubmitButton');
 
+
+
       const unitInput = document.getElementById('tenancyUnitId');
+
       const tenancyIdInput = document.getElementById('tenancyId');
+
       const description = document.getElementById('tenancyUnitDescription');
 
+
+
       const userSelect = document.getElementById('tenancyUserSelect');
+
       const modelSelect = document.getElementById('tenancyRentalModel');
+
       const startInput = document.getElementById('tenancyStartDate');
+
       const endInput = document.getElementById('tenancyEndDate');
+
       const notesInput = document.getElementById('tenancyNotes');
 
+
+
       if (
+
         !dialog || !form || !title || !submitButton ||
+
         !unitInput || !tenancyIdInput || !description ||
+
         !userSelect || !modelSelect || !startInput ||
+
         !endInput || !notesInput
+
       ) {
+
         return;
+
       }
+
       console.log('AlonSpace tenant options:',
+
         Array.from(userSelect.options).map(option => ({
+
           id: option.value,
+
           name: option.textContent.trim()
+
         }))
+
       );
+
       document.querySelectorAll('.unit-tenancy-open')
+
         .forEach(button => {
+
           button.addEventListener('click', () => {
+
             const ownershipType = button.dataset.ownershipType;
+
             const tenancyId = button.dataset.tenancyId || '';
+
             const isEditing = Boolean(tenancyId);
+
+
 
             form.reset();
 
+
+
             unitInput.value = button.dataset.unitId;
+
             tenancyIdInput.value = tenancyId;
 
+
+
             description.textContent =
+
               'משרד ' + button.dataset.unitNumber +
+
               ' · קומה ' + button.dataset.unitFloor;
 
+
+
             Array.from(modelSelect.options).forEach(option => {
+
               option.disabled = ownershipType === 'alonspace'
+
                 ? option.value !== 'alonspace_owned'
+
                 : option.value === 'alonspace_owned';
+
             });
 
+
+
             if (isEditing) {
+
               title.textContent = 'עריכת שוכר';
+
               submitButton.textContent = 'שמירת שינויים';
+
               form.action = '/admin/units/tenancies/update';
 
+
+
               userSelect.value = button.dataset.userId || '';
+
               modelSelect.value = button.dataset.rentalModel || '';
+
               startInput.value = button.dataset.startDate || '';
+
               endInput.value = button.dataset.endDate || '';
+
               notesInput.value = button.dataset.notes || '';
+
             } else {
+
               title.textContent = 'הוספת שוכר';
+
               submitButton.textContent = 'שמירת שוכר';
+
               form.action = '/admin/units/tenancies/create';
 
+
+
               modelSelect.value = ownershipType === 'alonspace'
+
                 ? 'alonspace_owned'
+
                 : 'managed';
 
+
+
               userSelect.value = '';
+
               startInput.value = '';
+
               endInput.value = '';
+
               notesInput.value = '';
+
             }
 
+
+
             dialog.showModal();
+
           });
+
         });
+
     })();
+
   </script>
 
 
+
+
+
   <script>
+
     (() => {
+
       const dialog =
+
         document.getElementById('managementFeeDialog');
 
+
+
       const unitInput =
+
         document.getElementById('managementFeeUnitId');
 
+
+
       const amountInput =
+
         document.getElementById('managementFeeAmount');
 
+
+
       const description =
+
         document.getElementById('managementFeeUnitDescription');
 
+
+
       document.querySelectorAll('.management-fee-open')
+
         .forEach(button => {
+
           button.addEventListener('click', () => {
+
             unitInput.value = button.dataset.unitId;
+
             amountInput.value = button.dataset.amount;
 
+
+
             description.textContent =
+
               'משרד ' +
+
               button.dataset.unitNumber +
+
               ' · קומה ' +
+
               button.dataset.unitFloor;
 
+
+
             dialog.showModal();
+
           });
+
         });
+
     })();
+
   </script>
 
 
+
+
+
   <script>
+
     (() => {
+
       const list = document.getElementById('ownerNewUnitsList');
+
       const addButton = document.getElementById('addOwnerUnitRow');
+
+
 
       if (!list || !addButton) return;
 
+
+
       addButton.addEventListener('click', () => {
+
         const row = document.createElement('div');
+
         row.className = 'owner-new-unit-row';
 
+
+
         row.innerHTML = `
-        <label>
-          קומה *
-          <select name="new_unit_floors" required>
-            <option value="">בחר קומה</option>
-            <option value="4">קומה 4</option>
-            <option value="6">קומה 6</option>
-          </select>
-        </label>
 
         <label>
-          מספר משרד *
-          <input
-            type="text"
-            name="new_unit_numbers"
-            maxlength="30"
-            placeholder="לדוגמה: 12"
-            required
-          >
+
+          קומה *
+
+          <select name="new_unit_floors" required>
+
+            <option value="">בחר קומה</option>
+
+            <option value="4">קומה 4</option>
+
+            <option value="6">קומה 6</option>
+
+          </select>
+
         </label>
+
+
+
+        <label>
+
+          מספר משרד *
+
+          <input
+
+            type="text"
+
+            name="new_unit_numbers"
+
+            maxlength="30"
+
+            placeholder="לדוגמה: 12"
+
+            required
+
+          >
+
+        </label>
+
+
 
         <button
+
           type="button"
+
           class="unit-remove-row-btn"
+
         >
+
           הסרה
+
         </button>
+
       `;
 
+
+
         row.querySelector('.unit-remove-row-btn')
+
           .addEventListener('click', () => {
+
             row.remove();
+
           });
 
+
+
         list.appendChild(row);
+
       });
+
     })();
+
   </script>
 
 
+
+
+
   <script>
+
     (() => {
+
       const userSelect =
+
         document.getElementById('tenancyUserSelect');
 
+
+
       const startInput =
+
         document.getElementById('tenancyStartDate');
 
+
+
       const endInput =
+
         document.getElementById('tenancyEndDate');
 
+
+
       if (!userSelect || !startInput || !endInput) {
+
         return;
+
       }
 
+
+
       userSelect.addEventListener('change', () => {
+
         const selectedOption =
+
           userSelect.selectedOptions[0];
 
+
+
         startInput.value =
+
           selectedOption?.dataset.startDate || '';
 
+
+
         endInput.value =
+
           selectedOption?.dataset.endDate || '';
+
       });
+
     })();
+
   </script>
 
 
+
+
+
   <script>
+
     (() => {
+
       const dialog = document.getElementById('rentSettingsDialog');
+
       const tenancyInput = document.getElementById('rentSettingsTenancyId');
+
       const rentInput = document.getElementById('rentSettingsMonthlyRent');
+
       const payoutInput = document.getElementById('rentSettingsOwnerPayout');
+
       const description = document.getElementById('rentSettingsDescription');
+
       const payoutField = document.getElementById('rentSettingsPayoutField');
 
+
+
       document.querySelectorAll('.rent-settings-open').forEach(button => {
+
         button.addEventListener('click', () => {
+
           const isAlonspaceOwned =
+
             button.dataset.ownershipType === 'alonspace';
 
+
+
           tenancyInput.value = button.dataset.tenancyId;
+
           rentInput.value = button.dataset.monthlyRent;
+
           payoutInput.value = isAlonspaceOwned
+
             ? '0'
+
             : button.dataset.monthlyOwnerPayout;
+
+
 
           description.textContent = button.dataset.unitLabel;
 
+
+
           payoutField.hidden = isAlonspaceOwned;
+
           payoutInput.readOnly = isAlonspaceOwned;
 
+
+
           dialog.showModal();
+
         });
+
       });
+
     })();
+
   </script>
 
 
+
+
+
 </body>
+
+
 
 </html>
