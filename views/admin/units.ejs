@@ -2939,8 +2939,20 @@
                                       <% const ownerUnits=units.filter(unit=> String(unit.owner_id || '') ===
                                         String(owner.id)); %>
                                         <td>
-                                          <%= ownerUnits.length ? ownerUnits.map(unit=> 'קומה ' + unit.floor + ' / ' +
-                                            unit.unit_number).join(', ') : '—' %>
+                                         <% if (ownerUnits.length === 0) { %>
+  —
+<% } else { %>
+  <% [4, 6].forEach(floor => { %>
+    <% const floorOwnerUnits = ownerUnits.filter(unit => Number(unit.floor) === floor); %>
+
+    <% if (floorOwnerUnits.length > 0) { %>
+      <div>
+        <strong><%= floor %></strong> -
+        <%= floorOwnerUnits.map(unit => unit.unit_number).join(', ') %>
+      </div>
+    <% } %>
+  <% }); %>
+<% } %>
                                         </td>
                                         <td>
                                           <div class="owner-row-actions">
