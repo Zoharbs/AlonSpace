@@ -341,22 +341,6 @@ await query(`
     );
   `);
 
-  // =====================================================
-  // AlonSpace - Manual Tenant Assignments
-  // =====================================================
-
-  await query(`
-    CREATE TABLE IF NOT EXISTS unit_tenant_overrides (
-      unit_id BIGINT PRIMARY KEY
-        REFERENCES rental_units(id)
-        ON DELETE CASCADE,
-
-      user_ids BIGINT[] NOT NULL DEFAULT '{}',
-
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    );
-  `);
-
   await query(`
     CREATE INDEX IF NOT EXISTS idx_rental_units_owner
     ON rental_units(owner_id);
