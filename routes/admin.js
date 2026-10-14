@@ -285,6 +285,157 @@ router.post('/units/owners', async (req, res, next) => {
   }
 });
 
+ // =====================================================
+ // AlonSpace - Update Unit Owner
+ // =====================================================
+
+router.post('/units/owners/:id/update', async (req, res, next) => {
+  try {
+    const ownerId = String(req.params.id || '').trim();
+    const name = String(req.body.name || '').trim();
+    const phone = normalizeOptional(req.body.phone);
+    const email = normalizeOptional(req.body.email);
+    const notes = normalizeOptional(req.body.notes);
+
+    const redirectError = message =>
+      res.redirect('/admin/units?error=' + encodeURIComponent(message));
+
+    if (!/^[1-9]\d*$/.test(ownerId)) {
+      return redirectError('מזהה בעלים אינו תקין');
+    }
+
+    if (!name || name.length > 200) {
+      return redirectError('יש להזין שם בעלים תקין');
+    }
+
+    if (
+      email &&
+      (email.length > 254 ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    ) {
+      return redirectError('כתובת האימייל אינה תקינה');
+    }
+
+    if (
+      (phone && phone.length > 50) ||
+      (notes && notes.length > 2000)
+    ) {
+      return redirectError('אחד השדות ארוך מדי');
+    }
+
+    const result = await db.query(
+      `
+        UPDATE unit_owners
+        SET
+          name = $2,
+          phone = $3,
+          email = $4,
+          notes = $5
+        WHERE id = $1
+          AND is_active = TRUE
+        RETURNING id
+      `,
+      [ownerId, name, phone, email, notes]
+    );
+
+    if (!result.rows.length) {
+      return redirectError('בעל היחידה לא נמצא או אינו פעיל');
+    }
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('פרטי בעל היחידה עודכנו בהצלחה')
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
+
+// =====================================================
+// AlonSpace - Deactivate Unit Owner
+// =====================================================
+
+router.post('/units/owners/:id/delete', async (req, res, next) => {
+  const ownerId = String(req.params.id || '').trim();
+
+  const redirectError = message =>
+    res.redirect('/admin/units?error=' + encodeURIComponent(message));
+
+  if (!/^[1-9]\d*$/.test(ownerId)) {
+    return redirectError('מזהה בעלים אינו תקין');
+  }
+
+  let client;
+
+  try {
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    const ownerResult = await client.query(
+      `
+        SELECT id
+        FROM unit_owners
+        WHERE id = $1
+          AND is_active = TRUE
+        FOR UPDATE
+      `,
+      [ownerId]
+    );
+
+    if (!ownerResult.rows.length) {
+      await client.query('ROLLBACK');
+      return redirectError('בעל היחידה לא נמצא או אינו פעיל');
+    }
+
+    const unitsResult = await client.query(
+      `
+        SELECT id
+        FROM rental_units
+        WHERE owner_id = $1
+        LIMIT 1
+      `,
+      [ownerId]
+    );
+
+    if (unitsResult.rows.length > 0) {
+      await client.query('ROLLBACK');
+      return redirectError(
+        'לא ניתן למחוק בעלים שמשויכות אליו יחידות. יש להסיר את השיוכים תחילה.'
+      );
+    }
+
+    await client.query(
+      `
+        UPDATE unit_owners
+        SET is_active = FALSE
+        WHERE id = $1
+      `,
+      [ownerId]
+    );
+
+    await client.query('COMMIT');
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('בעל היחידה הוסר מהרשימה בהצלחה')
+    );
+  } catch (error) {
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.error('Owner deletion rollback failed:', rollbackError);
+      }
+    }
+
+    return next(error);
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+});
+
 // =====================================================
 // AlonSpace - Create Rental Unit
 // =====================================================
