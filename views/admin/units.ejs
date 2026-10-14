@@ -1058,8 +1058,11 @@
                                       <strong>
                                         <%= unit.unit_number %>
                                       </strong>
+
                                       <% if (unit.is_active) { %>
-                                        <div style="margin-top:8px;">
+                                        <div
+                                          style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; margin-top:10px;">
+
                                           <button type="button" class="unit-tenancy-open" data-unit-id="<%= unit.id %>"
                                             data-unit-number="<%= unit.unit_number %>"
                                             data-unit-floor="<%= unit.floor %>"
@@ -1070,17 +1073,20 @@
                                             data-start-date="<%= unit.start_date ? new Date(unit.start_date).toISOString().slice(0, 10) : '' %>"
                                             data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
                                             data-notes="<%= unit.tenancy_notes || '' %>">
-                                            <% if (unit.tenancy_id && unit.rental_model !=='direct_owner' ) { %>
-                                              <button type="button" class="rent-settings-open" style="margin-top:8px;"
-                                                data-tenancy-id="<%= unit.tenancy_id %>"
-                                                data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
-                                                data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
-                                                data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
-                                                data-ownership-type="<%= unit.ownership_type %>">
-                                                הגדרות כספיות
-                                              </button>
-                                              <% } %>
+                                            <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
                                           </button>
+
+                                          <% if (unit.tenancy_id && unit.rental_model !=='direct_owner' ) { %>
+                                            <button type="button" class="rent-settings-open"
+                                              data-tenancy-id="<%= unit.tenancy_id %>"
+                                              data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
+                                              data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
+                                              data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
+                                              data-ownership-type="<%= unit.ownership_type %>">
+                                              הגדרות כספיות
+                                            </button>
+                                            <% } %>
+
                                         </div>
                                         <% } %>
                                     </td>
@@ -1127,18 +1133,20 @@
                                           <% } %>
                                     </td>
 
-                                                    <td>
-                    <% const finance = unitFinance(unit); %>
+                                    <td>
+                                      <% const finance=unitFinance(unit); %>
 
-                    <% if (finance.missing) { %>
-                      <span class="muted">חסרים נתונים</span>
-                    <% } else { %>
-                      <strong><%= money(finance.profit) %></strong>
-                    <% } %>
-                  </td>
+                                        <% if (finance.missing) { %>
+                                          <span class="muted">חסרים נתונים</span>
+                                          <% } else { %>
+                                            <strong>
+                                              <%= money(finance.profit) %>
+                                            </strong>
+                                            <% } %>
+                                    </td>
 
-                  <td>
-                    <% if (!unit.is_active) { %>
+                                    <td>
+                                      <% if (!unit.is_active) { %>
                                         <span class="pill">
                                           לא פעילה
                                         </span>
