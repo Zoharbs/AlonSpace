@@ -561,6 +561,34 @@
       color: #243047;
       background-color: #ffffff;
     }
+
+    /* Unit action buttons */
+
+    .unit-actions-cell {
+      min-width: 280px;
+    }
+
+    .unit-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .unit-actions .unit-tenancy-open,
+    .unit-actions .rent-settings-open {
+      margin: 0 !important;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .floor-section td {
+      vertical-align: middle;
+    }
+
+    .floor-section tbody tr:hover {
+      background: rgba(120, 105, 170, 0.045);
+    }
   </style>
 </head>
 
@@ -1039,6 +1067,7 @@
                               <thead>
                                 <tr>
                                   <th>יחידה</th>
+                                  <th>פעולות</th>
                                   <th>בעלות</th>
                                   <th>בעלים</th>
                                   <th>שוכר ראשי</th>
@@ -1058,11 +1087,11 @@
                                       <strong>
                                         <%= unit.unit_number %>
                                       </strong>
+                                    </td>
 
+                                    <td class="unit-actions-cell">
                                       <% if (unit.is_active) { %>
-                                        <div
-                                          style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; margin-top:10px;">
-
+                                        <div class="unit-actions">
                                           <button type="button" class="unit-tenancy-open" data-unit-id="<%= unit.id %>"
                                             data-unit-number="<%= unit.unit_number %>"
                                             data-unit-floor="<%= unit.floor %>"
