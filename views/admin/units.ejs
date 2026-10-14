@@ -1805,23 +1805,6 @@
 
                                         return (!startDate || startDate <= today) && (!endDate || endDate>= today);
                                           });
-                                          const displayedOfficeTenants = unit.tenant_override_active
-  ? tenants.filter(tenant =>
-      unit.manual_tenant_ids.includes(String(tenant.id))
-    )
-  : currentOfficeTenants;
-
-const companyNames = [
-  ...new Set(
-    displayedOfficeTenants.map(tenant =>
-      String(
-        tenant.business_name ||
-        tenant.display_name ||
-        ''
-      ).trim()
-    ).filter(Boolean)
-  )
-];
                                           %>
 
                                           <tr>
@@ -1841,15 +1824,7 @@ const companyNames = [
                                               <% if (unit.is_active) { %>
 
                                                 <div class="unit-actions">
-<button
-  type="button"
-  class="unit-tenant-edit-open"
-  data-unit-id="<%= unit.id %>"
-  data-unit-label="משרד <%= unit.unit_number %> · קומה <%= unit.floor %>"
-  data-selected-ids="<%= displayedOfficeTenants.map(t => t.id).join(',') %>"
-  data-manual="<%= unit.tenant_override_active ? 'true' : 'false' %>">
-  עריכת דיירים
-</button>
+
                                                   <button type="button" class="unit-tenancy-open"
                                                     data-unit-id="<%= unit.id %>"
                                                     data-unit-number="<%= unit.unit_number %>"
@@ -2007,7 +1982,7 @@ const companyNames = [
 
                                                   </span>
 
-                                                  <% } else if (displayedOfficeTenants.length > 0) { %>
+                                                  <% } else if (currentOfficeTenants.length> 0) { %>
 
                                                     <span class="pill">
                                                       דייר באתר · חסר שיוך כספי
@@ -2614,117 +2589,7 @@ const companyNames = [
                               </dialog>
                         </details>
                       </section>
-                      <dialog id="unitTenantEditDialog" class="unit-dialog">
-  <div class="unit-dialog-header">
-    <div>
-      <h3>עריכת דיירים במשרד</h3>
-      <p id="unitTenantEditDescription"></p>
-    </div>
-
-    <button type="button" class="unit-dialog-close"
-      onclick="document.getElementById('unitTenantEditDialog').close()">
-      ×
-    </button>
-  </div>
-
-  <form method="POST"
-        action="/admin/units/tenant-assignment"
-        class="owner-form"
-        id="unitTenantEditForm">
-
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <input type="hidden" name="unit_id" id="unitTenantEditUnitId">
-    <input type="hidden" name="mode" value="manual">
-
-    <p class="muted full-width">
-      בחר את הדיירים שיוצגו במשרד.
-      השינוי לא ישפיע על חשבונות המשתמשים באתר.
-    </p>
-
-    <div class="full-width"
-         style="max-height:320px;overflow-y:auto;display:grid;gap:10px;">
-
-      <% tenants.forEach(tenant => { %>
-        <label style="display:flex;align-items:center;gap:10px;">
-          <input type="checkbox"
-                 name="user_ids"
-                 value="<%= tenant.id %>"
-                 class="unit-tenant-checkbox">
-
-          <span>
-            <strong><%= tenant.business_name || tenant.display_name %></strong>
-            <small class="muted">
-              · <%= tenant.display_name %>
-              · קומה <%= tenant.floor || '—' %>
-              · משרד <%= tenant.office_number || '—' %>
-            </small>
-          </span>
-        </label>
-      <% }) %>
-
-    </div>
-
-    <div class="unit-dialog-actions full-width">
-      <button type="button" class="unit-cancel-btn"
-        onclick="document.getElementById('unitTenantEditDialog').close()">
-        ביטול
-      </button>
-
-      <button type="submit">שמירת שיוך ידני</button>
-    </div>
-  </form>
-
-  <form method="POST"
-        action="/admin/units/tenant-assignment"
-        id="unitTenantResetForm"
-        style="margin-top:12px;">
-
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <input type="hidden" name="unit_id" id="unitTenantResetUnitId">
-    <input type="hidden" name="mode" value="auto">
-
-    <button type="submit" class="unit-cancel-btn">
-      חזרה לסנכרון אוטומטי
-    </button>
-  </form>
-</dialog>
   </main>
-<script>
-  (() => {
-    const dialog = document.getElementById('unitTenantEditDialog');
-    const description = document.getElementById('unitTenantEditDescription');
-    const unitInput = document.getElementById('unitTenantEditUnitId');
-    const resetInput = document.getElementById('unitTenantResetUnitId');
-    const resetForm = document.getElementById('unitTenantResetForm');
-    const checkboxes = document.querySelectorAll('.unit-tenant-checkbox');
-
-    if (!dialog || !description || !unitInput || !resetInput || !resetForm) {
-      return;
-    }
-
-    document.querySelectorAll('.unit-tenant-edit-open').forEach(button => {
-      button.addEventListener('click', () => {
-        const selectedIds = new Set(
-          (button.dataset.selectedIds || '')
-            .split(',')
-            .filter(Boolean)
-        );
-
-        unitInput.value = button.dataset.unitId;
-        resetInput.value = button.dataset.unitId;
-        description.textContent = button.dataset.unitLabel;
-
-        checkboxes.forEach(checkbox => {
-          checkbox.checked = selectedIds.has(checkbox.value);
-        });
-
-        resetForm.hidden = button.dataset.manual !== 'true';
-
-        dialog.showModal();
-      });
-    });
-  })();
-</script>
 
   <script>
     (() => {

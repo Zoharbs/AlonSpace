@@ -1139,100 +1139,7 @@ router.post('/units/rent-settings', async (req, res, next) => {
     return next(error);
   }
 });
-// =====================================================
-// AlonSpace - Manual Unit Tenant Assignment
-// =====================================================
 
-router.post('/units/tenant-assignment', async (req, res, next) => {
-  try {
-    const unitId = String(req.body.unit_id || '').trim();
-    const mode = String(req.body.mode || 'manual').trim();
-
-    const redirectError = message =>
-      res.redirect('/admin/units?error=' + encodeURIComponent(message));
-
-    if (!/^[1-9]\d*$/.test(unitId)) {
-      return redirectError('מזהה משרד אינו תקין');
-    }
-
-    const unitResult = await db.query(
-      `SELECT id FROM rental_units
-       WHERE id = $1 AND is_active = TRUE`,
-      [unitId]
-    );
-
-    if (!unitResult.rows.length) {
-      return redirectError('המשרד לא נמצא');
-    }
-
-    if (mode === 'auto') {
-      await db.query(
-        `DELETE FROM unit_tenant_overrides WHERE unit_id = $1`,
-        [unitId]
-      );
-
-      return res.redirect(
-        '/admin/units?success=' +
-        encodeURIComponent('השיוך האוטומטי שוחזר')
-      );
-    }
-
-    if (mode !== 'manual') {
-      return redirectError('מצב שיוך לא תקין');
-    }
-
-    const rawIds = req.body.user_ids == null
-      ? []
-      : Array.isArray(req.body.user_ids)
-        ? req.body.user_ids
-        : [req.body.user_ids];
-
-    const userIds = rawIds.map(value => String(value).trim());
-
-    if (
-      userIds.length > 100 ||
-      userIds.some(id => !/^[1-9]\d*$/.test(id)) ||
-      new Set(userIds).size !== userIds.length
-    ) {
-      return redirectError('רשימת הדיירים אינה תקינה');
-    }
-
-    if (userIds.length) {
-      const validUsers = await db.query(
-        `SELECT id FROM users
-         WHERE id = ANY($1::bigint[])
-           AND role = 'tenant'
-           AND is_active = TRUE`,
-        [userIds]
-      );
-
-      if (validUsers.rows.length !== userIds.length) {
-        return redirectError('אחד הדיירים אינו קיים או אינו פעיל');
-      }
-    }
-
-    await db.query(
-      `
-        INSERT INTO unit_tenant_overrides (
-          unit_id, user_ids, updated_at
-        )
-        VALUES ($1, $2::bigint[], NOW())
-        ON CONFLICT (unit_id)
-        DO UPDATE SET
-          user_ids = EXCLUDED.user_ids,
-          updated_at = NOW()
-      `,
-      [unitId, userIds]
-    );
-
-    return res.redirect(
-      '/admin/units?success=' +
-      encodeURIComponent('שיוך הדיירים נשמר בהצלחה')
-    );
-  } catch (error) {
-    return next(error);
-  }
-});
 // =====================================================
 // AlonSpace - Units Management
 // =====================================================
@@ -1382,24 +1289,7 @@ router.get('/units', async (req, res, next) => {
         AND is_active = TRUE
       ORDER BY LOWER(display_name), id
     `);
-const overridesResult = await db.query(`
-  SELECT unit_id, user_ids
-  FROM unit_tenant_overrides
-`);
 
-const overridesByUnit = new Map(
-  overridesResult.rows.map(row => [
-    String(row.unit_id),
-    row.user_ids.map(String)
-  ])
-);
-
-units.forEach(unit => {
-  const key = String(unit.id);
-
-  unit.tenant_override_active = overridesByUnit.has(key);
-  unit.manual_tenant_ids = overridesByUnit.get(key) || [];
-});
     return res.render('admin/units', {
       title: 'יחידות וכספים - AlonSpace',
       layout: false,
