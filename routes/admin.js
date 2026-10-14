@@ -925,6 +925,7 @@ router.post('/units/rent-settings', async (req, res, next) => {
       `
         SELECT
           ut.id,
+          ut.rental_model,
           ru.ownership_type
         FROM unit_tenancies ut
         JOIN rental_units ru ON ru.id = ut.unit_id
@@ -939,7 +940,11 @@ router.post('/units/rent-settings', async (req, res, next) => {
     if (!tenancyResult.rows.length) {
       return redirectError('השכירות אינה קיימת או אינה פעילה');
     }
-
+    if (tenancyResult.rows[0].rental_model === 'direct_owner') {
+      return redirectError(
+        'בשכירות ישירה מול הבעלים ניתן לנהל רק דמי ניהול'
+      );
+    }
     if (
       tenancyResult.rows[0].ownership_type === 'alonspace' &&
       Number(payoutText) !== 0
