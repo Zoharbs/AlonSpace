@@ -1758,7 +1758,7 @@
 
                                       <th>בעלים</th>
 
-                                      <th>שוכר ראשי</th>
+                                      <th>דיירים נוכחיים</th>
 
                                       <th>מודל השכרה</th>
 
@@ -1776,179 +1776,230 @@
 
                                     <% floorUnits.forEach(unit=> { %>
 
-                                      <tr>
+                                      <% const now=new Date(); const today=[ now.getFullYear(), String(now.getMonth() +
+                                        1).padStart(2, '0' ), String(now.getDate()).padStart(2, '0' ) ].join('-'); const
+                                        dateText=value=>
+                                        value ? new Date(value).toISOString().slice(0, 10) : null;
 
-                                        <td>
+                                        const currentOfficeTenants = tenants.filter(tenant => {
+                                        if (Number(tenant.floor) !== Number(unit.floor)) {
+                                        return false;
+                                        }
 
-                                          <strong>
+                                        const officeText = String(tenant.office_number || '').trim();
 
-                                            <%= unit.unit_number %>
+                                        if (!/^\d+(?:\s*-\s*\d+)*$/.test(officeText)) {
+                                        return false;
+                                        }
 
-                                          </strong>
+                                        const officeNumbers = officeText
+                                        .split('-')
+                                        .map(number => Number(number.trim()));
 
-                                        </td>
+                                        if (!officeNumbers.includes(Number(unit.unit_number))) {
+                                        return false;
+                                        }
 
-                                        <td class="unit-actions-cell">
+                                        const startDate = dateText(tenant.rental_start_date);
+                                        const endDate = dateText(tenant.rental_end_date);
 
-                                          <% if (unit.is_active) { %>
+                                        return (!startDate || startDate <= today) && (!endDate || endDate>= today);
+                                          });
+                                          %>
 
-                                            <div class="unit-actions">
+                                          <tr>
 
-                                              <button type="button" class="unit-tenancy-open"
-                                                data-unit-id="<%= unit.id %>" data-unit-number="<%= unit.unit_number %>"
-                                                data-unit-floor="<%= unit.floor %>"
-                                                data-ownership-type="<%= unit.ownership_type %>"
-                                                data-tenancy-id="<%= unit.tenancy_id || '' %>"
-                                                data-user-id="<%= unit.tenant_user_id || '' %>"
-                                                data-rental-model="<%= unit.rental_model || '' %>"
-                                                data-start-date="<%= unit.start_date ? new Date(unit.start_date).toISOString().slice(0, 10) : '' %>"
-                                                data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
-                                                data-notes="<%= unit.tenancy_notes || '' %>">
+                                            <td>
 
-                                                <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
+                                              <strong>
 
-                                              </button>
+                                                <%= unit.unit_number %>
 
-                                              <% if (unit.tenancy_id && unit.rental_model !=='direct_owner' ) { %>
+                                              </strong>
 
-                                                <button type="button" class="rent-settings-open"
-                                                  data-tenancy-id="<%= unit.tenancy_id %>"
-                                                  data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
-                                                  data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
-                                                  data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
-                                                  data-ownership-type="<%= unit.ownership_type %>">
+                                            </td>
 
-                                                  הגדרות כספיות
+                                            <td class="unit-actions-cell">
 
-                                                </button>
+                                              <% if (unit.is_active) { %>
+
+                                                <div class="unit-actions">
+
+                                                  <button type="button" class="unit-tenancy-open"
+                                                    data-unit-id="<%= unit.id %>"
+                                                    data-unit-number="<%= unit.unit_number %>"
+                                                    data-unit-floor="<%= unit.floor %>"
+                                                    data-ownership-type="<%= unit.ownership_type %>"
+                                                    data-tenancy-id="<%= unit.tenancy_id || '' %>"
+                                                    data-user-id="<%= unit.tenant_user_id || '' %>"
+                                                    data-rental-model="<%= unit.rental_model || '' %>"
+                                                    data-start-date="<%= unit.start_date ? new Date(unit.start_date).toISOString().slice(0, 10) : '' %>"
+                                                    data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
+                                                    data-notes="<%= unit.tenancy_notes || '' %>">
+
+                                                    <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
+
+                                                  </button>
+
+                                                  <% if (unit.tenancy_id && unit.rental_model !=='direct_owner' ) { %>
+
+                                                    <button type="button" class="rent-settings-open"
+                                                      data-tenancy-id="<%= unit.tenancy_id %>"
+                                                      data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
+                                                      data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
+                                                      data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
+                                                      data-ownership-type="<%= unit.ownership_type %>">
+
+                                                      הגדרות כספיות
+
+                                                    </button>
+
+                                                    <% } %>
+
+                                                </div>
 
                                                 <% } %>
 
-                                            </div>
+                                            </td>
 
-                                            <% } %>
+                                            <td>
 
-                                        </td>
+                                              <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : 'בעלות חיצונית' %>
 
-                                        <td>
+                                            </td>
 
-                                          <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : 'בעלות חיצונית' %>
+                                            <td>
 
-                                        </td>
+                                              <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : (unit.owner_name
+                                                || 'לא הוגדר' ) %>
 
-                                        <td>
+                                            </td>
 
-                                          <%= unit.ownership_type==='alonspace' ? 'AlonSpace' : (unit.owner_name
-                                            || 'לא הוגדר' ) %>
+                                            <td>
 
-                                        </td>
+                                              <% if (currentOfficeTenants.length) { %>
 
-                                        <td>
+                                                <% currentOfficeTenants.forEach(tenant=> { %>
 
-                                          <%= unit.tenant_name || '—' %>
+                                                  <div style="margin-bottom: 8px;">
 
-                                            <% if (unit.tenant_business_name) { %>
+                                                    <strong>
+                                                      <%= tenant.display_name %>
+                                                    </strong>
 
-                                              <div class="muted">
+                                                    <% if (tenant.business_name) { %>
 
-                                                <%= unit.tenant_business_name %>
+                                                      <div class="muted">
+                                                        <%= tenant.business_name %>
+                                                      </div>
 
-                                              </div>
+                                                      <% } %>
 
-                                              <% } %>
+                                                  </div>
 
-                                        </td>
+                                                  <% }) %>
 
-                                        <td>
+                                                    <% } else { %>
 
-                                          <%= rentalModelNames[unit.rental_model] || 'לא הוגדר' %>
+                                                      <span class="muted">לא נמצאו דיירים באתר</span>
 
-                                        </td>
+                                                      <% } %>
 
-                                        <td>
+                                            </td>
+                                            <td>
 
-                                          <% if (unit.ownership_type==='external' && unit.is_active) { %>
+                                              <%= rentalModelNames[unit.rental_model] || 'לא הוגדר' %>
 
-                                            <strong>
+                                            </td>
 
-                                              ₪<%= Number(unit.monthly_management_fee).toLocaleString('he-IL') %>
+                                            <td>
 
-                                            </strong>
-
-                                            <div style="margin-top:8px;">
-
-                                              <button type="button" class="management-fee-open"
-                                                data-unit-id="<%= unit.id %>" data-unit-number="<%= unit.unit_number %>"
-                                                data-unit-floor="<%= unit.floor %>"
-                                                data-amount="<%= unit.monthly_management_fee %>">
-
-                                                עריכת דמי ניהול
-
-                                              </button>
-
-                                            </div>
-
-                                            <% } else { %>
-
-                                              —
-
-                                              <% } %>
-
-                                        </td>
-
-                                        <td>
-
-                                          <% const finance=unitFinance(unit); %>
-
-                                            <% if (finance.missing) { %>
-
-                                              <span class="muted">חסרים נתונים</span>
-
-                                              <% } else { %>
+                                              <% if (unit.ownership_type==='external' && unit.is_active) { %>
 
                                                 <strong>
 
-                                                  <%= money(finance.profit) %>
+                                                  ₪<%= Number(unit.monthly_management_fee).toLocaleString('he-IL') %>
 
                                                 </strong>
 
-                                                <% } %>
+                                                <div style="margin-top:8px;">
 
-                                        </td>
+                                                  <button type="button" class="management-fee-open"
+                                                    data-unit-id="<%= unit.id %>"
+                                                    data-unit-number="<%= unit.unit_number %>"
+                                                    data-unit-floor="<%= unit.floor %>"
+                                                    data-amount="<%= unit.monthly_management_fee %>">
 
-                                        <td>
+                                                    עריכת דמי ניהול
 
-                                          <% if (!unit.is_active) { %>
+                                                  </button>
 
-                                            <span class="pill">
+                                                </div>
 
-                                              לא פעילה
+                                                <% } else { %>
 
-                                            </span>
+                                                  —
 
-                                            <% } else if (unit.tenancy_id) { %>
+                                                  <% } %>
 
-                                              <span class="pill occupied">
+                                            </td>
 
-                                                מושכרת
+                                            <td>
 
-                                              </span>
+                                              <% const finance=unitFinance(unit); %>
 
-                                              <% } else { %>
+                                                <% if (finance.missing) { %>
 
-                                                <span class="pill vacant">
+                                                  <span class="muted">חסרים נתונים</span>
 
-                                                  פנויה
+                                                  <% } else { %>
+
+                                                    <strong>
+
+                                                      <%= money(finance.profit) %>
+
+                                                    </strong>
+
+                                                    <% } %>
+
+                                            </td>
+
+                                            <td>
+
+                                              <% if (!unit.is_active) { %>
+
+                                                <span class="pill">
+
+                                                  לא פעילה
 
                                                 </span>
 
-                                                <% } %>
+                                                <% } else if (unit.tenancy_id) { %>
 
-                                        </td>
+                                                  <span class="pill occupied">
 
-                                      </tr>
+                                                    מושכרת
 
-                                      <% }); %>
+                                                  </span>
+
+                                                  <% } else if (currentOfficeTenants.length> 0) { %>
+
+                                                    <span class="pill">
+                                                      דייר באתר · חסר שיוך כספי
+                                                    </span>
+
+                                                    <% } else { %>
+
+                                                      <span class="pill vacant">
+                                                        ללא דייר רשום
+                                                      </span>
+
+                                                      <% } %>
+                                            </td>
+
+                                          </tr>
+
+                                          <% }); %>
 
                                   </tbody>
 
@@ -2536,7 +2587,7 @@
                                   </div>
                                 </form>
                               </dialog>
-                              </details>
+                        </details>
                       </section>
   </main>
 
