@@ -891,6 +891,99 @@ router.post('/units/management-fee', async (req, res, next) => {
     return next(error);
   }
 });
+
+// =====================================================
+// AlonSpace - Save Unit Rent Settings
+// =====================================================
+
+router.post('/units/rent-settings', async (req, res, next) => {
+  try {
+    const tenancyId = String(req.body.tenancy_id || '').trim();
+    const rentText = String(req.body.monthly_rent ?? '').trim();
+    const payoutText = String(req.body.monthly_owner_payout ?? '').trim();
+
+    const validAmount = value =>
+      /^\d+(\.\d{1,2})?$/.test(value) &&
+      Number.isFinite(Number(value)) &&
+      Number(value) >= 0 &&
+      Number(value) <= 1000000;
+
+    const redirectError = message =>
+      res.redirect(
+        '/admin/units?error=' + encodeURIComponent(message)
+      );
+
+    if (!/^[1-9]\d*$/.test(tenancyId)) {
+      return redirectError('מזהה שכירות אינו תקין');
+    }
+
+    if (!validAmount(rentText) || !validAmount(payoutText)) {
+      return redirectError('יש להזין סכומים תקינים בשקלים');
+    }
+
+    const tenancyResult = await db.query(
+      `
+        SELECT
+          ut.id,
+          ru.ownership_type
+        FROM unit_tenancies ut
+        JOIN rental_units ru ON ru.id = ut.unit_id
+        WHERE
+          ut.id = $1
+          AND ru.is_active = TRUE
+        LIMIT 1
+      `,
+      [tenancyId]
+    );
+
+    if (!tenancyResult.rows.length) {
+      return redirectError('השכירות אינה קיימת או אינה פעילה');
+    }
+
+    if (
+      tenancyResult.rows[0].ownership_type === 'alonspace' &&
+      Number(payoutText) !== 0
+    ) {
+      return redirectError(
+        'ביחידה בבעלות AlonSpace אין תשלום לבעלים חיצוניים'
+      );
+    }
+
+    await db.query(
+      `
+        INSERT INTO unit_rent_rates (
+          tenancy_id,
+          monthly_rent,
+          monthly_owner_payout,
+          effective_from
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          DATE_TRUNC('month', CURRENT_DATE)::date
+        )
+        ON CONFLICT (tenancy_id, effective_from)
+        DO UPDATE SET
+          monthly_rent = EXCLUDED.monthly_rent,
+          monthly_owner_payout = EXCLUDED.monthly_owner_payout
+      `,
+      [
+        tenancyId,
+        Number(rentText),
+        Number(payoutText)
+      ]
+    );
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('ההגדרות הכספיות נשמרו בהצלחה')
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
+
 // =====================================================
 // AlonSpace - Units Management
 // =====================================================
@@ -913,6 +1006,9 @@ router.get('/units', async (req, res, next) => {
           fee.monthly_amount,
           0
         ) AS monthly_management_fee,
+
+        rent.monthly_rent,
+        rent.monthly_owner_payout,
 
         ut.id AS tenancy_id,
         ut.rental_model,
@@ -966,6 +1062,19 @@ router.get('/units', async (req, res, next) => {
           t.id DESC
         LIMIT 1
       ) ut ON TRUE
+
+      LEFT JOIN LATERAL (
+        SELECT
+          monthly_rent,
+          monthly_owner_payout
+        FROM unit_rent_rates
+        WHERE
+          tenancy_id = ut.id
+          AND effective_from <=
+            DATE_TRUNC('month', CURRENT_DATE)::date
+        ORDER BY effective_from DESC, id DESC
+        LIMIT 1
+      ) rent ON TRUE
 
       LEFT JOIN LATERAL (
         SELECT

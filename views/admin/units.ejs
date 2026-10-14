@@ -1042,7 +1042,20 @@
                             data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
                             data-notes="<%= unit.tenancy_notes || '' %>"
                           >
-                            <%= unit.tenancy_id ? 'עריכת שוכר' : '+ הוסף שוכר' %>
+                            <% if (unit.tenancy_id) { %>
+  <button
+    type="button"
+    class="management-fee-open rent-settings-open"
+    style="margin-top:8px;"
+    data-tenancy-id="<%= unit.tenancy_id %>"
+    data-unit-label="קומה <%= unit.floor %> — משרד <%= unit.unit_number %>"
+    data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
+    data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
+    data-ownership-type="<%= unit.ownership_type %>"
+  >
+    הגדרות כספיות
+  </button>
+<% } %>
                           </button>
                         </div>
                       <% } %>
@@ -1127,6 +1140,86 @@
       </section>
 
     <% }); %>
+
+<dialog id="rentSettingsDialog" class="unit-dialog">
+  <div class="unit-dialog-header">
+    <div>
+      <h3>הגדרות כספיות</h3>
+      <p id="rentSettingsDescription"></p>
+    </div>
+
+    <button
+      type="button"
+      class="unit-dialog-close"
+      onclick="document.getElementById('rentSettingsDialog').close()"
+      aria-label="סגירה"
+    >×</button>
+  </div>
+
+  <form
+    method="POST"
+    action="/admin/units/rent-settings"
+    class="owner-form"
+  >
+    <input
+      type="hidden"
+      name="_csrf"
+      value="<%= csrfToken %>"
+    >
+
+    <input
+      type="hidden"
+      name="tenancy_id"
+      id="rentSettingsTenancyId"
+    >
+
+    <label class="full-width">
+      שכר דירה חודשי (₪)
+      <input
+        type="number"
+        name="monthly_rent"
+        id="rentSettingsMonthlyRent"
+        min="0"
+        max="1000000"
+        step="0.01"
+        required
+      >
+    </label>
+
+    <label class="full-width" id="rentSettingsPayoutField">
+      תשלום חודשי לבעלים (₪)
+      <input
+        type="number"
+        name="monthly_owner_payout"
+        id="rentSettingsOwnerPayout"
+        min="0"
+        max="1000000"
+        step="0.01"
+        required
+      >
+    </label>
+
+    <p class="muted full-width">
+      הסכומים הם תעריפים חודשיים צפויים, ולא אישור על תשלום בפועל.
+      דמי הניהול מוגדרים בנפרד.
+    </p>
+
+    <div class="unit-dialog-actions full-width">
+      <button
+        type="button"
+        class="unit-cancel-btn"
+        onclick="document.getElementById('rentSettingsDialog').close()"
+      >
+        ביטול
+      </button>
+
+      <button type="submit">
+        שמירת הגדרות כספיות
+      </button>
+    </div>
+  </form>
+</dialog>
+
         <dialog id="managementFeeDialog" class="unit-dialog">
       <div class="unit-dialog-header">
         <div>
@@ -1314,6 +1407,8 @@
 
     </dialog>
   </main>
+
+
 <script>
   document.querySelectorAll('.unit-dialog').forEach(dialog => {
     dialog.addEventListener('click', event => {
@@ -1334,7 +1429,11 @@
       }
     });
   });
+
+
 </script>
+
+
 <script>
   (() => {
     const dialog = document.getElementById('addTenancyDialog');
@@ -1418,6 +1517,8 @@
       });
   })();
 </script>
+
+
 <script>
   (() => {
     const dialog =
@@ -1449,6 +1550,8 @@
       });
   })();
 </script>
+
+
 <script>
   (() => {
     const list = document.getElementById('ownerNewUnitsList');
@@ -1498,6 +1601,8 @@
     });
   })();
 </script>
+
+
 <script>
   (() => {
     const userSelect =
@@ -1525,5 +1630,39 @@
     });
   })();
 </script>
+
+
+<script>
+  (() => {
+    const dialog = document.getElementById('rentSettingsDialog');
+    const tenancyInput = document.getElementById('rentSettingsTenancyId');
+    const rentInput = document.getElementById('rentSettingsMonthlyRent');
+    const payoutInput = document.getElementById('rentSettingsOwnerPayout');
+    const description = document.getElementById('rentSettingsDescription');
+    const payoutField = document.getElementById('rentSettingsPayoutField');
+
+    document.querySelectorAll('.rent-settings-open').forEach(button => {
+      button.addEventListener('click', () => {
+        const isAlonspaceOwned =
+          button.dataset.ownershipType === 'alonspace';
+
+        tenancyInput.value = button.dataset.tenancyId;
+        rentInput.value = button.dataset.monthlyRent;
+        payoutInput.value = isAlonspaceOwned
+          ? '0'
+          : button.dataset.monthlyOwnerPayout;
+
+        description.textContent = button.dataset.unitLabel;
+
+        payoutField.hidden = isAlonspaceOwned;
+        payoutInput.readOnly = isAlonspaceOwned;
+
+        dialog.showModal();
+      });
+    });
+  })();
+</script>
+
+
 </body>
 </html>
