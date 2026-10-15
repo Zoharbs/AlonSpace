@@ -1457,43 +1457,28 @@
 
                 : 0;
 
-                const payout = managed
 
+                const grossPayout = managed
                 ? Number(unit.monthly_owner_payout || 0)
-
                 : 0;
 
-const grossPayout = managed
-  ? Number(unit.monthly_owner_payout || 0)
-  : 0;
+                const includesFee =
+                managed &&
+                unit.owner_payout_includes_management_fee === true;
 
-const includesFee =
-  managed &&
-  unit.owner_payout_includes_management_fee === true;
+                const deductedFee = includesFee ? managementFee : 0;
 
-const deductedFee = includesFee ? managementFee : 0;
+                const payout = grossPayout - deductedFee;
 
-const payout = grossPayout - deductedFee;
+                const income = rent + managementFee - deductedFee;
 
-const income = rent + managementFee - deductedFee;
-
-return {
-  income,
-  payout,
-  profit: income - payout,
-  missing
-};
                 return {
-
                 income,
-
                 payout,
-
                 profit: income - payout,
-
                 missing
-
                 };
+              
 
                 }
 
@@ -1883,7 +1868,7 @@ return {
                                                       data-monthly-rent="<%= unit.monthly_rent ?? '' %>"
                                                       data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
                                                       data-management-fee="<%= unit.monthly_management_fee || 0 %>"
-data-payout-includes-fee="<%= unit.owner_payout_includes_management_fee ? '1' : '0' %>"
+                                                      data-payout-includes-fee="<%= unit.owner_payout_includes_management_fee ? '1' : '0' %>"
                                                       data-ownership-type="<%= unit.ownership_type %>">
 
                                                       הגדרות כספיות
@@ -2164,38 +2149,30 @@ data-payout-includes-fee="<%= unit.owner_payout_includes_management_fee ? '1' : 
                               max="1000000" step="0.01" required>
 
                           </label>
-<div class="full-width" id="rentSettingsFeeSplitField">
-  <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-    <input
-      type="checkbox"
-      id="rentSettingsIncludesFee"
-      name="owner_payout_includes_management_fee"
-      value="1"
-      style="width:18px; height:18px;"
-    >
-    התשלום לבעלים כולל דמי ניהול
-  </label>
+                          <div class="full-width" id="rentSettingsFeeSplitField">
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                              <input type="checkbox" id="rentSettingsIncludesFee"
+                                name="owner_payout_includes_management_fee" value="1" style="width:18px; height:18px;">
+                              התשלום לבעלים כולל דמי ניהול
+                            </label>
 
-  <div
-    id="rentSettingsFeeBreakdown"
-    hidden
-    style="margin-top:14px; padding:16px; border-radius:12px; background:rgba(120,105,170,0.08);"
-  >
-    <div style="display:flex; justify-content:space-between; gap:12px; margin-bottom:10px;">
-      <span>דמי ניהול חודשיים</span>
-      <strong id="rentSettingsFeeAmount">₪0.00</strong>
-    </div>
+                            <div id="rentSettingsFeeBreakdown" hidden
+                              style="margin-top:14px; padding:16px; border-radius:12px; background:rgba(120,105,170,0.08);">
+                              <div style="display:flex; justify-content:space-between; gap:12px; margin-bottom:10px;">
+                                <span>דמי ניהול חודשיים</span>
+                                <strong id="rentSettingsFeeAmount">₪0.00</strong>
+                              </div>
 
-    <div style="display:flex; justify-content:space-between; gap:12px;">
-      <span>יתרה לתשלום לבעלים</span>
-      <strong id="rentSettingsNetPayout">₪0.00</strong>
-    </div>
+                              <div style="display:flex; justify-content:space-between; gap:12px;">
+                                <span>יתרה לתשלום לבעלים</span>
+                                <strong id="rentSettingsNetPayout">₪0.00</strong>
+                              </div>
 
-    <p id="rentSettingsFeeError" style="color:#b42318;" hidden>
-      דמי הניהול גבוהים מהתשלום הכולל לבעלים.
-    </p>
-  </div>
-</div>
+                              <p id="rentSettingsFeeError" style="color:#b42318;" hidden>
+                                דמי הניהול גבוהים מהתשלום הכולל לבעלים.
+                              </p>
+                            </div>
+                          </div>
                           <p class="muted full-width">
 
                             הסכומים הם תעריפים חודשיים צפויים, ולא אישור על תשלום בפועל.
@@ -2915,34 +2892,34 @@ data-payout-includes-fee="<%= unit.owner_payout_includes_management_fee ? '1' : 
 
                 : 'managed';
 
-userSelect.value = '';
+              userSelect.value = '';
 
-startInput.value = '';
+              startInput.value = '';
 
-endInput.value = '';
+              endInput.value = '';
 
-notesInput.value = '';
+              notesInput.value = '';
 
-const assignedTenantIds = String(
-  button.dataset.selectedTenantIds || ''
-)
-  .split(',')
-  .filter(Boolean);
+              const assignedTenantIds = String(
+                button.dataset.selectedTenantIds || ''
+              )
+                .split(',')
+                .filter(Boolean);
 
-if (assignedTenantIds.length === 1) {
-  const assignedTenantId = assignedTenantIds[0];
+              if (assignedTenantIds.length === 1) {
+                const assignedTenantId = assignedTenantIds[0];
 
-  const tenantExists = Array.from(userSelect.options)
-    .some(option => option.value === assignedTenantId);
+                const tenantExists = Array.from(userSelect.options)
+                  .some(option => option.value === assignedTenantId);
 
-  if (tenantExists) {
-    userSelect.value = assignedTenantId;
+                if (tenantExists) {
+                  userSelect.value = assignedTenantId;
 
-    userSelect.dispatchEvent(
-      new Event('change', { bubbles: true })
-    );
-  }
-}
+                  userSelect.dispatchEvent(
+                    new Event('change', { bubbles: true })
+                  );
+                }
+              }
 
             }
 
@@ -3132,80 +3109,80 @@ if (assignedTenantIds.length === 1) {
 
   </script>
 
-<script>
-  (() => {
-    const dialog = document.getElementById('rentSettingsDialog');
-    const tenancyInput = document.getElementById('rentSettingsTenancyId');
-    const rentInput = document.getElementById('rentSettingsMonthlyRent');
-    const payoutInput = document.getElementById('rentSettingsOwnerPayout');
-    const description = document.getElementById('rentSettingsDescription');
-    const payoutField = document.getElementById('rentSettingsPayoutField');
+  <script>
+    (() => {
+      const dialog = document.getElementById('rentSettingsDialog');
+      const tenancyInput = document.getElementById('rentSettingsTenancyId');
+      const rentInput = document.getElementById('rentSettingsMonthlyRent');
+      const payoutInput = document.getElementById('rentSettingsOwnerPayout');
+      const description = document.getElementById('rentSettingsDescription');
+      const payoutField = document.getElementById('rentSettingsPayoutField');
 
-    const splitField = document.getElementById('rentSettingsFeeSplitField');
-    const includesFee = document.getElementById('rentSettingsIncludesFee');
-    const breakdown = document.getElementById('rentSettingsFeeBreakdown');
-    const feeAmount = document.getElementById('rentSettingsFeeAmount');
-    const netPayout = document.getElementById('rentSettingsNetPayout');
-    const feeError = document.getElementById('rentSettingsFeeError');
+      const splitField = document.getElementById('rentSettingsFeeSplitField');
+      const includesFee = document.getElementById('rentSettingsIncludesFee');
+      const breakdown = document.getElementById('rentSettingsFeeBreakdown');
+      const feeAmount = document.getElementById('rentSettingsFeeAmount');
+      const netPayout = document.getElementById('rentSettingsNetPayout');
+      const feeError = document.getElementById('rentSettingsFeeError');
 
-    let currentManagementFee = 0;
+      let currentManagementFee = 0;
 
-    const money = amount =>
-      '₪' + Number(amount).toLocaleString('he-IL', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
+      const money = amount =>
+        '₪' + Number(amount).toLocaleString('he-IL', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
 
-    function updateBreakdown() {
-      breakdown.hidden = !includesFee.checked;
+      function updateBreakdown() {
+        breakdown.hidden = !includesFee.checked;
 
-      if (!includesFee.checked) {
-        return;
+        if (!includesFee.checked) {
+          return;
+        }
+
+        const gross = Number(payoutInput.value || 0);
+        const net = gross - currentManagementFee;
+
+        feeAmount.textContent = money(currentManagementFee);
+        netPayout.textContent = money(net);
+        feeError.hidden = net >= 0;
       }
 
-      const gross = Number(payoutInput.value || 0);
-      const net = gross - currentManagementFee;
+      includesFee.addEventListener('change', updateBreakdown);
+      payoutInput.addEventListener('input', updateBreakdown);
 
-      feeAmount.textContent = money(currentManagementFee);
-      netPayout.textContent = money(net);
-      feeError.hidden = net >= 0;
-    }
+      document.querySelectorAll('.rent-settings-open').forEach(button => {
+        button.addEventListener('click', () => {
+          const isAlonspaceOwned =
+            button.dataset.ownershipType === 'alonspace';
 
-    includesFee.addEventListener('change', updateBreakdown);
-    payoutInput.addEventListener('input', updateBreakdown);
+          tenancyInput.value = button.dataset.tenancyId;
+          rentInput.value = button.dataset.monthlyRent;
 
-    document.querySelectorAll('.rent-settings-open').forEach(button => {
-      button.addEventListener('click', () => {
-        const isAlonspaceOwned =
-          button.dataset.ownershipType === 'alonspace';
+          payoutInput.value = isAlonspaceOwned
+            ? '0'
+            : button.dataset.monthlyOwnerPayout;
 
-        tenancyInput.value = button.dataset.tenancyId;
-        rentInput.value = button.dataset.monthlyRent;
+          description.textContent = button.dataset.unitLabel;
 
-        payoutInput.value = isAlonspaceOwned
-          ? '0'
-          : button.dataset.monthlyOwnerPayout;
+          payoutField.hidden = isAlonspaceOwned;
+          payoutInput.readOnly = isAlonspaceOwned;
 
-        description.textContent = button.dataset.unitLabel;
+          currentManagementFee =
+            Number(button.dataset.managementFee || 0);
 
-        payoutField.hidden = isAlonspaceOwned;
-        payoutInput.readOnly = isAlonspaceOwned;
+          splitField.hidden = isAlonspaceOwned;
+          includesFee.disabled = isAlonspaceOwned;
 
-        currentManagementFee =
-          Number(button.dataset.managementFee || 0);
+          includesFee.checked = !isAlonspaceOwned &&
+            button.dataset.payoutIncludesFee === '1';
 
-        splitField.hidden = isAlonspaceOwned;
-        includesFee.disabled = isAlonspaceOwned;
-
-        includesFee.checked = !isAlonspaceOwned &&
-          button.dataset.payoutIncludesFee === '1';
-
-        updateBreakdown();
-        dialog.showModal();
+          updateBreakdown();
+          dialog.showModal();
+        });
       });
-    });
-  })();
-</script>
+    })();
+  </script>
 
 </body>
 
