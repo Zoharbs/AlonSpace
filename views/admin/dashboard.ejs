@@ -2109,7 +2109,21 @@
 
                         </div>
 
-                        <div class="quota-admin-actions">
+                        <div class="quota-admin-actions"><form
+  method="POST"
+  action="/admin/meeting-quota-alerts/acknowledge"
+  onsubmit="return confirm('לסמן את ההתראה כטופלה?');"
+>
+  <input
+    type="hidden"
+    name="user_id"
+    value="<%= alert.id %>"
+  >
+
+  <button type="submit" class="mini-btn">
+    ✓ ראיתי
+  </button>
+</form>
 
                           <% if (whatsappPhone) { %>
                             <a href="https://wa.me/<%= whatsappPhone %>?text=<%= whatsappText %>" target="_blank"
@@ -2322,7 +2336,21 @@
                             </div>
 
 
-                            <div class="quota-admin-actions">
+                            <div class="quota-admin-actions"><form
+  method="POST"
+  action="/admin/meeting-quota-alerts/acknowledge"
+  onsubmit="return confirm('לסמן את ההתראה כטופלה?');"
+>
+  <input
+    type="hidden"
+    name="user_id"
+    value="<%= alert.id %>"
+  >
+
+  <button type="submit" class="mini-btn">
+    ✓ ראיתי
+  </button>
+</form>
 
                               <% if (whatsappPhone) { %>
 

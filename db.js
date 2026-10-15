@@ -204,6 +204,25 @@ ALTER TABLE meeting_bookings
 ADD COLUMN IF NOT EXISTS billing_status VARCHAR(20) DEFAULT 'included';
 `);
 // =====================================================
+// Meeting Quota Alert Acknowledgements
+// =====================================================
+
+await query(`
+  CREATE TABLE IF NOT EXISTS meeting_quota_alert_acknowledgements (
+    user_id BIGINT NOT NULL
+      REFERENCES users(id)
+      ON DELETE CASCADE,
+
+    month_key VARCHAR(7) NOT NULL,
+
+    last_chargeable_booking_id BIGINT NOT NULL DEFAULT 0,
+
+    acknowledged_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (user_id, month_key)
+  );
+`);
+// =====================================================
 // מעקב אחרי מי יצר את השריון
 // =====================================================
 await pool.query(`

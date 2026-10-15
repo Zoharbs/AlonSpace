@@ -89,7 +89,81 @@ router.use(requireAdmin);
 // =====================================================
 // AlonSpace - Create Unit Owner
 // =====================================================
+// =====================================================
+// Meeting Quota Alerts - Acknowledge
+// =====================================================
 
+router.post('/meeting-quota-alerts/acknowledge', async (req, res, next) => {
+  const userId = String(req.body.user_id || '').trim();
+
+  if (!/^[1-9]\d*$/.test(userId)) {
+    return res.redirect(
+      adminRedirect('error', 'מזהה הדייר אינו תקין')
+    );
+  }
+
+  try {
+    const result = await db.query(
+      `
+        INSERT INTO meeting_quota_alert_acknowledgements (
+          user_id,
+          month_key,
+          last_chargeable_booking_id
+        )
+        SELECT
+          u.id,
+          TO_CHAR(CURRENT_DATE, 'YYYY-MM'),
+          COALESCE(
+            MAX(mb.id) FILTER (
+              WHERE mb.billing_status = 'chargeable'
+            ),
+            0
+          )
+        FROM users u
+        JOIN meeting_bookings mb
+          ON mb.user_id = u.id
+        WHERE
+          u.id = $1
+          AND u.role = 'tenant'
+          AND u.is_active = TRUE
+          AND mb.booking_date >= DATE_TRUNC('month', CURRENT_DATE)::DATE
+          AND mb.booking_date < (
+            DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+          )::DATE
+        GROUP BY
+          u.id,
+          u.monthly_meeting_hours
+        HAVING
+          SUM(
+            EXTRACT(EPOCH FROM (mb.end_time - mb.start_time)) / 3600
+          ) > u.monthly_meeting_hours
+
+        ON CONFLICT (user_id, month_key)
+        DO UPDATE SET
+          last_chargeable_booking_id = GREATEST(
+            meeting_quota_alert_acknowledgements.last_chargeable_booking_id,
+            EXCLUDED.last_chargeable_booking_id
+          ),
+          acknowledged_at = NOW()
+
+        RETURNING user_id
+      `,
+      [userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.redirect(
+        adminRedirect('error', 'לא נמצאה חריגה פעילה לדייר')
+      );
+    }
+
+    return res.redirect(
+      adminRedirect('success', 'ההתראה סומנה כטופלה')
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
 router.post('/units/owners', async (req, res, next) => {
   const name = String(req.body.name || '').trim();
   const phone = normalizeOptional(req.body.phone);
@@ -1534,16 +1608,32 @@ const businessProfiles =
       u.monthly_meeting_hours
 
     HAVING
-      COALESCE(
-        SUM(
-          EXTRACT(
-            EPOCH FROM (mb.end_time - mb.start_time)
-          ) / 3600
-        ),
-        0
-      ) > u.monthly_meeting_hours
+  COALESCE(
+    SUM(
+      EXTRACT(
+        EPOCH FROM (mb.end_time - mb.start_time)
+      ) / 3600
+    ),
+    0
+  ) > u.monthly_meeting_hours
 
-    ORDER BY used_hours DESC
+  AND COALESCE(
+    MAX(mb.id) FILTER (
+      WHERE mb.billing_status = 'chargeable'
+    ),
+    0
+  ) > COALESCE(
+    (
+      SELECT a.last_chargeable_booking_id
+      FROM meeting_quota_alert_acknowledgements a
+      WHERE
+        a.user_id = u.id
+        AND a.month_key = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
+    ),
+    -1
+  )
+
+ORDER BY used_hours DESC
   `
     );
     const rentalAlertsResult = await db.query(`
