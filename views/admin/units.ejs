@@ -1475,10 +1475,13 @@
                 return {
                 income,
                 payout,
+                grossPayout,
+                deductedFee,
+                includesFee,
                 profit: income - payout,
                 missing
                 };
-              
+
 
                 }
 
@@ -1764,11 +1767,9 @@
                                       <th>דיירים נוכחיים</th>
 
                                       <th>מודל השכרה</th>
-
                                       <th>דמי ניהול</th>
-
-                                      <th>סה״כ הכנסה</th>
-
+                                      <th>תשלום לבעלים</th>
+                                      <th>רווח חודשי</th>
                                       <th>מצב</th>
 
                                     </tr>
@@ -1851,6 +1852,7 @@
                                                     data-ownership-type="<%= unit.ownership_type %>"
                                                     data-tenancy-id="<%= unit.tenancy_id || '' %>"
                                                     data-user-id="<%= unit.tenant_user_id || '' %>"
+                                                    data-selected-tenant-ids="<%= currentOfficeTenants.map(tenant => tenant.id).join(',') %>"
                                                     data-rental-model="<%= unit.rental_model || '' %>"
                                                     data-start-date="<%= unit.start_date ? new Date(unit.start_date).toISOString().slice(0, 10) : '' %>"
                                                     data-end-date="<%= unit.end_date ? new Date(unit.end_date).toISOString().slice(0, 10) : '' %>"
@@ -1959,7 +1961,28 @@
                                                   <% } %>
 
                                             </td>
+                                            <td>
+                                              <% const payoutFinance=unitFinance(unit); %>
 
+                                                <% if (unit.rental_model==='managed' && !payoutFinance.missing) { %>
+                                                  <strong>
+                                                    <%= money(payoutFinance.grossPayout) %>
+                                                  </strong>
+
+                                                  <% if (payoutFinance.includesFee) { %>
+                                                    <div class="muted" style="margin-top:5px;">
+                                                      דמי ניהול: −<%= money(payoutFinance.deductedFee) %>
+                                                    </div>
+
+                                                    <div style="margin-top:5px;">
+                                                      <strong>נטו לבעלים: <%= money(payoutFinance.payout) %></strong>
+                                                    </div>
+                                                    <% } %>
+
+                                                      <% } else { %>
+                                                        <span class="muted">—</span>
+                                                        <% } %>
+                                            </td>
                                             <td>
 
                                               <% const finance=unitFinance(unit); %>
@@ -2287,8 +2310,7 @@
 
                           <input type="hidden" name="tenancy_id" id="tenancyId">
 
-                          <label class="full-width">
-
+                          <label class="full-width" id="tenancyUserField">
                             שוכר ראשי *
 
                             <select name="user_id" id="tenancyUserSelect" required>
@@ -2341,20 +2363,14 @@
 
                           </label>
 
-                          <label>
-
+                          <label id="tenancyStartDateField">
                             תחילת חוזה *
-
                             <input type="date" name="start_date" id="tenancyStartDate" required>
-
                           </label>
 
-                          <label>
-
+                          <label id="tenancyEndDateField">
                             סיום חוזה
-
                             <input type="date" name="end_date" id="tenancyEndDate">
-
                           </label>
 
                           <label class="full-width">
@@ -2789,13 +2805,28 @@
       const description = document.getElementById('tenancyUnitDescription');
 
       const userSelect = document.getElementById('tenancyUserSelect');
-
+      const userField = document.getElementById('tenancyUserField');
       const modelSelect = document.getElementById('tenancyRentalModel');
 
       const startInput = document.getElementById('tenancyStartDate');
 
       const endInput = document.getElementById('tenancyEndDate');
+      const startField = document.getElementById('tenancyStartDateField');
+      const endField = document.getElementById('tenancyEndDateField');
 
+      function updateDateFields() {
+        const isDirectOwner = modelSelect.value === 'direct_owner';
+
+        startField.hidden = isDirectOwner;
+        endField.hidden = isDirectOwner;
+
+        startInput.required = !isDirectOwner;
+
+        startInput.disabled = isDirectOwner;
+        endInput.disabled = isDirectOwner;
+      }
+
+      modelSelect.addEventListener('change', updateDateFields);
       const notesInput = document.getElementById('tenancyNotes');
 
       if (
@@ -2906,22 +2937,27 @@
                 .split(',')
                 .filter(Boolean);
 
-              if (assignedTenantIds.length === 1) {
-                const assignedTenantId = assignedTenantIds[0];
+              const assignedTenantId = assignedTenantIds.find(id =>
+                Array.from(userSelect.options).some(option => option.value === id)
+              );
 
-                const tenantExists = Array.from(userSelect.options)
-                  .some(option => option.value === assignedTenantId);
+              if (assignedTenantId) {
+                userSelect.value = assignedTenantId;
 
-                if (tenantExists) {
-                  userSelect.value = assignedTenantId;
-
-                  userSelect.dispatchEvent(
-                    new Event('change', { bubbles: true })
-                  );
-                }
+                userSelect.dispatchEvent(
+                  new Event('change', { bubbles: true })
+                );
               }
-
             }
+            const assignedTenantIds = String(
+              button.dataset.selectedTenantIds || ''
+            ).split(',').filter(Boolean);
+
+            const isAssignedTenant = assignedTenantIds.includes(userSelect.value);
+
+            userField.hidden = isAssignedTenant;
+
+            updateDateFields();
 
             dialog.showModal();
 

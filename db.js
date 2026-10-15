@@ -112,7 +112,7 @@ async function initializeDatabase() {
 
       
   `);
-await query(`
+  await query(`
   CREATE TABLE IF NOT EXISTS meeting_rooms (
     id BIGSERIAL PRIMARY KEY,
     name TEXT NOT NULL,
@@ -121,7 +121,7 @@ await query(`
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 `);
-await query(`
+  await query(`
   CREATE TABLE IF NOT EXISTS floor_directory_overrides (
     id BIGSERIAL PRIMARY KEY,
     floor INTEGER NOT NULL,
@@ -132,7 +132,7 @@ await query(`
     UNIQUE (floor, office_number)
   )
 `);
-await query(`
+  await query(`
   INSERT INTO meeting_rooms (name, floor)
   VALUES
     ('חדר ישיבות קומה 4', 4),
@@ -140,12 +140,12 @@ await query(`
   ON CONFLICT (floor) DO NOTHING;
 `);
 
-await query(`
+  await query(`
   ALTER TABLE meeting_bookings
   ADD COLUMN IF NOT EXISTS meeting_room_id BIGINT;
 `);
 
-await query(`
+  await query(`
   UPDATE meeting_bookings mb
   SET meeting_room_id = mr.id
   FROM users u
@@ -155,7 +155,7 @@ await query(`
     mb.user_id = u.id
     AND mb.meeting_room_id IS NULL;
 `);
-await query(`
+  await query(`
 ALTER TABLE users
 ADD COLUMN IF NOT EXISTS magic_login_token_hash TEXT;
 
@@ -165,7 +165,7 @@ ADD COLUMN IF NOT EXISTS magic_login_expires_at TIMESTAMP;
 ALTER TABLE users
 ADD COLUMN IF NOT EXISTS magic_login_used_at TIMESTAMP;
 `);
-await query(`
+  await query(`
   DO $$
   BEGIN
     IF NOT EXISTS (
@@ -182,7 +182,7 @@ await query(`
   $$;
 `);
 
-await query(`
+  await query(`
   DO $$
   BEGIN
     IF NOT EXISTS (
@@ -196,18 +196,18 @@ await query(`
   END
   $$;
 `);
-await query(`
+  await query(`
   ALTER TABLE users
 ADD COLUMN IF NOT EXISTS meeting_quota_warning_month VARCHAR(7);
 
 ALTER TABLE meeting_bookings
 ADD COLUMN IF NOT EXISTS billing_status VARCHAR(20) DEFAULT 'included';
 `);
-// =====================================================
-// Meeting Quota Alert Acknowledgements
-// =====================================================
+  // =====================================================
+  // Meeting Quota Alert Acknowledgements
+  // =====================================================
 
-await query(`
+  await query(`
   CREATE TABLE IF NOT EXISTS meeting_quota_alert_acknowledgements (
     user_id BIGINT NOT NULL
       REFERENCES users(id)
@@ -222,15 +222,15 @@ await query(`
     PRIMARY KEY (user_id, month_key)
   );
 `);
-// =====================================================
-// מעקב אחרי מי יצר את השריון
-// =====================================================
-await pool.query(`
+  // =====================================================
+  // מעקב אחרי מי יצר את השריון
+  // =====================================================
+  await pool.query(`
   ALTER TABLE users
   ADD COLUMN IF NOT EXISTS
   meeting_access_both_floors BOOLEAN NOT NULL DEFAULT FALSE
 `);
-await query(`
+  await query(`
   ALTER TABLE meeting_bookings
   ADD COLUMN IF NOT EXISTS created_by_user_id BIGINT;
 
@@ -238,9 +238,9 @@ await query(`
   ADD COLUMN IF NOT EXISTS booking_source VARCHAR(20);
 `);
 
-// שריונים ישנים נחשבים כאילו נוצרו על ידי הלקוח עצמו.
-// כך אנחנו לא משאירים נתונים ישנים ללא מקור.
-await query(`
+  // שריונים ישנים נחשבים כאילו נוצרו על ידי הלקוח עצמו.
+  // כך אנחנו לא משאירים נתונים ישנים ללא מקור.
+  await query(`
   UPDATE meeting_bookings
   SET
     created_by_user_id = user_id,
@@ -250,8 +250,8 @@ await query(`
     OR booking_source IS NULL;
 `);
 
-// Foreign key למשתמש שביצע בפועל את השריון
-await query(`
+  // Foreign key למשתמש שביצע בפועל את השריון
+  await query(`
   DO $$
   BEGIN
     IF NOT EXISTS (
@@ -269,8 +269,8 @@ await query(`
   $$;
 `);
 
-// booking_source יכול להיות רק tenant או admin
-await query(`
+  // booking_source יכול להיות רק tenant או admin
+  await query(`
   DO $$
   BEGIN
     IF NOT EXISTS (
@@ -288,7 +288,7 @@ await query(`
   $$;
 `);
 
-await query(`
+  await query(`
   CREATE INDEX IF NOT EXISTS
     idx_meeting_bookings_created_by
   ON meeting_bookings(created_by_user_id);
@@ -405,9 +405,13 @@ await query(`
       )
     );
   `);
-await pool.query(`
+  await pool.query(`
   ALTER TABLE unit_tenancies
   ADD COLUMN IF NOT EXISTS notes TEXT
+`);
+  await query(`
+  ALTER TABLE unit_tenancies
+  ALTER COLUMN start_date DROP NOT NULL;
 `);
   // =====================================================
   // AlonSpace - Tenancy Users
@@ -601,7 +605,7 @@ await pool.query(`
     );
   `);
 
-// =====================================================
+  // =====================================================
   // AlonSpace - Unit Financial Entries
   // =====================================================
 

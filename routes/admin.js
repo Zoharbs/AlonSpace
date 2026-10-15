@@ -359,9 +359,9 @@ router.post('/units/owners', async (req, res, next) => {
   }
 });
 
- // =====================================================
- // AlonSpace - Update Unit Owner
- // =====================================================
+// =====================================================
+// AlonSpace - Update Unit Owner
+// =====================================================
 
 router.post('/units/owners/:id/update', async (req, res, next) => {
   try {
@@ -644,8 +644,15 @@ router.post('/units/tenancies/create', async (req, res, next) => {
   const unitId = String(req.body.unit_id || '').trim();
   const userId = String(req.body.user_id || '').trim();
   const rentalModel = String(req.body.rental_model || '').trim();
-  const startDate = String(req.body.start_date || '').trim();
-  const endDate = String(req.body.end_date || '').trim() || null;
+  const isDirectOwner = rentalModel === 'direct_owner';
+
+  const startDate = isDirectOwner
+    ? null
+    : String(req.body.start_date || '').trim();
+
+  const endDate = isDirectOwner
+    ? null
+    : String(req.body.end_date || '').trim() || null;
   const notes = normalizeOptional(req.body.notes);
 
   const redirectError = (message) => {
@@ -674,7 +681,10 @@ router.post('/units/tenancies/create', async (req, res, next) => {
     return redirectError('יש לבחור יחידה ושוכר תקינים');
   }
 
-  if (!validDate(startDate) || (endDate && !validDate(endDate))) {
+  if (
+    !isDirectOwner &&
+    (!validDate(startDate) || (endDate && !validDate(endDate)))
+  ) {
     return redirectError('יש להזין תאריכי חוזה תקינים');
   }
 
@@ -748,15 +758,11 @@ router.post('/units/tenancies/create', async (req, res, next) => {
         FROM unit_tenancies
         WHERE
           unit_id = $1
-          AND start_date <= COALESCE(
-            $3::date,
-            'infinity'::date
-          )
-          AND COALESCE(
-            end_date,
-            'infinity'::date
-          ) >= $2::date
-        LIMIT 1
+         AND COALESCE(start_date, '-infinity'::date)
+    <= COALESCE($3::date, 'infinity'::date)
+AND COALESCE(end_date, 'infinity'::date)
+    >= COALESCE($2::date, '-infinity'::date)
+            LIMIT 1
       `,
       [unitId, startDate, endDate]
     );
@@ -802,7 +808,7 @@ router.post('/units/tenancies/create', async (req, res, next) => {
       '/admin/units?success=' +
       encodeURIComponent('חוזה השכירות נוצר בהצלחה')
     );
-    } catch (error) {
+  } catch (error) {
     if (client) {
       try {
         await client.query('ROLLBACK');
@@ -859,8 +865,8 @@ router.post('/units/tenancies/update', async (req, res, next) => {
   }
 
   if (
-    !validDate(startDate) ||
-    (endDate && !validDate(endDate))
+    !isDirectOwner &&
+    (!validDate(startDate) || (endDate && !validDate(endDate)))
   ) {
     return redirectError('יש להזין תאריכים תקינים');
   }
@@ -941,14 +947,10 @@ router.post('/units/tenancies/update', async (req, res, next) => {
         WHERE
           unit_id = $1
           AND id <> $2
-          AND start_date <= COALESCE(
-            $4::date,
-            'infinity'::date
-          )
-          AND COALESCE(
-            end_date,
-            'infinity'::date
-          ) >= $3::date
+        AND COALESCE(start_date, '-infinity'::date)
+    <= COALESCE($4::date, 'infinity'::date)
+AND COALESCE(end_date, 'infinity'::date)
+    >= COALESCE($3::date, '-infinity'::date)
         LIMIT 1
       `,
       [
@@ -1126,8 +1128,8 @@ router.post('/units/rent-settings', async (req, res, next) => {
     const tenancyId = String(req.body.tenancy_id || '').trim();
     const rentText = String(req.body.monthly_rent ?? '').trim();
     const payoutText = String(req.body.monthly_owner_payout ?? '').trim();
-const includesManagementFee =
-  req.body.owner_payout_includes_management_fee === '1';
+    const includesManagementFee =
+      req.body.owner_payout_includes_management_fee === '1';
     const validAmount = value =>
       /^\d+(\.\d{1,2})?$/.test(value) &&
       Number.isFinite(Number(value)) &&
@@ -1191,26 +1193,26 @@ SELECT
         'ביחידה בבעלות AlonSpace אין תשלום לבעלים חיצוניים'
       );
     }
-if (includesManagementFee) {
-  const tenancy = tenancyResult.rows[0];
+    if (includesManagementFee) {
+      const tenancy = tenancyResult.rows[0];
 
-  if (
-    tenancy.ownership_type !== 'external' ||
-    tenancy.rental_model !== 'managed'
-  ) {
-    return redirectError(
-      'פיצול דמי ניהול אפשרי רק בשכירות מנוהלת בבעלות חיצונית'
-    );
-  }
+      if (
+        tenancy.ownership_type !== 'external' ||
+        tenancy.rental_model !== 'managed'
+      ) {
+        return redirectError(
+          'פיצול דמי ניהול אפשרי רק בשכירות מנוהלת בבעלות חיצונית'
+        );
+      }
 
-  if (
-    Number(payoutText) < Number(tenancy.management_fee)
-  ) {
-    return redirectError(
-      'התשלום הכולל לבעלים נמוך מדמי הניהול'
-    );
-  }
-}
+      if (
+        Number(payoutText) < Number(tenancy.management_fee)
+      ) {
+        return redirectError(
+          'התשלום הכולל לבעלים נמוך מדמי הניהול'
+        );
+      }
+    }
     await db.query(
       `
         INSERT INTO unit_rent_rates (
@@ -1403,7 +1405,8 @@ COALESCE(
           t.unit_id = ru.id
         ORDER BY
           CASE
-            WHEN t.start_date <= CURRENT_DATE
+  WHEN t.start_date IS NULL THEN 0
+  WHEN t.start_date <= CURRENT_DATE
               AND (
                 t.end_date IS NULL
                 OR t.end_date >= CURRENT_DATE
@@ -1413,7 +1416,7 @@ COALESCE(
             THEN 1
             ELSE 2
           END,
-          t.start_date DESC,
+          t.start_date DESC NULLS LAST,
           t.id DESC
         LIMIT 1
       ) ut ON TRUE
@@ -1460,7 +1463,7 @@ COALESCE(
         ru.unit_number ASC
     `);
 
-       const units = unitsResult.rows;
+    const units = unitsResult.rows;
 
     const ownersResult = await db.query(`
       SELECT
@@ -1474,7 +1477,7 @@ COALESCE(
       ORDER BY LOWER(name) ASC, id ASC
     `);
 
-      const tenantsResult = await db.query(`
+    const tenantsResult = await db.query(`
       SELECT
         id,
         display_name,
@@ -1527,8 +1530,8 @@ COALESCE(
 router.get('/', async (req, res, next) => {
   try {
     const pendingBusinessProfilesResult =
-  await db.query(
-    `
+      await db.query(
+        `
       SELECT
         tp.id,
         tp.user_id,
@@ -1561,13 +1564,13 @@ tp.updated_at,
       ORDER BY
         tp.updated_at ASC
     `
-  );
+      );
 
-const pendingBusinessProfiles =
-  pendingBusinessProfilesResult.rows;
-  const businessProfilesResult =
-  await db.query(
-    `
+    const pendingBusinessProfiles =
+      pendingBusinessProfilesResult.rows;
+    const businessProfilesResult =
+      await db.query(
+        `
       SELECT
         tp.id,
         tp.user_id,
@@ -1603,10 +1606,10 @@ const pendingBusinessProfiles =
       ORDER BY
         tp.updated_at DESC
     `
-  );
+      );
 
-const businessProfiles =
-  businessProfilesResult.rows;
+    const businessProfiles =
+      businessProfilesResult.rows;
     const quotaAlertsResult = await db.query(
       `
     SELECT
@@ -1716,7 +1719,7 @@ ORDER BY used_hours DESC
       pendingTestimonialsResult,
       meetingRoomsResult,
     ] = await Promise.all([
-db.query(`
+      db.query(`
   SELECT
     u.id,
     u.username,
@@ -1840,7 +1843,7 @@ ORDER BY
   LOWER(u.display_name) ASC
 `),
 
-db.query(`
+      db.query(`
   SELECT
     id,
     username,
@@ -1929,7 +1932,7 @@ db.query(`
   ORDER BY floor ASC
 `),
     ]);
-const surveyResults = await db.query(`
+    const surveyResults = await db.query(`
   SELECT
     s.id,
     s.user_id,
@@ -1947,32 +1950,32 @@ const surveyResults = await db.query(`
     ON u.id = s.user_id
   ORDER BY u.display_name ASC
 `);
-const surveys = surveyResults.rows;
+    const surveys = surveyResults.rows;
 
-const meetingRoomUsers = surveys.filter(
-  survey => survey.uses_meeting_room === true
-);
+    const meetingRoomUsers = surveys.filter(
+      survey => survey.uses_meeting_room === true
+    );
 
-const meetingRoomUsagePercent = surveys.length
-  ? Math.round(
-      (meetingRoomUsers.length / surveys.length) * 100
-    )
-  : 0;
+    const meetingRoomUsagePercent = surveys.length
+      ? Math.round(
+        (meetingRoomUsers.length / surveys.length) * 100
+      )
+      : 0;
 
-const usageValues = meetingRoomUsers
-  .map(survey =>
-    Number(survey.meeting_room_times_per_month)
-  )
-  .filter(value => Number.isFinite(value));
+    const usageValues = meetingRoomUsers
+      .map(survey =>
+        Number(survey.meeting_room_times_per_month)
+      )
+      .filter(value => Number.isFinite(value));
 
-const averageMeetingRoomUsage = usageValues.length
-  ? (
-      usageValues.reduce(
-        (sum, value) => sum + value,
-        0
-      ) / usageValues.length
-    ).toFixed(1)
-  : '0';
+    const averageMeetingRoomUsage = usageValues.length
+      ? (
+        usageValues.reduce(
+          (sum, value) => sum + value,
+          0
+        ) / usageValues.length
+      ).toFixed(1)
+      : '0';
     const stats = {
       activeClients: activeClientsResult.rows[0].count,
       upcomingMeetings: upcomingMeetingsResult.rows[0].count,
@@ -1988,14 +1991,14 @@ const averageMeetingRoomUsage = usageValues.length
 
 
 
-const floor4Directory =
-  buildFloorDirectory(clientsResult.rows, 4);
+    const floor4Directory =
+      buildFloorDirectory(clientsResult.rows, 4);
 
-const floor6Directory =
-  buildFloorDirectory(clientsResult.rows, 6);
+    const floor6Directory =
+      buildFloorDirectory(clientsResult.rows, 6);
 
 
-const floorDirectoryOverridesResult = await db.query(`
+    const floorDirectoryOverridesResult = await db.query(`
   SELECT
     floor,
     office_number,
@@ -2003,53 +2006,53 @@ const floorDirectoryOverridesResult = await db.query(`
   FROM floor_directory_overrides
 `);
 
-const floorDirectoryOverrides = {
-  4: {},
-  6: {}
-};
+    const floorDirectoryOverrides = {
+      4: {},
+      6: {}
+    };
 
-floorDirectoryOverridesResult.rows.forEach(row => {
-  const floor = Number(row.floor);
-  const office = Number(row.office_number);
+    floorDirectoryOverridesResult.rows.forEach(row => {
+      const floor = Number(row.floor);
+      const office = Number(row.office_number);
 
-  if (!floorDirectoryOverrides[floor]) {
-    floorDirectoryOverrides[floor] = {};
-  }
+      if (!floorDirectoryOverrides[floor]) {
+        floorDirectoryOverrides[floor] = {};
+      }
 
-  floorDirectoryOverrides[floor][office] =
-    row.directory_name || '';
-});
+      floorDirectoryOverrides[floor][office] =
+        row.directory_name || '';
+    });
 
     return res.render('admin/dashboard', {
-  title: 'פאנל ניהול - AlonSpace',
-  layout: false,
-  adminName: req.session.userName,
+      title: 'פאנל ניהול - AlonSpace',
+      layout: false,
+      adminName: req.session.userName,
 
-  clients: clientsResult.rows,
-  admins: adminsResult.rows,
-  messages: messagesResult.rows,
-  testimonials: testimonialsResult.rows,
-  floor4Directory,
-  floor6Directory,
-  meetingBookings: meetingBookingsResult.rows,
-  meetingRooms: meetingRoomsResult.rows,
-floorDirectoryOverrides,
-  // שאלון
-  surveys,
-  meetingRoomUsagePercent,
-  averageMeetingRoomUsage,
+      clients: clientsResult.rows,
+      admins: adminsResult.rows,
+      messages: messagesResult.rows,
+      testimonials: testimonialsResult.rows,
+      floor4Directory,
+      floor6Directory,
+      meetingBookings: meetingBookingsResult.rows,
+      meetingRooms: meetingRoomsResult.rows,
+      floorDirectoryOverrides,
+      // שאלון
+      surveys,
+      meetingRoomUsagePercent,
+      averageMeetingRoomUsage,
 
-  stats,
+      stats,
 
-  error: req.query.error || null,
-  success: req.query.success || null,
+      error: req.query.error || null,
+      success: req.query.success || null,
 
-  quotaAlerts: quotaAlertsResult.rows,
-  rentalAlerts: rentalAlertsResult.rows,
-  pendingBusinessProfiles,
-  businessProfiles,
-  newClientInvite,
-});
+      quotaAlerts: quotaAlertsResult.rows,
+      rentalAlerts: rentalAlertsResult.rows,
+      pendingBusinessProfiles,
+      businessProfiles,
+      newClientInvite,
+    });
   } catch (error) {
     return next(error);
   }
@@ -2757,7 +2760,7 @@ router.get('/analytics', async (req, res, next) => {
     // כרגע רק כמה השלימו
     // =========================
 
-const surveyResults = await db.query(`
+    const surveyResults = await db.query(`
   SELECT
     s.id,
     s.user_id,
@@ -2784,34 +2787,34 @@ const surveyResults = await db.query(`
     LOWER(u.display_name) ASC
 `);
 
-const surveys = surveyResults.rows;
+    const surveys = surveyResults.rows;
 
-const meetingRoomUsers = surveys.filter(
-  survey => survey.uses_meeting_room === true
-);
+    const meetingRoomUsers = surveys.filter(
+      survey => survey.uses_meeting_room === true
+    );
 
-const meetingRoomUsagePercent = surveys.length
-  ? Math.round(
-      (meetingRoomUsers.length / surveys.length) * 100
-    )
-  : 0;
+    const meetingRoomUsagePercent = surveys.length
+      ? Math.round(
+        (meetingRoomUsers.length / surveys.length) * 100
+      )
+      : 0;
 
-const usageValues = meetingRoomUsers
-  .map(survey =>
-    Number(survey.meeting_room_times_per_month)
-  )
-  .filter(value => Number.isFinite(value));
+    const usageValues = meetingRoomUsers
+      .map(survey =>
+        Number(survey.meeting_room_times_per_month)
+      )
+      .filter(value => Number.isFinite(value));
 
-const averageMeetingRoomUsage = usageValues.length
-  ? (
-      usageValues.reduce(
-        (sum, value) => sum + value,
-        0
-      ) / usageValues.length
-    ).toFixed(1)
-  : '0';
+    const averageMeetingRoomUsage = usageValues.length
+      ? (
+        usageValues.reduce(
+          (sum, value) => sum + value,
+          0
+        ) / usageValues.length
+      ).toFixed(1)
+      : '0';
 
-const completedSurveys = surveys.length;
+    const completedSurveys = surveys.length;
 
     // =========================
     // Analytics של האתר הציבורי
@@ -2912,10 +2915,10 @@ const completedSurveys = surveys.length;
 
       recentActivity:
         recentActivityResult.rows,
-completedSurveys,
-surveys,
-meetingRoomUsagePercent,
-averageMeetingRoomUsage,
+      completedSurveys,
+      surveys,
+      meetingRoomUsagePercent,
+      averageMeetingRoomUsage,
 
       websiteAnalytics:
         websiteAnalyticsResult.rows[0],
@@ -3830,8 +3833,8 @@ router.post('/meeting-bookings/create',
         );
       }
 
-    await client.query(
-  `
+      await client.query(
+        `
     INSERT INTO meeting_bookings (
       user_id,
       meeting_room_id,
@@ -3855,21 +3858,21 @@ router.post('/meeting-bookings/create',
       'admin'
     )
   `,
-  [
-    tenant.id,
-    room.id,
-    booking_date,
-    start_time,
-    end_time,
-    String(note || '').trim() || null,
-    req.session.userId
-  ]
-);
+        [
+          tenant.id,
+          room.id,
+          booking_date,
+          start_time,
+          end_time,
+          String(note || '').trim() || null,
+          req.session.userId
+        ]
+      );
 
 
-// רישום מפורש שהשריון נוצר על ידי אדמין
-await client.query(
-  `
+      // רישום מפורש שהשריון נוצר על ידי אדמין
+      await client.query(
+        `
     INSERT INTO user_activity (
       user_id,
       event_type,
@@ -3881,21 +3884,21 @@ await client.query(
       $2::jsonb
     )
   `,
-  [
-    tenant.id,
-    JSON.stringify({
-      created_by_admin_id:
-        Number(req.session.userId),
-      meeting_room_id:
-        Number(room.id),
-      booking_date,
-      start_time,
-      end_time
-    })
-  ]
-);
+        [
+          tenant.id,
+          JSON.stringify({
+            created_by_admin_id:
+              Number(req.session.userId),
+            meeting_room_id:
+              Number(room.id),
+            booking_date,
+            start_time,
+            end_time
+          })
+        ]
+      );
 
-await client.query('COMMIT');
+      await client.query('COMMIT');
       return res.redirect(
         adminRedirect(
           'success',
@@ -4214,7 +4217,7 @@ router.post('/admins/:id/update',
       // לא מאפשר לאדמין להשבית את עצמו
       const active =
         Number(req.params.id) ===
-        Number(req.session.userId)
+          Number(req.session.userId)
           ? true
           : Boolean(is_active);
 
