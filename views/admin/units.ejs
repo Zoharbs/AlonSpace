@@ -2864,13 +2864,34 @@
 
                 : 'managed';
 
-              userSelect.value = '';
+userSelect.value = '';
 
-              startInput.value = '';
+startInput.value = '';
 
-              endInput.value = '';
+endInput.value = '';
 
-              notesInput.value = '';
+notesInput.value = '';
+
+const assignedTenantIds = String(
+  button.dataset.selectedTenantIds || ''
+)
+  .split(',')
+  .filter(Boolean);
+
+if (assignedTenantIds.length === 1) {
+  const assignedTenantId = assignedTenantIds[0];
+
+  const tenantExists = Array.from(userSelect.options)
+    .some(option => option.value === assignedTenantId);
+
+  if (tenantExists) {
+    userSelect.value = assignedTenantId;
+
+    userSelect.dispatchEvent(
+      new Event('change', { bubbles: true })
+    );
+  }
+}
 
             }
 
