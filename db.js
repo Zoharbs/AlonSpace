@@ -518,6 +518,11 @@ await pool.query(`
       UNIQUE (tenancy_id, effective_from)
     );
   `);
+  await query(`
+  ALTER TABLE unit_rent_rates
+  ADD COLUMN IF NOT EXISTS
+    owner_payout_includes_management_fee BOOLEAN NOT NULL DEFAULT FALSE;
+`);
 
   await query(`
     CREATE INDEX IF NOT EXISTS

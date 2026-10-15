@@ -1126,7 +1126,8 @@ router.post('/units/rent-settings', async (req, res, next) => {
     const tenancyId = String(req.body.tenancy_id || '').trim();
     const rentText = String(req.body.monthly_rent ?? '').trim();
     const payoutText = String(req.body.monthly_owner_payout ?? '').trim();
-
+const includesManagementFee =
+  req.body.owner_payout_includes_management_fee === '1';
     const validAmount = value =>
       /^\d+(\.\d{1,2})?$/.test(value) &&
       Number.isFinite(Number(value)) &&
@@ -1148,10 +1149,22 @@ router.post('/units/rent-settings', async (req, res, next) => {
 
     const tenancyResult = await db.query(
       `
-        SELECT
-          ut.id,
-          ut.rental_model,
-          ru.ownership_type
+SELECT
+  ut.id,
+  ut.rental_model,
+  ru.ownership_type,
+  COALESCE(
+    (
+      SELECT fee.monthly_amount
+      FROM unit_management_fee_rates fee
+      WHERE
+        fee.unit_id = ru.id
+        AND fee.effective_from <= DATE_TRUNC('month', CURRENT_DATE)::date
+      ORDER BY fee.effective_from DESC, fee.id DESC
+      LIMIT 1
+    ),
+    0
+  ) AS management_fee
         FROM unit_tenancies ut
         JOIN rental_units ru ON ru.id = ut.unit_id
         WHERE
@@ -1178,30 +1191,54 @@ router.post('/units/rent-settings', async (req, res, next) => {
         'ביחידה בבעלות AlonSpace אין תשלום לבעלים חיצוניים'
       );
     }
+if (includesManagementFee) {
+  const tenancy = tenancyResult.rows[0];
 
+  if (
+    tenancy.ownership_type !== 'external' ||
+    tenancy.rental_model !== 'managed'
+  ) {
+    return redirectError(
+      'פיצול דמי ניהול אפשרי רק בשכירות מנוהלת בבעלות חיצונית'
+    );
+  }
+
+  if (
+    Number(payoutText) < Number(tenancy.management_fee)
+  ) {
+    return redirectError(
+      'התשלום הכולל לבעלים נמוך מדמי הניהול'
+    );
+  }
+}
     await db.query(
       `
         INSERT INTO unit_rent_rates (
-          tenancy_id,
-          monthly_rent,
-          monthly_owner_payout,
-          effective_from
-        )
-        VALUES (
-          $1,
-          $2,
-          $3,
-          DATE_TRUNC('month', CURRENT_DATE)::date
-        )
-        ON CONFLICT (tenancy_id, effective_from)
-        DO UPDATE SET
-          monthly_rent = EXCLUDED.monthly_rent,
-          monthly_owner_payout = EXCLUDED.monthly_owner_payout
-      `,
+  tenancy_id,
+  monthly_rent,
+  monthly_owner_payout,
+  owner_payout_includes_management_fee,
+  effective_from
+)
+VALUES (
+  $1,
+  $2,
+  $3,
+  $4,
+  DATE_TRUNC('month', CURRENT_DATE)::date
+)
+ON CONFLICT (tenancy_id, effective_from)
+DO UPDATE SET
+  monthly_rent = EXCLUDED.monthly_rent,
+  monthly_owner_payout = EXCLUDED.monthly_owner_payout,
+  owner_payout_includes_management_fee =
+    EXCLUDED.owner_payout_includes_management_fee
+    `,
       [
         tenancyId,
         Number(rentText),
-        Number(payoutText)
+        Number(payoutText),
+        includesManagementFee
       ]
     );
 
@@ -1321,8 +1358,12 @@ router.get('/units', async (req, res, next) => {
           0
         ) AS monthly_management_fee,
 
-        rent.monthly_rent,
-        rent.monthly_owner_payout,
+rent.monthly_rent,
+rent.monthly_owner_payout,
+COALESCE(
+  rent.owner_payout_includes_management_fee,
+  FALSE
+) AS owner_payout_includes_management_fee,
 
         ut.id AS tenancy_id,
         ut.rental_model,
@@ -1378,9 +1419,10 @@ router.get('/units', async (req, res, next) => {
       ) ut ON TRUE
 
       LEFT JOIN LATERAL (
-        SELECT
-          monthly_rent,
-          monthly_owner_payout
+       SELECT
+  monthly_rent,
+  monthly_owner_payout,
+  owner_payout_includes_management_fee
         FROM unit_rent_rates
         WHERE
           tenancy_id = ut.id
