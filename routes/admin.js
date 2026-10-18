@@ -112,16 +112,23 @@ async function syncTenantManagedContracts(userId) {
     const user = userResult.rows[0];
     const officeNumbers = [...new Set(getOfficeNumbers(user.office_number))];
 
-    if (!user.rental_start_date || ![4, 6].includes(Number(user.floor)) || !officeNumbers.length) {
+    if (![4, 6].includes(Number(user.floor)) || !officeNumbers.length) {
       await client.query('COMMIT');
       return summary;
     }
+    const startDate = user.rental_start_date
+      ? new Date(user.rental_start_date).toISOString().slice(0, 10)
+      : null;
 
-    const startDate = new Date(user.rental_start_date).toISOString().slice(0, 10);
     const endDate = user.rental_end_date
       ? new Date(user.rental_end_date).toISOString().slice(0, 10)
       : null;
 
+    if (!startDate && endDate) {
+      summary.skipped++;
+      await client.query('COMMIT');
+      return summary;
+    }
     for (const officeNumber of officeNumbers) {
       const unitResult = await client.query(`
         SELECT id, ownership_type
@@ -136,9 +143,16 @@ async function syncTenantManagedContracts(userId) {
       }
 
       const unit = unitResult.rows[0];
-      const rentalModel = unit.ownership_type === 'alonspace'
-        ? 'alonspace_owned'
-        : 'managed';
+      if (!startDate && unit.ownership_type === 'alonspace') {
+        summary.skipped++;
+        continue;
+      }
+
+      const rentalModel = !startDate
+        ? 'direct_owner'
+        : unit.ownership_type === 'alonspace'
+          ? 'alonspace_owned'
+          : 'managed';
 
       // Serialize competing inserts for the same unit.
       await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [unit.id]);
@@ -160,7 +174,7 @@ async function syncTenantManagedContracts(userId) {
       const matchingResult = await client.query(`
         SELECT id FROM unit_tenancies
         WHERE unit_id = $1 AND rental_model = $2
-          AND start_date = $3::date
+          AND start_date IS NOT DISTINCT FROM $3::date
           AND end_date IS NOT DISTINCT FROM $4::date
         ORDER BY id DESC LIMIT 1
       `, [unit.id, rentalModel, startDate, endDate]);
@@ -173,7 +187,8 @@ async function syncTenantManagedContracts(userId) {
           SELECT 1 FROM unit_tenancies
           WHERE unit_id = $1
             AND COALESCE(start_date, '-infinity'::date) <= COALESCE($3::date, 'infinity'::date)
-            AND COALESCE(end_date, 'infinity'::date) >= $2::date
+            AND COALESCE(end_date, 'infinity'::date)
+    >= COALESCE($2::date, '-infinity'::date)
           LIMIT 1
         `, [unit.id, startDate, endDate]);
 
@@ -222,8 +237,7 @@ router.post('/units/sync-tenant-contracts', async (req, res, next) => {
   try {
     const result = await db.query(`
       SELECT id FROM users
-      WHERE role = 'tenant' AND is_active = TRUE
-        AND rental_start_date IS NOT NULL
+     WHERE role = 'tenant' AND is_active = TRUE
       ORDER BY id
     `);
 
