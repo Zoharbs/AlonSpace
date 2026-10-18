@@ -86,6 +86,163 @@ function buildFloorDirectory(clients, floor) {
 }
 
 router.use(requireAdmin);
+
+// =====================================================
+// Automatically create managed tenancies from tenant dates
+// =====================================================
+async function syncTenantManagedContracts(userId) {
+  const summary = { created: 0, linked: 0, skipped: 0 };
+  const client = await db.pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const userResult = await client.query(`
+      SELECT id, floor, office_number, rental_start_date, rental_end_date
+      FROM users
+      WHERE id = $1 AND role = 'tenant' AND is_active = TRUE
+      FOR UPDATE
+    `, [userId]);
+
+    if (!userResult.rows.length) {
+      await client.query('COMMIT');
+      return summary;
+    }
+
+    const user = userResult.rows[0];
+    const officeNumbers = [...new Set(getOfficeNumbers(user.office_number))];
+
+    if (!user.rental_start_date || ![4, 6].includes(Number(user.floor)) || !officeNumbers.length) {
+      await client.query('COMMIT');
+      return summary;
+    }
+
+    const startDate = new Date(user.rental_start_date).toISOString().slice(0, 10);
+    const endDate = user.rental_end_date
+      ? new Date(user.rental_end_date).toISOString().slice(0, 10)
+      : null;
+
+    for (const officeNumber of officeNumbers) {
+      const unitResult = await client.query(`
+        SELECT id, ownership_type
+        FROM rental_units
+        WHERE floor = $1 AND unit_number = $2 AND is_active = TRUE
+        LIMIT 1
+      `, [user.floor, String(officeNumber)]);
+
+      if (!unitResult.rows.length) {
+        summary.skipped++;
+        continue;
+      }
+
+      const unit = unitResult.rows[0];
+      const rentalModel = unit.ownership_type === 'alonspace'
+        ? 'alonspace_owned'
+        : 'managed';
+
+      // Serialize competing inserts for the same unit.
+      await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [unit.id]);
+
+      // Never silently reassign a tenant who already has a contract in this unit.
+      const assignedResult = await client.query(`
+        SELECT 1
+        FROM unit_tenancy_users tu
+        JOIN unit_tenancies t ON t.id = tu.tenancy_id
+        WHERE t.unit_id = $1 AND tu.user_id = $2
+        LIMIT 1
+      `, [unit.id, user.id]);
+
+      if (assignedResult.rows.length) {
+        continue;
+      }
+
+      // A matching contract can be shared by several occupants.
+      const matchingResult = await client.query(`
+        SELECT id FROM unit_tenancies
+        WHERE unit_id = $1 AND rental_model = $2
+          AND start_date = $3::date
+          AND end_date IS NOT DISTINCT FROM $4::date
+        ORDER BY id DESC LIMIT 1
+      `, [unit.id, rentalModel, startDate, endDate]);
+
+      let tenancyId;
+      if (matchingResult.rows.length) {
+        tenancyId = matchingResult.rows[0].id;
+      } else {
+        const overlapResult = await client.query(`
+          SELECT 1 FROM unit_tenancies
+          WHERE unit_id = $1
+            AND COALESCE(start_date, '-infinity'::date) <= COALESCE($3::date, 'infinity'::date)
+            AND COALESCE(end_date, 'infinity'::date) >= $2::date
+          LIMIT 1
+        `, [unit.id, startDate, endDate]);
+
+        if (overlapResult.rows.length) {
+          summary.skipped++;
+          continue;
+        }
+
+        const created = await client.query(`
+          INSERT INTO unit_tenancies (unit_id, rental_model, start_date, end_date)
+          VALUES ($1, $2, $3, $4)
+          RETURNING id
+        `, [unit.id, rentalModel, startDate, endDate]);
+
+        tenancyId = created.rows[0].id;
+        summary.created++;
+      }
+
+      const primaryResult = await client.query(`
+        SELECT 1 FROM unit_tenancy_users
+        WHERE tenancy_id = $1 AND tenant_role = 'primary'
+        LIMIT 1
+      `, [tenancyId]);
+
+      await client.query(`
+        INSERT INTO unit_tenancy_users (tenancy_id, user_id, tenant_role)
+        VALUES ($1, $2, $3)
+        ON CONFLICT (tenancy_id, user_id) DO NOTHING
+      `, [tenancyId, user.id, primaryResult.rows.length ? 'partner' : 'primary']);
+
+      summary.linked++;
+    }
+
+    await client.query('COMMIT');
+    return summary;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// One-time/manual reconciliation for existing tenants.
+router.post('/units/sync-tenant-contracts', async (req, res, next) => {
+  try {
+    const result = await db.query(`
+      SELECT id FROM users
+      WHERE role = 'tenant' AND is_active = TRUE
+        AND rental_start_date IS NOT NULL
+      ORDER BY id
+    `);
+
+    const totals = { created: 0, linked: 0, skipped: 0 };
+    for (const user of result.rows) {
+      const summary = await syncTenantManagedContracts(user.id);
+      totals.created += summary.created;
+      totals.linked += summary.linked;
+      totals.skipped += summary.skipped;
+    }
+
+    return res.redirect('/admin/units?success=' + encodeURIComponent(
+      `סנכרון הושלם: ${totals.created} חוזים נוצרו, ${totals.linked} שיוכי דיירים נוספו, ${totals.skipped} מקרים דורשים בדיקה (משרד חסר או חוזה חופף).`
+    ));
+  } catch (error) {
+    return next(error);
+  }
+});
+
 // =====================================================
 // AlonSpace - Create Unit Owner
 // =====================================================
@@ -834,8 +991,9 @@ router.post('/units/tenancies/update', async (req, res, next) => {
   const tenancyId = String(req.body.tenancy_id || '').trim();
   const userId = String(req.body.user_id || '').trim();
   const rentalModel = String(req.body.rental_model || '').trim();
-  const startDate = String(req.body.start_date || '').trim();
-  const endDate = String(req.body.end_date || '').trim() || null;
+  const isDirectOwner = rentalModel === 'direct_owner';
+  const startDate = isDirectOwner ? null : String(req.body.start_date || '').trim();
+  const endDate = isDirectOwner ? null : String(req.body.end_date || '').trim() || null;
   const notes = normalizeOptional(req.body.notes);
 
   const redirectError = (message) => {
@@ -3157,6 +3315,7 @@ magic_login_used_at
     );
 
     const createdClient = createResult.rows[0];
+    const contractSync = await syncTenantManagedContracts(createdClient.id);
 
     req.session.newClientInvite = {
       userId: createdClient.id,
@@ -3176,7 +3335,7 @@ magic_login_used_at
       return res.redirect(
         adminRedirect(
           'success',
-          'חשבון הלקוח נוצר. הודעת ההתחברות מוכנה להעתקה.'
+          `חשבון הלקוח נוצר. הודעת ההתחברות מוכנה להעתקה. חוזים אוטומטיים: ${contractSync.created}. מקרים לבדיקה: ${contractSync.skipped}.`
         )
       );
     });
@@ -3277,10 +3436,12 @@ router.post('/clients/:id/update',
         );
       }
 
+      const contractSync = await syncTenantManagedContracts(result.rows[0].id);
+
       return res.redirect(
         adminRedirect(
           'success',
-          'פרטי הלקוח עודכנו'
+          `פרטי הלקוח עודכנו. חוזים אוטומטיים: ${contractSync.created}. מקרים לבדיקה: ${contractSync.skipped}.`
         )
       );
 

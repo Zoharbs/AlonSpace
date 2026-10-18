@@ -1572,6 +1572,11 @@
                 <section class="owner-management">
 
                   <h2>סיכום כספי חודשי צפוי</h2>
+                  <form method="post" action="/admin/units/sync-tenant-contracts" style="margin:12px 0;">
+                    <button type="submit" class="unit-add-btn" onclick="return confirm('ליצור חוזים אוטומטית לדיירים קיימים שיש להם תאריך שכירות? חוזים קיימים לא יידרסו.');">
+                      סנכרון חוזים מדיירים קיימים
+                    </button>
+                  </form>
 
                   <p class="muted">
 
@@ -1767,9 +1772,11 @@
                                       <th>דיירים נוכחיים</th>
 
                                       <th>מודל השכרה</th>
+
                                       <th>דמי ניהול</th>
+
+                                      <th>סה״כ הכנסה</th>
                                       <th>תשלום לבעלים</th>
-                                      <th>רווח חודשי</th>
                                       <th>מצב</th>
 
                                     </tr>
