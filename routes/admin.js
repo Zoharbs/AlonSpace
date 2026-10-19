@@ -131,7 +131,10 @@ router.use((req, res, next) => {
 
   // מנהל מתחם: רק נתיבים שאושרו במפורש.
 
-  const allowedManagerRoutes = [
+const allowedManagerRoutes = [
+    // דשבורד ניהול משותף
+    { method: 'GET', path: /^\/$/ },
+
     // ניהול לקוחות
     { method: 'POST', path: /^\/clients\/create$/ },
     { method: 'POST', path: /^\/clients\/\d+\/update$/ },
