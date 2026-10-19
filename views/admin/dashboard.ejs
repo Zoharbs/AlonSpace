@@ -2115,6 +2115,7 @@
                         <div class="quota-admin-actions">
                           <form method="POST" action="/admin/meeting-quota-alerts/acknowledge"
                             onsubmit="return confirm('לסמן את ההתראה כטופלה?');">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <input type="hidden" name="user_id" value="<%= alert.id %>">
 
                             <button type="submit" class="mini-btn">
@@ -2334,10 +2335,10 @@
 
 
                             <div class="quota-admin-actions">
-                              <form method="POST" action="/admin/meeting-quota-alerts/acknowledge"
-                                onsubmit="return confirm('לסמן את ההתראה כטופלה?');">
-                                <input type="hidden" name="user_id" value="<%= alert.id %>">
-
+                             <form method="POST" action="/admin/meeting-quota-alerts/acknowledge"
+                              onsubmit="return confirm('לסמן את ההתראה כטופלה?');">
+                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                              <input type="hidden" name="user_id" value="<%= alert.id %>">
                                 <button type="submit" class="mini-btn">
                                   ✓ ראיתי
                                 </button>
