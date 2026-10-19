@@ -5,14 +5,50 @@ const db = require('../db');
 
 const router = express.Router();
 
-function requireAdmin(req, res, next) {
-  if (
-    !req.session?.userId ||
-    req.session?.userRole !== 'admin'
-  ) {
-    return res.redirect('/login');
-  }
+async function requireAdmin(req, res, next) {
+  try {
+    if (!req.session?.userId) {
+      return res.redirect('/login');
+    }
 
+    const result = await db.query(
+      `
+        SELECT id, role, is_active, display_name
+        FROM users
+        WHERE id = $1
+        LIMIT 1
+      `,
+      [req.session.userId]
+    );
+
+    const user = result.rows[0];
+
+    if (!user || !user.is_active) {
+      return res.status(403).send('החשבון אינו פעיל או אינו קיים');
+    }
+
+    // Always use the current database role.
+    req.session.userRole = user.role;
+    req.session.userName = user.display_name;
+
+    if (user.role !== 'admin') {
+      return res.status(403).send(
+        'אין לך הרשאה לגשת לאזור זה'
+      );
+    }
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}
+
+function requireSystemAdmin(req, res, next) {
+  if (req.session?.userRole !== 'admin') {
+    return res.status(403).send(
+      'פעולה זו זמינה למנהל מערכת בלבד'
+    );
+  }
 
   return next();
 }

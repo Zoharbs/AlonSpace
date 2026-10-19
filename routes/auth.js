@@ -6,7 +6,9 @@ const db = require('../db');
 const router = express.Router();
 
 function redirectForRole(role) {
-  return role === 'admin' ? '/admin' : '/dashboard';
+  if (role === 'admin') return '/admin';
+  if (role === 'manager') return '/manager';
+  return '/dashboard';
 }
 
 function renderLogin(res, status, error) {

@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background: #f6f4f0;
+      font-family: Arial, sans-serif;
+    }
+    .manager-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .manager-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .manager-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-bottom: 32px;
+    }
+    .manager-table th,
+    .manager-table td {
+      padding: 14px;
+      text-align: right;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .manager-table th {
+      background: #eeeae3;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <main class="manager-container">
+    <div class="manager-header">
+      <div>
+        <h1>ניהול מתחם AlonSpace</h1>
+        <p>שלום, <%= managerName %></p>
+      </div>
+      <form method="POST" action="/logout">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit">התנתקות</button>
+      </form>
+    </div>
+
+    <% [4, 6].forEach(floor => { %>
+      <h2>קומה <%= floor %></h2>
+      <div class="table-wrap">
+        <table class="manager-table">
+          <thead>
+            <tr>
+              <th>משרד</th>
+              <th>בעלים</th>
+              <th>דיירים</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% units.filter(unit => Number(unit.floor) === floor).forEach(unit => { %>
+              <tr>
+                <td><%= unit.unit_number %></td>
+                <td><%= unit.owner_name || 'לא הוגדר' %></td>
+                <td><%= unit.tenant_names || 'ללא דייר משויך' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% }) %>
+  </main>
+</body>
+</html>

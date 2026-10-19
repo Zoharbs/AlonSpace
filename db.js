@@ -113,6 +113,26 @@ async function initializeDatabase() {
       
   `);
   await query(`
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1
+      FROM pg_constraint
+      WHERE conrelid = 'users'::regclass
+        AND conname = 'users_role_check'
+        AND pg_get_constraintdef(oid) LIKE '%manager%'
+    ) THEN
+      ALTER TABLE users
+        DROP CONSTRAINT IF EXISTS users_role_check;
+
+      ALTER TABLE users
+        ADD CONSTRAINT users_role_check
+        CHECK (role IN ('admin', 'manager', 'tenant'));
+    END IF;
+  END
+  $$;
+`);
+  await query(`
   CREATE TABLE IF NOT EXISTS meeting_rooms (
     id BIGSERIAL PRIMARY KEY,
     name TEXT NOT NULL,

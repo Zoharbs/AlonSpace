@@ -377,6 +377,7 @@ app.use(analyticsMiddleware);
 app.use('/api', require('./routes/api'));
 app.use('/', require('./routes/auth'));
 app.use('/admin', require('./routes/admin'));
+app.use('/manager', require('./routes/manager'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/', require('./routes/pages'));
 
