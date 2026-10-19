@@ -582,7 +582,7 @@ router.post('/units/owners', async (req, res, next) => {
 
   try {
     client = await db.pool.connect();
-    if (ownsTransaction) await client.query('BEGIN');
+    await client.query('BEGIN');
 
     if (unitIds.length > 0) {
       const availableResult = await client.query(
@@ -767,7 +767,7 @@ router.post('/units/owners/:id/delete', async (req, res, next) => {
 
   try {
     client = await db.pool.connect();
-    if (ownsTransaction) await client.query('BEGIN');
+    await client.query('BEGIN');
 
     const ownerResult = await client.query(
       `
@@ -1024,7 +1024,7 @@ router.post('/units/tenancies/create', async (req, res, next) => {
   try {
     client = await db.pool.connect();
 
-    if (ownsTransaction) await client.query('BEGIN');
+    await client.query('BEGIN');
 
     // מונע יצירת חוזים חופפים בבקשות מקבילות
     await client.query(
@@ -1208,7 +1208,7 @@ router.post('/units/tenancies/update', async (req, res, next) => {
 
   try {
     client = await db.pool.connect();
-    if (ownsTransaction) await client.query('BEGIN');
+    await client.query('BEGIN');
 
     const tenancyResult = await client.query(
       `
@@ -4023,7 +4023,7 @@ router.post('/meeting-bookings/create',
         );
       }
 
-      if (ownsTransaction) await client.query('BEGIN');
+      await client.query('BEGIN');
 
       const userResult = await client.query(
         `
