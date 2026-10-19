@@ -140,6 +140,7 @@ router.use((req, res, next) => {
     { method: 'POST', path: /^\/clients\/\d+\/permanent-delete$/ },
     
     // ניהול חדרי ישיבות
+    { method: 'POST', path: /^\/meeting-quota-alerts\/acknowledge$/ },
     { method: 'POST', path: /^\/meeting-bookings\/create$/ },
     { method: 'POST', path: /^\/meeting-bookings\/\d+\/delete$/ },
 
