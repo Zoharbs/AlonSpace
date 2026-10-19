@@ -5,7 +5,8 @@ const db = require('../db');
 
 const router = express.Router();
 
-async function requireAdmin(req, res, next) {
+
+async function requireManagementAccess(req, res, next) {
   try {
     if (!req.session?.userId) {
       return res.redirect('/login');
@@ -24,17 +25,14 @@ async function requireAdmin(req, res, next) {
     const user = result.rows[0];
 
     if (!user || !user.is_active) {
-      return res.status(403).send('החשבון אינו פעיל או אינו קיים');
+      return res.status(403).send('אין הרשאה');
     }
 
-    // Always use the current database role.
     req.session.userRole = user.role;
     req.session.userName = user.display_name;
 
-    if (user.role !== 'admin') {
-      return res.status(403).send(
-        'אין לך הרשאה לגשת לאזור זה'
-      );
+    if (!['admin', 'manager'].includes(user.role)) {
+      return res.status(403).send('אין הרשאה');
     }
 
     return next();
@@ -42,6 +40,7 @@ async function requireAdmin(req, res, next) {
     return next(error);
   }
 }
+
 
 function requireSystemAdmin(req, res, next) {
   if (req.session?.userRole !== 'admin') {
@@ -121,7 +120,37 @@ function buildFloorDirectory(clients, floor) {
   return directory;
 }
 
-router.use(requireAdmin);
+
+router.use(requireManagementAccess);
+
+router.use((req, res, next) => {
+  // מנהל מערכת יכול להמשיך להשתמש בכל הנתיבים הקיימים.
+  if (req.session.userRole === 'admin') {
+    return next();
+  }
+
+  // מנהל מתחם: רק נתיבים שאושרו במפורש.
+  const allowedManagerRoutes = [
+    {
+      method: 'POST',
+      path: /^\/floor-directory\/save$/
+    }
+  ];
+
+  const isAllowed = allowedManagerRoutes.some(route =>
+    req.method === route.method &&
+    route.path.test(req.path)
+  );
+
+  if (!isAllowed) {
+    return res.status(403).send(
+      'אין לך הרשאה לבצע פעולה זו'
+    );
+  }
+
+  return next();
+});
+
 
 // =====================================================
 // Automatically create managed tenancies from tenant dates
@@ -3151,7 +3180,6 @@ router.get('/analytics', async (req, res, next) => {
 });
 
 router.post('/floor-directory/save',
-  requireAdmin,
   async (req, res, next) => {
 
     try {

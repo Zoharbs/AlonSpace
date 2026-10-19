@@ -101,4 +101,68 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/calendar-data', async (req, res, next) => {
+  try {
+    const [roomsResult, bookingsResult, tenantsResult] =
+      await Promise.all([
+        db.query(`
+          SELECT id, name, floor
+          FROM meeting_rooms
+          WHERE is_active = TRUE
+            AND floor IN (4, 6)
+          ORDER BY floor ASC
+        `),
+
+        db.query(`
+          SELECT
+            mb.id,
+            mb.user_id,
+            mb.meeting_room_id,
+            mb.booking_date,
+            mb.start_time,
+            mb.end_time,
+            mb.note,
+            u.display_name,
+            u.business_name,
+            u.office_number,
+            u.floor AS tenant_floor,
+            mr.name AS meeting_room_name,
+            mr.floor AS meeting_room_floor
+          FROM meeting_bookings mb
+          JOIN users u
+            ON u.id = mb.user_id
+          JOIN meeting_rooms mr
+            ON mr.id = mb.meeting_room_id
+          WHERE mr.floor IN (4, 6)
+            AND mb.booking_date >= CURRENT_DATE - INTERVAL '30 days'
+            AND mb.booking_date < CURRENT_DATE + INTERVAL '180 days'
+          ORDER BY
+            mb.booking_date ASC,
+            mb.start_time ASC
+        `),
+
+        db.query(`
+          SELECT
+            id,
+            display_name,
+            business_name,
+            office_number,
+            floor,
+            is_active
+          FROM users
+          WHERE role = 'tenant'
+          ORDER BY display_name ASC
+        `)
+      ]);
+
+    return res.json({
+      rooms: roomsResult.rows,
+      bookings: bookingsResult.rows,
+      tenants: tenantsResult.rows
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
 module.exports = router;
