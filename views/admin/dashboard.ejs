@@ -2335,10 +2335,10 @@
 
 
                             <div class="quota-admin-actions">
-                             <form method="POST" action="/admin/meeting-quota-alerts/acknowledge"
-                              onsubmit="return confirm('לסמן את ההתראה כטופלה?');">
-                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                              <input type="hidden" name="user_id" value="<%= alert.id %>">
+                              <form method="POST" action="/admin/meeting-quota-alerts/acknowledge"
+                                onsubmit="return confirm('לסמן את ההתראה כטופלה?');">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <input type="hidden" name="user_id" value="<%= alert.id %>">
                                 <button type="submit" class="mini-btn">
                                   ✓ ראיתי
                                 </button>
@@ -3313,20 +3313,20 @@
                           </section>
                         </details>
                         <% } %>
-<% if (isSystemAdmin) { %>
-                          <details class="admin-collapse">
+                          <% if (isSystemAdmin) { %>
+                            <details class="admin-collapse">
 
-                            <summary>
-                              בחירת מנהלים
-                            </summary>
+                              <summary>
+                                בחירת מנהלים
+                              </summary>
 
-                            <div class="admin-card">
+                              <div class="admin-card">
 
-                              <p class="small">
-                                בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
-                              </p>
+                                <p class="small">
+                                  בחר משתמש קיים כדי להעניק לו הרשאת מנהל.
+                                </p>
 
-                              <form method="POST" action="/admin/make-admin" style="
+                                <form method="POST" action="/admin/make-admin" style="
                               display:flex;
                               gap:12px;
                               align-items:end;
@@ -3334,186 +3334,187 @@
                               margin-top:18px;
                             ">
 
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                <div class="field" style="flex:1;min-width:220px;">
+                                  <div class="field" style="flex:1;min-width:220px;">
 
-                                  <label for="adminUser">
-                                    משתמש
-                                  </label>
+                                    <label for="adminUser">
+                                      משתמש
+                                    </label>
 
-                                  <select id="adminUser" name="user_id" required>
+                                    <select id="adminUser" name="user_id" required>
 
-                                    <option value="">
-                                      בחר משתמש
-                                    </option>
-
-                                    <% clients.forEach(client=> { %>
-
-                                      <option value="<%= client.id %>">
-                                        <%= client.display_name %>
-                                          (@<%= client.username %>)
-                                            <% if (client.business_name) { %>
-                                              - <%= client.business_name %>
-                                                <% } %>
+                                      <option value="">
+                                        בחר משתמש
                                       </option>
+
+                                      <% clients.forEach(client=> { %>
+
+                                        <option value="<%= client.id %>">
+                                          <%= client.display_name %>
+                                            (@<%= client.username %>)
+                                              <% if (client.business_name) { %>
+                                                - <%= client.business_name %>
+                                                  <% } %>
+                                        </option>
+
+                                        <% }) %>
+
+                                    </select>
+
+                                  </div>
+
+                                  <button type="submit" class="btn btn-primary"
+                                    onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
+                                    הפוך לאדמין
+                                  </button>
+
+                                </form>
+
+                              </div>
+
+                            </details>
+
+                            <details class="admin-collapse">
+
+                              <summary>
+                                ניהול אדמינים
+                              </summary>
+
+                              <div class="admin-card">
+
+                                <p class="small">
+                                  ניהול המשתמשים בעלי הרשאת מנהל במערכת.
+                                </p>
+
+                                <% if (!admins.length) { %>
+                                  <p>אין אדמינים במערכת.</p>
+                                  <% } %>
+
+                                    <% admins.forEach(admin=> { %>
+
+                                      <details class="admin-collapse client-card">
+
+                                        <summary>
+
+                                          <div>
+                                            <strong>
+                                              <%= admin.display_name %>
+                                            </strong>
+
+                                            <span class="small">
+                                              @<%= admin.username %>
+                                            </span>
+                                          </div>
+
+                                          <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
+                                            <%= admin.is_active ? 'פעיל' : 'מושבת' %>
+                                          </span>
+
+                                        </summary>
+
+                                        <div class="admin-card">
+
+                                          <% if (Number(admin.id) !==Number(currentUser?.id)) { %>
+                                            <form method="POST" action="/admin/users/<%= admin.id %>/role"
+                                              style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:20px;">
+
+                                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                              <div class="field" style="min-width:200px;">
+                                                <label>תפקיד במערכת</label>
+
+                                                <select name="role" required>
+                                                  <option value="admin" <%=admin.role==='admin' ? 'selected' : '' %>>
+                                                    מנהל מערכת
+                                                  </option>
+                                                  <option value="manager" <%=admin.role==='manager' ? 'selected' : '' %>
+                                                    >
+                                                    מנהל מתחם
+                                                  </option>
+                                                </select>
+                                              </div>
+
+                                              <button type="submit" class="btn btn-primary"
+                                                onclick="return confirm('האם לשנות את הרשאות המשתמש?')">
+                                                שמירת תפקיד
+                                              </button>
+                                            </form>
+                                            <% } else { %>
+                                              <p class="small">התפקיד שלך: מנהל מערכת</p>
+                                              <% } %>
+
+                                                <form method="POST" action="/admin/admins/<%= admin.id %>/update"
+                                                  class="form-grid">
+
+                                                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                                  <div class="form-row-2">
+
+                                                    <div class="field">
+                                                      <label>שם</label>
+
+                                                      <input type="text" name="display_name"
+                                                        value="<%= admin.display_name || '' %>" required>
+                                                    </div>
+
+                                                    <div class="field">
+                                                      <label>שם משתמש</label>
+
+                                                      <input type="text" name="username"
+                                                        value="<%= admin.username || '' %>" required>
+                                                    </div>
+
+                                                    <div class="field">
+                                                      <label>אימייל</label>
+
+                                                      <input type="email" name="email" value="<%= admin.email || '' %>">
+                                                    </div>
+
+                                                    <div class="field">
+                                                      <label>טלפון</label>
+
+                                                      <input type="text" name="phone" value="<%= admin.phone || '' %>">
+                                                    </div>
+
+                                                  </div>
+
+                                                  <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
+
+                                                    <label class="terms-check">
+                                                      <input type="checkbox" name="is_active" <%=admin.is_active
+                                                        ? 'checked' : '' %>
+                                                      >
+
+                                                      אדמין פעיל
+                                                    </label>
+
+                                                    <% } else { %>
+
+                                                      <p class="small">
+                                                        זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
+                                                      </p>
+
+                                                      <% } %>
+
+                                                        <button type="submit" class="btn btn-primary">
+                                                          שמור שינויים
+                                                        </button>
+
+                                                </form>
+
+                                        </div>
+
+                                      </details>
 
                                       <% }) %>
 
-                                  </select>
+                              </div>
 
-                                </div>
+                            </details>
 
-                                <button type="submit" class="btn btn-primary"
-                                  onclick="return confirm('האם להפוך את המשתמש שנבחר לאדמין?')">
-                                  הפוך לאדמין
-                                </button>
-
-                              </form>
-
-                            </div>
-
-                          </details>
-
-                          <details class="admin-collapse">
-
-                            <summary>
-                              ניהול אדמינים
-                            </summary>
-
-                            <div class="admin-card">
-
-                              <p class="small">
-                                ניהול המשתמשים בעלי הרשאת מנהל במערכת.
-                              </p>
-
-                              <% if (!admins.length) { %>
-                                <p>אין אדמינים במערכת.</p>
-                                <% } %>
-
-                                  <% admins.forEach(admin=> { %>
-
-                                    <details class="admin-collapse client-card">
-
-                                      <summary>
-
-                                        <div>
-                                          <strong>
-                                            <%= admin.display_name %>
-                                          </strong>
-
-                                          <span class="small">
-                                            @<%= admin.username %>
-                                          </span>
-                                        </div>
-
-                                        <span class="pill <%= admin.is_active ? 'ok' : 'bad' %>">
-                                          <%= admin.is_active ? 'פעיל' : 'מושבת' %>
-                                        </span>
-
-                                      </summary>
-
-                                      <div class="admin-card">
-
-                                        <% if (Number(admin.id) !==Number(currentUser?.id)) { %>
-                                          <form method="POST" action="/admin/users/<%= admin.id %>/role"
-                                            style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:20px;">
-
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                            <div class="field" style="min-width:200px;">
-                                              <label>תפקיד במערכת</label>
-
-                                              <select name="role" required>
-                                                <option value="admin" <%=admin.role==='admin' ? 'selected' : '' %>>
-                                                  מנהל מערכת
-                                                </option>
-                                                <option value="manager" <%=admin.role==='manager' ? 'selected' : '' %>>
-                                                  מנהל מתחם
-                                                </option>
-                                              </select>
-                                            </div>
-
-                                            <button type="submit" class="btn btn-primary"
-                                              onclick="return confirm('האם לשנות את הרשאות המשתמש?')">
-                                              שמירת תפקיד
-                                            </button>
-                                          </form>
-                                          <% } else { %>
-                                            <p class="small">התפקיד שלך: מנהל מערכת</p>
-                                            <% } %>
-
-                                              <form method="POST" action="/admin/admins/<%= admin.id %>/update"
-                                                class="form-grid">
-
-                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                                <div class="form-row-2">
-
-                                                  <div class="field">
-                                                    <label>שם</label>
-
-                                                    <input type="text" name="display_name"
-                                                      value="<%= admin.display_name || '' %>" required>
-                                                  </div>
-
-                                                  <div class="field">
-                                                    <label>שם משתמש</label>
-
-                                                    <input type="text" name="username"
-                                                      value="<%= admin.username || '' %>" required>
-                                                  </div>
-
-                                                  <div class="field">
-                                                    <label>אימייל</label>
-
-                                                    <input type="email" name="email" value="<%= admin.email || '' %>">
-                                                  </div>
-
-                                                  <div class="field">
-                                                    <label>טלפון</label>
-
-                                                    <input type="text" name="phone" value="<%= admin.phone || '' %>">
-                                                  </div>
-
-                                                </div>
-
-                                                <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
-
-                                                  <label class="terms-check">
-                                                    <input type="checkbox" name="is_active" <%=admin.is_active
-                                                      ? 'checked' : '' %>
-                                                    >
-
-                                                    אדמין פעיל
-                                                  </label>
-
-                                                  <% } else { %>
-
-                                                    <p class="small">
-                                                      זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
-                                                    </p>
-
-                                                    <% } %>
-
-                                                      <button type="submit" class="btn btn-primary">
-                                                        שמור שינויים
-                                                      </button>
-
-                                              </form>
-
-                                      </div>
-
-                                    </details>
-
-                                    <% }) %>
-
-                            </div>
-
-                          </details>
-
-                          <% } %>
-                          <!--
+                            <% } %>
+                              <!--
 <section class="admin-card">
 
   <h2>מפות קומות</h2>
@@ -3544,66 +3545,66 @@
 
 </section>
 -->
-                          <details class="admin-collapse floor-directory-section">
+                              <details class="admin-collapse floor-directory-section">
 
-                            <summary>
-                              ניהול מפת הקומה / דיירים
-                            </summary>
+                                <summary>
+                                  ניהול מפת הקומה / דיירים
+                                </summary>
 
-                            <div class="admin-card floor-directory-card">
+                                <div class="admin-card floor-directory-card">
 
-                              <div class="floor-directory-head">
-                                <div>
-                                  <h2>מפות קומות</h2>
-                                  <p class="small">
-                                    יצירת רשימת דיירים מעודכנת למסכי המתחם.
-                                  </p>
-                                </div>
+                                  <div class="floor-directory-head">
+                                    <div>
+                                      <h2>מפות קומות</h2>
+                                      <p class="small">
+                                        יצירת רשימת דיירים מעודכנת למסכי המתחם.
+                                      </p>
+                                    </div>
 
-                                <div class="floor-directory-switch">
-                                  <button type="button" class="mini-btn primary floor-directory-btn" data-floor="4">
-                                    קומה 4
+                                    <div class="floor-directory-switch">
+                                      <button type="button" class="mini-btn primary floor-directory-btn" data-floor="4">
+                                        קומה 4
+                                      </button>
+
+                                      <button type="button" class="mini-btn floor-directory-btn" data-floor="6">
+                                        קומה 6
+                                      </button>
+                                    </div>
+                                  </div>
+
+
+                                  <div class="floor-directory-preview">
+
+                                    <img id="floorDirectoryPreview" src="/images/floor4-map.png" alt="מפת קומה">
+
+                                  </div>
+
+
+                                  <button type="button" class="btn btn-primary" id="saveFloorImage">
+                                    שמירת תמונת הקומה
                                   </button>
 
-                                  <button type="button" class="mini-btn floor-directory-btn" data-floor="6">
-                                    קומה 6
-                                  </button>
-                                </div>
-                              </div>
+
+                                  <div class="floor-directory-editor">
+
+                                    <div class="floor-directory-editor-head">
+                                      <h3 id="floorDirectoryTitle">
+                                        רשימת דיירים — קומה 4
+                                      </h3>
+
+                                      <span class="small">
+                                        ניתן לערוך את השם שיופיע בתמונה
+                                      </span>
+                                    </div>
 
 
-                              <div class="floor-directory-preview">
+                                    <div class="floor-directory-list" id="floorDirectoryList"></div>
 
-                                <img id="floorDirectoryPreview" src="/images/floor4-map.png" alt="מפת קומה">
+                                  </div>
 
-                              </div>
-
-
-                              <button type="button" class="btn btn-primary" id="saveFloorImage">
-                                שמירת תמונת הקומה
-                              </button>
-
-
-                              <div class="floor-directory-editor">
-
-                                <div class="floor-directory-editor-head">
-                                  <h3 id="floorDirectoryTitle">
-                                    רשימת דיירים — קומה 4
-                                  </h3>
-
-                                  <span class="small">
-                                    ניתן לערוך את השם שיופיע בתמונה
-                                  </span>
                                 </div>
 
-
-                                <div class="floor-directory-list" id="floorDirectoryList"></div>
-
-                              </div>
-
-                            </div>
-
-                          </details>
+                              </details>
                     </section>
                     <!-- סוף tab-clients -->
 
@@ -4058,10 +4059,10 @@
     ========================= */
 
     const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminClients =
-  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
 
 
     const adminCalendar =
@@ -4651,7 +4652,7 @@
       }
 
       const adminMeetingRooms =
-    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -5940,13 +5941,16 @@
             // חיפוש בכותרת הלקוח בלבד, ולא בפרטי החשבון
             const summary = card.querySelector('summary');
 
-            const searchableText = summary
-              ? summary.textContent
-                  .toLowerCase()
-                  .replace(/\s+/g, ' ')
-                  .trim()
-              : '';
+            const clientInfo = summary
+              ? summary.querySelector('div')
+              : null;
 
+            const searchableText = clientInfo
+              ? clientInfo.textContent
+                .toLowerCase()
+                .replace(/\s+/g, ' ')
+                .trim()
+              : '';
             // כל מילות החיפוש צריכות להופיע בכותרת
             const matches = searchTerms.every(term =>
               searchableText.includes(term)
@@ -6015,11 +6019,11 @@
     ===================================== */
 
     const floorDirectories = {
-      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <%- JSON.stringify(
+  <% - JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 
