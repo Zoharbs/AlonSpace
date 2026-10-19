@@ -5929,20 +5929,63 @@
           }
 
 
+          const searchTerms = query
+            .split(/\s+/)
+            .filter(Boolean);
+
+          let visibleClients = 0;
+
           clientCards.forEach((card) => {
 
-            const text =
-              card.textContent
-                .toLowerCase();
+            // חיפוש בכותרת הלקוח בלבד, ולא בפרטי החשבון
+            const summary = card.querySelector('summary');
 
-            const matches =
-              !query ||
-              text.includes(query);
+            const searchableText = summary
+              ? summary.textContent
+                  .toLowerCase()
+                  .replace(/\s+/g, ' ')
+                  .trim()
+              : '';
 
-            card.style.display =
-              matches ? '' : 'none';
+            // כל מילות החיפוש צריכות להופיע בכותרת
+            const matches = searchTerms.every(term =>
+              searchableText.includes(term)
+            );
+
+            card.style.display = matches ? '' : 'none';
+
+            if (matches) {
+              visibleClients++;
+            }
+
+            // סוגרים כרטיסים שלא מתאימים לחיפוש
+            if (!matches) {
+              card.open = false;
+            }
 
           });
+
+          // הצגת הודעה כשאין תוצאות
+          let noResults = document.getElementById(
+            'clientSearchNoResults'
+          );
+
+          if (!noResults) {
+            noResults = document.createElement('div');
+            noResults.id = 'clientSearchNoResults';
+            noResults.className = 'admin-card';
+            noResults.style.textAlign = 'center';
+            noResults.style.padding = '24px';
+
+            document.querySelector(
+              '#clientsManagement .clients-list'
+            ).appendChild(noResults);
+          }
+
+          noResults.textContent = 'לא נמצאו דיירים מתאימים לחיפוש';
+
+          noResults.style.display =
+            query && visibleClients === 0 ? '' : 'none';
 
         }
       );
