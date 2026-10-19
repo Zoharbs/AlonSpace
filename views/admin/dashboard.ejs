@@ -2501,10 +2501,18 @@
                               </div>
 
                               <% } %>
+<% clients.forEach(client=> { %>
 
-                                <% clients.forEach(client=> { %>
-
-                                  <details class="admin-collapse client-card">
+  <details
+    class="admin-collapse client-card"
+    data-search="<%= [
+      client.display_name,
+      client.username,
+      client.business_name
+    ].filter(Boolean).join(' ').toLowerCase() %>"
+    data-floor="<%= client.floor || '' %>"
+    data-office="<%= client.office_number || '' %>"
+  >
 
                                     <summary>
 
@@ -5938,24 +5946,28 @@
 
           clientCards.forEach((card) => {
 
-            // חיפוש בכותרת הלקוח בלבד, ולא בפרטי החשבון
-            const summary = card.querySelector('summary');
+           const searchableText = card.dataset.search || '';
+const floor = card.dataset.floor || '';
+const office = card.dataset.office || '';
 
-            const clientInfo = summary
-              ? summary.querySelector('div')
-              : null;
+const locationMatch = query.match(
+  /^(קומה|משרד)\s*(\d+)$/
+);
 
-            const searchableText = clientInfo
-              ? clientInfo.textContent
-                .toLowerCase()
-                .replace(/\s+/g, ' ')
-                .trim()
-              : '';
-            // כל מילות החיפוש צריכות להופיע בכותרת
-            const matches = searchTerms.every(term =>
-              searchableText.includes(term)
-            );
+let matches;
 
+if (locationMatch) {
+  const type = locationMatch[1];
+  const number = locationMatch[2];
+
+  matches = type === 'קומה'
+    ? floor === number
+    : office === number;
+} else {
+  matches = searchTerms.every(term =>
+    searchableText.includes(term)
+  );
+}
             card.style.display = matches ? '' : 'none';
 
             if (matches) {
