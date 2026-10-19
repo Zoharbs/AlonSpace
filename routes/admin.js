@@ -652,7 +652,7 @@ router.post('/units/owners', async (req, res, next) => {
       );
     }
 
-    if (ownsTransaction) await client.query('COMMIT');
+    await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -811,7 +811,7 @@ router.post('/units/owners/:id/delete', async (req, res, next) => {
       [ownerId]
     );
 
-    if (ownsTransaction) await client.query('COMMIT');
+    await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -1126,7 +1126,7 @@ AND COALESCE(end_date, 'infinity'::date)
       [tenancyResult.rows[0].id, userId]
     );
 
-    if (ownsTransaction) await client.query('COMMIT');
+    await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -1339,7 +1339,7 @@ AND COALESCE(end_date, 'infinity'::date)
       );
     }
 
-    if (ownsTransaction) await client.query('COMMIT');
+    await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -4237,7 +4237,7 @@ router.post('/meeting-bookings/create',
         ]
       );
 
-      if (ownsTransaction) await client.query('COMMIT');
+      await client.query('COMMIT');
       return res.redirect(
         adminRedirect(
           'success',
