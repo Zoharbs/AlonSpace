@@ -3533,6 +3533,8 @@ magic_login_used_at
 
 router.post('/clients/:id/update',
   async (req, res, next) => {
+    let client = null;
+
     try {
       const {
         display_name,
@@ -3561,7 +3563,10 @@ router.post('/clients/:id/update',
         );
       }
 
-      const result = await db.query(
+      client = await db.pool.connect();
+      await client.query('BEGIN');
+
+      const result = await client.query(
         `
           UPDATE users
           SET
@@ -3614,19 +3619,50 @@ router.post('/clients/:id/update',
         );
       }
 
-      const contractSync = await syncTenantManagedContracts(result.rows[0].id);
+
+      const contractSync = await syncTenantManagedContracts(
+        result.rows[0].id,
+        client
+      );
+
+      if (contractSync.skipped > 0) {
+        const syncError = new Error(
+          'לא ניתן לסנכרן את נתוני השכירות. השינויים לא נשמרו.'
+        );
+        syncError.code = 'TENANCY_SYNC_SKIPPED';
+        throw syncError;
+      }
+
+      await client.query('COMMIT');
 
       return res.redirect(
         adminRedirect(
           'success',
-          `פרטי הלקוח עודכנו. חוזים אוטומטיים: ${contractSync.created}. מקרים לבדיקה: ${contractSync.skipped}.`
+          `פרטי הלקוח עודכנו. חוזים חדשים: ${contractSync.created}. חוזים שעודכנו: ${contractSync.updated}.`
         )
       );
 
 
 
+
+
     } catch (error) {
+      if (client) {
+        try {
+          await client.query('ROLLBACK');
+        } catch (rollbackError) {
+          console.error('Client update rollback failed:', rollbackError);
+        }
+      }
+
+      if (error.code === 'TENANCY_SYNC_SKIPPED') {
+        return res.redirect(
+          adminRedirect('error', error.message)
+        );
+      }
+
       if (error.code === '23505') {
+
         return res.redirect(
           adminRedirect(
             'error',
@@ -3636,6 +3672,10 @@ router.post('/clients/:id/update',
       }
 
       return next(error);
+    } finally {
+      if (client) {
+        client.release();
+      }
     }
   }
 );
@@ -4589,8 +4629,24 @@ router.post('/admins/:id/update',
           'פרטי האדמין עודכנו'
         )
       );
+
     } catch (error) {
+      if (client) {
+        try {
+          await client.query('ROLLBACK');
+        } catch (rollbackError) {
+          console.error('Client update rollback failed:', rollbackError);
+        }
+      }
+
+      if (error.code === 'TENANCY_SYNC_SKIPPED') {
+        return res.redirect(
+          adminRedirect('error', error.message)
+        );
+      }
+
       if (error.code === '23505') {
+
         return res.redirect(
           adminRedirect(
             'error',
