@@ -4319,47 +4319,61 @@ router.post('/testimonials/:id/delete',
     }
   }
 );
-router.post('/clients/:id/permanent-delete',
-  async (req, res, next) => {
-    try {
-      await db.query(
-        `
-        DELETE FROM meeting_bookings
-        WHERE user_id = $1
-        `,
-        [req.params.id]
-      );
 
-      const result = await db.query(
-        `
-        DELETE FROM users
-        WHERE id = $1
-          AND role = 'tenant'
-        RETURNING id
-        `,
-        [req.params.id]
-      );
+router.post('/clients/:id/permanent-delete', async (req, res, next) => {
+  let client = null;
 
-      if (result.rows.length === 0) {
-        return res.redirect(
-          adminRedirect(
-            'error',
-            'הלקוח לא נמצא'
-          )
-        );
-      }
+  try {
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    const tenantResult = await client.query(`
+      SELECT id
+      FROM users
+      WHERE id = $1 AND role = 'tenant'
+      FOR UPDATE
+    `, [req.params.id]);
+
+    if (tenantResult.rows.length === 0) {
+      await client.query('ROLLBACK');
 
       return res.redirect(
-        adminRedirect(
-          'success',
-          'הלקוח נמחק לצמיתות'
-        )
+        adminRedirect('error', 'הלקוח לא נמצא')
       );
-    } catch (error) {
-      return next(error);
+    }
+
+    await client.query(`
+      DELETE FROM meeting_bookings
+      WHERE user_id = $1
+    `, [req.params.id]);
+
+    await client.query(`
+      DELETE FROM users
+      WHERE id = $1 AND role = 'tenant'
+    `, [req.params.id]);
+
+    await client.query('COMMIT');
+
+    return res.redirect(
+      adminRedirect('success', 'הלקוח נמחק לצמיתות')
+    );
+  } catch (error) {
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.error('Permanent delete rollback failed:', rollbackError);
+      }
+    }
+
+    return next(error);
+  } finally {
+    if (client) {
+      client.release();
     }
   }
-);
+});
+
 
 router.post('/users/:id/role', requireSystemAdmin, async (req, res, next) => {
   try {
