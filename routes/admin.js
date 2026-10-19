@@ -130,12 +130,30 @@ router.use((req, res, next) => {
   }
 
   // מנהל מתחם: רק נתיבים שאושרו במפורש.
+
   const allowedManagerRoutes = [
-    {
-      method: 'POST',
-      path: /^\/floor-directory\/save$/
-    }
+    // ניהול לקוחות
+    { method: 'POST', path: /^\/clients\/create$/ },
+    { method: 'POST', path: /^\/clients\/\d+\/update$/ },
+    { method: 'POST', path: /^\/clients\/\d+\/reset-password$/ },
+    { method: 'POST', path: /^\/clients\/\d+\/delete$/ },
+
+    // ניהול חדרי ישיבות
+    { method: 'POST', path: /^\/meeting-bookings\/create$/ },
+    { method: 'POST', path: /^\/meeting-bookings\/\d+\/delete$/ },
+
+    // מפות קומות
+    { method: 'POST', path: /^\/floor-directory\/save$/ },
+
+    // פרופילים עסקיים
+    { method: 'GET', path: /^\/business-profiles\/\d+\/logo$/ },
+    { method: 'POST', path: /^\/business-profiles\/\d+\/approve$/ },
+    { method: 'POST', path: /^\/business-profiles\/\d+\/unpublish$/ },
+    { method: 'POST', path: /^\/business-profiles\/\d+\/reject$/ },
+    { method: 'POST', path: /^\/business-profiles\/\d+\/toggle-community$/ },
+    { method: 'POST', path: /^\/business-profiles\/\d+\/edit$/ }
   ];
+
 
   const isAllowed = allowedManagerRoutes.some(route =>
     req.method === route.method &&
@@ -155,12 +173,13 @@ router.use((req, res, next) => {
 // =====================================================
 // Automatically create managed tenancies from tenant dates
 // =====================================================
-async function syncTenantManagedContracts(userId) {
-  const summary = { created: 0, linked: 0, skipped: 0 };
-  const client = await db.pool.connect();
+async function syncTenantManagedContracts(userId, transactionClient = null) {
+  const summary = { created: 0, linked: 0, updated: 0, skipped: 0 };
+  const client = transactionClient || await db.pool.connect();
+const ownsTransaction = !transactionClient;
 
   try {
-    await client.query('BEGIN');
+    if (ownsTransaction) await client.query('BEGIN');
 
     const userResult = await client.query(`
       SELECT id, floor, office_number, rental_start_date, rental_end_date
@@ -170,7 +189,7 @@ async function syncTenantManagedContracts(userId) {
     `, [userId]);
 
     if (!userResult.rows.length) {
-      await client.query('COMMIT');
+      if (ownsTransaction) await client.query('COMMIT');
       return summary;
     }
 
@@ -178,7 +197,7 @@ async function syncTenantManagedContracts(userId) {
     const officeNumbers = [...new Set(getOfficeNumbers(user.office_number))];
 
     if (![4, 6].includes(Number(user.floor)) || !officeNumbers.length) {
-      await client.query('COMMIT');
+      if (ownsTransaction) await client.query('COMMIT');
       return summary;
     }
     const startDate = user.rental_start_date
@@ -191,7 +210,7 @@ async function syncTenantManagedContracts(userId) {
 
     if (!startDate && endDate) {
       summary.skipped++;
-      await client.query('COMMIT');
+      if (ownsTransaction) await client.query('COMMIT');
       return summary;
     }
     for (const officeNumber of officeNumbers) {
@@ -222,18 +241,83 @@ async function syncTenantManagedContracts(userId) {
       // Serialize competing inserts for the same unit.
       await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [unit.id]);
 
-      // Never silently reassign a tenant who already has a contract in this unit.
+
+      // Check whether this tenant already has a tenancy for this unit.
       const assignedResult = await client.query(`
-        SELECT 1
+        SELECT
+          t.id,
+          t.rental_model,
+          t.start_date,
+          t.end_date,
+          (
+            SELECT COUNT(*)::integer
+            FROM unit_tenancy_users other
+            WHERE other.tenancy_id = t.id
+          ) AS occupant_count
         FROM unit_tenancy_users tu
         JOIN unit_tenancies t ON t.id = tu.tenancy_id
         WHERE t.unit_id = $1 AND tu.user_id = $2
-        LIMIT 1
+        FOR UPDATE OF t
       `, [unit.id, user.id]);
 
       if (assignedResult.rows.length) {
+        // Multiple tenancy records require manual review.
+        if (assignedResult.rows.length !== 1) {
+          summary.skipped++;
+          continue;
+        }
+
+        const assigned = assignedResult.rows[0];
+
+        // Do not change dates for other occupants.
+        if (
+          assigned.occupant_count !== 1 ||
+          assigned.rental_model !== rentalModel
+        ) {
+          summary.skipped++;
+          continue;
+        }
+
+        const currentStart = assigned.start_date
+          ? new Date(assigned.start_date).toISOString().slice(0, 10)
+          : null;
+
+        const currentEnd = assigned.end_date
+          ? new Date(assigned.end_date).toISOString().slice(0, 10)
+          : null;
+
+        if (currentStart === startDate && currentEnd === endDate) {
+          continue;
+        }
+
+        // Check that the new dates do not overlap another tenancy.
+        const overlapResult = await client.query(`
+          SELECT 1
+          FROM unit_tenancies
+          WHERE unit_id = $1
+            AND id <> $2
+            AND COALESCE(start_date, '-infinity'::date)
+                <= COALESCE($4::date, 'infinity'::date)
+            AND COALESCE(end_date, 'infinity'::date)
+                >= COALESCE($3::date, '-infinity'::date)
+          LIMIT 1
+        `, [unit.id, assigned.id, startDate, endDate]);
+
+        if (overlapResult.rows.length) {
+          summary.skipped++;
+          continue;
+        }
+
+        await client.query(`
+          UPDATE unit_tenancies
+          SET start_date = $1, end_date = $2
+          WHERE id = $3
+        `, [startDate, endDate, assigned.id]);
+
+        summary.updated++;
         continue;
       }
+
 
       // A matching contract can be shared by several occupants.
       const matchingResult = await client.query(`
@@ -287,13 +371,17 @@ async function syncTenantManagedContracts(userId) {
       summary.linked++;
     }
 
-    await client.query('COMMIT');
+    if (ownsTransaction) await client.query('COMMIT');
     return summary;
   } catch (error) {
-    await client.query('ROLLBACK');
+    if (ownsTransaction) {
+      await client.query('ROLLBACK');
+    }
     throw error;
   } finally {
-    client.release();
+    if (ownsTransaction) {
+      client.release();
+    }
   }
 }
 
@@ -494,7 +582,7 @@ router.post('/units/owners', async (req, res, next) => {
 
   try {
     client = await db.pool.connect();
-    await client.query('BEGIN');
+    if (ownsTransaction) await client.query('BEGIN');
 
     if (unitIds.length > 0) {
       const availableResult = await client.query(
@@ -564,7 +652,7 @@ router.post('/units/owners', async (req, res, next) => {
       );
     }
 
-    await client.query('COMMIT');
+    if (ownsTransaction) await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -679,7 +767,7 @@ router.post('/units/owners/:id/delete', async (req, res, next) => {
 
   try {
     client = await db.pool.connect();
-    await client.query('BEGIN');
+    if (ownsTransaction) await client.query('BEGIN');
 
     const ownerResult = await client.query(
       `
@@ -723,7 +811,7 @@ router.post('/units/owners/:id/delete', async (req, res, next) => {
       [ownerId]
     );
 
-    await client.query('COMMIT');
+    if (ownsTransaction) await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -936,7 +1024,7 @@ router.post('/units/tenancies/create', async (req, res, next) => {
   try {
     client = await db.pool.connect();
 
-    await client.query('BEGIN');
+    if (ownsTransaction) await client.query('BEGIN');
 
     // מונע יצירת חוזים חופפים בבקשות מקבילות
     await client.query(
@@ -1038,7 +1126,7 @@ AND COALESCE(end_date, 'infinity'::date)
       [tenancyResult.rows[0].id, userId]
     );
 
-    await client.query('COMMIT');
+    if (ownsTransaction) await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -1120,7 +1208,7 @@ router.post('/units/tenancies/update', async (req, res, next) => {
 
   try {
     client = await db.pool.connect();
-    await client.query('BEGIN');
+    if (ownsTransaction) await client.query('BEGIN');
 
     const tenancyResult = await client.query(
       `
@@ -1251,7 +1339,7 @@ AND COALESCE(end_date, 'infinity'::date)
       );
     }
 
-    await client.query('COMMIT');
+    if (ownsTransaction) await client.query('COMMIT');
 
     return res.redirect(
       '/admin/units?success=' +
@@ -2264,17 +2352,7 @@ WHERE role IN ('admin', 'manager')
     const isSystemAdmin =
       req.session.userRole === 'admin';
 
-    const dashboardClients = isSystemAdmin
-      ? clientsResult.rows
-      : clientsResult.rows.map(client => {
-          const {
-            rental_start_date,
-            rental_end_date,
-            ...safeClient
-          } = client;
-
-          return safeClient;
-        });
+    const dashboardClients = clientsResult.rows;
 
 
 return res.render('admin/dashboard', {
@@ -3945,7 +4023,7 @@ router.post('/meeting-bookings/create',
         );
       }
 
-      await client.query('BEGIN');
+      if (ownsTransaction) await client.query('BEGIN');
 
       const userResult = await client.query(
         `
@@ -4159,7 +4237,7 @@ router.post('/meeting-bookings/create',
         ]
       );
 
-      await client.query('COMMIT');
+      if (ownsTransaction) await client.query('COMMIT');
       return res.redirect(
         adminRedirect(
           'success',
