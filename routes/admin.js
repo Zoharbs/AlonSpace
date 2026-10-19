@@ -2261,14 +2261,32 @@ WHERE role IN ('admin', 'manager')
         row.directory_name || '';
     });
 
+    const isSystemAdmin =
+      req.session.userRole === 'admin';
+
+    const dashboardClients = isSystemAdmin
+      ? clientsResult.rows
+      : clientsResult.rows.map(client => {
+          const {
+            rental_start_date,
+            rental_end_date,
+            ...safeClient
+          } = client;
+
+          return safeClient;
+        });
+
+
 return res.render('admin/dashboard', {
   title: 'פאנל ניהול - AlonSpace',
   layout: false,
   adminName: req.session.userName,
-  isSystemAdmin: req.session.userRole === 'admin',
 
-      clients: clientsResult.rows,
-      admins: adminsResult.rows,
+  isSystemAdmin,
+
+      clients: dashboardClients,
+      admins: isSystemAdmin ? adminsResult.rows : [],
+
       messages: messagesResult.rows,
       testimonials: testimonialsResult.rows,
       floor4Directory,
@@ -2287,7 +2305,9 @@ return res.render('admin/dashboard', {
       success: req.query.success || null,
 
       quotaAlerts: quotaAlertsResult.rows,
-      rentalAlerts: rentalAlertsResult.rows,
+      rentalAlerts: isSystemAdmin
+        ? rentalAlertsResult.rows
+        : [],
       pendingBusinessProfiles,
       businessProfiles,
       newClientInvite,
