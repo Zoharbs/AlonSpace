@@ -2232,10 +2232,11 @@ WHERE role IN ('admin', 'manager')
         row.directory_name || '';
     });
 
-    return res.render('admin/dashboard', {
-      title: 'פאנל ניהול - AlonSpace',
-      layout: false,
-      adminName: req.session.userName,
+return res.render('admin/dashboard', {
+  title: 'פאנל ניהול - AlonSpace',
+  layout: false,
+  adminName: req.session.userName,
+  isSystemAdmin: req.session.userRole === 'admin',
 
       clients: clientsResult.rows,
       admins: adminsResult.rows,
