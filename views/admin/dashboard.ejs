@@ -1961,9 +1961,9 @@
 
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
         <span>שלום, <%= adminName %></span>
-<a href="/admin/units" class="btn btn-outline-light" style="padding:8px 16px;">
-  ניהול כספים
-</a>
+        <a href="/admin/units" class="btn btn-outline-light" style="padding:8px 16px;">
+          ניהול כספים
+        </a>
         <a href="/admin/analytics" class="btn btn-outline-light" style="padding:8px 16px;">
           מעקבי נתונים
         </a>
@@ -2109,21 +2109,15 @@
 
                         </div>
 
-                        <div class="quota-admin-actions"><form
-  method="POST"
-  action="/admin/meeting-quota-alerts/acknowledge"
-  onsubmit="return confirm('לסמן את ההתראה כטופלה?');"
->
-  <input
-    type="hidden"
-    name="user_id"
-    value="<%= alert.id %>"
-  >
+                        <div class="quota-admin-actions">
+                          <form method="POST" action="/admin/meeting-quota-alerts/acknowledge"
+                            onsubmit="return confirm('לסמן את ההתראה כטופלה?');">
+                            <input type="hidden" name="user_id" value="<%= alert.id %>">
 
-  <button type="submit" class="mini-btn">
-    ✓ ראיתי
-  </button>
-</form>
+                            <button type="submit" class="mini-btn">
+                              ✓ ראיתי
+                            </button>
+                          </form>
 
                           <% if (whatsappPhone) { %>
                             <a href="https://wa.me/<%= whatsappPhone %>?text=<%= whatsappText %>" target="_blank"
@@ -2336,21 +2330,15 @@
                             </div>
 
 
-                            <div class="quota-admin-actions"><form
-  method="POST"
-  action="/admin/meeting-quota-alerts/acknowledge"
-  onsubmit="return confirm('לסמן את ההתראה כטופלה?');"
->
-  <input
-    type="hidden"
-    name="user_id"
-    value="<%= alert.id %>"
-  >
+                            <div class="quota-admin-actions">
+                              <form method="POST" action="/admin/meeting-quota-alerts/acknowledge"
+                                onsubmit="return confirm('לסמן את ההתראה כטופלה?');">
+                                <input type="hidden" name="user_id" value="<%= alert.id %>">
 
-  <button type="submit" class="mini-btn">
-    ✓ ראיתי
-  </button>
-</form>
+                                <button type="submit" class="mini-btn">
+                                  ✓ ראיתי
+                                </button>
+                              </form>
 
                               <% if (whatsappPhone) { %>
 
@@ -2861,14 +2849,12 @@
                                             חשבון פעיל
 
                                           </label>
-<label style="display:flex; align-items:center; gap:8px; margin-top:12px;">
-  <input
-    type="checkbox"
-    name="meeting_access_both_floors"
-    <%= client.meeting_access_both_floors ? 'checked' : '' %>
-  >
-  גישה לחדרי הישיבות בקומות 4 ו־6
-</label>
+                                          <label style="display:flex; align-items:center; gap:8px; margin-top:12px;">
+                                            <input type="checkbox" name="meeting_access_both_floors"
+                                              <%=client.meeting_access_both_floors ? 'checked' : '' %>
+                                            >
+                                            גישה לחדרי הישיבות בקומות 4 ו־6
+                                          </label>
 
                                           <button type="submit" class="btn btn-primary">
                                             שמור שינויים
@@ -3424,64 +3410,92 @@
 
                                       <div class="admin-card">
 
-                                        <form method="POST" action="/admin/admins/<%= admin.id %>/update"
-                                          class="form-grid">
+                                        <% if (Number(admin.id) !==Number(currentUser?.id)) { %>
+                                          <form method="POST" action="/admin/users/<%= admin.id %>/role"
+                                            style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:20px;">
 
-                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                          <div class="form-row-2">
+                                            <div class="field" style="min-width:200px;">
+                                              <label>תפקיד במערכת</label>
 
-                                            <div class="field">
-                                              <label>שם</label>
-
-                                              <input type="text" name="display_name"
-                                                value="<%= admin.display_name || '' %>" required>
+                                              <select name="role" required>
+                                                <option value="admin" <%=admin.role==='admin' ? 'selected' : '' %>>
+                                                  מנהל מערכת
+                                                </option>
+                                                <option value="manager" <%=admin.role==='manager' ? 'selected' : '' %>>
+                                                  מנהל מתחם
+                                                </option>
+                                              </select>
                                             </div>
 
-                                            <div class="field">
-                                              <label>שם משתמש</label>
+                                            <button type="submit" class="btn btn-primary"
+                                              onclick="return confirm('האם לשנות את הרשאות המשתמש?')">
+                                              שמירת תפקיד
+                                            </button>
+                                          </form>
+                                          <% } else { %>
+                                            <p class="small">התפקיד שלך: מנהל מערכת</p>
+                                            <% } %>
 
-                                              <input type="text" name="username" value="<%= admin.username || '' %>"
-                                                required>
-                                            </div>
+                                              <form method="POST" action="/admin/admins/<%= admin.id %>/update"
+                                                class="form-grid">
 
-                                            <div class="field">
-                                              <label>אימייל</label>
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                              <input type="email" name="email" value="<%= admin.email || '' %>">
-                                            </div>
+                                                <div class="form-row-2">
 
-                                            <div class="field">
-                                              <label>טלפון</label>
+                                                  <div class="field">
+                                                    <label>שם</label>
 
-                                              <input type="text" name="phone" value="<%= admin.phone || '' %>">
-                                            </div>
+                                                    <input type="text" name="display_name"
+                                                      value="<%= admin.display_name || '' %>" required>
+                                                  </div>
 
-                                          </div>
+                                                  <div class="field">
+                                                    <label>שם משתמש</label>
 
-                                          <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
+                                                    <input type="text" name="username"
+                                                      value="<%= admin.username || '' %>" required>
+                                                  </div>
 
-                                            <label class="terms-check">
-                                              <input type="checkbox" name="is_active" <%=admin.is_active ? 'checked'
-                                                : '' %>
-                                              >
+                                                  <div class="field">
+                                                    <label>אימייל</label>
 
-                                              אדמין פעיל
-                                            </label>
+                                                    <input type="email" name="email" value="<%= admin.email || '' %>">
+                                                  </div>
 
-                                            <% } else { %>
+                                                  <div class="field">
+                                                    <label>טלפון</label>
 
-                                              <p class="small">
-                                                זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
-                                              </p>
+                                                    <input type="text" name="phone" value="<%= admin.phone || '' %>">
+                                                  </div>
 
-                                              <% } %>
+                                                </div>
 
-                                                <button type="submit" class="btn btn-primary">
-                                                  שמור שינויים
-                                                </button>
+                                                <% if ( Number(admin.id) !==Number(currentUser?.id) ) { %>
 
-                                        </form>
+                                                  <label class="terms-check">
+                                                    <input type="checkbox" name="is_active" <%=admin.is_active
+                                                      ? 'checked' : '' %>
+                                                    >
+
+                                                    אדמין פעיל
+                                                  </label>
+
+                                                  <% } else { %>
+
+                                                    <p class="small">
+                                                      זה החשבון שמחובר כרגע ולכן לא ניתן להשבית אותו.
+                                                    </p>
+
+                                                    <% } %>
+
+                                                      <button type="submit" class="btn btn-primary">
+                                                        שמור שינויים
+                                                      </button>
+
+                                              </form>
 
                                       </div>
 
@@ -3862,48 +3876,44 @@
 
                           </div>
 
-<div class="client-bookings-section" id="adminSelectedBookingSection">
+                          <div class="client-bookings-section" id="adminSelectedBookingSection">
 
-  <h4>פרטי השריון שנבחר</h4>
+                            <h4>פרטי השריון שנבחר</h4>
 
-  <div class="client-bookings-list">
+                            <div class="client-bookings-list">
 
-    <div class="client-booking-item">
+                              <div class="client-booking-item">
 
-      <div>
-        <strong id="adminSelectedBookingDate">-</strong>
+                                <div>
+                                  <strong id="adminSelectedBookingDate">-</strong>
 
-        <div class="small" id="adminSelectedBookingTime"></div>
+                                  <div class="small" id="adminSelectedBookingTime"></div>
 
-        <div class="small" id="adminSelectedBookingRoom"></div>
-      </div>
+                                  <div class="small" id="adminSelectedBookingRoom"></div>
+                                </div>
 
-    </div>
+                              </div>
 
-  </div>
+                            </div>
 
-  <div class="field" style="margin-top:14px;">
-    <label>הערה / תיאור</label>
+                            <div class="field" style="margin-top:14px;">
+                              <label>הערה / תיאור</label>
 
-    <div class="small" id="adminSelectedBookingNote">
-      אין הערה
-    </div>
-  </div>
+                              <div class="small" id="adminSelectedBookingNote">
+                                אין הערה
+                              </div>
+                            </div>
 
-  <form
-    method="POST"
-    id="adminSelectedBookingDeleteForm"
-    onsubmit="return confirm('למחוק את השריון?')"
-    style="margin-top:14px;"
-  >
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <form method="POST" id="adminSelectedBookingDeleteForm"
+                              onsubmit="return confirm('למחוק את השריון?')" style="margin-top:14px;">
+                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-    <button type="submit" class="mini-btn danger">
-      ביטול
-    </button>
-  </form>
+                              <button type="submit" class="mini-btn danger">
+                                ביטול
+                              </button>
+                            </form>
 
-</div>
+                          </div>
                           <div class="client-usage-grid">
 
                             <div class="client-usage-box">
@@ -4041,10 +4051,10 @@
     ========================= */
 
     const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminClients =
-  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
 
 
     const adminCalendar =
@@ -4214,83 +4224,83 @@
             Number(userId)
         );
 
-if (!client) {
-  return;
-}
+      if (!client) {
+        return;
+      }
 
-const selectedBookingDate =
-  document.getElementById(
-    'adminSelectedBookingDate'
-  );
+      const selectedBookingDate =
+        document.getElementById(
+          'adminSelectedBookingDate'
+        );
 
-const selectedBookingTime =
-  document.getElementById(
-    'adminSelectedBookingTime'
-  );
+      const selectedBookingTime =
+        document.getElementById(
+          'adminSelectedBookingTime'
+        );
 
-const selectedBookingRoom =
-  document.getElementById(
-    'adminSelectedBookingRoom'
-  );
+      const selectedBookingRoom =
+        document.getElementById(
+          'adminSelectedBookingRoom'
+        );
 
-const selectedBookingNote =
-  document.getElementById(
-    'adminSelectedBookingNote'
-  );
+      const selectedBookingNote =
+        document.getElementById(
+          'adminSelectedBookingNote'
+        );
 
-const selectedBookingDeleteForm =
-  document.getElementById(
-    'adminSelectedBookingDeleteForm'
-  );
+      const selectedBookingDeleteForm =
+        document.getElementById(
+          'adminSelectedBookingDeleteForm'
+        );
 
-if (selectedBooking) {
+      if (selectedBooking) {
 
-  if (selectedBookingDate) {
-    selectedBookingDate.textContent =
-      formatClientBookingDate(
-        selectedBooking.booking_date
-      );
-  }
+        if (selectedBookingDate) {
+          selectedBookingDate.textContent =
+            formatClientBookingDate(
+              selectedBooking.booking_date
+            );
+        }
 
-  if (selectedBookingTime) {
-    selectedBookingTime.textContent =
-      `${normalizeAdminTime(selectedBooking.start_time)} – ` +
-      `${normalizeAdminTime(selectedBooking.end_time)}`;
-  }
+        if (selectedBookingTime) {
+          selectedBookingTime.textContent =
+            `${normalizeAdminTime(selectedBooking.start_time)} – ` +
+            `${normalizeAdminTime(selectedBooking.end_time)}`;
+        }
 
-  if (selectedBookingRoom) {
-    const roomFloor =
-      getBookingRoomFloor(selectedBooking);
+        if (selectedBookingRoom) {
+          const roomFloor =
+            getBookingRoomFloor(selectedBooking);
 
-    selectedBookingRoom.textContent =
-      selectedBooking.meeting_room_name ||
-      (
-        Number.isFinite(roomFloor) && roomFloor > 0
-          ? `חדר ישיבות קומה ${roomFloor}`
-          : 'חדר ישיבות'
-      );
-  }
+          selectedBookingRoom.textContent =
+            selectedBooking.meeting_room_name ||
+            (
+              Number.isFinite(roomFloor) && roomFloor > 0
+                ? `חדר ישיבות קומה ${roomFloor}`
+                : 'חדר ישיבות'
+            );
+        }
 
-  if (selectedBookingNote) {
-    selectedBookingNote.textContent =
-      selectedBooking.note?.trim() ||
-      'אין הערה לשריון זה';
-  }
+        if (selectedBookingNote) {
+          selectedBookingNote.textContent =
+            selectedBooking.note?.trim() ||
+            'אין הערה לשריון זה';
+        }
 
-  if (selectedBookingDeleteForm) {
-    const bookingId =
-      Number(selectedBooking.id);
+        if (selectedBookingDeleteForm) {
+          const bookingId =
+            Number(selectedBooking.id);
 
-    if (Number.isSafeInteger(bookingId) && bookingId > 0) {
-      selectedBookingDeleteForm.action =
-        `/admin/meeting-bookings/${bookingId}/delete`;
+          if (Number.isSafeInteger(bookingId) && bookingId > 0) {
+            selectedBookingDeleteForm.action =
+              `/admin/meeting-bookings/${bookingId}/delete`;
 
-      selectedBookingDeleteForm.hidden = false;
-    } else {
-      selectedBookingDeleteForm.hidden = true;
-    }
-  }
-}
+            selectedBookingDeleteForm.hidden = false;
+          } else {
+            selectedBookingDeleteForm.hidden = true;
+          }
+        }
+      }
 
       if (adminClientDetailsName) {
         adminClientDetailsName.textContent =
@@ -4634,7 +4644,7 @@ if (selectedBooking) {
       }
 
       const adminMeetingRooms =
-    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -5494,10 +5504,10 @@ if (selectedBooking) {
               (event) => {
                 event.stopPropagation();
 
-openAdminClientDetails(
-  booking.user_id,
-  booking
-);
+                openAdminClientDetails(
+                  booking.user_id,
+                  booking
+                );
               }
             );
 
@@ -5955,11 +5965,11 @@ openAdminClientDetails(
     ===================================== */
 
     const floorDirectories = {
-      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <%- JSON.stringify(
+  <% - JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 

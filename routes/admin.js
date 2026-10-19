@@ -2052,16 +2052,17 @@ ORDER BY
 `),
 
       db.query(`
-  SELECT
-    id,
-    username,
-    email,
-    display_name,
-    phone,
-    is_active,
-    created_at
-  FROM users
-  WHERE role = 'admin'
+SELECT
+  id,
+  username,
+  email,
+  display_name,
+  phone,
+  role,
+  is_active,
+  created_at
+FROM users
+WHERE role IN ('admin', 'manager')
   ORDER BY
     is_active DESC,
     LOWER(display_name) ASC
@@ -4191,78 +4192,67 @@ router.post('/clients/:id/permanent-delete',
     }
   }
 );
-router.post('/users/:id/role',
-  async (req, res, next) => {
-    try {
-      const userId = Number(req.params.id);
-      const newRole = String(
-        req.body.role || ''
-      ).trim();
 
-      if (!['tenant', 'admin'].includes(newRole)) {
-        return res.redirect(
-          adminRedirect(
-            'error',
-            'סוג ההרשאה אינו תקין'
-          )
-        );
-      }
+router.post('/users/:id/role', requireSystemAdmin, async (req, res, next) => {
+  try {
+    const userId = Number(req.params.id);
+    const newRole = String(req.body.role || '').trim();
 
-      // לא מאפשרים לאדמין שמחובר כרגע
-      // להסיר לעצמו את הרשאת האדמין
-      if (
-        userId === Number(req.session.userId) &&
-        newRole !== 'admin'
-      ) {
-        return res.redirect(
-          adminRedirect(
-            'error',
-            'לא ניתן להסיר מעצמך הרשאת אדמין'
-          )
-        );
-      }
+    if (!Number.isSafeInteger(userId) || userId <= 0) {
+      return res.status(400).send('משתמש לא תקין');
+    }
 
-      const result = await db.query(
-        `
-          UPDATE users
-          SET
-            role = $1,
-            updated_at = NOW()
-          WHERE id = $2
-          RETURNING
-            id,
-            display_name,
-            role
-        `,
-        [
-          newRole,
-          userId
-        ]
+    if (!['admin', 'manager', 'tenant'].includes(newRole)) {
+      return res.redirect(
+        adminRedirect('error', 'סוג ההרשאה אינו תקין')
       );
+    }
 
-      if (result.rows.length === 0) {
-        return res.redirect(
-          adminRedirect(
-            'error',
-            'המשתמש לא נמצא'
-          )
-        );
-      }
-
+    if (
+      userId === Number(req.session.userId) &&
+      newRole !== 'admin'
+    ) {
       return res.redirect(
         adminRedirect(
-          'success',
-          newRole === 'admin'
-            ? `${result.rows[0].display_name} הוגדר כאדמין`
-            : `${result.rows[0].display_name} הוגדר כדייר`
+          'error',
+          'לא ניתן להסיר מעצמך הרשאת מנהל מערכת'
         )
       );
-
-    } catch (error) {
-      return next(error);
     }
+
+    const result = await db.query(
+      `
+        UPDATE users
+        SET role = $1, updated_at = NOW()
+        WHERE id = $2
+        RETURNING id, display_name, role
+      `,
+      [newRole, userId]
+    );
+
+    if (!result.rows.length) {
+      return res.redirect(
+        adminRedirect('error', 'המשתמש לא נמצא')
+      );
+    }
+
+    const roleNames = {
+      admin: 'מנהל מערכת',
+      manager: 'מנהל מתחם',
+      tenant: 'דייר'
+    };
+
+    return res.redirect(
+      adminRedirect(
+        'success',
+        `${result.rows[0].display_name} הוגדר בתפקיד ${roleNames[newRole]}`
+      )
+    );
+  } catch (error) {
+    return next(error);
   }
-);
+});
+
 
 router.get('/setup-analytics-db', async (req, res) => {
   try {
@@ -4444,7 +4434,7 @@ router.post('/admins/:id/update',
             updated_at = NOW()
           WHERE
             id = $6
-            AND role = 'admin'
+            AND role IN ('admin', 'manager')
           RETURNING id
         `,
         [
