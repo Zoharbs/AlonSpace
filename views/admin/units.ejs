@@ -3056,23 +3056,7 @@
 
             updateDateFields();
 
-            const isOwned = button.dataset.ownershipType === 'alonspace';
-
-            const chargeSettings = document.getElementById(
-              'ownedUnitChargeSettings'
-            );
-
-            chargeSettings.style.display = isOwned ? 'block' : 'none';
-
-            document.getElementById('chargeSettingsUnitId').value =
-              button.dataset.unitId;
-
-            document.getElementById('rentChargeEnabled').checked =
-              button.dataset.rentEnabled === '1';
-
-            document.getElementById('managementFeeChargeEnabled').checked =
-              button.dataset.managementFeeEnabled === '1';
-
+            
             dialog.showModal();
 
           });
@@ -3114,17 +3098,29 @@
             amountInput.value = button.dataset.amount;
 
             description.textContent =
+  'משרד ' +
+  button.dataset.unitNumber +
+  ' · קומה ' +
+  button.dataset.unitFloor;
 
-              'משרד ' +
+const isOwned = button.dataset.ownershipType === 'alonspace';
 
-              button.dataset.unitNumber +
+const chargeSettings = document.getElementById(
+  'ownedUnitChargeSettings'
+);
 
-              ' · קומה ' +
+chargeSettings.style.display = isOwned ? 'block' : 'none';
 
-              button.dataset.unitFloor;
+document.getElementById('chargeSettingsUnitId').value =
+  button.dataset.unitId;
 
-            dialog.showModal();
+document.getElementById('rentChargeEnabled').checked =
+  button.dataset.rentEnabled === '1';
 
+document.getElementById('managementFeeChargeEnabled').checked =
+  button.dataset.managementFeeEnabled === '1';
+
+dialog.showModal();
           });
 
         });
