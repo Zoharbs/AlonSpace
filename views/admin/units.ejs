@@ -943,11 +943,25 @@
 
     /* Unit action buttons */
 
-    .unit-actions-cell {
+.unit-actions-cell {
+  min-width: 180px;
+  width: 180px;
+}
 
-      min-width: 280px;
+.unit-actions {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+}
 
-    }
+.unit-actions button {
+  width: 100%;
+  padding: 6px 9px;
+  font-size: 13px;
+  line-height: 1.35;
+  white-space: normal;
+}
 
     .unit-actions {
 
@@ -1139,6 +1153,44 @@
     .owner-list-details .table-wrap {
       margin: 0 14px;
     }
+    /* Compact units financial table */
+.floor-section table {
+  width: 100%;
+  min-width: 1120px;
+  table-layout: auto;
+}
+
+.floor-section th,
+.floor-section td {
+  padding: 12px 10px;
+  vertical-align: middle;
+  text-align: right;
+}
+
+.floor-section th {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.floor-section td {
+  font-size: 14px;
+}
+
+.floor-section td strong {
+  font-weight: 700;
+}
+
+.floor-section td:nth-child(1),
+.floor-section td:nth-child(7),
+.floor-section td:nth-child(8),
+.floor-section td:nth-child(9) {
+  white-space: nowrap;
+}
+
+.floor-section tbody tr:hover {
+  background: rgba(120, 105, 170, 0.06);
+}
   </style>
 
 </head>
@@ -1778,8 +1830,8 @@
 
                                       <th>דמי ניהול</th>
 
-                                      <th>סה״כ הכנסה</th>
                                       <th>תשלום לבעלים</th>
+                                      <th>יתרה צפויה</th>
                                       <th>מצב</th>
 
                                     </tr>
