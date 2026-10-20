@@ -1487,11 +1487,17 @@
 
                 const owned = hasTenancy && unit.rental_model === 'alonspace_owned';
 
-                const managementFee = isExternal
+const isAlonSpaceOwned = unit.ownership_type === 'alonspace';
 
-                ? Number(unit.monthly_management_fee || 0)
+const rentEnabled =
+  !isAlonSpaceOwned || unit.rent_charge_enabled !== false;
 
-                : 0;
+const managementFeeEnabled =
+  !isAlonSpaceOwned || unit.management_fee_charge_enabled !== false;
+
+const managementFee = managementFeeEnabled
+  ? Number(unit.monthly_management_fee || 0)
+  : 0;
 
                 const needsRent = managed || owned;
 
@@ -1503,11 +1509,9 @@
 
                 );
 
-                const rent = needsRent
-
-                ? Number(unit.monthly_rent || 0)
-
-                : 0;
+const rent = needsRent && rentEnabled
+  ? Number(unit.monthly_rent || 0)
+  : 0;
 
 
                 const grossPayout = managed
@@ -1994,7 +1998,7 @@
 
                                             <td>
 
-                                              <% if (unit.ownership_type==='external' && unit.is_active) { %>
+                                              <% if (unit.is_active) { %>
 
                                                 <strong>
 
@@ -2304,46 +2308,49 @@
                             aria-label="סגירה">×</button>
 
                         </div>
+                          <form method="POST" action="/admin/units/management-fee" class="owner-form">
 
-                        <form method="POST" action="/admin/units/management-fee" class="owner-form">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <input type="hidden" name="unit_id" id="managementFeeUnitId">
 
-                          <input type="hidden" name="unit_id" id="managementFeeUnitId">
+                            <label class="full-width">
+                              דמי ניהול חודשיים (₪)
 
-                          <label class="full-width">
-                            דמי ניהול חודשיים (₪)
-                            <input type="number" name="monthly_amount" id="managementFeeAmount" min="0" max="1000000"
-                              step="0.01" required>
+                              <input
+                                type="number"
+                                name="monthly_amount"
+                                id="managementFeeAmount"
+                                min="0"
+                                max="1000000"
+                                step="0.01"
+                                required
+                              >
+                            </label>
 
-                          </label>
+                            <p class="muted full-width">
+                              הגדרת דמי הניהול החודשיים של היחידה.
+                              ביחידה בבעלות חיצונית, החיוב חל על הבעלים.
+                              ביחידה בבעלות AlonSpace, החיוב מיועד לדייר.
+                            </p>
 
-                          <p class="muted full-width">
+                            <div class="unit-dialog-actions full-width">
 
-                            הסכום שבעל היחידה חייב ל־AlonSpace בכל חודש,
+                              <button
+                                type="button"
+                                class="unit-cancel-btn"
+                                onclick="document.getElementById('managementFeeDialog').close()"
+                              >
+                                ביטול
+                              </button>
 
-                            גם אם המשרד פנוי.
+                              <button type="submit">
+                                שמירת דמי ניהול
+                              </button>
 
-                          </p>
+                            </div>
 
-                          <div class="unit-dialog-actions full-width">
-
-                            <button type="button" class="unit-cancel-btn"
-                              onclick="document.getElementById('managementFeeDialog').close()">
-
-                              ביטול
-
-                            </button>
-
-                            <button type="submit">
-
-                              שמירת דמי ניהול
-
-                            </button>
-
-                          </div>
-
-                        </form>
+                          </form>
 
                       </dialog>
 

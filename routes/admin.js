@@ -1403,24 +1403,23 @@ router.post('/units/management-fee', async (req, res, next) => {
     }
 
     const unitResult = await db.query(
-      `
-        SELECT id
-        FROM rental_units
-        WHERE
-          id = $1
-          AND ownership_type = 'external'
-          AND is_active = TRUE
-        LIMIT 1
-      `,
-      [unitId]
-    );
+  `
+    SELECT id
+    FROM rental_units
+    WHERE
+      id = $1
+      AND ownership_type IN ('external', 'alonspace')
+      AND is_active = TRUE
+    LIMIT 1
+  `,
+  [unitId]
+);
 
-    if (!unitResult.rows.length) {
-      return redirectError(
-        'ניתן להגדיר דמי ניהול רק ליחידה פעילה בבעלות חיצונית'
-      );
-    }
-
+if (!unitResult.rows.length) {
+  return redirectError(
+    'ניתן להגדיר דמי ניהול רק ליחידה פעילה'
+  );
+}
     await db.query(
       `
         INSERT INTO unit_management_fee_rates (
@@ -1682,6 +1681,8 @@ router.get('/units', async (req, res, next) => {
         ru.owner_id,
         ru.is_active,
         ru.notes,
+        ru.rent_charge_enabled,
+        ru.management_fee_charge_enabled,
 
         uo.name AS owner_name,
 
