@@ -1612,36 +1612,37 @@ if (
         );
       }
     }
-    await db.query(
-      `
-        INSERT INTO unit_rent_rates (
-  tenancy_id,
-  monthly_rent,
-  monthly_owner_payout,
-  owner_payout_includes_management_fee,
-  effective_from
-)
-VALUES (
-  $1,
-  $2,
-  $3,
-  $4,
-  DATE_TRUNC('month', CURRENT_DATE)::date
-)
-ON CONFLICT (tenancy_id, effective_from)
-DO UPDATE SET
-  monthly_rent = EXCLUDED.monthly_rent,
-  monthly_owner_payout = EXCLUDED.monthly_owner_payout,
-  owner_payout_includes_management_fee =
-    EXCLUDED.owner_payout_includes_management_fee
-    `,
-      [
-        tenancyId,
-        Number(rentText),
-        Number(payoutText),
-        includesManagementFee
-      ]
-    );
+await db.query(
+  `
+    INSERT INTO unit_rent_rates (
+      tenancy_id,
+      monthly_rent,
+      monthly_owner_payout,
+      owner_payout_includes_management_fee,
+      rent_includes_management_fee,
+      effective_from
+    )
+    VALUES (
+      $1, $2, $3, $4, $5,
+      DATE_TRUNC('month', CURRENT_DATE)::date
+    )
+    ON CONFLICT (tenancy_id, effective_from)
+    DO UPDATE SET
+      monthly_rent = EXCLUDED.monthly_rent,
+      monthly_owner_payout = EXCLUDED.monthly_owner_payout,
+      owner_payout_includes_management_fee =
+        EXCLUDED.owner_payout_includes_management_fee,
+      rent_includes_management_fee =
+        EXCLUDED.rent_includes_management_fee
+  `,
+  [
+    tenancyId,
+    Number(rentText),
+    Number(payoutText),
+    includesManagementFee,
+    rentIncludesManagementFee
+  ]
+);
 
     return res.redirect(
       '/admin/units?success=' +
