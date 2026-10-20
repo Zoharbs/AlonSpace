@@ -1523,8 +1523,16 @@
 
                 const payout = grossPayout - deductedFee;
 
-                const income = rent + managementFee - deductedFee;
+const rentAlreadyIncludesFee =
+  isAlonSpaceOwned &&
+  unit.rent_includes_management_fee === true &&
+  rentEnabled &&
+  needsRent;
 
+const income =
+  rent +
+  (rentAlreadyIncludesFee ? 0 : managementFee) -
+  deductedFee;
                 return {
                 income,
                 payout,
@@ -1934,6 +1942,7 @@
                                                       data-monthly-owner-payout="<%= unit.monthly_owner_payout ?? '' %>"
                                                       data-management-fee="<%= unit.monthly_management_fee || 0 %>"
                                                       data-payout-includes-fee="<%= unit.owner_payout_includes_management_fee ? '1' : '0' %>"
+                                                      data-rent-includes-fee="<%= unit.rent_includes_management_fee ? '1' : '0' %>"
                                                       data-ownership-type="<%= unit.ownership_type %>">
 
                                                       הגדרות כספיות
@@ -2238,6 +2247,23 @@
                               max="1000000" step="0.01" required>
 
                           </label>
+                          <div class="full-width" id="rentSettingsTenantFeeField" hidden>
+  <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+    <input
+      type="checkbox"
+      id="rentSettingsRentIncludesFee"
+      name="rent_includes_management_fee"
+      value="1"
+      style="width:18px; height:18px;"
+    >
+    שכר הדירה כולל דמי ניהול
+  </label>
+
+  <p class="muted">
+    כאשר האפשרות מסומנת, דמי הניהול כבר כלולים
+    בשכר הדירה ולא יתווספו אליו.
+  </p>
+</div>
                           <div class="full-width" id="rentSettingsFeeSplitField">
                             <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
                               <input type="checkbox" id="rentSettingsIncludesFee"
@@ -3263,7 +3289,11 @@ dialog.showModal();
       const payoutInput = document.getElementById('rentSettingsOwnerPayout');
       const description = document.getElementById('rentSettingsDescription');
       const payoutField = document.getElementById('rentSettingsPayoutField');
+const tenantFeeField =
+  document.getElementById('rentSettingsTenantFeeField');
 
+const rentIncludesFee =
+  document.getElementById('rentSettingsRentIncludesFee');
       const splitField = document.getElementById('rentSettingsFeeSplitField');
       const includesFee = document.getElementById('rentSettingsIncludesFee');
       const breakdown = document.getElementById('rentSettingsFeeBreakdown');
@@ -3319,7 +3349,11 @@ dialog.showModal();
 
           splitField.hidden = isAlonspaceOwned;
           includesFee.disabled = isAlonspaceOwned;
+tenantFeeField.hidden = !isAlonspaceOwned;
+rentIncludesFee.disabled = !isAlonspaceOwned;
 
+rentIncludesFee.checked = isAlonspaceOwned &&
+  button.dataset.rentIncludesFee === '1';
           includesFee.checked = !isAlonspaceOwned &&
             button.dataset.payoutIncludesFee === '1';
 
