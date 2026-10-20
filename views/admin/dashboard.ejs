@@ -1951,6 +1951,82 @@
       gap: 10px;
       margin-top: 10px;
     }
+  /* ALONSPACE — APP GRID */
+
+#tab-clients.active {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+#tab-clients > details.admin-collapse,
+#tab-clients > details.floor-directory-section {
+  min-width: 0;
+  margin: 0;
+}
+
+/* אריח סגור */
+#tab-clients > details.admin-collapse:not([open]) > summary,
+#tab-clients > details.floor-directory-section:not([open]) > summary {
+  min-height: 170px;
+  padding: 24px;
+  border-radius: 26px;
+  border: 1px solid rgba(105, 91, 180, 0.12);
+  background: linear-gradient(145deg, #f0edff, #e6e3f8);
+  box-shadow: 0 8px 24px rgba(35, 30, 80, 0.06);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  font-size: 1.2rem;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#tab-clients > details:not([open]) > summary:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(35, 30, 80, 0.12);
+}
+
+/* אזור פתוח מקבל את כל הרוחב */
+#tab-clients > details[open] {
+  grid-column: 1 / -1;
+}
+
+#tab-clients > details[open] > summary {
+  border-radius: 20px;
+  background: #eae7fb;
+}
+
+/* החיפוש נשאר נוח לשימוש */
+#tab-clients .clients-management-summary .client-search-input {
+  max-width: 100%;
+}
+
+/* טאבלט */
+@media (max-width: 950px) {
+  #tab-clients.active {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* טלפון */
+@media (max-width: 600px) {
+  #tab-clients.active {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  #tab-clients > details.admin-collapse:not([open]) > summary,
+  #tab-clients > details.floor-directory-section:not([open]) > summary {
+    min-height: 140px;
+    padding: 16px;
+    font-size: 1rem;
+  }
+}
   </style>
 </head>
 
