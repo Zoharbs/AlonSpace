@@ -1509,6 +1509,9 @@ router.post('/units/rent-settings', async (req, res, next) => {
     const payoutText = String(req.body.monthly_owner_payout ?? '').trim();
     const includesManagementFee =
       req.body.owner_payout_includes_management_fee === '1';
+
+      const rentIncludesManagementFee =
+  req.body.rent_includes_management_fee === '1';
     const validAmount = value =>
       /^\d+(\.\d{1,2})?$/.test(value) &&
       Number.isFinite(Number(value)) &&
@@ -1572,6 +1575,23 @@ SELECT
         'ביחידה בבעלות AlonSpace אין תשלום לבעלים חיצוניים'
       );
     }
+    if (
+  rentIncludesManagementFee &&
+  tenancyResult.rows[0].ownership_type !== 'alonspace'
+) {
+  return redirectError(
+    'הכללת דמי ניהול בשכר הדירה אפשרית רק ביחידה בבעלות AlonSpace'
+  );
+}
+
+if (
+  rentIncludesManagementFee &&
+  Number(rentText) < Number(tenancyResult.rows[0].management_fee)
+) {
+  return redirectError(
+    'שכר הדירה הכולל נמוך מדמי הניהול'
+  );
+}
     if (includesManagementFee) {
       const tenancy = tenancyResult.rows[0];
 
@@ -1747,7 +1767,10 @@ COALESCE(
   rent.owner_payout_includes_management_fee,
   FALSE
 ) AS owner_payout_includes_management_fee,
-
+COALESCE(
+  rent.rent_includes_management_fee,
+  FALSE
+) AS rent_includes_management_fee,
         ut.id AS tenancy_id,
         ut.rental_model,
         ut.start_date,
@@ -1805,8 +1828,9 @@ COALESCE(
       LEFT JOIN LATERAL (
        SELECT
   monthly_rent,
-  monthly_owner_payout,
-  owner_payout_includes_management_fee
+monthly_owner_payout,
+owner_payout_includes_management_fee,
+rent_includes_management_fee
         FROM unit_rent_rates
         WHERE
           tenancy_id = ut.id
