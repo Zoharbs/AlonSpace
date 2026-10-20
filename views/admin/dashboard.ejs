@@ -1951,23 +1951,18 @@
       gap: 10px;
       margin-top: 10px;
     }
-/* ALONSPACE — COMPACT MANAGEMENT GRID */
+/* ALONSPACE — SIDEBAR DASHBOARD */
 
-/* ALONSPACE — SIDE MANAGEMENT GRID */
-
-/* כפתורי הניהול מימין */
 #tab-clients.active {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
   align-items: start;
-
-  width: 310px;
+  width: 184px;
   float: right;
-  margin: 0 0 20px 20px;
+  margin: 0 0 18px 16px;
 }
 
-/* כרטיסי הניהול */
 #tab-clients > details.admin-collapse,
 #tab-clients > details.floor-directory-section {
   min-width: 0;
@@ -1976,55 +1971,90 @@
   border: 0;
 }
 
-/* כפתור סגור */
+/* כפתורי הניהול */
 #tab-clients > details.admin-collapse:not([open]) > summary,
 #tab-clients > details.floor-directory-section:not([open]) > summary {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
 
-  min-height: 86px;
+  min-height: 62px;
   padding: 12px;
-
-  background: #ece9fa;
+  border-radius: 15px;
   border: 1px solid #ded9f5;
-  border-radius: 16px;
-  box-shadow: 0 3px 10px rgba(40, 30, 90, .05);
 
-  font-size: .82rem;
+  background: linear-gradient(135deg, #f2efff, #e8e4fb);
+  box-shadow: 0 3px 12px rgba(40, 30, 90, .05);
+
+  font-size: .85rem;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.35;
 
-  transition: background .2s, transform .2s;
+  transition: transform .2s, background .2s, box-shadow .2s;
 }
 
 #tab-clients > details:not([open]) > summary:hover {
+  transform: translateX(-3px);
   background: #e2dcfa;
-  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(40, 30, 90, .1);
 }
 
-/* חיפוש רק כשהניהול פתוח */
+/* אייקון קטן במקום חץ */
+#tab-clients > details.admin-collapse:not([open]) > summary::before,
+#tab-clients > details.floor-directory-section:not([open]) > summary::before {
+  content: "↗";
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  margin: 0;
+  border-radius: 10px;
+  background: #dcd5ff;
+  color: #5747c5;
+  font-size: 1rem;
+}
+
+/* מונה פרופילים */
+#tab-clients .business-profile-count {
+  margin-right: auto;
+}
+
+/* שדה החיפוש מוסתר באריח הסגור */
 #clientsManagement:not([open]) .client-search-input {
   display: none;
 }
 
-/* היומן משמאל לכפתורים */
+/* יומן חדר הישיבות משמאל */
 #tab-clients.active + #tab-meeting-room {
   display: block;
-  width: calc(100% - 330px);
-  margin: 0 330px 0 0;
+  width: calc(100% - 200px);
+  margin: 0 200px 0 0;
   min-width: 0;
 }
 
-/* כשפותחים כלי ניהול:
-   הכלי מקבל רוחב מלא והיומן יורד מתחתיו */
+/* התאמת כל שבעת הימים לרוחב הפנוי */
+#tab-clients.active + #tab-meeting-room .weekly-calendar {
+  grid-template-columns: 52px repeat(7, minmax(0, 1fr));
+  min-width: 0;
+}
+
+#tab-clients.active + #tab-meeting-room .calendar-day-header {
+  padding: 8px 3px;
+  font-size: .82rem;
+}
+
+#tab-clients.active + #tab-meeting-room .calendar-time-label {
+  padding: 5px 2px;
+}
+
+/* פתיחת כלי ניהול — סביבת עבודה מלאה */
 #tab-clients.active:has(> details[open]) {
   float: none;
   width: 100%;
   margin: 0 0 18px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 #tab-clients > details[open] {
@@ -2034,8 +2064,8 @@
 #tab-clients > details[open] > summary {
   min-height: 54px;
   padding: 14px 18px;
-  border-radius: 16px;
-  background: #e4dffa;
+  border-radius: 15px;
+  background: #e5e0fa;
   margin-bottom: 12px;
 }
 
@@ -2044,7 +2074,7 @@
   margin: 18px 0 0;
 }
 
-/* טאב חדר ישיבות לבדו */
+/* חדר הישיבות כשהוא מוצג לבדו */
 #tab-meeting-room.active {
   display: block;
   width: 100%;
@@ -2052,12 +2082,12 @@
 }
 
 /* מסכים קטנים */
-@media (max-width: 1100px) {
+@media (max-width: 1050px) {
   #tab-clients.active {
     float: none;
     width: 100%;
-    margin: 0 0 18px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0 0 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   #tab-clients.active + #tab-meeting-room {
@@ -2068,7 +2098,12 @@
 
 @media (max-width: 600px) {
   #tab-clients.active {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
+  }
+
+  #tab-clients.active + #tab-meeting-room .weekly-calendar {
+    min-width: 760px;
+    grid-template-columns: 52px repeat(7, minmax(0, 1fr));
   }
 }
   </style>
@@ -2081,6 +2116,14 @@
 
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
         <span>שלום, <%= adminName %></span>
+
+        <% if (!isSystemAdmin) { %>
+          <a href="/" class="btn btn-outline-light"
+             style="padding:8px 16px;">
+            צפייה באתר ↗
+          </a>
+        <% } %>
+
         <% if (isSystemAdmin) { %>
           <a href="/admin/units" class="btn btn-outline-light" style="padding:8px 16px;">
             ניהול כספים
