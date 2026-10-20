@@ -1999,12 +1999,9 @@
 
                                                 <strong>
 
-                                                ₪<%= Number(
-                                                  unit.ownership_type === 'alonspace' &&
-                                                  unit.management_fee_charge_enabled === false
-                                                    ? 0
-                                                    : unit.monthly_management_fee
-                                                ).toLocaleString('he-IL') %>
+                                                  ₪<%= Number( unit.ownership_type==='alonspace' &&
+                                                    unit.management_fee_charge_enabled===false ? 0 :
+                                                    unit.monthly_management_fee ).toLocaleString('he-IL') %>
                                                 </strong>
 
                                                 <div style="margin-top:8px;">
@@ -2344,46 +2341,46 @@
                           </div>
 
                         </form>
+                        <div id="ownedUnitChargeSettings" style="display:none; margin-top:20px;">
 
+                          <hr style="margin-bottom:20px;">
+
+                          <h3>הפעלת חיובים</h3>
+
+                          <p class="muted">
+                            ניתן להפעיל או לכבות כל חיוב בנפרד.
+                            כיבוי חיוב אינו מוחק את הסכום שהוגדר.
+                          </p>
+
+                          <form method="POST" action="/admin/units/charge-settings" class="owner-form">
+
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                            <input type="hidden" name="unit_id" id="chargeSettingsUnitId">
+
+                            <label class="full-width" style="display:flex; align-items:center; gap:10px;">
+                              <input type="checkbox" name="rent_charge_enabled" id="rentChargeEnabled"
+                                style="width:auto;">
+                              חיוב שכר דירה פעיל
+                            </label>
+
+                            <label class="full-width" style="display:flex; align-items:center; gap:10px;">
+                              <input type="checkbox" name="management_fee_charge_enabled"
+                                id="managementFeeChargeEnabled" style="width:auto;">
+                              חיוב דמי ניהול פעיל
+                            </label>
+
+                            <div class="unit-dialog-actions full-width">
+                              <button type="submit">
+                                שמירת הגדרות חיוב
+                              </button>
+                            </div>
+
+                          </form>
+
+                        </div>
                       </dialog>
-                      <div id="ownedUnitChargeSettings" style="display:none; margin-top:20px;">
 
-                        <hr style="margin-bottom:20px;">
-
-                        <h3>הפעלת חיובים</h3>
-
-                        <p class="muted">
-                          ניתן להפעיל או לכבות כל חיוב בנפרד.
-                          כיבוי חיוב אינו מוחק את הסכום שהוגדר.
-                        </p>
-
-                        <form method="POST" action="/admin/units/charge-settings" class="owner-form">
-
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                          <input type="hidden" name="unit_id" id="chargeSettingsUnitId">
-
-                          <label class="full-width" style="display:flex; align-items:center; gap:10px;">
-                            <input type="checkbox" name="rent_charge_enabled" id="rentChargeEnabled"
-                              style="width:auto;">
-                            חיוב שכר דירה פעיל
-                          </label>
-
-                          <label class="full-width" style="display:flex; align-items:center; gap:10px;">
-                            <input type="checkbox" name="management_fee_charge_enabled" id="managementFeeChargeEnabled"
-                              style="width:auto;">
-                            חיוב דמי ניהול פעיל
-                          </label>
-
-                          <div class="unit-dialog-actions full-width">
-                            <button type="submit">
-                              שמירת הגדרות חיוב
-                            </button>
-                          </div>
-
-                        </form>
-
-                      </div>
 
                       <dialog id="addTenancyDialog" class="unit-dialog">
 
