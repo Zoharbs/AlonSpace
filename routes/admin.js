@@ -1447,7 +1447,57 @@ if (!unitResult.rows.length) {
     return next(error);
   }
 });
+// =====================================================
+// AlonSpace - Save Owned Unit Charge Settings
+// =====================================================
 
+router.post('/units/charge-settings', async (req, res, next) => {
+  try {
+    const unitId = String(req.body.unit_id || '').trim();
+
+    const rentEnabled = req.body.rent_charge_enabled === 'on';
+    const managementFeeEnabled =
+      req.body.management_fee_charge_enabled === 'on';
+
+    const redirectError = (message) => {
+      return res.redirect(
+        '/admin/units?error=' + encodeURIComponent(message)
+      );
+    };
+
+    if (!/^[1-9]\d*$/.test(unitId)) {
+      return redirectError('יחידה לא תקינה');
+    }
+
+    const result = await db.query(
+      `
+        UPDATE rental_units
+        SET
+          rent_charge_enabled = $2,
+          management_fee_charge_enabled = $3
+        WHERE
+          id = $1
+          AND ownership_type = 'alonspace'
+          AND is_active = TRUE
+        RETURNING id
+      `,
+      [unitId, rentEnabled, managementFeeEnabled]
+    );
+
+    if (!result.rows.length) {
+      return redirectError(
+        'ניתן לשנות הגדרות חיוב רק ביחידה פעילה בבעלות AlonSpace'
+      );
+    }
+
+    return res.redirect(
+      '/admin/units?success=' +
+      encodeURIComponent('הגדרות החיוב נשמרו בהצלחה')
+    );
+  } catch (error) {
+    return next(error);
+  }
+});
 // =====================================================
 // AlonSpace - Save Unit Rent Settings
 // =====================================================

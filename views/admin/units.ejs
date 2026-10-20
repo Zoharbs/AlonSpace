@@ -943,25 +943,25 @@
 
     /* Unit action buttons */
 
-.unit-actions-cell {
-  min-width: 180px;
-  width: 180px;
-}
+    .unit-actions-cell {
+      min-width: 180px;
+      width: 180px;
+    }
 
-.unit-actions {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 6px;
-}
+    .unit-actions {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-.unit-actions button {
-  width: 100%;
-  padding: 6px 9px;
-  font-size: 13px;
-  line-height: 1.35;
-  white-space: normal;
-}
+    .unit-actions button {
+      width: 100%;
+      padding: 6px 9px;
+      font-size: 13px;
+      line-height: 1.35;
+      white-space: normal;
+    }
 
     .unit-actions {
 
@@ -1153,44 +1153,45 @@
     .owner-list-details .table-wrap {
       margin: 0 14px;
     }
+
     /* Compact units financial table */
-.floor-section table {
-  width: 100%;
-  min-width: 1120px;
-  table-layout: auto;
-}
+    .floor-section table {
+      width: 100%;
+      min-width: 1120px;
+      table-layout: auto;
+    }
 
-.floor-section th,
-.floor-section td {
-  padding: 12px 10px;
-  vertical-align: middle;
-  text-align: right;
-}
+    .floor-section th,
+    .floor-section td {
+      padding: 12px 10px;
+      vertical-align: middle;
+      text-align: right;
+    }
 
-.floor-section th {
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-}
+    .floor-section th {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
 
-.floor-section td {
-  font-size: 14px;
-}
+    .floor-section td {
+      font-size: 14px;
+    }
 
-.floor-section td strong {
-  font-weight: 700;
-}
+    .floor-section td strong {
+      font-weight: 700;
+    }
 
-.floor-section td:nth-child(1),
-.floor-section td:nth-child(7),
-.floor-section td:nth-child(8),
-.floor-section td:nth-child(9) {
-  white-space: nowrap;
-}
+    .floor-section td:nth-child(1),
+    .floor-section td:nth-child(7),
+    .floor-section td:nth-child(8),
+    .floor-section td:nth-child(9) {
+      white-space: nowrap;
+    }
 
-.floor-section tbody tr:hover {
-  background: rgba(120, 105, 170, 0.06);
-}
+    .floor-section tbody tr:hover {
+      background: rgba(120, 105, 170, 0.06);
+    }
   </style>
 
 </head>
@@ -1487,31 +1488,27 @@
 
                 const owned = hasTenancy && unit.rental_model === 'alonspace_owned';
 
-const isAlonSpaceOwned = unit.ownership_type === 'alonspace';
+                const isAlonSpaceOwned = unit.ownership_type === 'alonspace';
 
-const rentEnabled =
-  !isAlonSpaceOwned || unit.rent_charge_enabled !== false;
+                const rentEnabled =
+                !isAlonSpaceOwned || unit.rent_charge_enabled !== false;
 
-const managementFeeEnabled =
-  !isAlonSpaceOwned || unit.management_fee_charge_enabled !== false;
+                const managementFeeEnabled =
+                !isAlonSpaceOwned || unit.management_fee_charge_enabled !== false;
 
-const managementFee = managementFeeEnabled
-  ? Number(unit.monthly_management_fee || 0)
-  : 0;
+                const managementFee = managementFeeEnabled
+                ? Number(unit.monthly_management_fee || 0)
+                : 0;
 
                 const needsRent = managed || owned;
 
-                const missing = needsRent && (
+                const missing =
+                (needsRent && rentEnabled && unit.monthly_rent == null) ||
+                (managed && unit.monthly_owner_payout == null);
 
-                unit.monthly_rent == null ||
-
-                (managed && unit.monthly_owner_payout == null)
-
-                );
-
-const rent = needsRent && rentEnabled
-  ? Number(unit.monthly_rent || 0)
-  : 0;
+                const rent = needsRent && rentEnabled
+                ? Number(unit.monthly_rent || 0)
+                : 0;
 
 
                 const grossPayout = managed
@@ -2002,8 +1999,12 @@ const rent = needsRent && rentEnabled
 
                                                 <strong>
 
-                                                  ₪<%= Number(unit.monthly_management_fee).toLocaleString('he-IL') %>
-
+                                                ₪<%= Number(
+                                                  unit.ownership_type === 'alonspace' &&
+                                                  unit.management_fee_charge_enabled === false
+                                                    ? 0
+                                                    : unit.monthly_management_fee
+                                                ).toLocaleString('he-IL') %>
                                                 </strong>
 
                                                 <div style="margin-top:8px;">
@@ -2012,8 +2013,10 @@ const rent = needsRent && rentEnabled
                                                     data-unit-id="<%= unit.id %>"
                                                     data-unit-number="<%= unit.unit_number %>"
                                                     data-unit-floor="<%= unit.floor %>"
-                                                    data-amount="<%= unit.monthly_management_fee %>">
-
+                                                    data-amount="<%= unit.monthly_management_fee %>"
+                                                    data-ownership-type="<%= unit.ownership_type %>"
+                                                    data-rent-enabled="<%= unit.rent_charge_enabled !== false ? '1' : '0' %>"
+                                                    data-management-fee-enabled="<%= unit.management_fee_charge_enabled !== false ? '1' : '0' %>">
                                                     עריכת דמי ניהול
 
                                                   </button>
@@ -2308,51 +2311,79 @@ const rent = needsRent && rentEnabled
                             aria-label="סגירה">×</button>
 
                         </div>
-                          <form method="POST" action="/admin/units/management-fee" class="owner-form">
+                        <form method="POST" action="/admin/units/management-fee" class="owner-form">
 
-                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                            <input type="hidden" name="unit_id" id="managementFeeUnitId">
+                          <input type="hidden" name="unit_id" id="managementFeeUnitId">
 
-                            <label class="full-width">
-                              דמי ניהול חודשיים (₪)
+                          <label class="full-width">
+                            דמי ניהול חודשיים (₪)
 
-                              <input
-                                type="number"
-                                name="monthly_amount"
-                                id="managementFeeAmount"
-                                min="0"
-                                max="1000000"
-                                step="0.01"
-                                required
-                              >
-                            </label>
+                            <input type="number" name="monthly_amount" id="managementFeeAmount" min="0" max="1000000"
+                              step="0.01" required>
+                          </label>
 
-                            <p class="muted full-width">
-                              הגדרת דמי הניהול החודשיים של היחידה.
-                              ביחידה בבעלות חיצונית, החיוב חל על הבעלים.
-                              ביחידה בבעלות AlonSpace, החיוב מיועד לדייר.
-                            </p>
+                          <p class="muted full-width">
+                            הגדרת דמי הניהול החודשיים של היחידה.
+                            ביחידה בבעלות חיצונית, החיוב חל על הבעלים.
+                            ביחידה בבעלות AlonSpace, החיוב מיועד לדייר.
+                          </p>
 
-                            <div class="unit-dialog-actions full-width">
+                          <div class="unit-dialog-actions full-width">
 
-                              <button
-                                type="button"
-                                class="unit-cancel-btn"
-                                onclick="document.getElementById('managementFeeDialog').close()"
-                              >
-                                ביטול
-                              </button>
+                            <button type="button" class="unit-cancel-btn"
+                              onclick="document.getElementById('managementFeeDialog').close()">
+                              ביטול
+                            </button>
 
-                              <button type="submit">
-                                שמירת דמי ניהול
-                              </button>
+                            <button type="submit">
+                              שמירת דמי ניהול
+                            </button>
 
-                            </div>
+                          </div>
 
-                          </form>
+                        </form>
 
                       </dialog>
+                      <div id="ownedUnitChargeSettings" style="display:none; margin-top:20px;">
+
+                        <hr style="margin-bottom:20px;">
+
+                        <h3>הפעלת חיובים</h3>
+
+                        <p class="muted">
+                          ניתן להפעיל או לכבות כל חיוב בנפרד.
+                          כיבוי חיוב אינו מוחק את הסכום שהוגדר.
+                        </p>
+
+                        <form method="POST" action="/admin/units/charge-settings" class="owner-form">
+
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                          <input type="hidden" name="unit_id" id="chargeSettingsUnitId">
+
+                          <label class="full-width" style="display:flex; align-items:center; gap:10px;">
+                            <input type="checkbox" name="rent_charge_enabled" id="rentChargeEnabled"
+                              style="width:auto;">
+                            חיוב שכר דירה פעיל
+                          </label>
+
+                          <label class="full-width" style="display:flex; align-items:center; gap:10px;">
+                            <input type="checkbox" name="management_fee_charge_enabled" id="managementFeeChargeEnabled"
+                              style="width:auto;">
+                            חיוב דמי ניהול פעיל
+                          </label>
+
+                          <div class="unit-dialog-actions full-width">
+                            <button type="submit">
+                              שמירת הגדרות חיוב
+                            </button>
+                          </div>
+
+                        </form>
+
+                      </div>
 
                       <dialog id="addTenancyDialog" class="unit-dialog">
 
@@ -3027,6 +3058,23 @@ const rent = needsRent && rentEnabled
             userField.hidden = isAssignedTenant;
 
             updateDateFields();
+
+            const isOwned = button.dataset.ownershipType === 'alonspace';
+
+            const chargeSettings = document.getElementById(
+              'ownedUnitChargeSettings'
+            );
+
+            chargeSettings.style.display = isOwned ? 'block' : 'none';
+
+            document.getElementById('chargeSettingsUnitId').value =
+              button.dataset.unitId;
+
+            document.getElementById('rentChargeEnabled').checked =
+              button.dataset.rentEnabled === '1';
+
+            document.getElementById('managementFeeChargeEnabled').checked =
+              button.dataset.managementFeeEnabled === '1';
 
             dialog.showModal();
 
