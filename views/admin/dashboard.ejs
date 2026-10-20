@@ -1951,63 +1951,94 @@
       gap: 10px;
       margin-top: 10px;
     }
-  /* ALONSPACE — APP GRID */
+/* ALONSPACE — COMPACT MANAGEMENT GRID */
 
 #tab-clients.active {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
   align-items: start;
 }
 
+/* כפתורי הניהול */
 #tab-clients > details.admin-collapse,
 #tab-clients > details.floor-directory-section {
   min-width: 0;
   margin: 0;
+  padding: 0;
+  border: 0;
 }
 
-/* אריח סגור */
+/* כפתור סגור */
 #tab-clients > details.admin-collapse:not([open]) > summary,
 #tab-clients > details.floor-directory-section:not([open]) > summary {
-  min-height: 170px;
-  padding: 24px;
-  border-radius: 26px;
-  border: 1px solid rgba(105, 91, 180, 0.12);
-  background: linear-gradient(145deg, #f0edff, #e6e3f8);
-  box-shadow: 0 8px 24px rgba(35, 30, 80, 0.06);
-
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
 
-  font-size: 1.2rem;
-  transition: transform .2s ease, box-shadow .2s ease;
+  min-height: 76px;
+  padding: 14px 18px;
+
+  background: #ece9fa;
+  border: 1px solid #ded9f5;
+  border-radius: 18px;
+
+  box-shadow: 0 3px 12px rgba(40, 30, 90, .05);
+
+  font-size: .98rem;
+  font-weight: 700;
+  line-height: 1.4;
+
+  transition: background .2s, transform .2s, box-shadow .2s;
 }
 
 #tab-clients > details:not([open]) > summary:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(35, 30, 80, 0.12);
+  background: #e3defb;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(40, 30, 90, .10);
 }
 
-/* אזור פתוח מקבל את כל הרוחב */
+/* כפתור פתוח — סביבת עבודה מלאה */
 #tab-clients > details[open] {
   grid-column: 1 / -1;
 }
 
 #tab-clients > details[open] > summary {
-  border-radius: 20px;
-  background: #eae7fb;
+  min-height: 58px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #e4dffa;
+  margin-bottom: 12px;
 }
 
-/* החיפוש נשאר נוח לשימוש */
-#tab-clients .clients-management-summary .client-search-input {
-  max-width: 100%;
+/* החיפוש מופיע כשהניהול פתוח */
+#clientsManagement:not([open]) .client-search-input {
+  display: none;
+}
+
+#clientsManagement[open] .client-search-input {
+  display: block;
+  max-width: 360px;
+}
+
+/* היומן המקורי מופיע גם מתחת לכפתורי הניהול */
+#tab-clients.active + #tab-meeting-room {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+}
+
+/* כשהטאב חדר ישיבות נבחר — היומן לבדו */
+#tab-meeting-room.active {
+  display: block;
+  width: 100%;
+  margin-top: 0;
 }
 
 /* טאבלט */
-@media (max-width: 950px) {
+@media (max-width: 900px) {
   #tab-clients.active {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2017,14 +2048,15 @@
 @media (max-width: 600px) {
   #tab-clients.active {
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 
   #tab-clients > details.admin-collapse:not([open]) > summary,
   #tab-clients > details.floor-directory-section:not([open]) > summary {
-    min-height: 140px;
-    padding: 16px;
-    font-size: 1rem;
+    min-height: 70px;
+    padding: 12px;
+    font-size: .85rem;
+    border-radius: 14px;
   }
 }
   </style>
