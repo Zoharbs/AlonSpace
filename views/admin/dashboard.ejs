@@ -2106,6 +2106,10 @@
     grid-template-columns: 52px repeat(7, minmax(0, 1fr));
   }
 }
+/* היומן כבר מופיע לצד כלי הניהול */
+.tabs {
+  display: none;
+}
   </style>
 </head>
 
@@ -2668,11 +2672,10 @@
 
   <details
     class="admin-collapse client-card"
-    data-search="<%= [
-      client.display_name,
-      client.username,
-      client.business_name
-    ].filter(Boolean).join(' ').toLowerCase() %>"
+data-search="<%= [
+  client.display_name,
+  client.business_name
+].filter(Boolean).join(' ').toLowerCase() %>"
     data-floor="<%= client.floor || '' %>"
     data-office="<%= client.office_number || '' %>"
   >
@@ -4215,10 +4218,7 @@
 
     /* פתיחת הטאב הנכון בטעינת העמוד */
 
-    const initialAdminTab =
-      window.location.hash === '#meeting-room'
-        ? 'meeting-room'
-        : 'clients';
+const initialAdminTab = 'clients';
 
     openAdminTab(
       initialAdminTab,
@@ -6109,7 +6109,7 @@
 
           clientCards.forEach((card) => {
 
-           const searchableText = card.dataset.search || '';
+        const searchableText = card.dataset.search || '';
 const floor = card.dataset.floor || '';
 const office = card.dataset.office || '';
 
@@ -6119,17 +6119,25 @@ const locationMatch = query.match(
 
 let matches;
 
-if (locationMatch) {
+if (/^\d+$/.test(query)) {
+  // מספר בלבד — חיפוש לפי מספר משרד
+  matches = office === query;
+
+} else if (locationMatch) {
+  // חיפוש מפורש לפי קומה או משרד
   const type = locationMatch[1];
   const number = locationMatch[2];
 
   matches = type === 'קומה'
     ? floor === number
     : office === number;
+
 } else {
+  // חיפוש לפי שם דייר או שם עסק בלבד
   matches = searchTerms.every(term =>
     searchableText.includes(term)
   );
+}
 }
             card.style.display = matches ? '' : 'none';
 
