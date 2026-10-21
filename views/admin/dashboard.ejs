@@ -6410,14 +6410,9 @@ if (/^\d+$/.test(query)) {
         ]?.[
         officeNumber
         ];
-
-      if (
-        savedName !== undefined &&
-        String(savedName).trim()
-      ) {
-        return String(savedName).trim();
-      }
-
+if (savedName !== undefined && savedName !== null) {
+  return String(savedName).trim();
+}
 
       return String(
         floorDirectories?.[
