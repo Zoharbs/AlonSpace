@@ -6670,27 +6670,30 @@ if (savedName !== undefined && savedName !== null) {
       );
 
 
-      const finalImage =
-        exportCanvas.toDataURL(
-          'image/png'
-        );
-
-
-      const link =
-        document.createElement('a');
-
-      link.href =
-        finalImage;
-
-      link.download =
-        `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      link.remove();
+      const blob = await new Promise((resolve, reject) => {
+  exportCanvas.toBlob((result) => {
+    if (result && result.size > 0 && result.type === 'image/png') {
+      resolve(result);
+    } else {
+      reject(new Error('PNG export failed'));
     }
+  }, 'image/png');
+});
+
+const imageUrl = URL.createObjectURL(blob);
+
+const link = document.createElement('a');
+link.href = imageUrl;
+link.download =
+  `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
+
+document.body.appendChild(link);
+link.click();
+link.remove();
+
+setTimeout(() => {
+  URL.revokeObjectURL(imageUrl);
+}, 60000);    }
 
 
     /* =====================================
