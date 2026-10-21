@@ -335,6 +335,15 @@
 
   <% if (loggedInUser) { %>
 
+    <% if (isAdmin) { %>
+      <a
+        href="/admin"
+        class="btn btn-gold header-booking-btn"
+      >
+        אזור ניהול
+      </a>
+    <% } %>
+
     <form method="POST" action="/logout" class="header-logout-form">
       <button
         type="submit"
