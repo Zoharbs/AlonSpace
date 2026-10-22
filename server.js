@@ -192,12 +192,12 @@ app.post(/^\/admin\/business-profiles\/\d+\/edit\/?$/,
 
   (req, res, next) => {
 
-    if (
-      !req.session?.userId ||
-      req.session?.userRole !== 'admin'
-    ) {
-      return res.redirect('/login');
-    }
+if (
+  !req.session?.userId ||
+  !['admin', 'manager'].includes(req.session?.userRole)
+) {
+  return res.redirect('/login');
+}
 
     businessLogoUpload.single('logo')(
       req,
