@@ -829,7 +829,8 @@ router.post('/business-profile',
           ? req.file.mimetype
           : null;
 
-
+const removeLogo =
+  req.body.remove_logo === '1' && !req.file;
       /* =====================================
          UPSERT PROFILE
       ===================================== */

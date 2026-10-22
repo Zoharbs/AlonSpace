@@ -2734,13 +2734,20 @@
 
                                     <div>
 
-                                      <input id="business_logo" type="file" name="logo"
-                                        accept="image/png,image/jpeg,image/webp">
+                                     <input id="business_logo" type="file" name="logo"
+  accept="image/png,image/jpeg,image/webp">
 
-                                      <p class="small">
-                                        PNG, JPG או WebP.
-                                        מומלץ לוגו מרובע או עם רקע שקוף.
-                                      </p>
+<p class="small">
+  PNG, JPG או WebP.
+  מומלץ לוגו מרובע או עם רקע שקוף.
+</p>
+
+<% if (profile?.logo_url) { %>
+  <label style="display:flex; align-items:center; gap:10px; margin-top:12px; cursor:pointer;">
+    <input type="checkbox" name="remove_logo" value="1" style="width:auto;">
+    הסרת הלוגו הקיים
+  </label>
+<% } %>
 
                                     </div>
 
