@@ -900,29 +900,29 @@ person_name =
             linkedin_url =
               EXCLUDED.linkedin_url,
 
-            logo_data =
-              CASE
-                WHEN EXCLUDED.logo_data
-                  IS NOT NULL
-                THEN EXCLUDED.logo_data
-                ELSE tenant_profiles.logo_data
-              END,
+           logo_data =
+  CASE
+    WHEN $15::boolean THEN NULL
+    WHEN EXCLUDED.logo_data IS NOT NULL
+      THEN EXCLUDED.logo_data
+    ELSE tenant_profiles.logo_data
+  END,
 
-            logo_mime_type =
-              CASE
-                WHEN EXCLUDED.logo_data
-                  IS NOT NULL
-                THEN EXCLUDED.logo_mime_type
-                ELSE tenant_profiles.logo_mime_type
-              END,
+logo_mime_type =
+  CASE
+    WHEN $15::boolean THEN NULL
+    WHEN EXCLUDED.logo_data IS NOT NULL
+      THEN EXCLUDED.logo_mime_type
+    ELSE tenant_profiles.logo_mime_type
+  END,
 
-            logo_url =
-              CASE
-                WHEN EXCLUDED.logo_data
-                  IS NOT NULL
-                THEN EXCLUDED.logo_url
-                ELSE tenant_profiles.logo_url
-              END,
+logo_url =
+  CASE
+    WHEN $15::boolean THEN NULL
+    WHEN EXCLUDED.logo_data IS NOT NULL
+      THEN EXCLUDED.logo_url
+    ELSE tenant_profiles.logo_url
+  END,
 
             community_visible =
             EXCLUDED.community_visible,
@@ -956,7 +956,8 @@ person_name =
 communityVisible,
 communityVisible ? 'pending' : 'rejected',
 publicConsent,
-publicStatus
+publicStatus, 
+removeLogo
         ]
       );
 
