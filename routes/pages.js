@@ -152,9 +152,7 @@ router.get(
 
             WHERE
               tp.id = $1
-              AND tp.community_visible = TRUE
-              AND tp.public_consent = TRUE
-              AND tp.AND tp.community_visible = TRUE
+AND tp.community_visible = TRUE
 AND tp.community_status = 'approved'
 AND tp.public_consent = TRUE
 AND tp.public_status = 'approved'
