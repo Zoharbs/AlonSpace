@@ -2905,10 +2905,13 @@ router.post('/business-profiles/:id/edit',
           ? req.file.buffer
           : null;
 
-      const logoMimeType =
-        req.file
-          ? req.file.mimetype
-          : null;
+     const logoMimeType =
+  req.file
+    ? req.file.mimetype
+    : null;
+
+const removeLogo =
+  req.body.remove_logo === '1' && !req.file;
 
 
       /* =====================================
@@ -2930,26 +2933,27 @@ router.post('/business-profiles/:id/edit',
               website_url = $6,
               linkedin_url = $7,
 
-              logo_data =
-                CASE
-                  WHEN $8::bytea IS NOT NULL
-                  THEN $8::bytea
-                  ELSE logo_data
-                END,
+logo_data =
+  CASE
+    WHEN $10::boolean THEN NULL
+    WHEN $8::bytea IS NOT NULL THEN $8::bytea
+    ELSE logo_data
+  END,
 
-              logo_mime_type =
-                CASE
-                  WHEN $8::bytea IS NOT NULL
-                  THEN $9
-                  ELSE logo_mime_type
-                END,
+logo_mime_type =
+  CASE
+    WHEN $10::boolean THEN NULL
+    WHEN $8::bytea IS NOT NULL THEN $9
+    ELSE logo_mime_type
+  END,
 
-              logo_url =
-                CASE
-                  WHEN $8::bytea IS NOT NULL
-                  THEN '/dashboard/business-profile/logo'
-                  ELSE logo_url
-                END,
+logo_url =
+  CASE
+    WHEN $10::boolean THEN NULL
+    WHEN $8::bytea IS NOT NULL
+      THEN '/dashboard/business-profile/logo'
+    ELSE logo_url
+  END,
 
               updated_at = NOW()
 
@@ -2959,17 +2963,18 @@ router.post('/business-profiles/:id/edit',
               id,
               display_name
           `,
-          [
-            profileId,
-            personName || null,
-            displayName,
-            businessField || null,
-            bio || null,
-            normalizedWebsite.url,
-            normalizedLinkedin.url,
-            logoData,
-            logoMimeType
-          ]
+[
+  profileId,
+  personName || null,
+  displayName,
+  businessField || null,
+  bio || null,
+  normalizedWebsite.url,
+  normalizedLinkedin.url,
+  logoData,
+  logoMimeType,
+  removeLogo
+]
         );
 
 
