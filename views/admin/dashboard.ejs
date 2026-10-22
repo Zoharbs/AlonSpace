@@ -1951,165 +1951,167 @@
       gap: 10px;
       margin-top: 10px;
     }
-/* ALONSPACE — SIDEBAR DASHBOARD */
 
-#tab-clients.active {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 8px;
-  align-items: start;
-  width: 184px;
-  float: right;
-  margin: 0 0 18px 16px;
-}
+    /* ALONSPACE — SIDEBAR DASHBOARD */
 
-#tab-clients > details.admin-collapse,
-#tab-clients > details.floor-directory-section {
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
+    #tab-clients.active {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      width: 184px;
+      float: right;
+      margin: 0 0 18px 16px;
+    }
 
-/* כפתורי הניהול */
-#tab-clients > details.admin-collapse:not([open]) > summary,
-#tab-clients > details.floor-directory-section:not([open]) > summary {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
+    #tab-clients>details.admin-collapse,
+    #tab-clients>details.floor-directory-section {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
 
-  min-height: 62px;
-  padding: 12px;
-  border-radius: 15px;
-  border: 1px solid #ded9f5;
+    /* כפתורי הניהול */
+    #tab-clients>details.admin-collapse:not([open])>summary,
+    #tab-clients>details.floor-directory-section:not([open])>summary {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
 
-  background: linear-gradient(135deg, #f2efff, #e8e4fb);
-  box-shadow: 0 3px 12px rgba(40, 30, 90, .05);
+      min-height: 62px;
+      padding: 12px;
+      border-radius: 15px;
+      border: 1px solid #ded9f5;
 
-  font-size: .85rem;
-  font-weight: 700;
-  line-height: 1.35;
+      background: linear-gradient(135deg, #f2efff, #e8e4fb);
+      box-shadow: 0 3px 12px rgba(40, 30, 90, .05);
 
-  transition: transform .2s, background .2s, box-shadow .2s;
-}
+      font-size: .85rem;
+      font-weight: 700;
+      line-height: 1.35;
 
-#tab-clients > details:not([open]) > summary:hover {
-  transform: translateX(-3px);
-  background: #e2dcfa;
-  box-shadow: 0 7px 18px rgba(40, 30, 90, .1);
-}
+      transition: transform .2s, background .2s, box-shadow .2s;
+    }
 
-/* אייקון קטן במקום חץ */
-#tab-clients > details.admin-collapse:not([open]) > summary::before,
-#tab-clients > details.floor-directory-section:not([open]) > summary::before {
-  content: "↗";
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
-  margin: 0;
-  border-radius: 10px;
-  background: #dcd5ff;
-  color: #5747c5;
-  font-size: 1rem;
-}
+    #tab-clients>details:not([open])>summary:hover {
+      transform: translateX(-3px);
+      background: #e2dcfa;
+      box-shadow: 0 7px 18px rgba(40, 30, 90, .1);
+    }
 
-/* מונה פרופילים */
-#tab-clients .business-profile-count {
-  margin-right: auto;
-}
+    /* אייקון קטן במקום חץ */
+    #tab-clients>details.admin-collapse:not([open])>summary::before,
+    #tab-clients>details.floor-directory-section:not([open])>summary::before {
+      content: "↗";
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+      margin: 0;
+      border-radius: 10px;
+      background: #dcd5ff;
+      color: #5747c5;
+      font-size: 1rem;
+    }
 
-/* שדה החיפוש מוסתר באריח הסגור */
-#clientsManagement:not([open]) .client-search-input {
-  display: none;
-}
+    /* מונה פרופילים */
+    #tab-clients .business-profile-count {
+      margin-right: auto;
+    }
 
-/* יומן חדר הישיבות משמאל */
-#tab-clients.active + #tab-meeting-room {
-  display: block;
-  width: calc(100% - 200px);
-  margin: 0 200px 0 0;
-  min-width: 0;
-}
+    /* שדה החיפוש מוסתר באריח הסגור */
+    #clientsManagement:not([open]) .client-search-input {
+      display: none;
+    }
 
-/* התאמת כל שבעת הימים לרוחב הפנוי */
-#tab-clients.active + #tab-meeting-room .weekly-calendar {
-  grid-template-columns: 52px repeat(7, minmax(0, 1fr));
-  min-width: 0;
-}
+    /* יומן חדר הישיבות משמאל */
+    #tab-clients.active+#tab-meeting-room {
+      display: block;
+      width: calc(100% - 200px);
+      margin: 0 200px 0 0;
+      min-width: 0;
+    }
 
-#tab-clients.active + #tab-meeting-room .calendar-day-header {
-  padding: 8px 3px;
-  font-size: .82rem;
-}
+    /* התאמת כל שבעת הימים לרוחב הפנוי */
+    #tab-clients.active+#tab-meeting-room .weekly-calendar {
+      grid-template-columns: 52px repeat(7, minmax(0, 1fr));
+      min-width: 0;
+    }
 
-#tab-clients.active + #tab-meeting-room .calendar-time-label {
-  padding: 5px 2px;
-}
+    #tab-clients.active+#tab-meeting-room .calendar-day-header {
+      padding: 8px 3px;
+      font-size: .82rem;
+    }
 
-/* פתיחת כלי ניהול — סביבת עבודה מלאה */
-#tab-clients.active:has(> details[open]) {
-  float: none;
-  width: 100%;
-  margin: 0 0 18px;
-}
+    #tab-clients.active+#tab-meeting-room .calendar-time-label {
+      padding: 5px 2px;
+    }
 
-#tab-clients > details[open] {
-  grid-column: 1 / -1;
-}
+    /* פתיחת כלי ניהול — סביבת עבודה מלאה */
+    #tab-clients.active:has(> details[open]) {
+      float: none;
+      width: 100%;
+      margin: 0 0 18px;
+    }
 
-#tab-clients > details[open] > summary {
-  min-height: 54px;
-  padding: 14px 18px;
-  border-radius: 15px;
-  background: #e5e0fa;
-  margin-bottom: 12px;
-}
+    #tab-clients>details[open] {
+      grid-column: 1 / -1;
+    }
 
-#tab-clients.active:has(> details[open]) + #tab-meeting-room {
-  width: 100%;
-  margin: 18px 0 0;
-}
+    #tab-clients>details[open]>summary {
+      min-height: 54px;
+      padding: 14px 18px;
+      border-radius: 15px;
+      background: #e5e0fa;
+      margin-bottom: 12px;
+    }
 
-/* חדר הישיבות כשהוא מוצג לבדו */
-#tab-meeting-room.active {
-  display: block;
-  width: 100%;
-  margin: 0;
-}
+    #tab-clients.active:has(> details[open])+#tab-meeting-room {
+      width: 100%;
+      margin: 18px 0 0;
+    }
 
-/* מסכים קטנים */
-@media (max-width: 1050px) {
-  #tab-clients.active {
-    float: none;
-    width: 100%;
-    margin: 0 0 16px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+    /* חדר הישיבות כשהוא מוצג לבדו */
+    #tab-meeting-room.active {
+      display: block;
+      width: 100%;
+      margin: 0;
+    }
 
-  #tab-clients.active + #tab-meeting-room {
-    width: 100%;
-    margin: 0;
-  }
-}
+    /* מסכים קטנים */
+    @media (max-width: 1050px) {
+      #tab-clients.active {
+        float: none;
+        width: 100%;
+        margin: 0 0 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
 
-@media (max-width: 600px) {
-  #tab-clients.active {
-    grid-template-columns: 1fr;
-  }
+      #tab-clients.active+#tab-meeting-room {
+        width: 100%;
+        margin: 0;
+      }
+    }
 
-  #tab-clients.active + #tab-meeting-room .weekly-calendar {
-    min-width: 760px;
-    grid-template-columns: 52px repeat(7, minmax(0, 1fr));
-  }
-}
-/* היומן כבר מופיע לצד כלי הניהול */
-.tabs {
-  display: none;
-}
+    @media (max-width: 600px) {
+      #tab-clients.active {
+        grid-template-columns: 1fr;
+      }
+
+      #tab-clients.active+#tab-meeting-room .weekly-calendar {
+        min-width: 760px;
+        grid-template-columns: 52px repeat(7, minmax(0, 1fr));
+      }
+    }
+
+    /* היומן כבר מופיע לצד כלי הניהול */
+    .tabs {
+      display: none;
+    }
   </style>
 </head>
 
@@ -2122,28 +2124,27 @@
         <span>שלום, <%= adminName %></span>
 
         <% if (!isSystemAdmin) { %>
-          <a href="/" class="btn btn-outline-light"
-             style="padding:8px 16px;">
+          <a href="/" class="btn btn-outline-light" style="padding:8px 16px;">
             צפייה באתר ↗
           </a>
-        <% } %>
-
-        <% if (isSystemAdmin) { %>
-          <a href="/admin/units" class="btn btn-outline-light" style="padding:8px 16px;">
-            ניהול כספים
-          </a>
-
-          <a href="/admin/analytics" class="btn btn-outline-light" style="padding:8px 16px;">
-            מעקבי נתונים
-          </a>
           <% } %>
-            <form method="POST" action="/logout">
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-              <button type="submit">
-                התנתקות
-              </button>
-            </form>
+            <% if (isSystemAdmin) { %>
+              <a href="/admin/units" class="btn btn-outline-light" style="padding:8px 16px;">
+                ניהול כספים
+              </a>
+
+              <a href="/admin/analytics" class="btn btn-outline-light" style="padding:8px 16px;">
+                מעקבי נתונים
+              </a>
+              <% } %>
+                <form method="POST" action="/logout">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                  <button type="submit">
+                    התנתקות
+                  </button>
+                </form>
       </div>
     </div>
   </header>
@@ -2668,17 +2669,13 @@
                               </div>
 
                               <% } %>
-<% clients.forEach(client=> { %>
+                                <% clients.forEach(client=> { %>
 
-  <details
-    class="admin-collapse client-card"
-data-search="<%= [
+                                  <details class="admin-collapse client-card" data-search="<%= [
   client.display_name,
   client.business_name
-].filter(Boolean).join(' ').toLowerCase() %>"
-    data-floor="<%= client.floor || '' %>"
-    data-office="<%= client.office_number || '' %>"
-  >
+].filter(Boolean).join(' ').toLowerCase() %>" data-floor="<%= client.floor || '' %>"
+                                    data-office="<%= client.office_number || '' %>">
 
                                     <summary>
 
@@ -3460,8 +3457,18 @@ data-search="<%= [
                                       </label>
 
                                       <label>
-                                        החלפת לוגו (לא חובה)
-                                        <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
+                                        <label>
+                                          החלפת לוגו (לא חובה)
+                                          <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
+                                        </label>
+
+                                        <% if (profile.has_logo) { %>
+                                          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                            <input type="checkbox" name="remove_logo" value="1" style="width:auto;">
+                                            הסרת הלוגו הקיים
+                                          </label>
+                                          <% } %>
+                                            <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
                                       </label>
 
                                       <div class="business-profile-edit-actions">
@@ -4218,7 +4225,7 @@ data-search="<%= [
 
     /* פתיחת הטאב הנכון בטעינת העמוד */
 
-const initialAdminTab = 'clients';
+    const initialAdminTab = 'clients';
 
     openAdminTab(
       initialAdminTab,
@@ -4230,10 +4237,10 @@ const initialAdminTab = 'clients';
     ========================= */
 
     const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminClients =
-  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
 
 
     const adminCalendar =
@@ -4823,7 +4830,7 @@ const initialAdminTab = 'clients';
       }
 
       const adminMeetingRooms =
-    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -6109,35 +6116,35 @@ const initialAdminTab = 'clients';
 
           clientCards.forEach((card) => {
 
-        const searchableText = card.dataset.search || '';
-const floor = card.dataset.floor || '';
-const office = card.dataset.office || '';
+            const searchableText = card.dataset.search || '';
+            const floor = card.dataset.floor || '';
+            const office = card.dataset.office || '';
 
-const locationMatch = query.match(
-  /^(קומה|משרד)\s*(\d+)$/
-);
+            const locationMatch = query.match(
+              /^(קומה|משרד)\s*(\d+)$/
+            );
 
-let matches;
+            let matches;
 
-if (/^\d+$/.test(query)) {
-  // מספר בלבד — חיפוש לפי מספר משרד
-  matches = office === query;
+            if (/^\d+$/.test(query)) {
+              // מספר בלבד — חיפוש לפי מספר משרד
+              matches = office === query;
 
-} else if (locationMatch) {
-  // חיפוש מפורש לפי קומה או משרד
-  const type = locationMatch[1];
-  const number = locationMatch[2];
+            } else if (locationMatch) {
+              // חיפוש מפורש לפי קומה או משרד
+              const type = locationMatch[1];
+              const number = locationMatch[2];
 
-  matches = type === 'קומה'
-    ? floor === number
-    : office === number;
+              matches = type === 'קומה'
+                ? floor === number
+                : office === number;
 
-} else {
-  // חיפוש לפי שם דייר או שם עסק בלבד
-  matches = searchTerms.every(term =>
-    searchableText.includes(term)
-  );
-}
+            } else {
+              // חיפוש לפי שם דייר או שם עסק בלבד
+              matches = searchTerms.every(term =>
+                searchableText.includes(term)
+              );
+            }
             card.style.display = matches ? '' : 'none';
 
             if (matches) {
@@ -6201,11 +6208,11 @@ if (/^\d+$/.test(query)) {
     ===================================== */
 
     const floorDirectories = {
-      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <%- JSON.stringify(
+  <% - JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 
@@ -6410,9 +6417,9 @@ if (/^\d+$/.test(query)) {
         ]?.[
         officeNumber
         ];
-if (savedName !== undefined && savedName !== null) {
-  return String(savedName).trim();
-}
+      if (savedName !== undefined && savedName !== null) {
+        return String(savedName).trim();
+      }
 
       return String(
         floorDirectories?.[
@@ -6671,29 +6678,30 @@ if (savedName !== undefined && savedName !== null) {
 
 
       const blob = await new Promise((resolve, reject) => {
-  exportCanvas.toBlob((result) => {
-    if (result && result.size > 0 && result.type === 'image/png') {
-      resolve(result);
-    } else {
-      reject(new Error('PNG export failed'));
+        exportCanvas.toBlob((result) => {
+          if (result && result.size > 0 && result.type === 'image/png') {
+            resolve(result);
+          } else {
+            reject(new Error('PNG export failed'));
+          }
+        }, 'image/png');
+      });
+
+      const downloadUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download =
+        `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => {
+        URL.revokeObjectURL(downloadUrl);
+      }, 60000);
     }
-  }, 'image/png');
-});
-
-const downloadUrl = URL.createObjectURL(blob);
-
-const link = document.createElement('a');
-link.href = downloadUrl;
-link.download =
-  `AlonSpace-Floor-${selectedDirectoryFloor}-1920x1080.png`;
-
-document.body.appendChild(link);
-link.click();
-link.remove();
-
-setTimeout(() => {
-  URL.revokeObjectURL(downloadUrl);
-}, 60000);    }
 
 
     /* =====================================
