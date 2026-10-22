@@ -3455,22 +3455,17 @@
                                         <input type="text" name="linkedin_url"
                                           value="<%= profile.linkedin_url || '' %>">
                                       </label>
+<label>
+  החלפת לוגו (לא חובה)
+  <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
+</label>
 
-                                      <label>
-                                        <label>
-                                          החלפת לוגו (לא חובה)
-                                          <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
-                                        </label>
-
-                                        <% if (profile.has_logo) { %>
-                                          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-                                            <input type="checkbox" name="remove_logo" value="1" style="width:auto;">
-                                            הסרת הלוגו הקיים
-                                          </label>
-                                          <% } %>
-                                            <input type="file" name="logo" accept="image/png,image/jpeg,image/webp">
-                                      </label>
-
+<% if (profile.has_logo) { %>
+  <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+    <input type="checkbox" name="remove_logo" value="1" style="width:auto;">
+    הסרת הלוגו הקיים
+  </label>
+<% } %>
                                       <div class="business-profile-edit-actions">
 
                                         <button type="button" class="mini-btn" onclick="this.closest('dialog').close()">
@@ -4237,10 +4232,10 @@
     ========================= */
 
     const adminMeetingBookings =
-  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminClients =
-  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
 
 
     const adminCalendar =
@@ -4830,7 +4825,7 @@
       }
 
       const adminMeetingRooms =
-    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -6208,11 +6203,11 @@
     ===================================== */
 
     const floorDirectories = {
-      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <% - JSON.stringify(
+  <%- JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 
