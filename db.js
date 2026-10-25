@@ -185,6 +185,30 @@ ADD COLUMN IF NOT EXISTS magic_login_expires_at TIMESTAMP;
 ALTER TABLE users
 ADD COLUMN IF NOT EXISTS magic_login_used_at TIMESTAMP;
 `);
+
+  await query(`
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS password_reset_token_hash TEXT;
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS password_reset_expires_at TIMESTAMPTZ;
+`);
+
+  await query(`
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS password_reset_token_hash TEXT;
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS password_reset_expires_at TIMESTAMPTZ;
+`);
+
+  await query(`
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS password_reset_token_hash TEXT;
+
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS password_reset_expires_at TIMESTAMPTZ;
+`);
   await query(`
   DO $$
   BEGIN
