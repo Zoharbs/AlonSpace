@@ -3102,10 +3102,16 @@
                             <span>
                               ניהול פרופילים עסקיים
                             </span>
+<% const pendingProfileCount = businessProfiles.filter(profile =>
+  (profile.community_visible && profile.community_status === 'pending') ||
+  (profile.public_consent && profile.public_status === 'pending')
+).length; %>
 
-                            <span class="business-profile-count">
-                              <%= businessProfiles.length %>
-                            </span>
+<% if (pendingProfileCount > 0) { %>
+  <span class="business-profile-count">
+    <%= pendingProfileCount %>
+  </span>
+<% } %>
 
                           </summary>
 
