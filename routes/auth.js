@@ -20,7 +20,14 @@ function renderLogin(res, status, error) {
     layout: false,
   });
 }
-
+router.get('/forgot-password', (req, res) => {
+  return res.render('forgot-password', {
+    title: 'שכחתי סיסמה - AlonSpace',
+    error: null,
+    success: null,
+    layout: false,
+  });
+});
 router.get('/login', (req, res) => {
   if (req.session?.userId && req.session?.userRole) {
     return res.redirect(redirectForRole(req.session.userRole));
