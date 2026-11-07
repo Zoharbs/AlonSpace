@@ -1,7 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+
 const db = require('../db');
+const { unitFinance } = require('../utils/unitFinance');
+
 
 const router = express.Router();
 
@@ -1923,6 +1926,7 @@ rent_includes_management_fee
       layout: false,
       adminName: req.session.userName,
       units,
+      unitFinance,
       owners: ownersResult.rows,
       tenants: tenantsResult.rows,
       success: req.query.success || null,
