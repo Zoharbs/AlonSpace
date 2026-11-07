@@ -1744,10 +1744,11 @@ router.get('/units/export-excel', async (req, res, next) => {
   try {
     const result = await db.query(`
       SELECT
-        ru.id,
-        ru.floor,
-        ru.unit_number,
-        ru.ownership_type,
+ru.id,
+ru.floor,
+ru.unit_number,
+ru.ownership_type,
+ru.owner_id,
         ru.is_active,
         ru.rent_charge_enabled,
         ru.management_fee_charge_enabled,
@@ -1814,120 +1815,225 @@ router.get('/units/export-excel', async (req, res, next) => {
       ORDER BY ru.floor, ru.unit_number
     `);
 
-    const units = result.rows;
-    const activeUnits = units.filter(unit => unit.is_active);
+
+
+    const units = result.rows.filter(unit => unit.is_active);
     const workbook = new ExcelJS.Workbook();
 
     workbook.creator = 'AlonSpace';
     workbook.created = new Date();
 
-    const summary = workbook.addWorksheet('סיכום כספי', {
-      views: [{ rightToLeft: true }]
-    });
-
-    const totals = activeUnits.reduce((acc, unit) => {
-      const finance = unitFinance(unit);
-      acc.income += finance.income;
-      acc.payout += finance.payout;
-      acc.profit += finance.profit;
-      if (finance.missing) acc.missing++;
-      return acc;
-    }, { income: 0, payout: 0, profit: 0, missing: 0 });
-
-    summary.addRow(['AlonSpace — סיכום כספי']);
-    summary.addRow(['תאריך הפקה', new Date()]);
-    summary.addRow(['סוג הדוח', 'תמונת מצב חודשית לפי תעריפים נוכחיים']);
-    summary.addRow([]);
-    summary.addRow(['מדד', 'ערך']);
-    summary.addRow(['יחידות פעילות', activeUnits.length]);
-    summary.addRow(['הכנסות מחושבות', totals.income]);
-    summary.addRow(['תשלומים לבעלים', totals.payout]);
-    summary.addRow(['רווח מחושב', totals.profit]);
-    summary.addRow(['יחידות עם נתונים חסרים', totals.missing]);
-
-    summary.columns = [{ width: 42 }, { width: 32 }];
-    summary.getCell('B2').numFmt = 'dd/mm/yyyy';
-    for (let row = 7; row <= 9; row++) {
-      summary.getCell(`B${row}`).numFmt = '#,##0.00 "₪"';
-    }
-
-    const details = workbook.addWorksheet('פירוט יחידות', {
-      views: [{ rightToLeft: true, state: 'frozen', ySplit: 1 }]
-    });
-
-    details.columns = [
-      { header: 'קומה', key: 'floor', width: 12 },
-      { header: 'משרד', key: 'number', width: 15 },
-      { header: 'פעיל', key: 'active', width: 12 },
-      { header: 'סוג בעלות', key: 'ownership', width: 22 },
-      { header: 'בעלים', key: 'owner', width: 25 },
-      { header: 'דייר', key: 'tenant', width: 25 },
-      { header: 'חברה', key: 'business', width: 25 },
-      { header: 'מודל השכרה', key: 'model', width: 22 },
-      { header: 'שכירות חודשית', key: 'rent', width: 22 },
-      { header: 'דמי ניהול', key: 'fee', width: 20 },
-      { header: 'תשלום ברוטו לבעלים', key: 'grossPayout', width: 25 },
-      { header: 'הכנסה מחושבת', key: 'income', width: 22 },
-      { header: 'תשלום נטו לבעלים', key: 'payout', width: 25 },
-      { header: 'רווח מחושב', key: 'profit', width: 22 },
-      { header: 'נתונים חסרים', key: 'missing', width: 18 }
-    ];
-
-    const ownershipNames = {
-      alonspace: 'AlonSpace',
-      external: 'בעלים חיצוני'
-    };
-
-    const rentalModelNames = {
-      managed: 'ניהול AlonSpace',
-      direct_owner: 'דרך הבעלים',
-      alonspace_owned: 'בבעלות AlonSpace'
-    };
+    const currencyFormat = '#,##0.00 "₪"';
+    const contracts = new Map();
+    const ownerPayments = new Map();
+    const missingUnits = [];
 
     for (const unit of units) {
       const finance = unitFinance(unit);
-      const isOwned = unit.ownership_type === 'alonspace';
+      const feeEnabled =
+        unit.ownership_type !== 'alonspace' ||
+        unit.management_fee_charge_enabled !== false;
 
-      details.addRow({
-        floor: unit.floor,
-        number: String(unit.unit_number || ''),
-        active: unit.is_active ? 'כן' : 'לא',
-        ownership: ownershipNames[unit.ownership_type] || unit.ownership_type,
-        owner: unit.owner_name || '',
-        tenant: unit.tenant_name || '',
-        business: unit.tenant_business_name || '',
-        model: rentalModelNames[unit.rental_model] || '',
-        rent: unit.rent_charge_enabled === false && isOwned
-          ? 0 : unit.monthly_rent == null ? null : Number(unit.monthly_rent),
-        fee: unit.management_fee_charge_enabled === false && isOwned
-          ? 0 : Number(unit.monthly_management_fee || 0),
-        grossPayout: finance.grossPayout || 0,
-        income: finance.income,
-        payout: finance.payout,
-        profit: finance.profit,
-        missing: finance.missing ? 'כן' : 'לא'
-      });
+      const rentEnabled =
+        unit.ownership_type !== 'alonspace' ||
+        unit.rent_charge_enabled !== false;
+
+      const fee = feeEnabled
+        ? Number(unit.monthly_management_fee || 0)
+        : 0;
+
+      const rent = rentEnabled
+        ? Number(unit.monthly_rent || 0)
+        : 0;
+
+      if (finance.missing) {
+        missingUnits.push(
+          `${unit.floor || ''}/${unit.unit_number}`
+        );
+      }
+
+      // חיובים לפי חוזה, לא לפי מספר משתמשים.
+      if (
+        unit.tenancy_id &&
+        ['managed', 'alonspace_owned'].includes(unit.rental_model)
+      ) {
+        const key = String(unit.tenancy_id);
+
+        if (!contracts.has(key)) {
+          contracts.set(key, {
+            id: key,
+            tenant: unit.tenant_name || '',
+            business: unit.tenant_business_name || '',
+            offices: [],
+            rent: 0,
+            fee: 0,
+            total: 0,
+            missing: false
+          });
+        }
+
+        const contract = contracts.get(key);
+        contract.offices.push(`${unit.floor}/${unit.unit_number}`);
+        contract.rent += rent;
+
+        const feeAlreadyIncluded =
+          unit.ownership_type === 'alonspace' &&
+          unit.rent_includes_management_fee === true &&
+          rentEnabled;
+
+        const extraFee = feeAlreadyIncluded ? 0 : fee;
+        contract.fee += extraFee;
+        contract.total += rent + extraFee;
+        contract.missing ||= finance.missing;
+      }
+
+      // העברות לבעלים בחוזי ניהול.
+      if (
+        unit.rental_model === 'managed' &&
+        unit.owner_id != null
+      ) {
+        const key = String(unit.owner_id);
+
+        if (!ownerPayments.has(key)) {
+          ownerPayments.set(key, {
+            owner: unit.owner_name || '',
+            offices: [],
+            gross: 0,
+            deduction: 0,
+            net: 0,
+            missing: false
+          });
+        }
+
+        const owner = ownerPayments.get(key);
+        owner.offices.push(`${unit.floor}/${unit.unit_number}`);
+        owner.gross += Number(finance.grossPayout || 0);
+        owner.deduction += Number(finance.deductedFee || 0);
+        owner.net += Number(finance.payout || 0);
+        owner.missing ||= finance.missing;
+      }
     }
 
-    details.autoFilter = {
-      from: 'A1',
-      to: 'O1'
-    };
+    const collections = [...contracts.values()];
+    const payments = [...ownerPayments.values()];
 
-    for (const sheet of [summary, details]) {
-      const headerRow = sheet === summary ? sheet.getRow(5) : sheet.getRow(1);
-      headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-      headerRow.fill = {
+    function createSheet(name, columns) {
+      const sheet = workbook.addWorksheet(name, {
+        views: [{ rightToLeft: true, state: 'frozen', ySplit: 1 }]
+      });
+
+      sheet.columns = columns.map(([header, key, width]) => ({
+        header, key, width
+      }));
+
+      const header = sheet.getRow(1);
+      header.font = {
+        bold: true,
+        color: { argb: 'FFFFFFFF' }
+      };
+      header.fill = {
         type: 'pattern',
         pattern: 'solid',
         fgColor: { argb: 'FF252A48' }
       };
-      headerRow.height = 26;
+      header.height = 28;
+
+      sheet.autoFilter = {
+        from: 'A1',
+        to: { row: 1, column: columns.length }
+      };
+
+      return sheet;
     }
 
-    details.getColumn('I').numFmt = '#,##0.00 "₪"';
-    for (const letter of ['J', 'K', 'L', 'M', 'N']) {
-      details.getColumn(letter).numFmt = '#,##0.00 "₪"';
+    const collectionSheet = createSheet('גבייה מדיירים', [
+      ['מספר חוזה', 'id', 16],
+      ['דייר ראשי', 'tenant', 25],
+      ['חברה', 'business', 28],
+      ['משרדים', 'offices', 25],
+      ['שכירות', 'rent', 18],
+      ['דמי ניהול נוספים', 'fee', 23],
+      ['סה"כ לגבייה', 'total', 23],
+      ['נתונים חסרים', 'missing', 18]
+    ]);
+
+    for (const contract of collections) {
+      collectionSheet.addRow({
+        ...contract,
+        offices: contract.offices.join(', '),
+        missing: contract.missing ? 'כן' : 'לא'
+      });
+    }
+
+    for (const key of ['rent', 'fee', 'total']) {
+      collectionSheet.getColumn(key).numFmt = currencyFormat;
+    }
+
+    const ownerSheet = createSheet('תשלומים לבעלים', [
+      ['בעלים', 'owner', 28],
+      ['משרדים', 'offices', 28],
+      ['תשלום מוסכם', 'gross', 23],
+      ['קיזוז דמי ניהול', 'deduction', 23],
+      ['נטו להעברה', 'net', 23],
+      ['נתונים חסרים', 'missing', 18]
+    ]);
+
+    for (const owner of payments) {
+      ownerSheet.addRow({
+        ...owner,
+        offices: owner.offices.join(', '),
+        missing: owner.missing ? 'כן' : 'לא'
+      });
+    }
+
+    for (const key of ['gross', 'deduction', 'net']) {
+      ownerSheet.getColumn(key).numFmt = currencyFormat;
+    }
+
+    const totalCollection = collections.reduce(
+      (sum, row) => sum + row.total, 0
+    );
+
+    const totalPayment = payments.reduce(
+      (sum, row) => sum + row.net, 0
+    );
+
+    const summary = createSheet('סיכום חודשי', [
+      ['מדד', 'label', 42],
+      ['סכום / כמות', 'value', 26]
+    ]);
+
+    summary.addRow({
+      label: 'סה"כ לגבייה מדיירים',
+      value: totalCollection
+    });
+    summary.addRow({
+      label: 'סה"כ להעברה לבעלים',
+      value: totalPayment
+    });
+    summary.addRow({
+      label: 'יתרה מחושבת',
+      value: totalCollection - totalPayment
+    });
+    summary.addRow({
+      label: 'מספר חוזים לגבייה',
+      value: collections.length
+    });
+    summary.addRow({
+      label: 'מספר בעלי משרדים לתשלום',
+      value: payments.length
+    });
+    summary.addRow({
+      label: 'יחידות עם נתונים כספיים חסרים',
+      value: missingUnits.length
+    });
+    summary.addRow({
+      label: 'משרדים עם נתונים חסרים',
+      value: missingUnits.join(', ')
+    });
+
+    for (let row = 2; row <= 4; row++) {
+      summary.getCell(`B${row}`).numFmt = currencyFormat;
     }
 
     const filename = `AlonSpace-units-${new Date().toISOString().slice(0, 10)}.xlsx`;
