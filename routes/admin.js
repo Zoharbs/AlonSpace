@@ -3987,10 +3987,13 @@ router.get('/meeting-bookings/usage-report', async (req, res, next) => {
 
     const result = await db.query(
       `
+
         SELECT
           u.id,
           u.display_name,
           u.business_name,
+          u.office_number,
+          u.floor,
           u.monthly_meeting_hours,
 
           COALESCE(
@@ -4017,11 +4020,15 @@ router.get('/meeting-bookings/usage-report', async (req, res, next) => {
           AND u.is_active = TRUE
           AND ($2::INTEGER IS NULL OR u.id = $2)
 
+
         GROUP BY
           u.id,
           u.display_name,
           u.business_name,
+          u.office_number,
+          u.floor,
           u.monthly_meeting_hours
+
 
         ORDER BY
           booked_hours DESC,
