@@ -4,7 +4,7 @@ const crypto = require('crypto');
 
 const db = require('../db');
 const { unitFinance } = require('../utils/unitFinance');
-
+const ExcelJS = require('exceljs');
 
 const router = express.Router();
 
@@ -1735,6 +1735,215 @@ router.post('/units/tenant-assignment', async (req, res, next) => {
       '/admin/units?success=' +
       encodeURIComponent('שיוך הדיירים עודכן בהצלחה')
     );
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get('/units/export-excel', async (req, res, next) => {
+  try {
+    const result = await db.query(`
+      SELECT
+        ru.id,
+        ru.floor,
+        ru.unit_number,
+        ru.ownership_type,
+        ru.is_active,
+        ru.rent_charge_enabled,
+        ru.management_fee_charge_enabled,
+        uo.name AS owner_name,
+        COALESCE(fee.monthly_amount, 0) AS monthly_management_fee,
+        rent.monthly_rent,
+        rent.monthly_owner_payout,
+        COALESCE(rent.owner_payout_includes_management_fee, FALSE)
+          AS owner_payout_includes_management_fee,
+        COALESCE(rent.rent_includes_management_fee, FALSE)
+          AS rent_includes_management_fee,
+        ut.id AS tenancy_id,
+        ut.rental_model,
+        tenant.display_name AS tenant_name,
+        tenant.business_name AS tenant_business_name
+      FROM rental_units ru
+      LEFT JOIN unit_owners uo ON uo.id = ru.owner_id
+      LEFT JOIN LATERAL (
+        SELECT monthly_amount
+        FROM unit_management_fee_rates
+        WHERE unit_id = ru.id
+          AND effective_from <= DATE_TRUNC('month', CURRENT_DATE)::date
+        ORDER BY effective_from DESC, id DESC
+        LIMIT 1
+      ) fee ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT
+          t.id, t.rental_model
+        FROM unit_tenancies t
+        WHERE t.unit_id = ru.id
+        ORDER BY
+          CASE
+            WHEN t.start_date IS NULL THEN 0
+            WHEN t.start_date <= CURRENT_DATE
+              AND (t.end_date IS NULL OR t.end_date >= CURRENT_DATE)
+              THEN 0
+            WHEN t.start_date > CURRENT_DATE THEN 1
+            ELSE 2
+          END,
+          t.start_date DESC NULLS LAST,
+          t.id DESC
+        LIMIT 1
+      ) ut ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT
+          monthly_rent,
+          monthly_owner_payout,
+          owner_payout_includes_management_fee,
+          rent_includes_management_fee
+        FROM unit_rent_rates
+        WHERE tenancy_id = ut.id
+          AND effective_from <= DATE_TRUNC('month', CURRENT_DATE)::date
+        ORDER BY effective_from DESC, id DESC
+        LIMIT 1
+      ) rent ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT u.display_name, u.business_name
+        FROM unit_tenancy_users tu
+        JOIN users u ON u.id = tu.user_id
+        WHERE tu.tenancy_id = ut.id
+          AND tu.tenant_role = 'primary'
+        LIMIT 1
+      ) tenant ON TRUE
+      ORDER BY ru.floor, ru.unit_number
+    `);
+
+    const units = result.rows;
+    const activeUnits = units.filter(unit => unit.is_active);
+    const workbook = new ExcelJS.Workbook();
+
+    workbook.creator = 'AlonSpace';
+    workbook.created = new Date();
+
+    const summary = workbook.addWorksheet('סיכום כספי', {
+      views: [{ rightToLeft: true }]
+    });
+
+    const totals = activeUnits.reduce((acc, unit) => {
+      const finance = unitFinance(unit);
+      acc.income += finance.income;
+      acc.payout += finance.payout;
+      acc.profit += finance.profit;
+      if (finance.missing) acc.missing++;
+      return acc;
+    }, { income: 0, payout: 0, profit: 0, missing: 0 });
+
+    summary.addRow(['AlonSpace — סיכום כספי']);
+    summary.addRow(['תאריך הפקה', new Date()]);
+    summary.addRow(['סוג הדוח', 'תמונת מצב חודשית לפי תעריפים נוכחיים']);
+    summary.addRow([]);
+    summary.addRow(['מדד', 'ערך']);
+    summary.addRow(['יחידות פעילות', activeUnits.length]);
+    summary.addRow(['הכנסות מחושבות', totals.income]);
+    summary.addRow(['תשלומים לבעלים', totals.payout]);
+    summary.addRow(['רווח מחושב', totals.profit]);
+    summary.addRow(['יחידות עם נתונים חסרים', totals.missing]);
+
+    summary.columns = [{ width: 42 }, { width: 32 }];
+    summary.getCell('B2').numFmt = 'dd/mm/yyyy';
+    for (let row = 7; row <= 9; row++) {
+      summary.getCell(`B${row}`).numFmt = '#,##0.00 "₪"';
+    }
+
+    const details = workbook.addWorksheet('פירוט יחידות', {
+      views: [{ rightToLeft: true, state: 'frozen', ySplit: 1 }]
+    });
+
+    details.columns = [
+      { header: 'קומה', key: 'floor', width: 12 },
+      { header: 'משרד', key: 'number', width: 15 },
+      { header: 'פעיל', key: 'active', width: 12 },
+      { header: 'סוג בעלות', key: 'ownership', width: 22 },
+      { header: 'בעלים', key: 'owner', width: 25 },
+      { header: 'דייר', key: 'tenant', width: 25 },
+      { header: 'חברה', key: 'business', width: 25 },
+      { header: 'מודל השכרה', key: 'model', width: 22 },
+      { header: 'שכירות חודשית', key: 'rent', width: 22 },
+      { header: 'דמי ניהול', key: 'fee', width: 20 },
+      { header: 'תשלום ברוטו לבעלים', key: 'grossPayout', width: 25 },
+      { header: 'הכנסה מחושבת', key: 'income', width: 22 },
+      { header: 'תשלום נטו לבעלים', key: 'payout', width: 25 },
+      { header: 'רווח מחושב', key: 'profit', width: 22 },
+      { header: 'נתונים חסרים', key: 'missing', width: 18 }
+    ];
+
+    const ownershipNames = {
+      alonspace: 'AlonSpace',
+      external: 'בעלים חיצוני'
+    };
+
+    const rentalModelNames = {
+      managed: 'ניהול AlonSpace',
+      direct_owner: 'דרך הבעלים',
+      alonspace_owned: 'בבעלות AlonSpace'
+    };
+
+    for (const unit of units) {
+      const finance = unitFinance(unit);
+      const isOwned = unit.ownership_type === 'alonspace';
+
+      details.addRow({
+        floor: unit.floor,
+        number: String(unit.unit_number || ''),
+        active: unit.is_active ? 'כן' : 'לא',
+        ownership: ownershipNames[unit.ownership_type] || unit.ownership_type,
+        owner: unit.owner_name || '',
+        tenant: unit.tenant_name || '',
+        business: unit.tenant_business_name || '',
+        model: rentalModelNames[unit.rental_model] || '',
+        rent: unit.rent_charge_enabled === false && isOwned
+          ? 0 : unit.monthly_rent == null ? null : Number(unit.monthly_rent),
+        fee: unit.management_fee_charge_enabled === false && isOwned
+          ? 0 : Number(unit.monthly_management_fee || 0),
+        grossPayout: finance.grossPayout || 0,
+        income: finance.income,
+        payout: finance.payout,
+        profit: finance.profit,
+        missing: finance.missing ? 'כן' : 'לא'
+      });
+    }
+
+    details.autoFilter = {
+      from: 'A1',
+      to: 'O1'
+    };
+
+    for (const sheet of [summary, details]) {
+      const headerRow = sheet === summary ? sheet.getRow(5) : sheet.getRow(1);
+      headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      headerRow.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF252A48' }
+      };
+      headerRow.height = 26;
+    }
+
+    details.getColumn('I').numFmt = '#,##0.00 "₪"';
+    for (const letter of ['J', 'K', 'L', 'M', 'N']) {
+      details.getColumn(letter).numFmt = '#,##0.00 "₪"';
+    }
+
+    const filename = `AlonSpace-units-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${filename}"`
+    );
+    res.setHeader('Cache-Control', 'no-store');
+
+    return res.send(Buffer.from(buffer));
   } catch (error) {
     return next(error);
   }
