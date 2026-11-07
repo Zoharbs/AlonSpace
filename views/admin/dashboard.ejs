@@ -3869,10 +3869,27 @@
     </select>
   </label>
 
-  <label>
-    חודש
-    <input type="month" id="usageReportMonth">
-  </label>
+
+<div class="usage-month-picker">
+  <span class="small">חודש הדוח</span>
+
+  <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+    <button type="button" class="mini-btn"
+            id="usageMonthPrevious" aria-label="חודש קודם">
+      ‹
+    </button>
+
+    <strong id="usageMonthLabel" style="min-width:120px;text-align:center;"></strong>
+
+    <button type="button" class="mini-btn"
+            id="usageMonthNext" aria-label="חודש הבא">
+      ›
+    </button>
+  </div>
+
+  <input type="hidden" id="usageReportMonth">
+</div>
+
 
   <button type="button" class="mini-btn primary" id="loadUsageReport">
     הצג דוח
@@ -7080,8 +7097,37 @@ AlonSpace`;
   let currentIndex = 0;
   let requestNumber = 0;
 
+
   const now = new Date();
-  month.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  let selectedMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  function updateMonthDisplay() {
+    month.value =
+      `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, '0')}`;
+
+    el('usageMonthLabel').textContent =
+      selectedMonth.toLocaleDateString('he-IL', {
+        month: 'long',
+        year: 'numeric'
+      });
+  }
+
+  function changeMonth(offset) {
+    selectedMonth = new Date(
+      selectedMonth.getFullYear(),
+      selectedMonth.getMonth() + offset,
+      1
+    );
+
+    updateMonthDisplay();
+    loadReport();
+  }
+
+  el('usageMonthPrevious').addEventListener('click', () => changeMonth(-1));
+  el('usageMonthNext').addEventListener('click', () => changeMonth(1));
+
+  updateMonthDisplay();
+
 
   const formatHours = value =>
     Number(value || 0).toLocaleString('he-IL', {
