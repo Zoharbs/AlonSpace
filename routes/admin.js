@@ -1975,7 +1975,7 @@ ru.owner_id,
           net: amount(finance.payout),
           missing: missing ? 'כן' : 'לא'
         });
-      } else if (direct || !hasContract) {
+      } else if (direct) {
         // דרך הבעלים: בעל המשרד משלם דמי ניהול.
         ownerAmount = fee;
         if (!hasContract) {
@@ -2191,7 +2191,12 @@ ru.owner_id,
     }
     summary.getCell('B10').numFmt = moneyFormat;
 
+    
+    const filename =
+      `AlonSpace-units-${new Date().toISOString().slice(0, 10)}.xlsx`;
+
     const buffer = await workbook.xlsx.writeBuffer();
+
 
     res.setHeader(
       'Content-Type',
