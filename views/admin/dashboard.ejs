@@ -3834,23 +3834,52 @@
                           דוח ניצול שעות חדרי ישיבות
                         </summary>
 
-                        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; align-items:end;">
-                          <label>
-                            דייר
-                            <select id="usageReportTenant">
-                              <option value="">כל הדיירים</option>
-                            </select>
-                          </label>
 
-                          <label>
-                            חודש
-                            <input type="month" id="usageReportMonth">
-                          </label>
+<div class="usage-report-filters" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; align-items:end;">
 
-                          <button type="button" class="mini-btn primary" id="loadUsageReport">
-                            הצג דוח
-                          </button>
-                        </div>
+  <label>
+    סוג סינון
+    <select id="usageReportFilterType">
+      <option value="tenant">לפי דייר</option>
+      <option value="search">חיפוש חופשי</option>
+      <option value="company">לפי חברה</option>
+    </select>
+  </label>
+
+  <label id="usageReportTenantField">
+    דייר
+    <select id="usageReportTenant">
+      <option value="">כל הדיירים</option>
+    </select>
+  </label>
+
+  <label id="usageReportSearchField" style="display:none;">
+    חיפוש
+    <input
+      type="search"
+      id="usageReportSearch"
+      placeholder="שם דייר, חברה או מספר משרד"
+    >
+  </label>
+
+  <label id="usageReportCompanyField" style="display:none;">
+    חברה
+    <select id="usageReportCompany">
+      <option value="">כל החברות</option>
+    </select>
+  </label>
+
+  <label>
+    חודש
+    <input type="month" id="usageReportMonth">
+  </label>
+
+  <button type="button" class="mini-btn primary" id="loadUsageReport">
+    הצג דוח
+  </button>
+
+</div>
+
 
                         <p class="small" style="margin-top:12px;">
                           הדוח כולל את כל השעות שהוזמנו בחודש הנבחר, כולל הזמנות עתידיות.
