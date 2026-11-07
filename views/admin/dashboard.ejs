@@ -3887,20 +3887,58 @@
 
                         <div id="usageReportStatus" role="status" style="margin-top:12px;"></div>
 
-                        <div class="table-wrap" style="margin-top:12px;">
-                          <table>
-                            <thead>
-                              <tr>
-                                <th>דייר</th>
-                                <th>עסק</th>
-                                <th>מספר הזמנות</th>
-                                <th>שעות שהוזמנו</th>
-                                <th>מכסה חודשית</th>
-                              </tr>
-                            </thead>
-                            <tbody id="usageReportBody"></tbody>
-                          </table>
-                        </div>
+
+<div id="usageReportSummary" class="client-usage-grid"
+     style="margin-top:14px;" hidden>
+  <div class="client-usage-box">
+    <span>סה"כ שעות בקבוצה</span>
+    <strong id="usageReportTotalHours">0</strong>
+  </div>
+  <div class="client-usage-box">
+    <span>מספר הזמנות</span>
+    <strong id="usageReportTotalBookings">0</strong>
+  </div>
+  <div class="client-usage-box">
+    <span>משתמשים בתוצאה</span>
+    <strong id="usageReportTotalUsers">0</strong>
+  </div>
+</div>
+
+<div id="usageReportCard" class="admin-card"
+     style="margin-top:12px;" hidden>
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+    <div>
+      <strong id="usageReportName"></strong>
+      <div id="usageReportMeta" class="small"></div>
+    </div>
+    <span id="usageReportPosition" class="small"></span>
+  </div>
+
+  <div class="client-usage-grid" style="margin-top:12px;">
+    <div class="client-usage-box">
+      <span>שעות שהוזמנו</span>
+      <strong id="usageReportHours"></strong>
+    </div>
+    <div class="client-usage-box">
+      <span>מספר הזמנות</span>
+      <strong id="usageReportBookings"></strong>
+    </div>
+    <div class="client-usage-box">
+      <span>מכסה חודשית</span>
+      <strong id="usageReportQuota"></strong>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;margin-top:12px;">
+    <button type="button" class="mini-btn" id="usageReportPrevious">
+      הקודם
+    </button>
+    <button type="button" class="mini-btn" id="usageReportNext">
+      הבא
+    </button>
+  </div>
+</div>
+
                       </details>
 
                       <div class="meeting-calendar-toolbar">
@@ -7020,77 +7058,211 @@ AlonSpace`;
     </script>
     <% } %>
 
+
 <script>
-  (() => {
-    const tenantSelect = document.getElementById('usageReportTenant');
-    const monthInput = document.getElementById('usageReportMonth');
-    const loadButton = document.getElementById('loadUsageReport');
-    const tableBody = document.getElementById('usageReportBody');
-    const status = document.getElementById('usageReportStatus');
+(() => {
+  const el = id => document.getElementById(id);
+  const type = el('usageReportFilterType');
+  const tenant = el('usageReportTenant');
+  const search = el('usageReportSearch');
+  const company = el('usageReportCompany');
+  const month = el('usageReportMonth');
+  const button = el('loadUsageReport');
+  const status = el('usageReportStatus');
+  const summary = el('usageReportSummary');
+  const card = el('usageReportCard');
 
-    if (!tenantSelect || !monthInput || !loadButton || !tableBody || !status) return;
+  if (!type || !tenant || !search || !company || !month ||
+      !button || !status || !summary || !card) return;
 
-    const localDate = new Date();
-    monthInput.value =
-      `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}`;
+  let allUsers = [];
+  let filteredUsers = [];
+  let currentIndex = 0;
+  let requestNumber = 0;
 
-    function makeCell(row, value) {
-      const cell = document.createElement('td');
-      cell.textContent = String(value ?? '');
-      row.appendChild(cell);
+  const now = new Date();
+  month.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+  const formatHours = value =>
+    Number(value || 0).toLocaleString('he-IL', {
+      maximumFractionDigits: 2
+    });
+
+  function updateFields() {
+    el('usageReportTenantField').style.display =
+      type.value === 'tenant' ? '' : 'none';
+    el('usageReportSearchField').style.display =
+      type.value === 'search' ? '' : 'none';
+    el('usageReportCompanyField').style.display =
+      type.value === 'company' ? '' : 'none';
+  }
+
+  function populateFilters() {
+    const selectedTenant = tenant.value;
+    const selectedCompany = company.value;
+
+    tenant.replaceChildren(new Option('כל הדיירים', ''));
+    company.replaceChildren(new Option('כל החברות', ''));
+
+    allUsers.forEach(user => {
+      tenant.add(new Option(
+        `${user.display_name} (${user.business_name || 'ללא חברה'})`,
+        user.id
+      ));
+    });
+
+    const companies = [...new Set(
+      allUsers.map(user => (user.business_name || '').trim())
+        .filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b, 'he'));
+
+    companies.forEach(name => {
+      company.add(new Option(name, name));
+    });
+
+    tenant.value = selectedTenant;
+    company.value = selectedCompany;
+  }
+
+  function renderCard() {
+    const user = filteredUsers[currentIndex];
+    card.hidden = !user;
+    summary.hidden = !filteredUsers.length;
+
+    if (!user) return;
+
+    el('usageReportName').textContent = user.display_name || 'דייר';
+    el('usageReportMeta').textContent = [
+      user.business_name,
+      user.office_number ? `משרד ${user.office_number}` : '',
+      user.floor ? `קומה ${user.floor}` : ''
+    ].filter(Boolean).join(' · ');
+
+    el('usageReportHours').textContent =
+      `${formatHours(user.booked_hours)} שעות`;
+    el('usageReportBookings').textContent = user.booking_count;
+    el('usageReportQuota').textContent =
+      user.monthly_meeting_hours == null
+        ? '—'
+        : `${formatHours(user.monthly_meeting_hours)} שעות`;
+
+    el('usageReportPosition').textContent =
+      `${currentIndex + 1} מתוך ${filteredUsers.length}`;
+
+    el('usageReportPrevious').disabled = currentIndex === 0;
+    el('usageReportNext').disabled =
+      currentIndex >= filteredUsers.length - 1;
+  }
+
+  function applyFilters() {
+    const query = search.value.trim().toLocaleLowerCase('he');
+
+    filteredUsers = allUsers.filter(user => {
+      if (type.value === 'tenant') {
+        return !tenant.value || String(user.id) === tenant.value;
+      }
+
+      if (type.value === 'company') {
+        return !company.value ||
+          user.business_name === company.value;
+      }
+
+      return [
+        user.display_name,
+        user.business_name,
+        user.office_number,
+        user.floor
+      ].some(value =>
+        String(value ?? '').toLocaleLowerCase('he').includes(query)
+      );
+    });
+
+    currentIndex = 0;
+
+    const totalHours = filteredUsers.reduce(
+      (sum, user) => sum + Number(user.booked_hours || 0), 0
+    );
+    const totalBookings = filteredUsers.reduce(
+      (sum, user) => sum + Number(user.booking_count || 0), 0
+    );
+
+    el('usageReportTotalHours').textContent =
+      `${formatHours(totalHours)} שעות`;
+    el('usageReportTotalBookings').textContent = totalBookings;
+    el('usageReportTotalUsers').textContent = filteredUsers.length;
+
+    status.textContent = filteredUsers.length
+      ? `נמצאו ${filteredUsers.length} משתמשים`
+      : 'לא נמצאו משתמשים התואמים לסינון';
+
+    renderCard();
+  }
+
+  async function loadReport() {
+    if (!month.value) {
+      status.textContent = 'יש לבחור חודש';
+      return;
     }
 
-    async function loadReport() {
-      loadButton.disabled = true;
-      status.textContent = 'טוען נתונים...';
-      tableBody.replaceChildren();
+    const currentRequest = ++requestNumber;
+    button.disabled = true;
+    status.textContent = 'טוען נתונים...';
+    summary.hidden = true;
+    card.hidden = true;
 
-      try {
-        const params = new URLSearchParams({ month: monthInput.value });
-        if (tenantSelect.value) {
-          params.set('user_id', tenantSelect.value);
-        }
+    try {
+      const params = new URLSearchParams({ month: month.value });
+      const response = await fetch(
+        `/admin/meeting-bookings/usage-report?${params}`
+      );
 
-        const response = await fetch(
-          `/admin/meeting-bookings/usage-report?${params.toString()}`
-        );
+      if (!response.ok) throw new Error('Failed to load');
 
-        if (!response.ok) throw new Error('שגיאה בטעינת הדוח');
+      const data = await response.json();
+      if (currentRequest !== requestNumber) return;
 
-        const data = await response.json();
-
-        if (tenantSelect.options.length === 1) {
-          data.users.forEach(user => {
-            const option = document.createElement('option');
-            option.value = user.id;
-            option.textContent = user.display_name;
-            tenantSelect.appendChild(option);
-          });
-        }
-
-        for (const user of data.users) {
-          const row = document.createElement('tr');
-          makeCell(row, user.display_name);
-          makeCell(row, user.business_name || '—');
-          makeCell(row, user.booking_count);
-          makeCell(row, Number(user.booked_hours).toLocaleString('he-IL'));
-          makeCell(row, user.monthly_meeting_hours ?? '—');
-          tableBody.appendChild(row);
-        }
-
-        status.textContent = data.users.length
-          ? `נמצאו ${data.users.length} דיירים`
-          : 'לא נמצאו דיירים';
-      } catch (error) {
-        status.textContent = 'לא ניתן לטעון את הדוח כרגע.';
-      } finally {
-        loadButton.disabled = false;
+      allUsers = data.users || [];
+      populateFilters();
+      applyFilters();
+    } catch (error) {
+      if (currentRequest === requestNumber) {
+        status.textContent = 'שגיאה בטעינת הנתונים';
+      }
+    } finally {
+      if (currentRequest === requestNumber) {
+        button.disabled = false;
       }
     }
+  }
 
-    loadButton.addEventListener('click', loadReport);
-    loadReport();
-  })();
+  type.addEventListener('change', () => {
+    updateFields();
+    applyFilters();
+  });
+
+  tenant.addEventListener('change', applyFilters);
+  company.addEventListener('change', applyFilters);
+  search.addEventListener('input', applyFilters);
+  month.addEventListener('change', loadReport);
+  button.addEventListener('click', loadReport);
+
+  el('usageReportPrevious').addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      renderCard();
+    }
+  });
+
+  el('usageReportNext').addEventListener('click', () => {
+    if (currentIndex < filteredUsers.length - 1) {
+      currentIndex++;
+      renderCard();
+    }
+  });
+
+  updateFields();
+  loadReport();
+})();
 </script>
 
 </body>
