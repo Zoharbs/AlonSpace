@@ -1817,109 +1817,231 @@ ru.owner_id,
 
 
 
-    const units = result.rows.filter(unit => unit.is_active);
+   
+    const units = result.rows;
     const workbook = new ExcelJS.Workbook();
-
     workbook.creator = 'AlonSpace';
     workbook.created = new Date();
 
-    const currencyFormat = '#,##0.00 "₪"';
-    const contracts = new Map();
-    const ownerPayments = new Map();
-    const missingUnits = [];
+    const moneyFormat = '#,##0.00 "₪"';
+    const tenantCharges = new Map();
+    const ownerCharges = new Map();
+    const ownerPayments = [];
+    const auditRows = [];
+
+    const totals = {
+      income: 0,
+      payout: 0,
+      profit: 0,
+      missing: 0,
+      active: 0,
+      tenantCollection: 0,
+      ownerCollection: 0
+    };
+
+    function amount(value) {
+      return Number(value || 0);
+    }
+
+    function officeLabel(unit) {
+      return `קומה ${unit.floor} / משרד ${unit.unit_number}`;
+    }
+
+    function addGrouped(map, key, initial, values) {
+      if (!map.has(key)) {
+        map.set(key, { ...initial, offices: [] });
+      }
+
+      const item = map.get(key);
+      item.offices.push(values.office);
+      item.rent = (item.rent || 0) + (values.rent || 0);
+      item.fee = (item.fee || 0) + (values.fee || 0);
+      item.total = (item.total || 0) + (values.total || 0);
+      item.missing = item.missing || values.missing;
+    }
 
     for (const unit of units) {
       const finance = unitFinance(unit);
-      const feeEnabled =
-        unit.ownership_type !== 'alonspace' ||
-        unit.management_fee_charge_enabled !== false;
+      const office = officeLabel(unit);
+      const active = unit.is_active === true;
+      const hasContract = Boolean(unit.tenancy_id);
+      const owned = unit.ownership_type === 'alonspace';
+      const managed = unit.rental_model === 'managed';
+      const direct = unit.rental_model === 'direct_owner';
+      const alonspaceRental =
+        unit.rental_model === 'alonspace_owned';
 
       const rentEnabled =
-        unit.ownership_type !== 'alonspace' ||
-        unit.rent_charge_enabled !== false;
+        !owned || unit.rent_charge_enabled !== false;
+
+      const feeEnabled =
+        !owned || unit.management_fee_charge_enabled !== false;
 
       const fee = feeEnabled
-        ? Number(unit.monthly_management_fee || 0)
+        ? amount(unit.monthly_management_fee)
         : 0;
 
       const rent = rentEnabled
-        ? Number(unit.monthly_rent || 0)
+        ? amount(unit.monthly_rent)
         : 0;
 
-      if (finance.missing) {
-        missingUnits.push(
-          `${unit.floor || ''}/${unit.unit_number}`
+      const rentMissing =
+        hasContract &&
+        (managed || alonspaceRental) &&
+        rentEnabled &&
+        unit.monthly_rent == null;
+
+      const payoutMissing =
+        managed && unit.monthly_owner_payout == null;
+
+      const missing = active && (rentMissing || payoutMissing);
+
+      if (active) {
+        totals.active++;
+        totals.income += finance.income;
+        totals.payout += finance.payout;
+        totals.profit += finance.profit;
+        if (finance.missing) totals.missing++;
+      }
+
+      let tenantAmount = 0;
+      let ownerAmount = 0;
+      let note = '';
+
+      if (!active) {
+        note = 'יחידה לא פעילה — ללא חיוב';
+      } else if (owned) {
+        if (hasContract && alonspaceRental) {
+          const feeIncluded =
+            unit.rent_includes_management_fee === true &&
+            rentEnabled;
+
+          tenantAmount = rent + (feeIncluded ? 0 : fee);
+
+          addGrouped(
+            tenantCharges,
+            `contract:${unit.tenancy_id}`,
+            {
+              contract: String(unit.tenancy_id),
+              tenant: unit.tenant_name || 'לא הוגדר',
+              business: unit.tenant_business_name || '',
+              model: 'בבעלות AlonSpace'
+            },
+            {
+              office,
+              rent,
+              fee: feeIncluded ? 0 : fee,
+              total: tenantAmount,
+              missing
+            }
+          );
+        } else if (fee > 0 || rent > 0) {
+          note = 'בעלות AlonSpace — חסר חוזה מתאים לחיוב';
+        }
+      } else if (managed && hasContract) {
+        // שכירות נגבית מהדייר.
+        tenantAmount = rent;
+
+        addGrouped(
+          tenantCharges,
+          `contract:${unit.tenancy_id}`,
+          {
+            contract: String(unit.tenancy_id),
+            tenant: unit.tenant_name || 'לא הוגדר',
+            business: unit.tenant_business_name || '',
+            model: 'ניהול AlonSpace'
+          },
+          {
+            office,
+            rent,
+            fee: 0,
+            total: rent,
+            missing
+          }
+        );
+
+        // דמי הניהול מקוזזים מהתשלום לבעלים
+        // אם כך הוגדר; אחרת מוצגים לגבייה ממנו.
+        if (!finance.includesFee && fee > 0) {
+          ownerAmount = fee;
+        }
+
+        ownerPayments.push({
+          owner: unit.owner_name || 'לא הוגדר',
+          office,
+          contract: String(unit.tenancy_id),
+          gross: amount(finance.grossPayout),
+          deduction: amount(finance.deductedFee),
+          net: amount(finance.payout),
+          missing: missing ? 'כן' : 'לא'
+        });
+      } else if (direct || !hasContract) {
+        // דרך הבעלים: בעל המשרד משלם דמי ניהול.
+        ownerAmount = fee;
+        if (!hasContract) {
+          note = 'אין חוזה שכירות משויך';
+        }
+      } else {
+        note = 'מודל השכרה לא מזוהה — נדרשת בדיקה';
+      }
+
+      if (active && ownerAmount > 0) {
+        const ownerKey = unit.owner_id != null
+          ? `owner:${unit.owner_id}`
+          : `unit:${unit.id}`;
+
+        addGrouped(
+          ownerCharges,
+          ownerKey,
+          {
+            owner: unit.owner_name || 'בעלים לא מוגדר',
+            rent: 0
+          },
+          {
+            office,
+            rent: 0,
+            fee: ownerAmount,
+            total: ownerAmount,
+            missing: !unit.owner_id
+          }
         );
       }
 
-      // חיובים לפי חוזה, לא לפי מספר משתמשים.
-      if (
-        unit.tenancy_id &&
-        ['managed', 'alonspace_owned'].includes(unit.rental_model)
-      ) {
-        const key = String(unit.tenancy_id);
+      totals.tenantCollection += tenantAmount;
+      totals.ownerCollection += ownerAmount;
 
-        if (!contracts.has(key)) {
-          contracts.set(key, {
-            id: key,
-            tenant: unit.tenant_name || '',
-            business: unit.tenant_business_name || '',
-            offices: [],
-            rent: 0,
-            fee: 0,
-            total: 0,
-            missing: false
-          });
-        }
-
-        const contract = contracts.get(key);
-        contract.offices.push(`${unit.floor}/${unit.unit_number}`);
-        contract.rent += rent;
-
-        const feeAlreadyIncluded =
-          unit.ownership_type === 'alonspace' &&
-          unit.rent_includes_management_fee === true &&
-          rentEnabled;
-
-        const extraFee = feeAlreadyIncluded ? 0 : fee;
-        contract.fee += extraFee;
-        contract.total += rent + extraFee;
-        contract.missing ||= finance.missing;
-      }
-
-      // העברות לבעלים בחוזי ניהול.
-      if (
-        unit.rental_model === 'managed' &&
-        unit.owner_id != null
-      ) {
-        const key = String(unit.owner_id);
-
-        if (!ownerPayments.has(key)) {
-          ownerPayments.set(key, {
-            owner: unit.owner_name || '',
-            offices: [],
-            gross: 0,
-            deduction: 0,
-            net: 0,
-            missing: false
-          });
-        }
-
-        const owner = ownerPayments.get(key);
-        owner.offices.push(`${unit.floor}/${unit.unit_number}`);
-        owner.gross += Number(finance.grossPayout || 0);
-        owner.deduction += Number(finance.deductedFee || 0);
-        owner.net += Number(finance.payout || 0);
-        owner.missing ||= finance.missing;
-      }
+      auditRows.push({
+        floor: unit.floor,
+        office: String(unit.unit_number || ''),
+        active: active ? 'כן' : 'לא',
+        owner: owned ? 'AlonSpace' : unit.owner_name || '',
+        tenant: unit.tenant_name || '',
+        business: unit.tenant_business_name || '',
+        model: unit.rental_model || 'לא הוגדר',
+        contract: unit.tenancy_id
+          ? String(unit.tenancy_id) : '',
+        rent: unit.monthly_rent == null
+          ? null : amount(unit.monthly_rent),
+        fee,
+        tenantCharge: tenantAmount,
+        ownerCharge: ownerAmount,
+        grossPayout: active ? amount(finance.grossPayout) : 0,
+        deduction: active ? amount(finance.deductedFee) : 0,
+        payout: finance.payout,
+        income: finance.income,
+        profit: finance.profit,
+        missing: missing ? 'כן' : 'לא',
+        note
+      });
     }
 
-    const collections = [...contracts.values()];
-    const payments = [...ownerPayments.values()];
-
-    function createSheet(name, columns) {
+    function makeSheet(name, columns) {
       const sheet = workbook.addWorksheet(name, {
-        views: [{ rightToLeft: true, state: 'frozen', ySplit: 1 }]
+        views: [{
+          rightToLeft: true,
+          state: 'frozen',
+          ySplit: 1
+        }]
       });
 
       sheet.columns = columns.map(([header, key, width]) => ({
@@ -1946,97 +2068,129 @@ ru.owner_id,
       return sheet;
     }
 
-    const collectionSheet = createSheet('גבייה מדיירים', [
-      ['מספר חוזה', 'id', 16],
-      ['דייר ראשי', 'tenant', 25],
+    function addRows(sheet, rows, currencyKeys) {
+      for (const row of rows) {
+        sheet.addRow({
+          ...row,
+          offices: Array.isArray(row.offices)
+            ? row.offices.join(', ')
+            : row.offices,
+          missing: typeof row.missing === 'boolean'
+            ? row.missing ? 'כן' : 'לא'
+            : row.missing
+        });
+      }
+
+      for (const key of currencyKeys) {
+        sheet.getColumn(key).numFmt = moneyFormat;
+      }
+    }
+
+    const tenantSheet = makeSheet('גבייה מדיירים', [
+      ['חוזה', 'contract', 15],
+      ['דייר ראשי', 'tenant', 26],
       ['חברה', 'business', 28],
-      ['משרדים', 'offices', 25],
-      ['שכירות', 'rent', 18],
+      ['משרדים', 'offices', 30],
+      ['מודל', 'model', 22],
+      ['שכירות', 'rent', 20],
       ['דמי ניהול נוספים', 'fee', 23],
       ['סה"כ לגבייה', 'total', 23],
       ['נתונים חסרים', 'missing', 18]
     ]);
 
-    for (const contract of collections) {
-      collectionSheet.addRow({
-        ...contract,
-        offices: contract.offices.join(', '),
-        missing: contract.missing ? 'כן' : 'לא'
-      });
-    }
+    addRows(
+      tenantSheet,
+      [...tenantCharges.values()],
+      ['rent', 'fee', 'total']
+    );
 
-    for (const key of ['rent', 'fee', 'total']) {
-      collectionSheet.getColumn(key).numFmt = currencyFormat;
-    }
+    const ownerChargeSheet = makeSheet('גבייה מבעלים', [
+      ['בעלים', 'owner', 30],
+      ['משרדים', 'offices', 35],
+      ['דמי ניהול לגבייה', 'fee', 25],
+      ['סה"כ לגבייה', 'total', 25],
+      ['נתונים חסרים', 'missing', 18]
+    ]);
 
-    const ownerSheet = createSheet('תשלומים לבעלים', [
-      ['בעלים', 'owner', 28],
-      ['משרדים', 'offices', 28],
+    addRows(
+      ownerChargeSheet,
+      [...ownerCharges.values()],
+      ['fee', 'total']
+    );
+
+    const paymentSheet = makeSheet('תשלומים לבעלים', [
+      ['בעלים', 'owner', 30],
+      ['משרד', 'office', 28],
+      ['חוזה', 'contract', 15],
       ['תשלום מוסכם', 'gross', 23],
       ['קיזוז דמי ניהול', 'deduction', 23],
       ['נטו להעברה', 'net', 23],
       ['נתונים חסרים', 'missing', 18]
     ]);
 
-    for (const owner of payments) {
-      ownerSheet.addRow({
-        ...owner,
-        offices: owner.offices.join(', '),
-        missing: owner.missing ? 'כן' : 'לא'
-      });
-    }
-
-    for (const key of ['gross', 'deduction', 'net']) {
-      ownerSheet.getColumn(key).numFmt = currencyFormat;
-    }
-
-    const totalCollection = collections.reduce(
-      (sum, row) => sum + row.total, 0
+    addRows(
+      paymentSheet,
+      ownerPayments,
+      ['gross', 'deduction', 'net']
     );
 
-    const totalPayment = payments.reduce(
-      (sum, row) => sum + row.net, 0
-    );
-
-    const summary = createSheet('סיכום חודשי', [
-      ['מדד', 'label', 42],
-      ['סכום / כמות', 'value', 26]
+    const auditSheet = makeSheet('ביקורת יחידות', [
+      ['קומה', 'floor', 12],
+      ['משרד', 'office', 14],
+      ['פעיל', 'active', 12],
+      ['בעלים', 'owner', 28],
+      ['דייר ראשי', 'tenant', 25],
+      ['חברה', 'business', 25],
+      ['מודל', 'model', 22],
+      ['חוזה', 'contract', 14],
+      ['שכירות מוגדרת', 'rent', 20],
+      ['דמי ניהול', 'fee', 20],
+      ['גבייה מדייר', 'tenantCharge', 20],
+      ['גבייה מבעלים', 'ownerCharge', 20],
+      ['תשלום ברוטו לבעלים', 'grossPayout', 25],
+      ['קיזוז דמי ניהול', 'deduction', 23],
+      ['נטו לבעלים', 'payout', 20],
+      ['הכנסה לפי האתר', 'income', 23],
+      ['יתרה לפי האתר', 'profit', 23],
+      ['נתונים חסרים', 'missing', 18],
+      ['הערה', 'note', 45]
     ]);
 
-    summary.addRow({
-      label: 'סה"כ לגבייה מדיירים',
-      value: totalCollection
-    });
-    summary.addRow({
-      label: 'סה"כ להעברה לבעלים',
-      value: totalPayment
-    });
-    summary.addRow({
-      label: 'יתרה מחושבת',
-      value: totalCollection - totalPayment
-    });
-    summary.addRow({
-      label: 'מספר חוזים לגבייה',
-      value: collections.length
-    });
-    summary.addRow({
-      label: 'מספר בעלי משרדים לתשלום',
-      value: payments.length
-    });
-    summary.addRow({
-      label: 'יחידות עם נתונים כספיים חסרים',
-      value: missingUnits.length
-    });
-    summary.addRow({
-      label: 'משרדים עם נתונים חסרים',
-      value: missingUnits.join(', ')
-    });
+    addRows(auditSheet, auditRows, [
+      'rent', 'fee', 'tenantCharge', 'ownerCharge',
+      'grossPayout', 'deduction', 'payout',
+      'income', 'profit'
+    ]);
 
-    for (let row = 2; row <= 4; row++) {
-      summary.getCell(`B${row}`).numFmt = currencyFormat;
+    const summary = makeSheet('סיכום כספי', [
+      ['מדד', 'label', 48],
+      ['סכום / כמות', 'value', 28]
+    ]);
+
+    const summaryRows = [
+      ['הכנסות צפויות לפי האתר', totals.income],
+      ['תשלומים לבעלים לפי האתר', totals.payout],
+      ['יתרה לפני הוצאות לפי האתר', totals.profit],
+      ['גבייה מדיירים', totals.tenantCollection],
+      ['גבייה מבעלי משרדים', totals.ownerCollection],
+      ['סה"כ גבייה ברוטו', 
+        totals.tenantCollection + totals.ownerCollection],
+      ['יחידות פעילות', totals.active],
+      ['יחידות עם נתונים חסרים', totals.missing],
+      ['הפרש בין גבייה להכנסות מחושבות',
+        totals.tenantCollection +
+        totals.ownerCollection - totals.income]
+    ];
+
+    for (const [label, value] of summaryRows) {
+      summary.addRow({ label, value });
     }
 
-    const filename = `AlonSpace-units-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    for (let row = 2; row <= 7; row++) {
+      summary.getCell(`B${row}`).numFmt = moneyFormat;
+    }
+    summary.getCell('B10').numFmt = moneyFormat;
+
     const buffer = await workbook.xlsx.writeBuffer();
 
     res.setHeader(
