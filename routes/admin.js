@@ -3960,6 +3960,85 @@ router.post('/clients/:id/delete',
   }
 );
 
+router.get('/meeting-bookings/usage-report', async (req, res, next) => {
+  try {
+    const month = String(
+      req.query.month || new Date().toISOString().slice(0, 7)
+    );
+
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+      return res.status(400).json({
+        error: 'חודש לא תקין'
+      });
+    }
+
+    const userId = req.query.user_id
+      ? Number(req.query.user_id)
+      : null;
+
+    if (
+      userId !== null &&
+      (!Number.isSafeInteger(userId) || userId <= 0)
+    ) {
+      return res.status(400).json({
+        error: 'מזהה דייר לא תקין'
+      });
+    }
+
+    const result = await db.query(
+      `
+        SELECT
+          u.id,
+          u.display_name,
+          u.business_name,
+          u.monthly_meeting_hours,
+
+          COALESCE(
+            SUM(
+              EXTRACT(
+                EPOCH FROM (mb.end_time - mb.start_time)
+              ) / 3600
+            ),
+            0
+          )::NUMERIC AS booked_hours,
+
+          COUNT(mb.id)::INTEGER AS booking_count
+
+        FROM users u
+
+        LEFT JOIN meeting_bookings mb
+          ON mb.user_id = u.id
+          AND mb.booking_date >= $1::DATE
+          AND mb.booking_date <
+            ($1::DATE + INTERVAL '1 month')
+
+        WHERE
+          u.role = 'tenant'
+          AND u.is_active = TRUE
+          AND ($2::INTEGER IS NULL OR u.id = $2)
+
+        GROUP BY
+          u.id,
+          u.display_name,
+          u.business_name,
+          u.monthly_meeting_hours
+
+        ORDER BY
+          booked_hours DESC,
+          u.display_name ASC
+      `,
+      [`${month}-01`, userId]
+    );
+
+    return res.json({
+      month,
+      users: result.rows
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
 router.post('/meeting-bookings/:id/delete',
   async (req, res, next) => {
     try {
