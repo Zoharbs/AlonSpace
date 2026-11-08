@@ -1584,45 +1584,32 @@
 
                   </p>
 
-                  <div class="stats" style="margin-bottom:0;">
 
-                    <div class="stat-card">
+<div class="stats" style="margin-bottom:0;">
 
-                      <div class="stat-label">הכנסות צפויות</div>
+  <div class="stat-card">
+    <div class="stat-label">הכנסות מדמי ניהול</div>
+    <div class="stat-value">
+      <%= money(financialTotals.managementIncome) %>
+    </div>
+  </div>
 
-                      <div class="stat-value">
+  <div class="stat-card">
+    <div class="stat-label">רווח מהשכרה לפני הוצאות</div>
+    <div class="stat-value">
+      <%= money(financialTotals.rentalProfit) %>
+    </div>
+  </div>
 
-                        <%= money(financialTotals.income) %>
+  <div class="stat-card">
+    <div class="stat-label">סה"כ יתרה לפני הוצאות</div>
+    <div class="stat-value">
+      <%= money(financialTotals.profit) %>
+    </div>
+  </div>
 
-                      </div>
+</div>
 
-                    </div>
-
-                    <div class="stat-card">
-
-                      <div class="stat-label">תשלומים לבעלים</div>
-
-                      <div class="stat-value">
-
-                        <%= money(financialTotals.payout) %>
-
-                      </div>
-
-                    </div>
-
-                    <div class="stat-card">
-
-                      <div class="stat-label">יתרה צפויה לפני הוצאות</div>
-
-                      <div class="stat-value">
-
-                        <%= money(financialTotals.profit) %>
-
-                      </div>
-
-                    </div>
-
-                  </div>
 
                   <% if (financialTotals.missing> 0) { %>
 
@@ -1656,6 +1643,25 @@
 
                     totals.profit += finance.profit;
 
+                const managementFeeEnabled =
+                  unit.ownership_type !== 'alonspace' ||
+                  unit.management_fee_charge_enabled !== false;
+
+                const managementIncome = managementFeeEnabled
+                  ? Number(unit.monthly_management_fee || 0)
+                  : 0;
+
+                const feeIncludedInRent =
+                  unit.ownership_type === 'alonspace' &&
+                  unit.rent_includes_management_fee === true &&
+                  unit.rent_charge_enabled !== false &&
+                  Boolean(unit.tenancy_id) &&
+                  unit.rental_model === 'alonspace_owned';
+
+                totals.managementIncome += managementIncome;
+                totals.rentalProfit +=
+                  finance.profit - managementIncome;
+
                     if (finance.missing) {
 
                     totals.missing += 1;
@@ -1666,13 +1672,18 @@
 
                     }, {
 
-                    income: 0,
 
-                    payout: 0,
+                income: 0,
 
-                    profit: 0,
+                payout: 0,
 
-                    missing: 0
+                profit: 0,
+
+                managementIncome: 0,
+
+                rentalProfit: 0,
+
+                missing: 0
 
                     });
 
