@@ -1490,6 +1490,18 @@
 
                 totals.profit += finance.profit;
 
+                const managementFeeEnabled =
+                  unit.ownership_type !== 'alonspace' ||
+                  unit.management_fee_charge_enabled !== false;
+
+                const managementIncome = managementFeeEnabled
+                  ? Number(unit.monthly_management_fee || 0)
+                  : 0;
+
+                totals.managementIncome += managementIncome;
+                totals.rentalProfit +=
+                  finance.profit - managementIncome;
+
                 if (finance.missing) {
 
                 totals.missing += 1;
@@ -1500,13 +1512,19 @@
 
                 }, {
 
+
                 income: 0,
 
                 payout: 0,
 
                 profit: 0,
 
+                managementIncome: 0,
+
+                rentalProfit: 0,
+
                 missing: 0
+
 
                 });
 
