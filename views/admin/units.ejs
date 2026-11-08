@@ -1635,6 +1635,13 @@ profit: 0,
 
 <div class="stats" style="margin-bottom:0;">
 
+<div class="stat-card">
+  <div class="stat-label">הכנסה צפויה לפני קיזוז דמי ניהול</div>
+  <div class="stat-value">
+    <%= money(financialTotals.grossIncome) %>
+  </div>
+</div>
+
   <div class="stat-card">
     <div class="stat-label">הכנסות מדמי ניהול</div>
     <div class="stat-value">
@@ -1700,13 +1707,7 @@ totals.grossIncome += breakdown.grossIncome;
                   ? Number(unit.monthly_management_fee || 0)
                   : 0;
 
-                const feeIncludedInRent =
-                  unit.ownership_type === 'alonspace' &&
-                  unit.rent_includes_management_fee === true &&
-                  unit.rent_charge_enabled !== false &&
-                  Boolean(unit.tenancy_id) &&
-                  unit.rental_model === 'alonspace_owned';
-
+              
                 totals.managementIncome += managementIncome;
                 totals.rentalProfit +=
                   finance.profit - managementIncome;
