@@ -1480,10 +1480,38 @@
                 });
 
 
+                const financeBreakdown = unit => {
+                  const finance = unitFinance(unit);
+
+                  if (!unit.is_active) {
+                    return {
+                      grossIncome: 0,
+                      managementIncome: 0,
+                      rentalProfit: 0
+                    };
+                  }
+
+                  const managementEnabled =
+                    unit.ownership_type !== 'alonspace' ||
+                    unit.management_fee_charge_enabled !== false;
+
+                  const managementIncome = managementEnabled
+                    ? Number(unit.monthly_management_fee || 0)
+                    : 0;
+
+                  return {
+                    grossIncome:
+                      finance.income + Number(finance.deductedFee || 0),
+                    managementIncome,
+                    rentalProfit: finance.profit - managementIncome
+                  };
+                };
+
                 const financialTotals = activeUnits.reduce((totals, unit) => {
 
                 const finance = unitFinance(unit);
-
+const breakdown = financeBreakdown(unit);
+totals.grossIncome += breakdown.grossIncome;
                 totals.income += finance.income;
 
                 totals.payout += finance.payout;
