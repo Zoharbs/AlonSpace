@@ -1541,11 +1541,13 @@ totals.grossIncome += breakdown.grossIncome;
                 }, {
 
 
-                income: 0,
+income: 0,
 
-                payout: 0,
+grossIncome: 0,
 
-                profit: 0,
+payout: 0,
+
+profit: 0,
 
                 managementIncome: 0,
 
@@ -1682,7 +1684,8 @@ totals.grossIncome += breakdown.grossIncome;
                     const floorFinance = floorUnits.reduce((totals, unit) => {
 
                     const finance = unitFinance(unit);
-
+const breakdown = financeBreakdown(unit);
+totals.grossIncome += breakdown.grossIncome;
                     totals.income += finance.income;
 
                     totals.payout += finance.payout;
@@ -1728,7 +1731,7 @@ totals.grossIncome += breakdown.grossIncome;
                 managementIncome: 0,
 
                 rentalProfit: 0,
-
+grossIncome: 0,
                 missing: 0
 
                     });
@@ -1752,6 +1755,21 @@ totals.grossIncome += breakdown.grossIncome;
                       </div>
 
                       <div class="floor-finance-summary">
+
+<div class="floor-finance-item">
+  <span>הכנסות צפויות לפני קיזוז דמי ניהול</span>
+  <strong><%= money(floorFinance.grossIncome) %></strong>
+</div>
+
+<div class="floor-finance-item">
+  <span>דמי ניהול צפויים</span>
+  <strong><%= money(floorFinance.managementIncome) %></strong>
+</div>
+
+<div class="floor-finance-item">
+  <span>רווח משכירות לפני הוצאות</span>
+  <strong><%= money(floorFinance.rentalProfit) %></strong>
+</div>
 
                         <div class="floor-finance-item">
 
@@ -1831,7 +1849,9 @@ totals.grossIncome += breakdown.grossIncome;
                                       <th>דמי ניהול</th>
 
                                       <th>תשלום לבעלים</th>
-                                      <th>יתרה צפויה</th>
+<th>הכנסה צפויה</th>
+<th>רווח משכירות</th>
+<th>יתרה צפויה</th>
                                       <th>מצב</th>
 
                                     </tr>
@@ -2049,9 +2069,28 @@ totals.grossIncome += breakdown.grossIncome;
                                                         <span class="muted">—</span>
                                                         <% } %>
                                             </td>
-                                            <td>
+                                           
+<% const finance = unitFinance(unit); %>
+<% const unitBreakdown = financeBreakdown(unit); %>
 
-                                              <% const finance=unitFinance(unit); %>
+<td>
+  <% if (unit.is_active && !finance.missing) { %>
+    <strong><%= money(unitBreakdown.grossIncome) %></strong>
+  <% } else { %>
+    <span class="muted">—</span>
+  <% } %>
+</td>
+
+<td>
+  <% if (unit.is_active && !finance.missing) { %>
+    <strong><%= money(unitBreakdown.rentalProfit) %></strong>
+  <% } else { %>
+    <span class="muted">—</span>
+  <% } %>
+</td>
+
+<td>
+
 
                                                 <% if (finance.missing) { %>
 
