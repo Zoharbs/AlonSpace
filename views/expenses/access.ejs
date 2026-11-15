@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הרשאות ניהול הוצאות | AlonSpace</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { background: #f5f4f1; }
+    .access-wrap { max-width: 760px; margin: 48px auto; padding: 0 20px; }
+    .access-card { background: white; padding: 28px; border-radius: 14px; }
+    .access-user { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+    .access-user input { width: 20px; height: 20px; }
+    .access-user small { display: block; color: #666; margin-top: 4px; }
+    .access-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+    .access-message { padding: 12px; margin: 16px 0; border-radius: 8px; background: #f4e7e7; }
+    .access-success { background: #e7f3e9; }
+  </style>
+</head>
+<body>
+  <main class="access-wrap">
+    <h1>הרשאות ניהול הוצאות</h1>
+    <p>בחר עד שני משתמשים שיוכלו לצפות ולערוך את הוצאות קומות 4 ו־6.</p>
+
+    <% if (error) { %>
+      <div class="access-message"><%= error %></div>
+    <% } %>
+
+    <% if (success) { %>
+      <div class="access-message access-success"><%= success %></div>
+    <% } %>
+
+    <div class="access-card">
+      <form method="POST" action="/admin/expense-access">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <% users.forEach(user => { %>
+          <label class="access-user">
+            <input
+              type="checkbox"
+              name="user_ids"
+              value="<%= user.id %>"
+              <%= user.can_manage_expenses ? 'checked' : '' %>
+            >
+            <span>
+              <strong><%= user.display_name || user.username %></strong>
+              <small>
+                <%= user.username %> | <%= user.role %>
+              </small>
+            </span>
+          </label>
+        <% }) %>
+
+        <div class="access-actions">
+          <button type="submit" class="btn btn-primary">
+            שמירת הרשאות
+          </button>
+          <a href="/admin" class="btn">
+            חזרה לפאנל הניהול
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const checkboxes = document.querySelectorAll('input[name="user_ids"]');
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const selected = [...checkboxes].filter(item => item.checked);
+
+        if (selected.length > 2) {
+          checkbox.checked = false;
+          alert('ניתן לבחור עד שני משתמשים בלבד');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
