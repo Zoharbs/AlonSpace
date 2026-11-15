@@ -2132,9 +2132,11 @@
             צפייה באתר ↗
           </a>
           <% } %>
-<a href="/admin/expense-access" class="btn btn-outline-light" style="padding:8px 16px;">
-  הרשאות הוצאות
-</a>
+<% if (isSystemAdmin) { %>
+  <a href="/admin/expense-access" class="btn btn-outline-light" style="padding:8px 16px;">
+    הרשאות הוצאות
+  </a>
+<% } %>
             <% if (isSystemAdmin) { %>
               <a href="/admin/units" class="btn btn-outline-light" style="padding:8px 16px;">
                 ניהול כספים
