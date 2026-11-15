@@ -262,7 +262,7 @@ app.use((req, res, next) => {
 app.use('/api/contact', publicFormLimiter);
 app.use('/api/testimonials', publicFormLimiter);
 app.use('/login', loginLimiter);
-
+app.use('/expenses/extras', require('./routes/expense-extras'));
 app.use((req, res, next) => {
   res.locals.path = req.path;
 res.locals.cookieConsent =req.cookies.alonspace_cookie_consent || null;
