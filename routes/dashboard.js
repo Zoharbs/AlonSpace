@@ -108,6 +108,7 @@ router.get('/', async (req, res, next) => {
           rental_end_date,
           monthly_meeting_hours,
           meeting_access_both_floors,
+          can_manage_expenses,
           must_change_password
         FROM users
         WHERE
