@@ -2228,6 +2228,7 @@ router.get('/units', async (req, res, next) => {
         ru.ownership_type,
         ru.owner_id,
         ru.is_active,
+        u.can_manage_expenses,
         ru.notes,
         ru.rent_charge_enabled,
         ru.management_fee_charge_enabled,
@@ -5323,5 +5324,67 @@ router.post('/admins/:id/update',
     }
   }
 );
+
+router.post('/users/:id/expense-access', requireSystemAdmin, async (req, res, next) => {
+  const userId = Number(req.params.id);
+  const enabled = req.body.enabled === 'true';
+
+  if (!Number.isSafeInteger(userId) || userId < 1) {
+    return res.sendStatus(400);
+  }
+
+  const client = await db.pool.connect();
+
+  try {
+    await client.query('BEGIN');
+    await client.query('SELECT pg_advisory_xact_lock(726315)');
+
+    const result = await client.query(
+      `SELECT id, is_active, can_manage_expenses
+       FROM users
+       WHERE id = $1
+       FOR UPDATE`,
+      [userId]
+    );
+
+    const user = result.rows[0];
+
+    if (!user || !user.is_active) {
+      await client.query('ROLLBACK');
+      return res.status(404).send('משתמש לא נמצא או אינו פעיל');
+    }
+
+    if (enabled && !user.can_manage_expenses) {
+      const count = await client.query(
+        `SELECT COUNT(*)::integer AS total
+         FROM users
+         WHERE can_manage_expenses = TRUE`
+      );
+
+      if (count.rows[0].total >= 2) {
+        await client.query('ROLLBACK');
+        return res.status(409).send(
+          'כבר קיימים שני משתמשים מורשים. יש להסיר הרשאה קיימת.'
+        );
+      }
+    }
+
+    await client.query(
+      `UPDATE users
+       SET can_manage_expenses = $1,
+           updated_at = NOW()
+       WHERE id = $2`,
+      [enabled, userId]
+    );
+
+    await client.query('COMMIT');
+    return res.redirect('/admin#clients');
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    return next(error);
+  } finally {
+    client.release();
+  }
+});
 
 module.exports = router;

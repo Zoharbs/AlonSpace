@@ -2887,6 +2887,40 @@
                                       </div>
 
 
+<% if (isSystemAdmin) { %>
+  <div class="admin-card" style="margin:16px 0;">
+    <h4>הרשאות ניהול הוצאות</h4>
+
+    <p class="small">
+      <%= client.can_manage_expenses
+        ? 'למשתמש יש הרשאה לצפות ולערוך הוצאות.'
+        : 'למשתמש אין הרשאה למערכת ההוצאות.' %>
+    </p>
+
+    <form method="POST"
+          action="/admin/users/<%= client.id %>/expense-access">
+
+      <input type="hidden"
+             name="_csrf"
+             value="<%= csrfToken %>">
+
+      <input type="hidden"
+             name="enabled"
+             value="<%= client.can_manage_expenses ? 'false' : 'true' %>">
+
+      <button type="submit"
+              class="btn <%= client.can_manage_expenses ? '' : 'btn-primary' %>"
+              onclick="return confirm('האם לשנות את הרשאת ההוצאות של המשתמש?')">
+
+        <%= client.can_manage_expenses
+          ? 'בטל הרשאת הוצאות'
+          : 'אפשר עריכת הוצאות' %>
+
+      </button>
+    </form>
+  </div>
+<% } %>
+
                                       <!-- עריכת הלקוח -->
 
                                       <details class="client-edit-section">
