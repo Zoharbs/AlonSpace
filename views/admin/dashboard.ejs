@@ -2122,13 +2122,19 @@
 
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
         <span>שלום, <%= adminName %></span>
-
+<% if (canManageExpenses) { %>
+  <a href="/expenses" class="btn btn-outline-light" style="padding:8px 16px;">
+    ניהול הוצאות
+  </a>
+<% } %>
         <% if (!isSystemAdmin) { %>
           <a href="/" class="btn btn-outline-light" style="padding:8px 16px;">
             צפייה באתר ↗
           </a>
           <% } %>
-
+<a href="/admin/expense-access" class="btn btn-outline-light" style="padding:8px 16px;">
+  הרשאות הוצאות
+</a>
             <% if (isSystemAdmin) { %>
               <a href="/admin/units" class="btn btn-outline-light" style="padding:8px 16px;">
                 ניהול כספים
