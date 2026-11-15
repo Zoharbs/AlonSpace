@@ -2887,236 +2887,233 @@
                                       </div>
 
 
-<% if (isSystemAdmin) { %>
-  <div class="admin-card" style="margin:16px 0;">
-    <h4>הרשאות ניהול הוצאות</h4>
+                                      <% if (isSystemAdmin) { %>
+                                        <div class="admin-card" style="margin:16px 0;">
+                                          <h4>הרשאות ניהול הוצאות</h4>
 
-    <p class="small">
-      <%= client.can_manage_expenses
-        ? 'למשתמש יש הרשאה לצפות ולערוך הוצאות.'
-        : 'למשתמש אין הרשאה למערכת ההוצאות.' %>
-    </p>
+                                          <p class="small">
+                                            <%= client.can_manage_expenses ? 'למשתמש יש הרשאה לצפות ולערוך הוצאות.'
+                                              : 'למשתמש אין הרשאה למערכת ההוצאות.' %>
+                                          </p>
 
-    <form method="POST"
-          action="/admin/users/<%= client.id %>/expense-access">
+                                          <form method="POST" action="/admin/users/<%= client.id %>/expense-access">
 
-      <input type="hidden"
-             name="_csrf"
-             value="<%= csrfToken %>">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-      <input type="hidden"
-             name="enabled"
-             value="<%= client.can_manage_expenses ? 'false' : 'true' %>">
+                                            <input type="hidden" name="enabled"
+                                              value="<%= client.can_manage_expenses ? 'false' : 'true' %>">
 
-      <button type="submit"
-              class="btn <%= client.can_manage_expenses ? '' : 'btn-primary' %>"
-              onclick="return confirm('האם לשנות את הרשאת ההוצאות של המשתמש?')">
+                                            <button type="submit"
+                                              class="btn <%= client.can_manage_expenses ? '' : 'btn-primary' %>"
+                                              onclick="return confirm('האם לשנות את הרשאת ההוצאות של המשתמש?')">
 
-        <%= client.can_manage_expenses
-          ? 'בטל הרשאת הוצאות'
-          : 'אפשר עריכת הוצאות' %>
+                                              <%= client.can_manage_expenses ? 'בטל הרשאת הוצאות' : 'אפשר עריכת הוצאות'
+                                                %>
 
-      </button>
-    </form>
-  </div>
-<% } %>
+                                            </button>
+                                          </form>
+                                        </div>
+                                        <% } %>
 
-                                      <!-- עריכת הלקוח -->
+                                          <!-- עריכת הלקוח -->
 
-                                      <details class="client-edit-section">
+                                          <details class="client-edit-section">
 
-                                        <summary>
-                                          עריכת פרטים
-                                        </summary>
+                                            <summary>
+                                              עריכת פרטים
+                                            </summary>
 
 
-                                        <form method="POST" action="/admin/clients/<%= client.id %>/update"
-                                          class="form-grid client-edit-form">
+                                            <form method="POST" action="/admin/clients/<%= client.id %>/update"
+                                              class="form-grid client-edit-form">
 
-                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-
-                                          <div class="form-row-2">
-
-                                            <div class="field">
-                                              <label>שם לתצוגה</label>
-
-                                              <input name="display_name" value="<%= client.display_name %>" required>
-                                            </div>
+                                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
 
-                                            <div class="field">
-                                              <label>שם העסק</label>
+                                              <div class="form-row-2">
 
-                                              <input name="business_name" value="<%= client.business_name || '' %>">
-                                            </div>
+                                                <div class="field">
+                                                  <label>שם לתצוגה</label>
 
-                                          </div>
-
-
-                                          <div class="form-row-2">
-
-                                            <div class="field">
-                                              <label>אימייל</label>
-
-                                              <input type="email" name="email" value="<%= client.email || '' %>">
-                                            </div>
+                                                  <input name="display_name" value="<%= client.display_name %>"
+                                                    required>
+                                                </div>
 
 
-                                            <div class="field">
-                                              <label>טלפון</label>
+                                                <div class="field">
+                                                  <label>שם העסק</label>
 
-                                              <input name="phone" value="<%= client.phone || '' %>">
-                                            </div>
+                                                  <input name="business_name" value="<%= client.business_name || '' %>">
+                                                </div>
 
-                                          </div>
-
-
-                                          <div class="form-row-2">
-
-                                            <div class="field">
-                                              <label>מספר משרד</label>
-
-                                              <input name="office_number" value="<%= client.office_number || '' %>">
-                                            </div>
+                                              </div>
 
 
-                                            <div class="field">
-                                              <label>קומה</label>
+                                              <div class="form-row-2">
 
-                                              <select name="floor">
+                                                <div class="field">
+                                                  <label>אימייל</label>
 
-                                                <option value="">
-                                                  לא הוגדרה
-                                                </option>
-
-                                                <option value="4" <%=Number(client.floor)===4 ? 'selected' : '' %>
-                                                  >
-                                                  קומה 4
-                                                </option>
-
-                                                <option value="6" <%=Number(client.floor)===6 ? 'selected' : '' %>
-                                                  >
-                                                  קומה 6
-                                                </option>
-
-                                              </select>
-                                            </div>
-
-                                          </div>
+                                                  <input type="email" name="email" value="<%= client.email || '' %>">
+                                                </div>
 
 
-                                          <div class="form-row-2">
+                                                <div class="field">
+                                                  <label>טלפון</label>
 
-                                            <div class="field">
-                                              <label>תחילת שכירות</label>
+                                                  <input name="phone" value="<%= client.phone || '' %>">
+                                                </div>
 
-                                              <input type="date" name="rental_start_date" value="<%= client.rental_start_date
+                                              </div>
+
+
+                                              <div class="form-row-2">
+
+                                                <div class="field">
+                                                  <label>מספר משרד</label>
+
+                                                  <input name="office_number" value="<%= client.office_number || '' %>">
+                                                </div>
+
+
+                                                <div class="field">
+                                                  <label>קומה</label>
+
+                                                  <select name="floor">
+
+                                                    <option value="">
+                                                      לא הוגדרה
+                                                    </option>
+
+                                                    <option value="4" <%=Number(client.floor)===4 ? 'selected' : '' %>
+                                                      >
+                                                      קומה 4
+                                                    </option>
+
+                                                    <option value="6" <%=Number(client.floor)===6 ? 'selected' : '' %>
+                                                      >
+                                                      קומה 6
+                                                    </option>
+
+                                                  </select>
+                                                </div>
+
+                                              </div>
+
+
+                                              <div class="form-row-2">
+
+                                                <div class="field">
+                                                  <label>תחילת שכירות</label>
+
+                                                  <input type="date" name="rental_start_date" value="<%= client.rental_start_date
               ? new Date(client.rental_start_date)
                   .toISOString()
                   .slice(0, 10)
               : ''
             %>">
-                                            </div>
+                                                </div>
 
 
-                                            <div class="field">
-                                              <label>סיום שכירות</label>
+                                                <div class="field">
+                                                  <label>סיום שכירות</label>
 
-                                              <input type="date" name="rental_end_date" value="<%= client.rental_end_date
+                                                  <input type="date" name="rental_end_date" value="<%= client.rental_end_date
               ? new Date(client.rental_end_date)
                   .toISOString()
                   .slice(0, 10)
               : ''
             %>">
-                                            </div>
+                                                </div>
 
-                                          </div>
-
-
-                                          <div class="field">
-                                            <label>
-                                              מכסת חדר ישיבות חודשית
-                                            </label>
-
-                                            <input type="number" min="0.5" step="0.5" name="monthly_meeting_hours"
-                                              value="<%= client.monthly_meeting_hours || 6 %>">
-                                          </div>
+                                              </div>
 
 
-                                          <label style="
+                                              <div class="field">
+                                                <label>
+                                                  מכסת חדר ישיבות חודשית
+                                                </label>
+
+                                                <input type="number" min="0.5" step="0.5" name="monthly_meeting_hours"
+                                                  value="<%= client.monthly_meeting_hours || 6 %>">
+                                              </div>
+
+
+                                              <label style="
           display:flex;
           gap:8px;
           align-items:center;
         ">
 
-                                            <input type="checkbox" name="is_active" value="1" <%=client.is_active
-                                              ? 'checked' : '' %>
-                                            style="width:auto;"
-                                            >
+                                                <input type="checkbox" name="is_active" value="1" <%=client.is_active
+                                                  ? 'checked' : '' %>
+                                                style="width:auto;"
+                                                >
 
-                                            חשבון פעיל
+                                                חשבון פעיל
 
-                                          </label>
-                                          <label style="display:flex; align-items:center; gap:8px; margin-top:12px;">
-                                            <input type="checkbox" name="meeting_access_both_floors"
-                                              <%=client.meeting_access_both_floors ? 'checked' : '' %>
-                                            >
-                                            גישה לחדרי הישיבות בקומות 4 ו־6
-                                          </label>
+                                              </label>
+                                              <label
+                                                style="display:flex; align-items:center; gap:8px; margin-top:12px;">
+                                                <input type="checkbox" name="meeting_access_both_floors"
+                                                  <%=client.meeting_access_both_floors ? 'checked' : '' %>
+                                                >
+                                                גישה לחדרי הישיבות בקומות 4 ו־6
+                                              </label>
 
-                                          <button type="submit" class="btn btn-primary">
-                                            שמור שינויים
-                                          </button>
+                                              <button type="submit" class="btn btn-primary">
+                                                שמור שינויים
+                                              </button>
 
-                                        </form>
+                                            </form>
 
-                                      </details>
-
-
-                                      <!-- פעולות חשבון -->
-
-                                      <div class="client-danger-actions">
-
-                                        <form method="POST" action="/admin/clients/<%= client.id %>/reset-password">
-
-                                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                                          <button class="mini-btn">
-                                            איפוס סיסמה
-                                          </button>
-
-                                        </form>
+                                          </details>
 
 
-                                        <% if (client.is_active) { %>
+                                          <!-- פעולות חשבון -->
 
-                                          <form method="POST" action="/admin/clients/<%= client.id %>/delete"
-                                            onsubmit="return confirm('להשבית את החשבון?')">
+                                          <div class="client-danger-actions">
 
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                            <form method="POST" action="/admin/clients/<%= client.id %>/reset-password">
 
-                                            <button class="mini-btn danger">
-                                              השבת חשבון
-                                            </button>
+                                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                          </form>
+                                              <button class="mini-btn">
+                                                איפוס סיסמה
+                                              </button>
+
+                                            </form>
 
 
-                                          <form method="POST" action="/admin/clients/<%= client.id %>/permanent-delete"
-                                            onsubmit="return confirm('למחוק את הלקוח לצמיתות?')">
+                                            <% if (client.is_active) { %>
 
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                              <form method="POST" action="/admin/clients/<%= client.id %>/delete"
+                                                onsubmit="return confirm('להשבית את החשבון?')">
 
-                                            <button class="mini-btn danger" style="background:#c62828;color:#fff;">
-                                              מחק לצמיתות
-                                            </button>
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                                          </form>
+                                                <button class="mini-btn danger">
+                                                  השבת חשבון
+                                                </button>
 
-                                          <% } %>
+                                              </form>
 
-                                      </div>
+
+                                              <form method="POST"
+                                                action="/admin/clients/<%= client.id %>/permanent-delete"
+                                                onsubmit="return confirm('למחוק את הלקוח לצמיתות?')">
+
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                                <button class="mini-btn danger" style="background:#c62828;color:#fff;">
+                                                  מחק לצמיתות
+                                                </button>
+
+                                              </form>
+
+                                              <% } %>
+
+                                          </div>
 
                                     </div>
 
@@ -3869,67 +3866,62 @@
                         </summary>
 
 
-<div class="usage-report-filters" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; align-items:end;">
+                        <div class="usage-report-filters"
+                          style="display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; align-items:end;">
 
-  <label>
-    סוג סינון
-    <select id="usageReportFilterType">
-      <option value="tenant">לפי דייר</option>
-      <option value="search">חיפוש חופשי</option>
-      <option value="company">לפי חברה</option>
-    </select>
-  </label>
+                          <label>
+                            סוג סינון
+                            <select id="usageReportFilterType">
+                              <option value="tenant">לפי דייר</option>
+                              <option value="search">חיפוש חופשי</option>
+                              <option value="company">לפי חברה</option>
+                            </select>
+                          </label>
 
-  <label id="usageReportTenantField">
-    דייר
-    <select id="usageReportTenant">
-      <option value="">כל הדיירים</option>
-    </select>
-  </label>
+                          <label id="usageReportTenantField">
+                            דייר
+                            <select id="usageReportTenant">
+                              <option value="">כל הדיירים</option>
+                            </select>
+                          </label>
 
-  <label id="usageReportSearchField" style="display:none;">
-    חיפוש
-    <input
-      type="search"
-      id="usageReportSearch"
-      placeholder="שם דייר, חברה או מספר משרד"
-    >
-  </label>
+                          <label id="usageReportSearchField" style="display:none;">
+                            חיפוש
+                            <input type="search" id="usageReportSearch" placeholder="שם דייר, חברה או מספר משרד">
+                          </label>
 
-  <label id="usageReportCompanyField" style="display:none;">
-    חברה
-    <select id="usageReportCompany">
-      <option value="">כל החברות</option>
-    </select>
-  </label>
+                          <label id="usageReportCompanyField" style="display:none;">
+                            חברה
+                            <select id="usageReportCompany">
+                              <option value="">כל החברות</option>
+                            </select>
+                          </label>
 
 
-<div class="usage-month-picker">
-  <span class="small">חודש הדוח</span>
+                          <div class="usage-month-picker">
+                            <span class="small">חודש הדוח</span>
 
-  <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
-    <button type="button" class="mini-btn"
-            id="usageMonthPrevious" aria-label="חודש קודם">
-      ‹
-    </button>
+                            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+                              <button type="button" class="mini-btn" id="usageMonthPrevious" aria-label="חודש קודם">
+                                ‹
+                              </button>
 
-    <strong id="usageMonthLabel" style="min-width:120px;text-align:center;"></strong>
+                              <strong id="usageMonthLabel" style="min-width:120px;text-align:center;"></strong>
 
-    <button type="button" class="mini-btn"
-            id="usageMonthNext" aria-label="חודש הבא">
-      ›
-    </button>
-  </div>
+                              <button type="button" class="mini-btn" id="usageMonthNext" aria-label="חודש הבא">
+                                ›
+                              </button>
+                            </div>
 
-  <input type="hidden" id="usageReportMonth">
-</div>
+                            <input type="hidden" id="usageReportMonth">
+                          </div>
 
 
-  <button type="button" class="mini-btn primary" id="loadUsageReport">
-    הצג דוח
-  </button>
+                          <button type="button" class="mini-btn primary" id="loadUsageReport">
+                            הצג דוח
+                          </button>
 
-</div>
+                        </div>
 
 
                         <p class="small" style="margin-top:12px;">
@@ -3939,56 +3931,54 @@
                         <div id="usageReportStatus" role="status" style="margin-top:12px;"></div>
 
 
-<div id="usageReportSummary" class="client-usage-grid"
-     style="margin-top:14px;" hidden>
-  <div class="client-usage-box">
-    <span>סה"כ שעות בקבוצה</span>
-    <strong id="usageReportTotalHours">0</strong>
-  </div>
-  <div class="client-usage-box">
-    <span>מספר הזמנות</span>
-    <strong id="usageReportTotalBookings">0</strong>
-  </div>
-  <div class="client-usage-box">
-    <span>משתמשים בתוצאה</span>
-    <strong id="usageReportTotalUsers">0</strong>
-  </div>
-</div>
+                        <div id="usageReportSummary" class="client-usage-grid" style="margin-top:14px;" hidden>
+                          <div class="client-usage-box">
+                            <span>סה"כ שעות בקבוצה</span>
+                            <strong id="usageReportTotalHours">0</strong>
+                          </div>
+                          <div class="client-usage-box">
+                            <span>מספר הזמנות</span>
+                            <strong id="usageReportTotalBookings">0</strong>
+                          </div>
+                          <div class="client-usage-box">
+                            <span>משתמשים בתוצאה</span>
+                            <strong id="usageReportTotalUsers">0</strong>
+                          </div>
+                        </div>
 
-<div id="usageReportCard" class="admin-card"
-     style="margin-top:12px;" hidden>
-  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
-    <div>
-      <strong id="usageReportName"></strong>
-      <div id="usageReportMeta" class="small"></div>
-    </div>
-    <span id="usageReportPosition" class="small"></span>
-  </div>
+                        <div id="usageReportCard" class="admin-card" style="margin-top:12px;" hidden>
+                          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+                            <div>
+                              <strong id="usageReportName"></strong>
+                              <div id="usageReportMeta" class="small"></div>
+                            </div>
+                            <span id="usageReportPosition" class="small"></span>
+                          </div>
 
-  <div class="client-usage-grid" style="margin-top:12px;">
-    <div class="client-usage-box">
-      <span>שעות שהוזמנו</span>
-      <strong id="usageReportHours"></strong>
-    </div>
-    <div class="client-usage-box">
-      <span>מספר הזמנות</span>
-      <strong id="usageReportBookings"></strong>
-    </div>
-    <div class="client-usage-box">
-      <span>מכסה חודשית</span>
-      <strong id="usageReportQuota"></strong>
-    </div>
-  </div>
+                          <div class="client-usage-grid" style="margin-top:12px;">
+                            <div class="client-usage-box">
+                              <span>שעות שהוזמנו</span>
+                              <strong id="usageReportHours"></strong>
+                            </div>
+                            <div class="client-usage-box">
+                              <span>מספר הזמנות</span>
+                              <strong id="usageReportBookings"></strong>
+                            </div>
+                            <div class="client-usage-box">
+                              <span>מכסה חודשית</span>
+                              <strong id="usageReportQuota"></strong>
+                            </div>
+                          </div>
 
-  <div style="display:flex;justify-content:space-between;margin-top:12px;">
-    <button type="button" class="mini-btn" id="usageReportPrevious">
-      הקודם
-    </button>
-    <button type="button" class="mini-btn" id="usageReportNext">
-      הבא
-    </button>
-  </div>
-</div>
+                          <div style="display:flex;justify-content:space-between;margin-top:12px;">
+                            <button type="button" class="mini-btn" id="usageReportPrevious">
+                              הקודם
+                            </button>
+                            <button type="button" class="mini-btn" id="usageReportNext">
+                              הבא
+                            </button>
+                          </div>
+                        </div>
 
                       </details>
 
@@ -4404,10 +4394,10 @@
     ========================= */
 
     const adminMeetingBookings =
-  <%- JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(meetingBookings || []).replace(/</g, '\\u003c') %>;
 
     const adminClients =
-  <%- JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
+  <% - JSON.stringify(clients || []).replace(/</g, '\\u003c') %>;
 
 
     const adminCalendar =
@@ -4997,7 +4987,7 @@
       }
 
       const adminMeetingRooms =
-    <%- JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
+    <% - JSON.stringify(meetingRooms || []).replace(/</g, '\\u003c') %>;
 
       const room = adminMeetingRooms.find(
         (item) =>
@@ -6375,11 +6365,11 @@
     ===================================== */
 
     const floorDirectories = {
-      4: <%- JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
-      6: <%- JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
+      4: <% - JSON.stringify(floor4Directory || {}).replace(/</g, '\\u003c') %>,
+      6: <% - JSON.stringify(floor6Directory || {}).replace(/</g, '\\u003c') %>
 };
     const savedFloorDirectoryOverrides =
-  <%- JSON.stringify(
+  <% - JSON.stringify(
       floorDirectoryOverrides || {}
     ).replace(/</g, '\\u003c') %>;
 
@@ -7110,240 +7100,240 @@ AlonSpace`;
     <% } %>
 
 
-<script>
-(() => {
-  const el = id => document.getElementById(id);
-  const type = el('usageReportFilterType');
-  const tenant = el('usageReportTenant');
-  const search = el('usageReportSearch');
-  const company = el('usageReportCompany');
-  const month = el('usageReportMonth');
-  const button = el('loadUsageReport');
-  const status = el('usageReportStatus');
-  const summary = el('usageReportSummary');
-  const card = el('usageReportCard');
+      <script>
+        (() => {
+          const el = id => document.getElementById(id);
+          const type = el('usageReportFilterType');
+          const tenant = el('usageReportTenant');
+          const search = el('usageReportSearch');
+          const company = el('usageReportCompany');
+          const month = el('usageReportMonth');
+          const button = el('loadUsageReport');
+          const status = el('usageReportStatus');
+          const summary = el('usageReportSummary');
+          const card = el('usageReportCard');
 
-  if (!type || !tenant || !search || !company || !month ||
-      !button || !status || !summary || !card) return;
+          if (!type || !tenant || !search || !company || !month ||
+            !button || !status || !summary || !card) return;
 
-  let allUsers = [];
-  let filteredUsers = [];
-  let currentIndex = 0;
-  let requestNumber = 0;
-
-
-  const now = new Date();
-  let selectedMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-  function updateMonthDisplay() {
-    month.value =
-      `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, '0')}`;
-
-    el('usageMonthLabel').textContent =
-      selectedMonth.toLocaleDateString('he-IL', {
-        month: 'long',
-        year: 'numeric'
-      });
-  }
-
-  function changeMonth(offset) {
-    selectedMonth = new Date(
-      selectedMonth.getFullYear(),
-      selectedMonth.getMonth() + offset,
-      1
-    );
-
-    updateMonthDisplay();
-    loadReport();
-  }
-
-  el('usageMonthPrevious').addEventListener('click', () => changeMonth(-1));
-  el('usageMonthNext').addEventListener('click', () => changeMonth(1));
-
-  updateMonthDisplay();
+          let allUsers = [];
+          let filteredUsers = [];
+          let currentIndex = 0;
+          let requestNumber = 0;
 
 
-  const formatHours = value =>
-    Number(value || 0).toLocaleString('he-IL', {
-      maximumFractionDigits: 2
-    });
+          const now = new Date();
+          let selectedMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  function updateFields() {
-    el('usageReportTenantField').style.display =
-      type.value === 'tenant' ? '' : 'none';
-    el('usageReportSearchField').style.display =
-      type.value === 'search' ? '' : 'none';
-    el('usageReportCompanyField').style.display =
-      type.value === 'company' ? '' : 'none';
-  }
+          function updateMonthDisplay() {
+            month.value =
+              `${selectedMonth.getFullYear()}-${String(selectedMonth.getMonth() + 1).padStart(2, '0')}`;
 
-  function populateFilters() {
-    const selectedTenant = tenant.value;
-    const selectedCompany = company.value;
+            el('usageMonthLabel').textContent =
+              selectedMonth.toLocaleDateString('he-IL', {
+                month: 'long',
+                year: 'numeric'
+              });
+          }
 
-    tenant.replaceChildren(new Option('כל הדיירים', ''));
-    company.replaceChildren(new Option('כל החברות', ''));
+          function changeMonth(offset) {
+            selectedMonth = new Date(
+              selectedMonth.getFullYear(),
+              selectedMonth.getMonth() + offset,
+              1
+            );
 
-    allUsers.forEach(user => {
-      tenant.add(new Option(
-        `${user.display_name} (${user.business_name || 'ללא חברה'})`,
-        user.id
-      ));
-    });
+            updateMonthDisplay();
+            loadReport();
+          }
 
-    const companies = [...new Set(
-      allUsers.map(user => (user.business_name || '').trim())
-        .filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b, 'he'));
+          el('usageMonthPrevious').addEventListener('click', () => changeMonth(-1));
+          el('usageMonthNext').addEventListener('click', () => changeMonth(1));
 
-    companies.forEach(name => {
-      company.add(new Option(name, name));
-    });
+          updateMonthDisplay();
 
-    tenant.value = selectedTenant;
-    company.value = selectedCompany;
-  }
 
-  function renderCard() {
-    const user = filteredUsers[currentIndex];
-    card.hidden = !user;
-    summary.hidden = !filteredUsers.length;
+          const formatHours = value =>
+            Number(value || 0).toLocaleString('he-IL', {
+              maximumFractionDigits: 2
+            });
 
-    if (!user) return;
+          function updateFields() {
+            el('usageReportTenantField').style.display =
+              type.value === 'tenant' ? '' : 'none';
+            el('usageReportSearchField').style.display =
+              type.value === 'search' ? '' : 'none';
+            el('usageReportCompanyField').style.display =
+              type.value === 'company' ? '' : 'none';
+          }
 
-    el('usageReportName').textContent = user.display_name || 'דייר';
-    el('usageReportMeta').textContent = [
-      user.business_name,
-      user.office_number ? `משרד ${user.office_number}` : '',
-      user.floor ? `קומה ${user.floor}` : ''
-    ].filter(Boolean).join(' · ');
+          function populateFilters() {
+            const selectedTenant = tenant.value;
+            const selectedCompany = company.value;
 
-    el('usageReportHours').textContent =
-      `${formatHours(user.booked_hours)} שעות`;
-    el('usageReportBookings').textContent = user.booking_count;
-    el('usageReportQuota').textContent =
-      user.monthly_meeting_hours == null
-        ? '—'
-        : `${formatHours(user.monthly_meeting_hours)} שעות`;
+            tenant.replaceChildren(new Option('כל הדיירים', ''));
+            company.replaceChildren(new Option('כל החברות', ''));
 
-    el('usageReportPosition').textContent =
-      `${currentIndex + 1} מתוך ${filteredUsers.length}`;
+            allUsers.forEach(user => {
+              tenant.add(new Option(
+                `${user.display_name} (${user.business_name || 'ללא חברה'})`,
+                user.id
+              ));
+            });
 
-    el('usageReportPrevious').disabled = currentIndex === 0;
-    el('usageReportNext').disabled =
-      currentIndex >= filteredUsers.length - 1;
-  }
+            const companies = [...new Set(
+              allUsers.map(user => (user.business_name || '').trim())
+                .filter(Boolean)
+            )].sort((a, b) => a.localeCompare(b, 'he'));
 
-  function applyFilters() {
-    const query = search.value.trim().toLocaleLowerCase('he');
+            companies.forEach(name => {
+              company.add(new Option(name, name));
+            });
 
-    filteredUsers = allUsers.filter(user => {
-      if (type.value === 'tenant') {
-        return !tenant.value || String(user.id) === tenant.value;
-      }
+            tenant.value = selectedTenant;
+            company.value = selectedCompany;
+          }
 
-      if (type.value === 'company') {
-        return !company.value ||
-          user.business_name === company.value;
-      }
+          function renderCard() {
+            const user = filteredUsers[currentIndex];
+            card.hidden = !user;
+            summary.hidden = !filteredUsers.length;
 
-      return [
-        user.display_name,
-        user.business_name,
-        user.office_number,
-        user.floor
-      ].some(value =>
-        String(value ?? '').toLocaleLowerCase('he').includes(query)
-      );
-    });
+            if (!user) return;
 
-    currentIndex = 0;
+            el('usageReportName').textContent = user.display_name || 'דייר';
+            el('usageReportMeta').textContent = [
+              user.business_name,
+              user.office_number ? `משרד ${user.office_number}` : '',
+              user.floor ? `קומה ${user.floor}` : ''
+            ].filter(Boolean).join(' · ');
 
-    const totalHours = filteredUsers.reduce(
-      (sum, user) => sum + Number(user.booked_hours || 0), 0
-    );
-    const totalBookings = filteredUsers.reduce(
-      (sum, user) => sum + Number(user.booking_count || 0), 0
-    );
+            el('usageReportHours').textContent =
+              `${formatHours(user.booked_hours)} שעות`;
+            el('usageReportBookings').textContent = user.booking_count;
+            el('usageReportQuota').textContent =
+              user.monthly_meeting_hours == null
+                ? '—'
+                : `${formatHours(user.monthly_meeting_hours)} שעות`;
 
-    el('usageReportTotalHours').textContent =
-      `${formatHours(totalHours)} שעות`;
-    el('usageReportTotalBookings').textContent = totalBookings;
-    el('usageReportTotalUsers').textContent = filteredUsers.length;
+            el('usageReportPosition').textContent =
+              `${currentIndex + 1} מתוך ${filteredUsers.length}`;
 
-    status.textContent = filteredUsers.length
-      ? `נמצאו ${filteredUsers.length} משתמשים`
-      : 'לא נמצאו משתמשים התואמים לסינון';
+            el('usageReportPrevious').disabled = currentIndex === 0;
+            el('usageReportNext').disabled =
+              currentIndex >= filteredUsers.length - 1;
+          }
 
-    renderCard();
-  }
+          function applyFilters() {
+            const query = search.value.trim().toLocaleLowerCase('he');
 
-  async function loadReport() {
-    if (!month.value) {
-      status.textContent = 'יש לבחור חודש';
-      return;
-    }
+            filteredUsers = allUsers.filter(user => {
+              if (type.value === 'tenant') {
+                return !tenant.value || String(user.id) === tenant.value;
+              }
 
-    const currentRequest = ++requestNumber;
-    button.disabled = true;
-    status.textContent = 'טוען נתונים...';
-    summary.hidden = true;
-    card.hidden = true;
+              if (type.value === 'company') {
+                return !company.value ||
+                  user.business_name === company.value;
+              }
 
-    try {
-      const params = new URLSearchParams({ month: month.value });
-      const response = await fetch(
-        `/admin/meeting-bookings/usage-report?${params}`
-      );
+              return [
+                user.display_name,
+                user.business_name,
+                user.office_number,
+                user.floor
+              ].some(value =>
+                String(value ?? '').toLocaleLowerCase('he').includes(query)
+              );
+            });
 
-      if (!response.ok) throw new Error('Failed to load');
+            currentIndex = 0;
 
-      const data = await response.json();
-      if (currentRequest !== requestNumber) return;
+            const totalHours = filteredUsers.reduce(
+              (sum, user) => sum + Number(user.booked_hours || 0), 0
+            );
+            const totalBookings = filteredUsers.reduce(
+              (sum, user) => sum + Number(user.booking_count || 0), 0
+            );
 
-      allUsers = data.users || [];
-      populateFilters();
-      applyFilters();
-    } catch (error) {
-      if (currentRequest === requestNumber) {
-        status.textContent = 'שגיאה בטעינת הנתונים';
-      }
-    } finally {
-      if (currentRequest === requestNumber) {
-        button.disabled = false;
-      }
-    }
-  }
+            el('usageReportTotalHours').textContent =
+              `${formatHours(totalHours)} שעות`;
+            el('usageReportTotalBookings').textContent = totalBookings;
+            el('usageReportTotalUsers').textContent = filteredUsers.length;
 
-  type.addEventListener('change', () => {
-    updateFields();
-    applyFilters();
-  });
+            status.textContent = filteredUsers.length
+              ? `נמצאו ${filteredUsers.length} משתמשים`
+              : 'לא נמצאו משתמשים התואמים לסינון';
 
-  tenant.addEventListener('change', applyFilters);
-  company.addEventListener('change', applyFilters);
-  search.addEventListener('input', applyFilters);
-  month.addEventListener('change', loadReport);
-  button.addEventListener('click', loadReport);
+            renderCard();
+          }
 
-  el('usageReportPrevious').addEventListener('click', () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      renderCard();
-    }
-  });
+          async function loadReport() {
+            if (!month.value) {
+              status.textContent = 'יש לבחור חודש';
+              return;
+            }
 
-  el('usageReportNext').addEventListener('click', () => {
-    if (currentIndex < filteredUsers.length - 1) {
-      currentIndex++;
-      renderCard();
-    }
-  });
+            const currentRequest = ++requestNumber;
+            button.disabled = true;
+            status.textContent = 'טוען נתונים...';
+            summary.hidden = true;
+            card.hidden = true;
 
-  updateFields();
-  loadReport();
-})();
-</script>
+            try {
+              const params = new URLSearchParams({ month: month.value });
+              const response = await fetch(
+                `/admin/meeting-bookings/usage-report?${params}`
+              );
+
+              if (!response.ok) throw new Error('Failed to load');
+
+              const data = await response.json();
+              if (currentRequest !== requestNumber) return;
+
+              allUsers = data.users || [];
+              populateFilters();
+              applyFilters();
+            } catch (error) {
+              if (currentRequest === requestNumber) {
+                status.textContent = 'שגיאה בטעינת הנתונים';
+              }
+            } finally {
+              if (currentRequest === requestNumber) {
+                button.disabled = false;
+              }
+            }
+          }
+
+          type.addEventListener('change', () => {
+            updateFields();
+            applyFilters();
+          });
+
+          tenant.addEventListener('change', applyFilters);
+          company.addEventListener('change', applyFilters);
+          search.addEventListener('input', applyFilters);
+          month.addEventListener('change', loadReport);
+          button.addEventListener('click', loadReport);
+
+          el('usageReportPrevious').addEventListener('click', () => {
+            if (currentIndex > 0) {
+              currentIndex--;
+              renderCard();
+            }
+          });
+
+          el('usageReportNext').addEventListener('click', () => {
+            if (currentIndex < filteredUsers.length - 1) {
+              currentIndex++;
+              renderCard();
+            }
+          });
+
+          updateFields();
+          loadReport();
+        })();
+      </script>
 
 </body>
 

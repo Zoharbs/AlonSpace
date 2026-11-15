@@ -10,6 +10,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const multer = require('multer');
+
 const {
   pool,
   initializeDatabase,
@@ -286,7 +287,7 @@ app.use(async (req, res, next) => {
 
   if (req.session?.userId) {
     try {
-      const result = await db.query(
+      const result = await pool.query(
         `SELECT can_manage_expenses
        FROM users
        WHERE id = $1 AND is_active = TRUE`,
