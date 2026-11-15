@@ -1,109 +1,897 @@
 <!doctype html>
 <html lang="he" dir="rtl">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#142b46">
   <link rel="manifest" href="/expenses/manifest.webmanifest">
   <title>ניהול הוצאות | AlonSpace</title>
+  <link rel="stylesheet" href="/css/style.css">
   <style>
-    :root{--navy:#172b43;--ink:#203249;--muted:#738095;--line:#e5eaf0;--bg:#f5f7fa;--green:#23734a;--green-bg:#e9f6ee;--amber:#94610a;--amber-bg:#fff5dc}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,'Assistant',sans-serif;font-size:14px}button,input,select{font:inherit}a{color:inherit;text-decoration:none}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}main{max-width:1540px;margin:auto;padding:30px 28px 70px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}.eyebrow{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.4px}h1{font-size:29px;margin:6px 0 8px}h2{font-size:19px;margin:0}p{line-height:1.6}.muted{color:var(--muted)}.top-actions,.toolbar,.actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #d6dee8;border-radius:10px;background:#fff;color:var(--ink);padding:11px 15px;font-weight:700;white-space:nowrap}.btn.primary{background:var(--navy);color:white;border-color:var(--navy)}.btn:hover{filter:brightness(.96)}.panel{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 25px rgba(30,50,80,.035)}.controls{padding:16px 19px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:18px}.segmented{display:inline-flex;background:#f1f4f8;padding:4px;border-radius:12px;gap:3px}.segment{padding:10px 17px;border:0;background:transparent;color:#667489;border-radius:9px;font-weight:700}.segment.active{background:white;color:var(--navy);box-shadow:0 2px 7px #1d314414}.year-select{display:flex;align-items:center;gap:8px}.year-select input{width:90px}.field{padding:10px 12px;border:1px solid #d7dfe8;border-radius:9px;background:white;min-width:0}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:20px}.stat{padding:20px}.stat .label{color:var(--muted);font-size:13px;margin-bottom:10px}.stat .value{font-size:25px;font-weight:800;direction:ltr;text-align:right;font-variant-numeric:tabular-nums}.stat .hint{font-size:12px;color:var(--muted);margin-top:9px}.section{margin-top:19px}.section-head{padding:19px 20px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.legend{display:flex;gap:15px;align-items:center;color:var(--muted);font-size:12px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:5px}.dot.green{background:#5ba87b}.dot.amber{background:#e3b252}.table-scroll{overflow-x:auto;max-width:100%}table{width:100%;min-width:1220px;border-collapse:separate;border-spacing:0;text-align:center}th,td{border-top:1px solid #edf0f4;padding:9px 5px;vertical-align:middle}thead th{background:#f8fafc;color:#667489;font-size:12px;padding:13px 5px}th:first-child,td:first-child{position:sticky;right:0;z-index:1;text-align:right;min-width:180px;max-width:230px;padding-right:18px;background:#fff;box-shadow:-1px 0 #e9edf3}thead th:first-child{z-index:2;background:#f8fafc}tbody tr:hover td:first-child{background:#fafbfd}.category-name{font-weight:700}.category-sub{display:block;font-size:11px;color:var(--muted);margin-top:5px}.cell-btn{width:100%;border:1px solid transparent;border-radius:9px;padding:10px 4px;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.cell-btn.estimate{background:var(--amber-bg);color:#78550f}.cell-btn.paid{background:var(--green-bg);color:var(--green)}.cell-btn.locked{cursor:default}.cell-btn:not(.locked):hover{border-color:currentColor}.cell-btn strong{font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}.cell-btn small{font-size:10px}.empty{padding:35px 22px;text-align:center;color:var(--muted)}.pending-list{padding:0 20px 18px}.pending-item{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;border-top:1px solid var(--line);padding:16px 0}.pending-item strong{display:block;margin-bottom:5px}.pending-item form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.notice{padding:14px 18px;margin-bottom:15px;border-radius:10px;background:#e8f3eb;color:#246a45}.notice.error{background:#fff0ef;color:#a03b32}dialog{border:0;border-radius:17px;padding:0;width:min(520px,calc(100vw - 28px));box-shadow:0 24px 80px #10203745;color:var(--ink)}dialog::backdrop{background:#0d1c32a8}.modal-head{padding:21px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.modal-head h2{font-size:20px}.close{border:0;background:transparent;font-size:26px;color:var(--muted);padding:0 6px}.modal-body{padding:22px 24px}.modal-body label{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;font-weight:700}.modal-body .field{width:100%}.modal-actions{display:flex;gap:10px;justify-content:flex-start;flex-wrap:wrap;margin-top:18px}.helper{font-size:12px;color:var(--muted);margin:0 0 14px}.month-checks{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:15px}.month-checks label{margin:0;padding:9px;border:1px solid var(--line);border-radius:8px;flex-direction:row;align-items:center;font-size:12px;font-weight:400}.secondary-section{margin-top:18px}.secondary-section .section-head{padding-bottom:19px}.bottom-note{padding:12px 20px;color:var(--muted);font-size:12px}.hidden{display:none!important}
-    @media(max-width:850px){main{padding:18px 12px 55px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:16px}.stat .value{font-size:21px}.top-actions{width:100%}.controls{padding:12px}.section-head{padding:16px 14px}.pending-list{padding:0 14px 14px}}@media(max-width:440px){h1{font-size:25px}.stats{gap:8px}.stat .value{font-size:19px}.btn{padding:10px 12px}.segment{padding:9px 12px}.month-checks{grid-template-columns:repeat(2,1fr)}}
+    /* Uses the same design tokens and typography as AlonSpace and the tenant portal. */
+    :root {
+      --expense-success: #247552;
+      --expense-success-bg: #e5f4eb;
+      --expense-warning: #926315;
+      --expense-warning-bg: #fff2d5;
+    }
+
+    body {
+      margin: 0;
+      background: var(--stone);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    select {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1480px;
+      margin: auto;
+      padding: 34px 28px 75px;
+    }
+
+    .top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      font: 700 12px var(--font-display);
+      color: var(--oak-dark);
+      letter-spacing: .06em;
+    }
+
+    h1,
+    h2 {
+      font-family: var(--font-display);
+      color: var(--ink);
+    }
+
+    h1 {
+      font-size: clamp(27px, 3vw, 38px);
+      margin: 6px 0 10px;
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 700;
+    }
+
+    p {
+      line-height: 1.65;
+    }
+
+    .muted {
+      color: var(--ink-soft);
+    }
+
+    .top-actions,
+    .toolbar,
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--stone-dark);
+      border-radius: var(--radius);
+      background: var(--cream);
+      color: var(--ink);
+      padding: 10px 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: none;
+    }
+
+    .btn.primary {
+      background: var(--oak);
+      border-color: var(--oak);
+      color: #fff;
+    }
+
+    .btn:hover {
+      background: var(--stone-dark);
+    }
+
+    .btn.primary:hover {
+      background: var(--oak-dark);
+      color: #fff;
+    }
+
+    .btn:focus-visible,
+    .segment:focus-visible,
+    .cell-btn:focus-visible {
+      outline: 3px solid var(--oak-light);
+      outline-offset: 2px;
+    }
+
+    .panel {
+      background: var(--cream);
+      border: 1px solid var(--stone-dark);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    .controls {
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .segmented {
+      display: inline-flex;
+      background: var(--stone);
+      padding: 5px;
+      border: 1px solid var(--stone-dark);
+      border-radius: 12px;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .segment {
+      display: inline-flex;
+      padding: 10px 17px;
+      border: 0;
+      background: transparent;
+      color: var(--ink-soft);
+      border-radius: 9px;
+      font-weight: 600;
+    }
+
+    .segment.active {
+      background: var(--oak);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(124, 108, 240, .2);
+    }
+
+    .segment:not(.active):hover {
+      background: var(--stone-dark);
+    }
+
+    .year-select {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .year-select input {
+      width: 95px;
+    }
+
+    .field {
+      padding: 10px 12px;
+      border: 1px solid var(--stone-dark);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      min-width: 0;
+    }
+
+    .field:focus {
+      outline: 2px solid var(--oak-light);
+      border-color: var(--oak);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      padding: 23px;
+      border-top: 3px solid var(--oak-light);
+    }
+
+    .stat .label {
+      color: var(--ink-soft);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .stat .value {
+      font-family: var(--font-display);
+      color: var(--oak-dark);
+      font-size: clamp(20px, 2vw, 28px);
+      font-weight: 700;
+      direction: ltr;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat .hint {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-top: 9px;
+    }
+
+    .section {
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 22px 23px 17px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      margin-left: 5px;
+    }
+
+    .dot.green {
+      background: var(--expense-success);
+    }
+
+    .dot.amber {
+      background: #d69a2d;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1220px;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: center;
+    }
+
+    th,
+    td {
+      border-top: 1px solid var(--stone-dark);
+      padding: 10px 6px;
+      vertical-align: middle;
+    }
+
+    thead th {
+      background: var(--stone);
+      color: var(--ink-soft);
+      font-family: var(--font-display);
+      font-size: 13px;
+      padding: 14px 6px;
+    }
+
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      right: 0;
+      z-index: 1;
+      text-align: right;
+      min-width: 190px;
+      max-width: 240px;
+      padding-right: 19px;
+      background: var(--cream);
+      box-shadow: -1px 0 var(--stone-dark);
+    }
+
+    thead th:first-child {
+      z-index: 2;
+      background: var(--stone);
+    }
+
+    tbody tr:hover td:first-child {
+      background: var(--stone);
+    }
+
+    .category-name {
+      font-weight: 700;
+    }
+
+    .category-sub {
+      display: block;
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+
+    .cell-btn {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      padding: 10px 4px;
+      min-height: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .cell-btn.estimate {
+      background: var(--expense-warning-bg);
+      color: #77500c;
+    }
+
+    .cell-btn.paid {
+      background: var(--expense-success-bg);
+      color: var(--expense-success);
+    }
+
+    .cell-btn.locked {
+      cursor: default;
+    }
+
+    .cell-btn:not(.locked):hover {
+      border-color: currentColor;
+    }
+
+    .cell-btn strong {
+      font-size: 13px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cell-btn small {
+      font-size: 11px;
+    }
+
+    .empty {
+      padding: 38px 22px;
+      text-align: center;
+      color: var(--ink-soft);
+    }
+
+    .pending-list {
+      padding: 0 22px 18px;
+    }
+
+    .pending-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--stone-dark);
+      padding: 17px 0;
+    }
+
+    .pending-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .pending-item form {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .notice {
+      padding: 14px 18px;
+      margin-bottom: 15px;
+      border-radius: var(--radius);
+      background: var(--expense-success-bg);
+      color: var(--expense-success);
+    }
+
+    .notice.error {
+      background: #fcebea;
+      color: #9b3838;
+    }
+
+    dialog {
+      border: 1px solid var(--stone-dark);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      width: min(540px, calc(100vw - 28px));
+      box-shadow: var(--shadow-lg);
+      color: var(--ink);
+      background: var(--cream);
+    }
+
+    dialog::backdrop {
+      background: rgba(10, 12, 26, .55);
+    }
+
+    .modal-head {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--stone-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-head h2 {
+      font-size: 21px;
+    }
+
+    .close {
+      border: 0;
+      background: transparent;
+      font-size: 26px;
+      color: var(--ink-soft);
+      padding: 0 6px;
+    }
+
+    .modal-body {
+      padding: 23px 24px;
+    }
+
+    .modal-body label {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .modal-body .field {
+      width: 100%;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .helper {
+      font-size: 13px;
+      color: var(--ink-soft);
+      margin: 0 0 14px;
+    }
+
+    .month-checks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .month-checks label {
+      margin: 0;
+      padding: 10px;
+      border: 1px solid var(--stone-dark);
+      border-radius: var(--radius);
+      flex-direction: row;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .secondary-section {
+      margin-top: 20px;
+    }
+
+    .secondary-section .section-head {
+      padding-bottom: 20px;
+    }
+
+    .bottom-note {
+      padding: 12px 22px;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media(max-width:850px) {
+      main {
+        padding: 20px 12px 55px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stat {
+        padding: 17px;
+      }
+
+      .top-actions {
+        width: 100%;
+      }
+
+      .controls {
+        padding: 14px;
+      }
+
+      .section-head {
+        padding: 17px 15px;
+      }
+
+      .pending-list {
+        padding: 0 15px 15px;
+      }
+    }
+
+    @media(max-width:440px) {
+      .stats {
+        gap: 9px;
+      }
+
+      .stat .value {
+        font-size: 19px;
+      }
+
+      .btn {
+        padding: 10px 12px;
+      }
+
+      .segment {
+        padding: 9px 12px;
+      }
+
+      .month-checks {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 </head>
+
 <body>
-<%
-  const money = value => '₪' + Number(value || 0).toLocaleString('he-IL', {minimumFractionDigits:2,maximumFractionDigits:2});
-  const monthNames = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-  let yearlyBudget = 0, yearlyPaid = 0, yearlyOutstanding = 0, yearlyEstimate = 0;
-  const monthlyTotals = months.map(m => {
+  <% const money=value=> '₪' + Number(value || 0).toLocaleString('he-IL',
+    {minimumFractionDigits:2,maximumFractionDigits:2});
+    const monthNames =
+    ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    let yearlyBudget = 0, yearlyPaid = 0, yearlyOutstanding = 0, yearlyEstimate = 0;
+    const monthlyTotals = months.map(m => {
     let budget = 0, paid = 0, outstanding = 0;
     categories.forEach(c => {
-      const e = entryMap[c.id + ':' + m];
-      const expected = Number(e ? e.estimated_amount : c.default_amount) || 0;
-      budget += expected;
-      if (e && e.status === 'paid') paid += Number(e.actual_amount || 0);
-      else outstanding += expected;
+    const e = entryMap[c.id + ':' + m];
+    const expected = Number(e ? e.estimated_amount : c.default_amount) || 0;
+    budget += expected;
+    if (e && e.status === 'paid') paid += Number(e.actual_amount || 0);
+    else outstanding += expected;
     });
     yearlyBudget += budget; yearlyPaid += paid; yearlyOutstanding += outstanding;
     return {budget,paid,outstanding};
-  });
-  yearlyEstimate = yearlyBudget - yearlyPaid;
-%>
-<main>
-  <header class="top">
-    <div><div class="eyebrow">ALONSPACE / FINANCE</div><h1>ניהול הוצאות</h1><div class="muted">מעקב שנתי אחר הוצאות, הערכות ותשלומים · <%= user.display_name %></div></div>
-    <div class="top-actions">
-      <a class="btn" href="/admin">חזרה לניהול</a>
-      <a class="btn" href="/expenses/extras/history?floor=<%= floor %>&year=<%= year %>">היסטוריית שינויים</a>
-      <a class="btn" href="/expenses/export.xlsx?floor=<%= floor %>&year=<%= year %>">ייצוא Excel</a>
-      <button type="button" class="btn primary" id="openPayment">+ קליטת חשבון</button>
-    </div>
-  </header>
-  <% if (error) { %><div class="notice error" role="alert"><%= error %></div><% } %>
-  <% if (success) { %><div class="notice" role="status"><%= success %></div><% } %>
-  <div class="panel controls">
-    <div class="toolbar"><div class="segmented" aria-label="בחירת קומה"><a class="segment <%= floor===4?'active':'' %>" href="/expenses?floor=4&year=<%= year %>">קומה 4</a><a class="segment <%= floor===6?'active':'' %>" href="/expenses?floor=6&year=<%= year %>">קומה 6</a><a class="segment" href="/expenses/extras/overview?year=<%= year %>">שתי הקומות</a></div></div>
-    <form class="year-select" action="/expenses" method="get"><input type="hidden" name="floor" value="<%= floor %>"><label for="year">שנה</label><input id="year" class="field" type="number" name="year" min="2020" max="2100" value="<%= year %>"><button class="btn" type="submit">הצג</button></form>
-  </div>
-  <div class="stats">
-    <div class="panel stat"><div class="label">תקציב / הערכה שנתית</div><div class="value"><%= money(yearlyBudget) %></div><div class="hint">סכומי הערכה לכל חודשי השנה</div></div>
-    <div class="panel stat"><div class="label">שולם בפועל</div><div class="value"><%= money(yearlyPaid) %></div><div class="hint">תאים שסומנו כשולמו</div></div>
-    <div class="panel stat"><div class="label">הערכות שטרם שולמו</div><div class="value"><%= money(yearlyOutstanding) %></div><div class="hint">לא בהכרח חוב לתשלום</div></div>
-    <div class="panel stat"><div class="label">פער בין הערכה לתשלום</div><div class="value"><%= money(yearlyBudget - yearlyPaid) %></div><div class="hint">כולל חודשים שעדיין לא שולמו</div></div>
-  </div>
-  <section class="panel section">
-    <div class="section-head"><div><h2>טבלת הוצאות · קומה <%= floor %></h2><p class="muted" style="margin:7px 0 0">לחיצה על תא מאפשרת לערוך הערכה או לסמן תשלום. גללו לרוחב לצפייה בכל החודשים.</p></div><div class="legend"><span><i class="dot amber"></i>הערכה</span><span><i class="dot green"></i>שולם</span></div></div>
-    <% if (!categories.length) { %><div class="empty">עדיין אין קטגוריות לקומה זו. לחצו על „הוספת קטגוריה” כדי להתחיל.</div><% } else { %>
-    <div class="table-scroll" tabindex="0" aria-label="טבלת הוצאות שנתית נגללת">
-      <table><thead><tr><th scope="col">קטגוריה</th><% months.forEach((m,i) => { %><th scope="col"><%= monthNames[i] %></th><% }) %></tr></thead><tbody>
-      <% categories.forEach(c => { %><tr><td><span class="category-name"><%= c.name %></span><span class="category-sub">ברירת מחדל: <%= money(c.default_amount) %></span></td>
-      <% months.forEach(m => { const e = entryMap[c.id + ':' + m]; const paid = !!e && e.status === 'paid'; const amount = paid ? e.actual_amount : e ? e.estimated_amount : c.default_amount; const locked = paid || !!(e && e.payment_id); %>
-        <td><button type="button" class="cell-btn <%= paid?'paid':'estimate' %> <%= locked?'locked':'' %>" data-category="<%= c.id %>" data-name="<%= c.name %>" data-month="<%= m %>" data-entry="<%= e ? e.id : '' %>" data-amount="<%= Number(amount || 0).toFixed(2) %>" data-paid="<%= paid?'1':'0' %>" data-locked="<%= locked?'1':'0' %>" aria-label="<%= c.name %> <%= m %>: <%= money(amount) %>, <%= paid?'שולם':'הערכה' %><%= locked?', לצפייה בלבד':'' %>"><strong><%= money(amount) %></strong><small><%= paid?'✓ שולם':locked?'חשבון ממתין':'הערכה · עריכה' %></small></button></td>
-      <% }) %></tr><% }) %>
-      <tr><td><strong>סה״כ הערכה</strong></td><% monthlyTotals.forEach(t => { %><td><strong><%= money(t.budget) %></strong></td><% }) %></tr>
-      <tr><td><strong>שולם בפועל</strong></td><% monthlyTotals.forEach(t => { %><td style="color:var(--green)"><strong><%= money(t.paid) %></strong></td><% }) %></tr>
-      </tbody></table>
-    </div><% } %>
-    <div class="bottom-note">הסכומים מחושבים מהנתונים השמורים. חשבונות המקושרים לתשלום ניתנים לעדכון דרך היסטוריית החשבונות.</div>
-  </section>
-  <section class="panel section secondary-section"><div class="section-head"><div><h2>חשבונות ממתינים לתשלום</h2><p class="muted" style="margin:6px 0 0">חשבונות שנקלטו כהערכה ועדיין לא סומנו כשולמו</p></div><span class="muted"><%= pendingPayments.length %> חשבונות</span></div>
-    <% if (!pendingPayments.length) { %><div class="empty">אין חשבונות ממתינים לתשלום בשנה זו.</div><% } else { %><div class="pending-list"><% pendingPayments.forEach(p => { %><div class="pending-item"><div><strong><%= p.name %> · <%= money(p.total_amount) %></strong><span class="muted">נקלט בתאריך <%= p.created_date %></span></div><form method="post" action="/expenses/finalize-payment"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="payment_id" value="<%= p.id %>"><input class="field" type="date" name="payment_date" required aria-label="תאריך תשלום"><button class="btn primary" type="submit">סמן כשולם</button></form></div><% }) %></div><% } %>
-  </section>
-  <section class="panel section secondary-section"><div class="section-head"><div><h2>ניהול קטגוריות</h2><p class="muted" style="margin:6px 0 0">הוספת קטגוריה או עדכון סכום ברירת מחדל לקטגוריה קיימת</p></div><button type="button" class="btn" id="openCategory">+ הוספת / עדכון קטגוריה</button></div></section>
-</main>
-<dialog id="cellDialog" aria-labelledby="cellTitle"><div class="modal-head"><h2 id="cellTitle">עריכת הוצאה</h2><button type="button" class="close" data-close="cellDialog" aria-label="סגירה">×</button></div><div class="modal-body"><p id="cellInfo" class="helper"></p><p id="cellLocked" class="helper hidden">הוצאה זו מקושרת לחשבון או כבר שולמה, ולכן אי אפשר לערוך אותה כאן. לצורך תיקון חשבון, עברו להיסטוריה.</p><form id="estimateForm" method="post" action="/expenses/estimate"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="category_id" id="cellCategory"><input type="hidden" name="month" id="cellMonth"><label>סכום הערכה (₪)<input class="field" type="number" name="amount" id="cellAmount" min="0" step="0.01" required></label><div class="modal-actions"><button class="btn primary" type="submit">שמירת הערכה</button><button class="btn" type="button" id="showFinalize">סמן כשולם</button></div></form><form id="finalizeForm" class="hidden" method="post" action="/expenses/finalize"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="entry_id" id="finalizeEntry"><label>סכום ששולם בפועל (₪)<input class="field" type="number" name="actual_amount" id="actualAmount" min="0" step="0.01" required></label><p class="helper">אם זו הערכה חדשה, שמרו אותה תחילה ואז פתחו שוב את התא כדי לסמן תשלום.</p><div class="modal-actions"><button class="btn primary" type="submit">אישור תשלום</button><button class="btn" type="button" id="backEstimate">חזרה להערכה</button></div></form><a id="historyLink" class="btn hidden" href="/expenses/extras/history?floor=<%= floor %>&year=<%= year %>">מעבר להיסטוריה</a></div></dialog>
-<dialog id="categoryDialog" aria-labelledby="categoryTitle"><div class="modal-head"><h2 id="categoryTitle">הוספה / עדכון קטגוריה</h2><button type="button" class="close" data-close="categoryDialog" aria-label="סגירה">×</button></div><div class="modal-body"><form method="post" action="/expenses/categories"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="floor" value="<%= floor %>"><label>שם הקטגוריה<input class="field" type="text" name="name" maxlength="100" list="categoryNames" required placeholder="לדוגמה: ניקיון"></label><datalist id="categoryNames"><% categories.forEach(c => { %><option value="<%= c.name %>"></option><% }) %></datalist><label>סכום ברירת מחדל לחודש (₪)<input class="field" type="number" name="default_amount" min="0" step="0.01" required></label><p class="helper">בחירה בשם קטגוריה קיימת תעדכן את ברירת המחדל שלה. סוגי חשמל וארנונה מוגדרים בנפרד במסד הנתונים.</p><div class="modal-actions"><button class="btn primary" type="submit">שמירת קטגוריה</button></div></form></div></dialog>
-<dialog id="paymentDialog" aria-labelledby="paymentTitle"><div class="modal-head"><h2 id="paymentTitle">קליטת חשבון / תשלום</h2><button type="button" class="close" data-close="paymentDialog" aria-label="סגירה">×</button></div><div class="modal-body"><% if (!categories.length) { %><p>צריך להוסיף קטגוריה לפני קליטת חשבון.</p><button class="btn" type="button" data-close="paymentDialog">סגירה</button><% } else { %><form method="post" action="/expenses/payment" id="paymentForm"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><label>קטגוריה<select class="field" name="category_id" id="paymentCategory" required><% categories.forEach(c => { %><option value="<%= c.id %>" data-kind="<%= c.kind %>"><%= c.name %></option><% }) %></select></label><label>סכום החשבון הכולל (₪)<input class="field" name="amount" type="number" min="0.01" step="0.01" required></label><label>מצב החשבון<select class="field" name="status" id="paymentStatus"><option value="estimated">הערכה / טרם שולם</option><option value="paid">שולם בפועל</option></select></label><label id="paymentDateWrap" class="hidden">תאריך תשלום<input class="field" type="date" name="payment_date"></label><label class="period regular">חודש<input class="field" type="month" name="month" value="<%= year %>-<%= String(new Date().getFullYear()===year ? new Date().getMonth()+1 : 1).padStart(2,'0') %>"></label><label class="period electricity hidden">תחילת תקופת צריכה<input class="field" type="date" name="period_start"></label><label class="period electricity hidden">סיום תקופת צריכה<input class="field" type="date" name="period_end"></label><div class="period arnona hidden"><p class="helper">בחרו את חודשי הארנונה שהחשבון מכסה:</p><div class="month-checks"><% months.forEach((m,i) => { %><label><input type="checkbox" class="arnonaCheck" value="<%= m %>"><%= monthNames[i] %></label><% }) %></div><input type="hidden" name="months" id="arnonaMonths"></div><div class="modal-actions"><button class="btn primary" type="submit">שמירת חשבון</button></div></form><% } %></div></dialog>
-<script>
-(function(){
-  const byId=id=>document.getElementById(id);
-  function openDialog(id){const d=byId(id);if(d&&typeof d.showModal==='function')d.showModal();}
-  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>byId(b.dataset.close).close()));
-  document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));
-  byId('openCategory').addEventListener('click',()=>openDialog('categoryDialog'));
-  byId('openPayment').addEventListener('click',()=>openDialog('paymentDialog'));
-  document.querySelectorAll('.cell-btn').forEach(b=>b.addEventListener('click',()=>{
-    byId('cellTitle').textContent=b.dataset.name+' · '+b.dataset.month;
-    byId('cellInfo').textContent='סכום נוכחי: ₪'+Number(b.dataset.amount).toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2});
-    byId('cellCategory').value=b.dataset.category;byId('cellMonth').value=b.dataset.month;byId('cellAmount').value=b.dataset.amount;
-    byId('finalizeEntry').value=b.dataset.entry;byId('actualAmount').value=b.dataset.amount;
-    const locked=b.dataset.locked==='1';byId('cellLocked').classList.toggle('hidden',!locked);
-    byId('estimateForm').classList.toggle('hidden',locked);byId('finalizeForm').classList.add('hidden');byId('historyLink').classList.toggle('hidden',!locked);
-    byId('showFinalize').disabled=!b.dataset.entry;
-    openDialog('cellDialog');
-  }));
-  byId('showFinalize').addEventListener('click',()=>{if(!byId('finalizeEntry').value)return;byId('estimateForm').classList.add('hidden');byId('finalizeForm').classList.remove('hidden');});
-  byId('backEstimate').addEventListener('click',()=>{byId('finalizeForm').classList.add('hidden');byId('estimateForm').classList.remove('hidden');});
-  const cat=byId('paymentCategory'),status=byId('paymentStatus');
-  if(cat&&status){
-    const refresh=()=>{const kind=cat.selectedOptions[0]?.dataset.kind||'regular';document.querySelectorAll('.period').forEach(el=>el.classList.toggle('hidden',!el.classList.contains(kind)));byId('paymentDateWrap').classList.toggle('hidden',status.value!=='paid');};
-    cat.addEventListener('change',refresh);status.addEventListener('change',refresh);refresh();
-    byId('paymentForm').addEventListener('submit',e=>{if(cat.selectedOptions[0]?.dataset.kind==='arnona'){const selected=[...document.querySelectorAll('.arnonaCheck:checked')].map(x=>x.value);if(!selected.length){e.preventDefault();alert('יש לבחור לפחות חודש ארנונה אחד');return;}byId('arnonaMonths').value=selected.join(',');}});
-  }
-  if('serviceWorker' in navigator)navigator.serviceWorker.register('/expenses/sw.js',{scope:'/expenses'}).catch(()=>{});
-})();
-</script>
+    });
+    yearlyEstimate = yearlyBudget - yearlyPaid;
+    %>
+    <main>
+      <header class="top">
+        <div>
+          <div class="eyebrow">ALONSPACE / ניהול</div>
+          <h1>ניהול הוצאות</h1>
+          <div class="muted">מעקב שנתי אחר הוצאות, הערכות ותשלומים · <%= user.display_name %>
+          </div>
+        </div>
+        <div class="top-actions">
+          <a class="btn" href="/admin">חזרה לניהול</a>
+          <a class="btn" href="/expenses/extras/history?floor=<%= floor %>&year=<%= year %>">היסטוריית שינויים</a>
+          <a class="btn" href="/expenses/export.xlsx?floor=<%= floor %>&year=<%= year %>">ייצוא Excel</a>
+          <button type="button" class="btn primary" id="openPayment">+ קליטת חשבון</button>
+        </div>
+      </header>
+      <% if (error) { %>
+        <div class="notice error" role="alert">
+          <%= error %>
+        </div>
+        <% } %>
+          <% if (success) { %>
+            <div class="notice" role="status">
+              <%= success %>
+            </div>
+            <% } %>
+              <div class="panel controls">
+                <div class="toolbar">
+                  <div class="segmented" aria-label="בחירת קומה"><a class="segment <%= floor===4?'active':'' %>"
+                      href="/expenses?floor=4&year=<%= year %>">קומה 4</a><a
+                      class="segment <%= floor===6?'active':'' %>" href="/expenses?floor=6&year=<%= year %>">קומה
+                      6</a><a class="segment" href="/expenses/extras/overview?year=<%= year %>">שתי הקומות</a></div>
+                </div>
+                <form class="year-select" action="/expenses" method="get"><input type="hidden" name="floor"
+                    value="<%= floor %>"><label for="year">שנה</label><input id="year" class="field" type="number"
+                    name="year" min="2020" max="2100" value="<%= year %>"><button class="btn" type="submit">הצג</button>
+                </form>
+              </div>
+              <div class="stats">
+                <div class="panel stat">
+                  <div class="label">תקציב / הערכה שנתית</div>
+                  <div class="value">
+                    <%= money(yearlyBudget) %>
+                  </div>
+                  <div class="hint">סכומי הערכה לכל חודשי השנה</div>
+                </div>
+                <div class="panel stat">
+                  <div class="label">שולם בפועל</div>
+                  <div class="value">
+                    <%= money(yearlyPaid) %>
+                  </div>
+                  <div class="hint">תאים שסומנו כשולמו</div>
+                </div>
+                <div class="panel stat">
+                  <div class="label">הערכות שטרם שולמו</div>
+                  <div class="value">
+                    <%= money(yearlyOutstanding) %>
+                  </div>
+                  <div class="hint">לא בהכרח חוב לתשלום</div>
+                </div>
+                <div class="panel stat">
+                  <div class="label">פער בין הערכה לתשלום</div>
+                  <div class="value">
+                    <%= money(yearlyBudget - yearlyPaid) %>
+                  </div>
+                  <div class="hint">כולל חודשים שעדיין לא שולמו</div>
+                </div>
+              </div>
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <h2>טבלת הוצאות · קומה <%= floor %>
+                    </h2>
+                    <p class="muted" style="margin:7px 0 0">לחיצה על תא מאפשרת לערוך הערכה או לסמן תשלום. גללו לרוחב
+                      לצפייה בכל החודשים.</p>
+                  </div>
+                  <div class="legend"><span><i class="dot amber"></i>הערכה</span><span><i
+                        class="dot green"></i>שולם</span></div>
+                </div>
+                <% if (!categories.length) { %>
+                  <div class="empty">עדיין אין קטגוריות לקומה זו. לחצו על „הוספת קטגוריה” כדי להתחיל.</div>
+                  <% } else { %>
+                    <div class="table-scroll" tabindex="0" aria-label="טבלת הוצאות שנתית נגללת">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th scope="col">קטגוריה</th>
+                            <% months.forEach((m,i)=> { %><th scope="col">
+                                <%= monthNames[i] %>
+                              </th>
+                              <% }) %>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% categories.forEach(c=> { %><tr>
+                              <td><span class="category-name">
+                                  <%= c.name %>
+                                </span><span class="category-sub">ברירת מחדל: <%= money(c.default_amount) %></span></td>
+                              <% months.forEach(m=> { const e = entryMap[c.id + ':' + m]; const paid = !!e && e.status
+                                === 'paid'; const amount = paid ? e.actual_amount : e ? e.estimated_amount :
+                                c.default_amount; const locked = paid || !!(e && e.payment_id); %>
+                                <td><button type="button"
+                                    class="cell-btn <%= paid?'paid':'estimate' %> <%= locked?'locked':'' %>"
+                                    data-category="<%= c.id %>" data-name="<%= c.name %>" data-month="<%= m %>"
+                                    data-entry="<%= e ? e.id : '' %>"
+                                    data-amount="<%= Number(amount || 0).toFixed(2) %>" data-paid="<%= paid?'1':'0' %>"
+                                    data-locked="<%= locked?'1':'0' %>"
+                                    aria-label="<%= c.name %> <%= m %>: <%= money(amount) %>, <%= paid?'שולם':'הערכה' %><%= locked?', לצפייה בלבד':'' %>"><strong>
+                                      <%= money(amount) %>
+                                    </strong><small>
+                                      <%= paid?'✓ שולם':locked?'חשבון ממתין':'הערכה · עריכה' %>
+                                    </small></button></td>
+                                <% }) %>
+                            </tr>
+                            <% }) %>
+                              <tr>
+                                <td><strong>סה״כ הערכה</strong></td>
+                                <% monthlyTotals.forEach(t=> { %><td><strong>
+                                      <%= money(t.budget) %>
+                                    </strong></td>
+                                  <% }) %>
+                              </tr>
+                              <tr>
+                                <td><strong>שולם בפועל</strong></td>
+                                <% monthlyTotals.forEach(t=> { %><td style="color:var(--green)"><strong>
+                                      <%= money(t.paid) %>
+                                    </strong></td>
+                                  <% }) %>
+                              </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <% } %>
+                      <div class="bottom-note">הסכומים מחושבים מהנתונים השמורים. חשבונות המקושרים לתשלום ניתנים לעדכון
+                        דרך היסטוריית החשבונות.</div>
+              </section>
+              <section class="panel section secondary-section">
+                <div class="section-head">
+                  <div>
+                    <h2>חשבונות ממתינים לתשלום</h2>
+                    <p class="muted" style="margin:6px 0 0">חשבונות שנקלטו כהערכה ועדיין לא סומנו כשולמו</p>
+                  </div><span class="muted">
+                    <%= pendingPayments.length %> חשבונות
+                  </span>
+                </div>
+                <% if (!pendingPayments.length) { %>
+                  <div class="empty">אין חשבונות ממתינים לתשלום בשנה זו.</div>
+                  <% } else { %>
+                    <div class="pending-list">
+                      <% pendingPayments.forEach(p=> { %><div class="pending-item">
+                          <div><strong>
+                              <%= p.name %> · <%= money(p.total_amount) %>
+                            </strong><span class="muted">נקלט בתאריך <%= p.created_date %></span></div>
+                          <form method="post" action="/expenses/finalize-payment"><input type="hidden" name="_csrf"
+                              value="<%= csrfToken %>"><input type="hidden" name="payment_id" value="<%= p.id %>"><input
+                              class="field" type="date" name="payment_date" required aria-label="תאריך תשלום"><button
+                              class="btn primary" type="submit">סמן כשולם</button></form>
+                        </div>
+                        <% }) %>
+                    </div>
+                    <% } %>
+              </section>
+              <section class="panel section secondary-section">
+                <div class="section-head">
+                  <div>
+                    <h2>ניהול קטגוריות</h2>
+                    <p class="muted" style="margin:6px 0 0">הוספת קטגוריה או עדכון סכום ברירת מחדל לקטגוריה קיימת</p>
+                  </div><button type="button" class="btn" id="openCategory">+ הוספת / עדכון קטגוריה</button>
+                </div>
+              </section>
+    </main>
+    <dialog id="cellDialog" aria-labelledby="cellTitle">
+      <div class="modal-head">
+        <h2 id="cellTitle">עריכת הוצאה</h2><button type="button" class="close" data-close="cellDialog"
+          aria-label="סגירה">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="cellInfo" class="helper"></p>
+        <p id="cellLocked" class="helper hidden">הוצאה זו מקושרת לחשבון או כבר שולמה, ולכן אי אפשר לערוך אותה כאן. לצורך
+          תיקון חשבון, עברו להיסטוריה.</p>
+        <form id="estimateForm" method="post" action="/expenses/estimate"><input type="hidden" name="_csrf"
+            value="<%= csrfToken %>"><input type="hidden" name="category_id" id="cellCategory"><input type="hidden"
+            name="month" id="cellMonth"><label>סכום הערכה (₪)<input class="field" type="number" name="amount"
+              id="cellAmount" min="0" step="0.01" required></label>
+          <div class="modal-actions"><button class="btn primary" type="submit">שמירת הערכה</button><button class="btn"
+              type="button" id="showFinalize">סמן כשולם</button></div>
+        </form>
+        <form id="finalizeForm" class="hidden" method="post" action="/expenses/finalize"><input type="hidden"
+            name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="entry_id" id="finalizeEntry"><label>סכום
+            ששולם בפועל (₪)<input class="field" type="number" name="actual_amount" id="actualAmount" min="0" step="0.01"
+              required></label>
+          <p class="helper">אם זו הערכה חדשה, שמרו אותה תחילה ואז פתחו שוב את התא כדי לסמן תשלום.</p>
+          <div class="modal-actions"><button class="btn primary" type="submit">אישור תשלום</button><button class="btn"
+              type="button" id="backEstimate">חזרה להערכה</button></div>
+        </form><a id="historyLink" class="btn hidden"
+          href="/expenses/extras/history?floor=<%= floor %>&year=<%= year %>">מעבר להיסטוריה</a>
+      </div>
+    </dialog>
+    <dialog id="categoryDialog" aria-labelledby="categoryTitle">
+      <div class="modal-head">
+        <h2 id="categoryTitle">הוספה / עדכון קטגוריה</h2><button type="button" class="close" data-close="categoryDialog"
+          aria-label="סגירה">×</button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/expenses/categories"><input type="hidden" name="_csrf"
+            value="<%= csrfToken %>"><input type="hidden" name="floor" value="<%= floor %>"><label>שם הקטגוריה<input
+              class="field" type="text" name="name" maxlength="100" list="categoryNames" required
+              placeholder="לדוגמה: ניקיון"></label><datalist id="categoryNames">
+            <% categories.forEach(c=> { %><option value="<%= c.name %>"></option>
+              <% }) %>
+          </datalist><label>סכום ברירת מחדל לחודש (₪)<input class="field" type="number" name="default_amount" min="0"
+              step="0.01" required></label>
+          <p class="helper">בחירה בשם קטגוריה קיימת תעדכן את ברירת המחדל שלה. סוגי חשמל וארנונה מוגדרים בנפרד במסד
+            הנתונים.</p>
+          <div class="modal-actions"><button class="btn primary" type="submit">שמירת קטגוריה</button></div>
+        </form>
+      </div>
+    </dialog>
+    <dialog id="paymentDialog" aria-labelledby="paymentTitle">
+      <div class="modal-head">
+        <h2 id="paymentTitle">קליטת חשבון / תשלום</h2><button type="button" class="close" data-close="paymentDialog"
+          aria-label="סגירה">×</button>
+      </div>
+      <div class="modal-body">
+        <% if (!categories.length) { %>
+          <p>צריך להוסיף קטגוריה לפני קליטת חשבון.</p><button class="btn" type="button"
+            data-close="paymentDialog">סגירה</button>
+          <% } else { %>
+            <form method="post" action="/expenses/payment" id="paymentForm"><input type="hidden" name="_csrf"
+                value="<%= csrfToken %>"><label>קטגוריה<select class="field" name="category_id" id="paymentCategory"
+                  required>
+                  <% categories.forEach(c=> { %><option value="<%= c.id %>" data-kind="<%= c.kind %>">
+                      <%= c.name %>
+                    </option>
+                    <% }) %>
+                </select></label><label>סכום החשבון הכולל (₪)<input class="field" name="amount" type="number" min="0.01"
+                  step="0.01" required></label><label>מצב החשבון<select class="field" name="status" id="paymentStatus">
+                  <option value="estimated">הערכה / טרם שולם</option>
+                  <option value="paid">שולם בפועל</option>
+                </select></label><label id="paymentDateWrap" class="hidden">תאריך תשלום<input class="field" type="date"
+                  name="payment_date"></label><label class="period regular">חודש<input class="field" type="month"
+                  name="month"
+                  value="<%= year %>-<%= String(new Date().getFullYear()===year ? new Date().getMonth()+1 : 1).padStart(2,'0') %>"></label><label
+                class="period electricity hidden">תחילת תקופת צריכה<input class="field" type="date"
+                  name="period_start"></label><label class="period electricity hidden">סיום תקופת צריכה<input
+                  class="field" type="date" name="period_end"></label>
+              <div class="period arnona hidden">
+                <p class="helper">בחרו את חודשי הארנונה שהחשבון מכסה:</p>
+                <div class="month-checks">
+                  <% months.forEach((m,i)=> { %><label><input type="checkbox" class="arnonaCheck" value="<%= m %>">
+                      <%= monthNames[i] %>
+                    </label>
+                    <% }) %>
+                </div><input type="hidden" name="months" id="arnonaMonths">
+              </div>
+              <div class="modal-actions"><button class="btn primary" type="submit">שמירת חשבון</button></div>
+            </form>
+            <% } %>
+      </div>
+    </dialog>
+    <script>
+      (function () {
+        const byId = id => document.getElementById(id);
+        function openDialog(id) { const d = byId(id); if (d && typeof d.showModal === 'function') d.showModal(); }
+        document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => byId(b.dataset.close).close()));
+        document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+        byId('openCategory').addEventListener('click', () => openDialog('categoryDialog'));
+        byId('openPayment').addEventListener('click', () => openDialog('paymentDialog'));
+        document.querySelectorAll('.cell-btn').forEach(b => b.addEventListener('click', () => {
+          byId('cellTitle').textContent = b.dataset.name + ' · ' + b.dataset.month;
+          byId('cellInfo').textContent = 'סכום נוכחי: ₪' + Number(b.dataset.amount).toLocaleString('he-IL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          byId('cellCategory').value = b.dataset.category; byId('cellMonth').value = b.dataset.month; byId('cellAmount').value = b.dataset.amount;
+          byId('finalizeEntry').value = b.dataset.entry; byId('actualAmount').value = b.dataset.amount;
+          const locked = b.dataset.locked === '1'; byId('cellLocked').classList.toggle('hidden', !locked);
+          byId('estimateForm').classList.toggle('hidden', locked); byId('finalizeForm').classList.add('hidden'); byId('historyLink').classList.toggle('hidden', !locked);
+          byId('showFinalize').disabled = !b.dataset.entry;
+          openDialog('cellDialog');
+        }));
+        byId('showFinalize').addEventListener('click', () => { if (!byId('finalizeEntry').value) return; byId('estimateForm').classList.add('hidden'); byId('finalizeForm').classList.remove('hidden'); });
+        byId('backEstimate').addEventListener('click', () => { byId('finalizeForm').classList.add('hidden'); byId('estimateForm').classList.remove('hidden'); });
+        const cat = byId('paymentCategory'), status = byId('paymentStatus');
+        if (cat && status) {
+          const refresh = () => { const kind = cat.selectedOptions[0]?.dataset.kind || 'regular'; document.querySelectorAll('.period').forEach(el => el.classList.toggle('hidden', !el.classList.contains(kind))); byId('paymentDateWrap').classList.toggle('hidden', status.value !== 'paid'); };
+          cat.addEventListener('change', refresh); status.addEventListener('change', refresh); refresh();
+          byId('paymentForm').addEventListener('submit', e => { if (cat.selectedOptions[0]?.dataset.kind === 'arnona') { const selected = [...document.querySelectorAll('.arnonaCheck:checked')].map(x => x.value); if (!selected.length) { e.preventDefault(); alert('יש לבחור לפחות חודש ארנונה אחד'); return; } byId('arnonaMonths').value = selected.join(','); } });
+        }
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('/expenses/sw.js', { scope: '/expenses' }).catch(() => { });
+      })();
+    </script>
 </body>
+
 </html>
