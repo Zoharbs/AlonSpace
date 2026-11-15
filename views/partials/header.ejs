@@ -216,7 +216,12 @@
       </a>
 
       <nav class="nav" id="mainNav">
-
+<% if (canManageExpenses) { %>
+  <a href="/expenses"
+     class="<%= currentPath.startsWith('/expenses') ? 'active' : '' %>">
+    ניהול הוצאות
+  </a>
+<% } %>
         <% if (isTenant) { %>
 
           <a href="/dashboard" class="<%= currentPath === '/dashboard' ? 'active' : '' %>">

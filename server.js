@@ -174,7 +174,7 @@ app.post(
           error.code === 'LIMIT_FILE_SIZE'
             ? 'הלוגו גדול מדי. ניתן להעלות קובץ עד 1MB.'
             : error.message ||
-              'לא ניתן להעלות את הלוגו.';
+            'לא ניתן להעלות את הלוגו.';
 
 
         return res.redirect(
@@ -192,12 +192,12 @@ app.post(/^\/admin\/business-profiles\/\d+\/edit\/?$/,
 
   (req, res, next) => {
 
-if (
-  !req.session?.userId ||
-  !['admin', 'manager'].includes(req.session?.userRole)
-) {
-  return res.redirect('/login');
-}
+    if (
+      !req.session?.userId ||
+      !['admin', 'manager'].includes(req.session?.userRole)
+    ) {
+      return res.redirect('/login');
+    }
 
     businessLogoUpload.single('logo')(
       req,
@@ -217,7 +217,7 @@ if (
           error.code === 'LIMIT_FILE_SIZE'
             ? 'הלוגו גדול מדי. ניתן להעלות קובץ עד 1MB.'
             : error.message ||
-              'לא ניתן להעלות את הלוגו.';
+            'לא ניתן להעלות את הלוגו.';
 
         return res.redirect(
           '/admin?error=' +
@@ -263,9 +263,9 @@ app.use('/api/contact', publicFormLimiter);
 app.use('/api/testimonials', publicFormLimiter);
 app.use('/login', loginLimiter);
 app.use('/expenses/extras', require('./routes/expense-extras'));
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.path = req.path;
-res.locals.cookieConsent =req.cookies.alonspace_cookie_consent || null;
+  res.locals.cookieConsent = req.cookies.alonspace_cookie_consent || null;
   res.locals.site = {
     name: 'AlonSpace',
     phone: '054-4730266',
@@ -277,11 +277,28 @@ res.locals.cookieConsent =req.cookies.alonspace_cookie_consent || null;
 
   res.locals.currentUser = req.session?.userId
     ? {
-        id: req.session.userId,
-        role: req.session.userRole,
-        name: req.session.userName,
-      }
+      id: req.session.userId,
+      role: req.session.userRole,
+      name: req.session.userName,
+    }
     : null;
+  res.locals.canManageExpenses = false;
+
+  if (req.session?.userId) {
+    try {
+      const result = await db.query(
+        `SELECT can_manage_expenses
+       FROM users
+       WHERE id = $1 AND is_active = TRUE`,
+        [req.session.userId]
+      );
+
+      res.locals.canManageExpenses =
+        result.rows[0]?.can_manage_expenses === true;
+    } catch (error) {
+      return next(error);
+    }
+  }
 
   res.locals.tourWhatsappUrl =
     'https://wa.me/972544730266?text=' +
@@ -365,8 +382,8 @@ app.post('/cookie-consent', (req, res) => {
 
   const returnTo =
     typeof req.body.returnTo === 'string' &&
-    req.body.returnTo.startsWith('/') &&
-    !req.body.returnTo.startsWith('//')
+      req.body.returnTo.startsWith('/') &&
+      !req.body.returnTo.startsWith('//')
       ? req.body.returnTo
       : '/';
 
