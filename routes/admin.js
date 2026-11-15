@@ -2228,7 +2228,6 @@ router.get('/units', async (req, res, next) => {
         ru.ownership_type,
         ru.owner_id,
         ru.is_active,
-        u.can_manage_expenses,
         ru.notes,
         ru.rent_charge_enabled,
         ru.management_fee_charge_enabled,
@@ -2619,6 +2618,7 @@ ORDER BY used_hours DESC
     u.monthly_meeting_hours,
     u.meeting_access_both_floors,
     u.is_active,
+    u.can_manage_expenses,
     u.must_change_password,
     u.created_at,
 
@@ -2914,7 +2914,13 @@ WHERE role IN ('admin', 'manager')
 
     const dashboardClients = clientsResult.rows;
 
+const expenseAccessResult = await db.query(
+  'SELECT can_manage_expenses FROM users WHERE id = $1',
+  [req.session.userId]
+);
 
+const canManageExpenses =
+  expenseAccessResult.rows[0]?.can_manage_expenses === true;
 return res.render('admin/dashboard', {
   title: 'פאנל ניהול - AlonSpace',
   layout: false,
@@ -2941,7 +2947,7 @@ return res.render('admin/dashboard', {
 
       error: req.query.error || null,
       success: req.query.success || null,
-
+canManageExpenses,
       quotaAlerts: quotaAlertsResult.rows,
       rentalAlerts: isSystemAdmin
         ? rentalAlertsResult.rows
