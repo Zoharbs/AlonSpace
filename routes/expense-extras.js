@@ -88,23 +88,29 @@ router.post('/payments/:id/cancel', async (req, res, next) => {
   let floor = 4;
   try {
     await client.query('BEGIN');
-    const payment = (await client.query(`SELECT p.*,c.floor FROM expense_payments p
-      JOIN expense_categories c ON c.id=p.category_id WHERE p.id=$1 FOR UPDATE OF p`,[id])).rows[0];
-    if (!payment || payment.cancelled_at) throw new Error('התשלום לא נמצא או כבר בוטל');
-    floor = payment.floor;
-    const entries = (await client.query('SELECT * FROM expense_entries WHERE payment_id=$1 ORDER BY id FOR UPDATE',[id])).rows;
-    if (!entries.length) throw new Error('לא נמצאו רשומות תשלום');
-    for (const old of entries) {
-      // Preserve the original estimate; release the month for a corrected invoice.
-      const updated = (await client.query(`UPDATE expense_entries
-        SET actual_amount=NULL,status='estimated',payment_id=NULL,updated_by=$2,updated_at=NOW()
-        WHERE id=$1 RETURNING *`,[old.id,req.session.userId])).rows[0];
-      await client.query(`INSERT INTO expense_audit(entry_id,user_id,action,old_value,new_value)
-        VALUES($1,$2,'cancel_payment',$3,$4)`,[old.id,req.session.userId,JSON.stringify(old),JSON.stringify(updated)]);
+    const original = (await client.query(`SELECT p.*,c.floor FROM expense_payments p
+      JOIN expense_categories c ON c.id=p.category_id WHERE p.id=$1`, [id])).rows[0];
+    if (!original || original.cancelled_at) throw new Error('החשבון לא נמצא או כבר בוטל');
+    floor = original.floor;
+    if (original.shared_group_id) await client.query('SELECT pg_advisory_xact_lock(643721)');
+    const payments = (await client.query(`SELECT * FROM expense_payments
+      WHERE id=$1 OR (shared_group_id IS NOT NULL AND shared_group_id=$2)
+      ORDER BY id FOR UPDATE`, [id, original.shared_group_id])).rows;
+    if (payments.some(p => p.cancelled_at)) throw new Error('אחד החשבונות כבר בוטל');
+    for (const payment of payments) {
+      const entries = (await client.query('SELECT * FROM expense_entries WHERE payment_id=$1 ORDER BY id FOR UPDATE',[payment.id])).rows;
+      if (!entries.length) throw new Error('לא נמצאו רשומות תשלום');
+      for (const old of entries) {
+        const updated = (await client.query(`UPDATE expense_entries
+          SET actual_amount=NULL,status='estimated',payment_id=NULL,updated_by=$2,updated_at=NOW()
+          WHERE id=$1 RETURNING *`,[old.id,req.session.userId])).rows[0];
+        await client.query(`INSERT INTO expense_audit(entry_id,user_id,action,old_value,new_value)
+          VALUES($1,$2,'cancel_payment',$3,$4)`,[old.id,req.session.userId,JSON.stringify(old),JSON.stringify(updated)]);
+      }
+      await client.query('UPDATE expense_payments SET cancelled_at=NOW() WHERE id=$1',[payment.id]);
     }
-    await client.query('UPDATE expense_payments SET cancelled_at=NOW() WHERE id=$1',[id]);
     await client.query('COMMIT');
-    res.redirect(`/expenses/extras/history?floor=${floor}&success=${encodeURIComponent('החשבון בוטל. אפשר להזין חשבון מתוקן; ההערכות המקוריות נשמרו.')}`);
+    res.redirect(`/expenses/extras/history?floor=${floor}&success=${encodeURIComponent('החשבון בוטל בשתי הקומות ככל שהוא משותף; ההערכות נשמרו.')}`);
   } catch (error) {
     await client.query('ROLLBACK').catch(()=>{});
     res.redirect(`/expenses/extras/history?floor=${floor}&error=${encodeURIComponent(error.message)}`);

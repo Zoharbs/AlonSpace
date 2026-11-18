@@ -1,0 +1,11 @@
+'use strict';
+const assert = require('node:assert/strict');
+const { electricityMonths, electricityPortions, splitAgorot } = require('../utils/expenseMonths');
+assert.deepEqual(electricityMonths('2026-01-20', '2026-03-10'), ['2026-01','2026-02','2026-03']);
+assert.deepEqual(electricityPortions(3000, '2026-01-20', '2026-03-10').map(x => x.amount), ['720.00','1680.00','600.00']);
+assert.equal(electricityPortions(0.01, '2026-01-31', '2026-02-01').reduce((s,p)=>s+Math.round(Number(p.amount)*100),0),1);
+assert.equal(electricityPortions(760, '2026-11-18', '2026-11-18')[0].amount,'760.00');
+assert.equal(splitAgorot(100.01,['2026-01','2026-02']).reduce((s,p)=>s+Math.round(Number(p.amount)*100),0),10001);
+assert.throws(()=>electricityMonths('2026-02-30','2026-03-01'));
+assert.throws(()=>electricityMonths('2026-03-01','2026-02-01'));
+console.log('Expense date and rounding tests passed');

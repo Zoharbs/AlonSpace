@@ -2,12 +2,14 @@
 const express = require('express');
 const ExcelJS = require('exceljs');
 const db = require('../db');
-const { isoMonth, electricityMonths, splitAgorot } = require('../utils/expenseMonths');
+const { isoMonth, electricityMonths, electricityPortions, splitAgorot } = require('../utils/expenseMonths');
 const router = express.Router();
 const monthsOfYear = year => Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, '0')}`);
 const notice = (type, message, floor = 4, year = new Date().getFullYear()) => `/expenses?floor=${floor}&year=${year}&${type}=${encodeURIComponent(message)}`;
 const validMoney = value => value !== '' && value !== undefined && value !== null && Number.isFinite(Number(value)) && Number(value) >= 0 && Math.abs(Number(value) * 100 - Math.round(Number(value) * 100)) < 1e-6;
 const validDate = value => /^\d{4}-\d{2}-\d{2}$/.test(String(value)) && !Number.isNaN(Date.parse(value)) && new Date(`${value}T12:00:00Z`).toISOString().slice(0, 10) === value;
+const SHARED_NAMES = new Set(['חומרי ניקוי', 'קפה ומטבח']);
+const splitTwo = value => { const cents = Math.round(Number(value) * 100); return [Math.ceil(cents / 2) / 100, Math.floor(cents / 2) / 100]; };
 async function audit(client, entry, userId, action, oldValue) {
   await client.query('INSERT INTO expense_audit(entry_id,user_id,action,old_value,new_value) VALUES($1,$2,$3,$4,$5)', [entry.id, userId, action, oldValue ? JSON.stringify(oldValue) : null, JSON.stringify(entry)]);
 }
@@ -61,8 +63,17 @@ router.post('/categories', async (req, res, next) => {
   try {
     const floor = Number(req.body.floor), name = String(req.body.name || '').trim(), amount = req.body.default_amount;
     if (![4, 6].includes(floor) || !name || name.length > 100 || !validMoney(amount)) return res.sendStatus(400);
-    await db.query('INSERT INTO expense_categories(floor,name,default_amount) VALUES($1,$2,$3) ON CONFLICT(floor,name) DO UPDATE SET default_amount=EXCLUDED.default_amount', [floor, name, amount]);
+    await db.query('INSERT INTO expense_categories(floor,name,default_amount) VALUES($1,$2,$3) ON CONFLICT(floor,name) DO UPDATE SET default_amount=EXCLUDED.default_amount,is_active=TRUE', [floor, name, amount]);
     res.redirect(notice('success', 'הקטגוריה נשמרה', floor));
+  } catch (error) { next(error); }
+});
+router.post('/categories/:id/delete', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id), floor = Number(req.body.floor), year = Number(req.body.year);
+    if (!Number.isSafeInteger(id) || id < 1 || ![4, 6].includes(floor)) return res.sendStatus(400);
+    const result = await db.query('UPDATE expense_categories SET is_active=FALSE WHERE id=$1 AND floor=$2 AND is_active=TRUE RETURNING id', [id, floor]);
+    if (!result.rowCount) return res.sendStatus(404);
+    res.redirect(notice('success', 'הקטגוריה הוסרה ללא מחיקת היסטוריה', floor, Number.isInteger(year) && year >= 2020 && year <= 2100 ? year : new Date().getFullYear()));
   } catch (error) { next(error); }
 });
 router.post('/estimate', async (req, res, next) => {
@@ -88,8 +99,17 @@ router.post('/payment', async (req, res, next) => {
     const paymentDate = status === 'paid' ? String(req.body.payment_date || new Date().toISOString().slice(0, 10)) : null;
     if (paymentDate && !validDate(paymentDate)) return res.status(400).send('תאריך תשלום לא תקין');
     const result = await transaction(async client => {
-      const category = (await client.query('SELECT * FROM expense_categories WHERE id=$1 AND is_active=TRUE FOR UPDATE', [id])).rows[0];
+      // Serialize shared invoice creation even if the user starts from either floor.
+      const category = (await client.query('SELECT * FROM expense_categories WHERE id=$1 AND is_active=TRUE', [id])).rows[0];
       if (!category) throw Error('קטגוריה לא קיימת');
+      const shared = category.kind === 'regular' && SHARED_NAMES.has(category.name);
+      if (shared) await client.query('SELECT pg_advisory_xact_lock(643721)');
+      let targets = [category];
+      if (shared) {
+        const counterpart = (await client.query("SELECT * FROM expense_categories WHERE floor=$1 AND name=$2 AND kind='regular' AND is_active=TRUE", [category.floor === 4 ? 6 : 4, category.name])).rows[0];
+        if (!counterpart) throw Error('הקטגוריה המקבילה אינה קיימת או אינה פעילה בקומה השנייה');
+        targets = [category.floor === 4 ? category : counterpart, category.floor === 6 ? category : counterpart];
+      }
       let months, start = null, end = null;
       if (category.kind === 'electricity') {
         start = String(req.body.period_start || ''); end = String(req.body.period_end || '');
@@ -98,17 +118,28 @@ router.post('/payment', async (req, res, next) => {
         months = [...new Set(String(req.body.months || '').split(',').map(x => x.trim()).filter(Boolean))].sort();
         if (!months.length || months.length > 24) throw Error('יש לבחור 1 עד 24 חודשים');
       } else months = [String(req.body.month || '')];
-      const portions = splitAgorot(amount, months);
-      const oldEntries = (await client.query('SELECT * FROM expense_entries WHERE category_id=$1 AND month=ANY($2::date[]) FOR UPDATE', [id, portions.map(p => p.month)])).rows;
-      if (oldEntries.some(e => e.payment_id || e.status === 'paid')) throw Error('קיים חשבון או תשלום בחודשים שנבחרו');
-      const payment = (await client.query('INSERT INTO expense_payments(category_id,total_amount,status,period_start,period_end,payment_date,created_by) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING id', [id, amount, status, start, end, paymentDate, req.expenseUser.id])).rows[0];
-      for (const portion of portions) {
-        const old = oldEntries.find(e => String(e.month instanceof Date ? e.month.toISOString().slice(0, 10) : e.month).slice(0, 10) === portion.month);
-        const estimate = old ? old.estimated_amount : portion.amount;
-        const entry = (await client.query('INSERT INTO expense_entries(category_id,month,estimated_amount,actual_amount,status,payment_id,updated_by) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(category_id,month) DO UPDATE SET actual_amount=EXCLUDED.actual_amount,status=EXCLUDED.status,payment_id=EXCLUDED.payment_id,updated_by=EXCLUDED.updated_by,updated_at=NOW() RETURNING *', [id, portion.month, estimate, status === 'paid' ? portion.amount : null, status, payment.id, req.expenseUser.id])).rows[0];
-        await audit(client, entry, req.expenseUser.id, 'payment', old);
+      // Validate all months before any database write.
+      const validated = splitAgorot(amount, months);
+      const amounts = shared ? splitTwo(amount) : [Number(amount)];
+      let groupId = null;
+      for (let i = 0; i < targets.length; i++) {
+        const target = targets[i];
+        const portions = category.kind === 'electricity' ? electricityPortions(amounts[i], start, end) : splitAgorot(amounts[i], months);
+        const oldEntries = (await client.query('SELECT * FROM expense_entries WHERE category_id=$1 AND month=ANY($2::date[]) FOR UPDATE', [target.id, portions.map(p => p.month)])).rows;
+        if (oldEntries.some(e => e.payment_id || e.status === 'paid')) throw Error('קיים כבר חשבון או תשלום באחד החודשים שנבחרו');
+        const payment = (await client.query('INSERT INTO expense_payments(category_id,total_amount,status,period_start,period_end,payment_date,created_by,shared_group_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id', [target.id, amounts[i], status, start, end, paymentDate, req.expenseUser.id, groupId])).rows[0];
+        if (shared && groupId === null) {
+          groupId = payment.id;
+          await client.query('UPDATE expense_payments SET shared_group_id=$1 WHERE id=$1', [groupId]);
+        }
+        for (const portion of portions) {
+          const old = oldEntries.find(e => String(e.month instanceof Date ? e.month.toISOString().slice(0, 10) : e.month).slice(0, 10) === portion.month);
+          const estimate = old ? old.estimated_amount : target.default_amount;
+          const entry = (await client.query('INSERT INTO expense_entries(category_id,month,estimated_amount,actual_amount,status,payment_id,updated_by) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(category_id,month) DO UPDATE SET actual_amount=EXCLUDED.actual_amount,status=EXCLUDED.status,payment_id=EXCLUDED.payment_id,updated_by=EXCLUDED.updated_by,updated_at=NOW() RETURNING *', [target.id, portion.month, estimate, status === 'paid' ? portion.amount : null, status, payment.id, req.expenseUser.id])).rows[0];
+          await audit(client, entry, req.expenseUser.id, 'payment', old);
+        }
       }
-      return { floor: category.floor, year: Number(portions[0].month.slice(0, 4)) };
+      return { floor: category.floor, year: Number(validated[0].month.slice(0, 4)) };
     });
     res.redirect(notice('success', 'החשבון נשמר', result.floor, result.year));
   } catch (error) { res.redirect(notice('error', error.message)); }
@@ -120,6 +151,8 @@ router.post('/finalize', async (req, res, next) => {
     const floor = await transaction(async client => {
       const old = (await client.query('SELECT * FROM expense_entries WHERE id=$1 FOR UPDATE', [id])).rows[0];
       if (!old || old.status !== 'estimated' || old.payment_id) throw Error('ניתן לסגור רק הערכה בודדת');
+      const originalCategory = (await client.query('SELECT name,kind FROM expense_categories WHERE id=$1', [old.category_id])).rows[0];
+      if (originalCategory?.kind === 'regular' && SHARED_NAMES.has(originalCategory.name)) throw Error('תשלום משותף יש להזין דרך קליטת חשבון, כדי לחלק אותו לשתי הקומות');
       const entry = (await client.query("UPDATE expense_entries SET actual_amount=$2,status='paid',updated_by=$3,updated_at=NOW() WHERE id=$1 RETURNING *", [id, amount, req.expenseUser.id])).rows[0];
       await audit(client, entry, req.expenseUser.id, 'finalize', old);
       const category = (await client.query('SELECT floor FROM expense_categories WHERE id=$1', [entry.category_id])).rows[0];
@@ -135,19 +168,29 @@ router.post('/finalize-payment', async (req, res, next) => {
     const paymentDate = String(req.body.payment_date || new Date().toISOString().slice(0, 10));
     if (!validDate(paymentDate)) return res.sendStatus(400);
     const result = await transaction(async client => {
-      const payment = (await client.query('SELECT * FROM expense_payments WHERE id=$1 FOR UPDATE', [paymentId])).rows[0];
-      if (!payment || payment.status !== 'estimated' || payment.cancelled_at) throw Error('החשבון אינו ממתין לתשלום');
-      const entries = (await client.query('SELECT * FROM expense_entries WHERE payment_id=$1 ORDER BY month FOR UPDATE', [paymentId])).rows;
-      if (!entries.length || entries.some(e => e.status !== 'estimated')) throw Error('רשומות החשבון אינן תקינות');
-      const portions = splitAgorot(payment.total_amount, entries.map(e => e.month instanceof Date ? e.month.toISOString().slice(0, 7) : String(e.month).slice(0, 7)));
-      await client.query("UPDATE expense_payments SET status='paid',payment_date=$2 WHERE id=$1", [paymentId, paymentDate]);
-      for (let i = 0; i < entries.length; i++) {
-        const old = entries[i];
-        const entry = (await client.query("UPDATE expense_entries SET actual_amount=$2,status='paid',updated_by=$3,updated_at=NOW() WHERE id=$1 RETURNING *", [old.id, portions[i].amount, req.expenseUser.id])).rows[0];
-        await audit(client, entry, req.expenseUser.id, 'finalize_payment', old);
+      const original = (await client.query('SELECT * FROM expense_payments WHERE id=$1', [paymentId])).rows[0];
+      if (!original) throw Error('החשבון לא נמצא');
+      if (original.shared_group_id) await client.query('SELECT pg_advisory_xact_lock(643721)');
+      const payments = (await client.query('SELECT * FROM expense_payments WHERE id=$1 OR (shared_group_id IS NOT NULL AND shared_group_id=$2) ORDER BY id FOR UPDATE', [paymentId, original.shared_group_id])).rows;
+      if (!payments.length || payments.some(p => p.status !== 'estimated' || p.cancelled_at)) throw Error('החשבון אינו ממתין לתשלום');
+      let firstMonth;
+      for (const payment of payments) {
+        const entries = (await client.query('SELECT * FROM expense_entries WHERE payment_id=$1 ORDER BY month FOR UPDATE', [payment.id])).rows;
+        if (!entries.length || entries.some(e => e.status !== 'estimated')) throw Error('רשומות החשבון אינן תקינות');
+        const portions = payment.period_start && payment.period_end
+          ? electricityPortions(payment.total_amount, new Date(payment.period_start).toISOString().slice(0, 10), new Date(payment.period_end).toISOString().slice(0, 10))
+          : splitAgorot(payment.total_amount, entries.map(e => e.month instanceof Date ? e.month.toISOString().slice(0, 7) : String(e.month).slice(0, 7)));
+        if (portions.length !== entries.length || portions.some((p, i) => p.month !== (entries[i].month instanceof Date ? entries[i].month.toISOString().slice(0, 10) : String(entries[i].month).slice(0, 10)))) throw Error('חודשי החשבון אינם תואמים לתקופת הצריכה');
+        firstMonth ||= portions[0].month;
+        await client.query("UPDATE expense_payments SET status='paid',payment_date=$2 WHERE id=$1", [payment.id, paymentDate]);
+        for (let i = 0; i < entries.length; i++) {
+          const old = entries[i];
+          const entry = (await client.query("UPDATE expense_entries SET actual_amount=$2,status='paid',updated_by=$3,updated_at=NOW() WHERE id=$1 RETURNING *", [old.id, portions[i].amount, req.expenseUser.id])).rows[0];
+          await audit(client, entry, req.expenseUser.id, 'finalize_payment', old);
+        }
       }
-      const category = (await client.query('SELECT floor FROM expense_categories WHERE id=$1', [payment.category_id])).rows[0];
-      return { floor: category.floor, year: Number(portions[0].month.slice(0, 4)) };
+      const category = (await client.query('SELECT floor FROM expense_categories WHERE id=$1', [original.category_id])).rows[0];
+      return { floor: category.floor, year: Number(firstMonth.slice(0, 4)) };
     });
     res.redirect(notice('success', 'החשבון סומן כשולם', result.floor, result.year));
   } catch (error) { res.redirect(notice('error', error.message)); }

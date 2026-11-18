@@ -1,1 +1,34 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>סיכום הוצאות | AlonSpace</title><style>body{font-family:Arial,sans-serif;background:#f4f6f9;color:#142b46;margin:24px}main{max-width:1400px;margin:auto}section{background:white;border-radius:14px;padding:18px;margin:16px 0}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;min-width:1100px}th,td{border:1px solid #dce3ea;padding:10px;text-align:center}th:first-child,td:first-child{text-align:right;position:sticky;right:0;background:white}small{display:block;color:#58697a}.paid{background:#d4f4dc}.estimate{background:#fff2bd}a{color:#142b46}</style></head><body><main><h1>סיכום הוצאות — קומות 4 ו־6</h1><p><a href="/expenses">חזרה לניהול ההוצאות</a></p><form method="get"><label>שנה <input type="number" name="year" min="2020" max="2100" value="<%= year %>"></label><button>הצג</button></form><% floors.forEach(function(f){ %><section><h2>קומה <%= f.floor %></h2><div class="scroll"><table><thead><tr><th>קטגוריה</th><% months.forEach(function(m){ %><th><%= String(m).padStart(2,'0') %></th><% }) %><th>שנתי</th></tr></thead><tbody><% f.items.forEach(function(item){ let annual=0; %><tr><th><%= item.name %></th><% months.forEach(function(m){const e=item.entries[m];const paid=e?.status==='paid';const amount=paid?Number(e.actual_amount):e?Number(e.estimated_amount):item.defaultAmount;annual+=amount; %><td class="<%= paid?'paid':'estimate' %>">₪<%= amount.toFixed(2) %><small><%= paid?'שולם':'הערכה' %></small></td><% }) %><td>₪<%= annual.toFixed(2) %></td></tr><% }) %><tr><th>תקציב</th><% f.totals.forEach(function(t){ %><td>₪<%= t.budget.toFixed(2) %></td><% }) %><td>₪<%= f.totals.reduce((s,t)=>s+t.budget,0).toFixed(2) %></td></tr><tr><th>שולם בפועל</th><% f.totals.forEach(function(t){ %><td>₪<%= t.paid.toFixed(2) %></td><% }) %><td>₪<%= f.totals.reduce((s,t)=>s+t.paid,0).toFixed(2) %></td></tr><tr><th>יתרה תקציבית</th><% f.totals.forEach(function(t){ %><td>₪<%= (t.budget-t.paid).toFixed(2) %></td><% }) %><td>₪<%= f.totals.reduce((s,t)=>s+t.budget-t.paid,0).toFixed(2) %></td></tr></tbody></table></div><p><a href="/expenses/extras/history?floor=<%= f.floor %>&year=<%= year %>">היסטוריית קומה <%= f.floor %></a></p></section><% }) %><p>צהוב = הערכה; ירוק = סכום ששולם. יתרה תקציבית אינה בהכרח חוב לתשלום.</p></main></body></html>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>סיכום הוצאות | AlonSpace</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body{margin:0;background:var(--stone);color:var(--ink);font-family:var(--font-body)}
+    main{max-width:1460px;margin:auto;padding:28px 18px 70px}
+    h1,h2{font-family:var(--font-display)} h1{margin:0 0 10px}
+    .muted{color:var(--ink-soft)}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:25px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;background:var(--oak);color:white;border:0;border-radius:var(--radius);padding:10px 17px;text-decoration:none;cursor:pointer;font:inherit}
+    .panel{background:var(--cream);border:1px solid var(--stone-dark);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:22px;margin-bottom:20px}
+    .field{border:1px solid var(--stone-dark);border-radius:var(--radius);padding:9px 12px;background:white;font:inherit;max-width:110px}
+    .scroll{overflow:auto}.data{border-collapse:separate;border-spacing:0;min-width:1200px;width:100%;text-align:center}
+    .data th,.data td{padding:13px 10px;border-bottom:1px solid var(--stone-dark);font-variant-numeric:tabular-nums}
+    .data th:first-child,.data td:first-child{position:sticky;right:0;background:var(--cream);min-width:170px;text-align:right;z-index:1}
+    .data thead th{background:var(--stone);font-size:13px}.data thead th:first-child{background:var(--stone);z-index:2}
+    .paid{background:#e5f4eb}.estimate{background:#fff2d5}.sub{display:block;font-size:11px;margin-top:4px;color:var(--ink-soft)}
+    .positive{color:#a13b3b}.negative{color:#247552}.total{font-weight:700;background:var(--stone)}
+    @media(max-width:600px){main{padding:16px 10px}.panel{padding:14px}}
+  </style>
+</head>
+<body><main>
+  <div class="top"><div><h1>סיכום הוצאות — שתי הקומות</h1><p class="muted">הערכות, תשלומים והפרשים לפי חודש</p></div><a class="btn" href="/expenses">חזרה לניהול הוצאות</a></div>
+  <form class="panel" method="get"><label>שנת פעילות <input class="field" type="number" name="year" min="2020" max="2100" value="<%= year %>" required></label> <button class="btn" type="submit">הצג</button></form>
+  <% floors.forEach(f => { %>
+    <section class="panel"><h2>קומה <%= f.floor %></h2><div class="scroll"><table class="data"><thead><tr><th>קטגוריה</th><% months.forEach(m => { %><th><%= String(m).padStart(2,'0') %></th><% }) %><th>סה״כ שנתי</th></tr></thead><tbody>
+    <% f.items.forEach(item => { let annual=0; %><tr><th><%= item.name %></th><% months.forEach(m => { const e=item.entries[m]; const paid=e?.status==='paid';const expected=e?Number(e.estimated_amount):item.defaultAmount;const amount=paid?Number(e.actual_amount):expected;annual+=amount;const diff=Math.round((amount-expected)*100)/100; %><td class="<%= paid?'paid':'estimate' %>">₪<%= amount.toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2}) %><span class="sub"><%= paid?'שולם':'הערכה' %></span><% if(paid){ %><span class="sub <%= diff>0?'positive':diff<0?'negative':'' %>">(<%= diff>0?'₪'+Math.abs(diff).toFixed(2)+' יותר מהצפוי':diff<0?'₪'+Math.abs(diff).toFixed(2)+' פחות מהצפוי':'בדיוק כצפוי' %>)</span><% } %></td><% }) %><td><strong>₪<%= annual.toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2}) %></strong></td></tr><% }) %>
+    <% [['תקציב',t=>t.budget],['שולם בפועל',t=>t.paid],['הפרש מהתקציב',t=>t.paid-t.budget]].forEach(row => { %><tr class="total"><th><%= row[0] %></th><% f.totals.forEach(t => { %><td>₪<%= row[1](t).toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2}) %></td><% }) %><td>₪<%= f.totals.reduce((s,t)=>s+row[1](t),0).toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2}) %></td></tr><% }) %>
+    </tbody></table></div><p><a href="/expenses/extras/history?floor=<%= f.floor %>&year=<%= year %>">היסטוריית קומה <%= f.floor %></a></p></section>
+  <% }) %>
+  <p class="muted">צהוב = הערכה, ירוק = שולם. ההפרש מחושב לעומת ההערכה המקורית. סך ההפרש השנתי כולל גם חודשים שטרם שולמו, ולכן אינו מייצג חוב לתשלום.</p>
+</main></body></html>
